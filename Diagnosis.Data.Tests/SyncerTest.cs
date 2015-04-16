@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data;
+using Diagnosis.Common.Types;
 using Diagnosis.Data.NHibernate;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
@@ -8,6 +8,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
 using System;
 using System.Linq;
+
+using System.Linq;
+
 using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Tests
@@ -52,6 +55,41 @@ namespace Diagnosis.Data.Tests
             checker.CheckReferenceEntitiesAfterDownload(s.AddedOnServerIdsPerType);
 
             Assert.AreEqual(sCatCount, clSession.Query<HrCategory>().Count());
+        }
+
+        [TestMethod]
+        public async Task SendFromClient()
+        {
+            InMemoryHelper.FillData(clCfg, clSession, false);
+
+            var clDocCount = clSession.Query<Doctor>().Count();
+            var clHrItemCount = clSession.Query<HrItem>().Count();
+
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client);
+
+            Assert.AreEqual(clDocCount, sSession.Query<Doctor>().Count());
+            Assert.AreEqual(clHrItemCount, sSession.Query<HrItem>().Count());
+        }
+
+        [TestMethod]
+        public async Task SendAddedPatientFromClient()
+        {
+            InMemoryHelper.FillData(clCfg, clSession, false);
+            var clPatCount = clSession.Query<Patient>().Count();
+
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder.ToEnumerable());
+
+            // новый пациент на клиенте
+            using (var tr = clSession.BeginTransaction())
+            {
+                var p = new Patient("x");
+                clSession.Save(p);
+                tr.Commit();
+            }
+
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder.ToEnumerable());
+
+            Assert.AreEqual(clPatCount + 1, sSession.Query<Patient>().Count());
         }
 
         #region Vocs
@@ -176,6 +214,52 @@ namespace Diagnosis.Data.Tests
             new VocLoader(clSession).AfterSyncVocs(s.DeletedOnServerIdsPerType);
 
             Assert.AreEqual(cWtCount + 1, clSession.Query<WordTemplate>().Count());
+        }
+
+        [TestMethod]
+        public async Task SaveVocToExchangeCreatesDoctorTable()
+        {
+            // выгружаем словари с сервера
+            var sdfFileCon = new ConnectionInfo("exch.sdf", Constants.SqlCeProvider);
+            var syncer = new Syncer(
+                             serverConStr: serverCon.ConnectionString,
+                             clientConStr: sdfFileCon.ConnectionString,
+                             serverProviderName: serverCon.ProviderName);
+
+            SqlHelper.CreateSqlCeByConStr(sdfFileCon.ConnectionString);
+
+            var scopes = Scopes.GetOrderedDownloadScopes();
+            await syncer.WithoutDoctors().SendFrom(Side.Server, scopes);
+
+            // пробуем достать словари
+            var nhib = NHibernateHelper.FromServerConnectionInfo(sdfFileCon);
+
+            int exVocsCount;
+            using (var s = nhib.OpenSession())
+            using (var tr = s.BeginTransaction())
+            {
+                exVocsCount = s.Query<Vocabulary>().Count();
+            }
+
+            // значит создана Doctors
+
+            var serverVocsCount = sSession.Query<Vocabulary>().Count(); // даже пользовательские, их не должно быть на сервере
+            Assert.AreEqual(serverVocsCount, exVocsCount);
+        }
+
+        [TestMethod]
+        public async Task SendFromClientNoCustomVocsOnServer()
+        {
+            InMemoryHelper.FillData(clCfg, clSession, false);
+
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client);
+
+            var sCustoms = sSession.Query<Doctor>().Select(x => x.CustomVocabulary).ToList(); // создается при обращении
+            var clVocs = clSession.Query<Vocabulary>().ToList();
+            var common = sCustoms.Intersect(clVocs);
+
+            Assert.AreEqual(0, common.Count());
+
         }
 
         #endregion Vocs

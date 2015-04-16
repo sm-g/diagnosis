@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
         private DataConnectionViewModel _remote;
         private Saver saver;
         private VocLoader loader;
-        private List<Vocabulary> serverVocs = new List<Vocabulary>();
+        private List<Vocabulary> serverNonCustomVocs = new List<Vocabulary>();
         private static string _log;
         private string LocalConnectionString;
         private string LocalProviderName;
@@ -275,7 +275,7 @@ namespace Diagnosis.ViewModels.Screens
                 using (var s = nhib.OpenSession())
                 using (var tr = s.BeginTransaction())
                 {
-                    serverVocs = s.Query<Vocabulary>()
+                    serverNonCustomVocs = VocabularyQuery.NonCustom(s)()
                        .ToList();
 
                     available = MakeAvailableVms();
@@ -286,7 +286,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             catch (System.Exception)
             {
-                serverVocs.Clear();
+                serverNonCustomVocs.Clear();
                 MakeAvailableVms();
                 IsConnected = false;
                 NoAvailableVocs = false; // пока нет подключения, этого сообщения нет
@@ -310,7 +310,7 @@ namespace Diagnosis.ViewModels.Screens
         private int MakeAvailableVms()
         {
             var ids = Session.Query<Vocabulary>().Select(y => y.Id).ToList();
-            var notInstalled = serverVocs
+            var notInstalled = serverNonCustomVocs
                 .Where(x => !ids.Contains(x.Id));
 
             var vms = notInstalled.Select(voc => AvailableVocs

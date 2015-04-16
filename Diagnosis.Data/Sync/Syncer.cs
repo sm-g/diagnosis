@@ -93,6 +93,11 @@ namespace Diagnosis.Data.Sync
         public Dictionary<Type, Func<DataRow, bool>> IgnoreAddingFilterPerType { get; set; }
 
         /// <summary>
+        /// Обработчик сущностей перед отправкой с клиента.
+        /// </summary>
+        public Dictionary<Type, Action<DataRow>> ShaperPerType { get; set; }
+
+        /// <summary>
         /// Sync specified scopes.
         /// Specify conncetions in correct order in ctor.
         /// We can reverse both <paramref name="from"/> and connections in ctor to get same result.
@@ -319,7 +324,12 @@ namespace Diagnosis.Data.Sync
                 case Side.Client:
                     syncOrchestrator = new DownloadSyncOrchestrator(
                         clientProvider,
-                        serverProvider);
+                        serverProvider)
+                        {
+                            TableRowsShaper = ShaperPerType != null ? ShaperPerType.ToDictionary(
+                                x => Names.GetTblByType(x.Key),
+                                x => x.Value) : null,
+                        };
                     break;
 
                 default:
@@ -593,6 +603,8 @@ namespace Diagnosis.Data.Sync
 
             public Dictionary<string, Func<DataRow, bool>> TablesToIgnoreAddingFilter { get; set; }
 
+            public Dictionary<string, Action<DataRow>> TableRowsShaper { get; set; }
+
             // results
             public Dictionary<DbConflictType, int> ConflictsCounter { get; private set; }
 
@@ -626,6 +638,16 @@ namespace Diagnosis.Data.Sync
                             {
                                 dataTable.Rows.Remove(row);
                             }
+                        });
+                    }
+                }
+                if (TableRowsShaper != null)
+                {
+                    foreach (var table in TableRowsShaper.Keys)
+                    {
+                        DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
+                        {
+                            TableRowsShaper[table](row);
                         });
                     }
                 }

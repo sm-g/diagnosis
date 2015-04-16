@@ -41,6 +41,8 @@ namespace Diagnosis.Data.Sync
             };
 
         private static string[] vocTableNames = new[] {
+                // for just create Doctor table in exchange db, must exclude data from sync
+                Names.Doctor,
                 Names.Vocabulary,
                 Names.WordTemplate,
                 Names.Speciality,

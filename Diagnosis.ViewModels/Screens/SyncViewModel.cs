@@ -119,7 +119,10 @@ namespace Diagnosis.ViewModels.Screens
                     Mouse.OverrideCursor = Cursors.AppStarting;
 
                     var installedVocs = Session.Query<Vocabulary>();
-                    await syncer.WithInstalledVocs(installedVocs).SendFrom(Side.Server);
+                    await syncer
+                        .WithoutDoctors()
+                        .WithInstalledVocs(installedVocs)
+                        .SendFrom(Side.Server);
 
                     // после загрузки проверяем справочные сущности на совпадение
                     var checker = new AfterSyncChecker(Session);
@@ -185,7 +188,10 @@ namespace Diagnosis.ViewModels.Screens
                         // или сначала депровизить, чтобы добавить данные к существующим
                         await Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes);
 
-                        await syncer.SendFrom(Side.Server, scopes);
+                        if (Constants.IsClient)
+                            await syncer.WithoutCustomVocsInDoc().SendFrom(Side.Server, scopes);
+                        else
+                            await syncer.WithoutDoctors().SendFrom(Side.Server, scopes);
 
                         // после выгрузки сразу готовим промежуточную БД к следующей синхронизации
                         await Syncer.Deprovision(sdfFileConstr, Constants.SqlCeProvider, scopes);
@@ -221,7 +227,7 @@ namespace Diagnosis.ViewModels.Screens
                             clientConStr: RemoteConnectionString,
                             serverProviderName: LocalProviderName);
                     }
-                    DoWithCursor(syncer.SendFrom(Side.Client), Cursors.AppStarting);
+                    DoWithCursor(syncer.WithoutCustomVocsInDoc().SendFrom(Side.Client), Cursors.AppStarting);
                 },
                 () => CanSync(true, true));
             }

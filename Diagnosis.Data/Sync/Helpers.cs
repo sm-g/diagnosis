@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
 {
@@ -76,6 +77,45 @@ namespace Diagnosis.Data.Sync
             }
             s.IgnoreAddingFilterPerType = filter;
             return s;
+        }
+
+        /// <summary>
+        /// Не синхронизируем врачей при отправке только словарей с сервера.
+        /// Таблица Doctors нужна для словарей.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static Syncer WithoutDoctors(this Syncer s)
+        {
+            var filter = new Dictionary<Type, Func<DataRow, bool>>();
+            filter.Add(Names.tblToTypeMap[Names.Doctor], (row) => true);
+            s.IgnoreAddingFilterPerType = filter;
+
+            return s;
+        }
+
+        /// <summary>
+        /// Не синхронизируем ссылку на пользовательский словарь при отправке на сервер.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static Syncer WithoutCustomVocsInDoc(this Syncer s)
+        {
+            var shaper = new Dictionary<Type, Action<DataRow>>();
+            shaper.Add(Names.tblToTypeMap[Names.Doctor], (row) =>
+            {
+                row[Names.Col.DoctorCustomVocabulary] = DBNull.Value;
+            });
+            s.ShaperPerType = shaper;
+
+            return s;
+        }
+
+        public static Task GetEndedTask()
+        {
+            var t = new Task(() => { });
+            t.Start();
+            return t;
         }
     }
 }
