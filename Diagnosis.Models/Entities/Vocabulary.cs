@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,9 +12,9 @@ namespace Diagnosis.Models
     {
         public static string CustomTitle = "Пользовательский";
 
-        private Iesi.Collections.Generic.ISet<WordTemplate> wordTemplates = new HashedSet<WordTemplate>();
-        private Iesi.Collections.Generic.ISet<SpecialityVocabularies> specialityVocabularies = new HashedSet<SpecialityVocabularies>();
-        private Iesi.Collections.Generic.ISet<VocabularyWords> vocabularyWords = new HashedSet<VocabularyWords>();
+        private ISet<WordTemplate> wordTemplates = new HashSet<WordTemplate>();
+        private ISet<SpecialityVocabularies> specialityVocabularies = new HashSet<SpecialityVocabularies>();
+        private ISet<VocabularyWords> vocabularyWords = new HashSet<VocabularyWords>();
         private string _title;
         private Doctor _doc;
 

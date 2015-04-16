@@ -10,9 +10,9 @@ namespace Diagnosis.Models
         IList<TValue> cache;
         private Func<TM2M, TValue> selector;
         private Func<TM2M, bool> where;
-        private Iesi.Collections.Generic.ISet<TM2M> set;
+        private ISet<TM2M> set;
 
-        public Many2ManyHelper(Iesi.Collections.Generic.ISet<TM2M> set, Func<TM2M, bool> where, Func<TM2M, TValue> selector)
+        public Many2ManyHelper(ISet<TM2M> set, Func<TM2M, bool> where, Func<TM2M, TValue> selector)
         {
             this.set = set;
             this.where = where;

@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,9 +12,9 @@ namespace Diagnosis.Models
     {
         public static Speciality Null = new Speciality("—");  // для врача без специальности
 
-        private Iesi.Collections.Generic.ISet<Doctor> doctors = new HashedSet<Doctor>();
-        private Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
-        private Iesi.Collections.Generic.ISet<SpecialityVocabularies> specialityVocabularies = new HashedSet<SpecialityVocabularies>();
+        private ISet<Doctor> doctors = new HashSet<Doctor>();
+        private ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashSet<SpecialityIcdBlocks>();
+        private ISet<SpecialityVocabularies> specialityVocabularies = new HashSet<SpecialityVocabularies>();
         private Many2ManyHelper<SpecialityVocabularies, Vocabulary> svHelper;
         private Many2ManyHelper<SpecialityIcdBlocks, IcdBlock> sbHelper;
         private string _title;

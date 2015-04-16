@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +11,7 @@ namespace Diagnosis.Models
     [Serializable]
     public class UomType : EntityBase<Guid>, IDomainObject, IComparable<UomType>
     {
-        private Iesi.Collections.Generic.ISet<Uom> uoms = new HashedSet<Uom>();
+        private ISet<Uom> uoms = new HashSet<Uom>();
         private string _title;
 
         public UomType(string title, int ord)

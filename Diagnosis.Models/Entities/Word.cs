@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -14,10 +13,10 @@ namespace Diagnosis.Models
     public class Word : ValidatableEntity<Guid>, IDomainObject, IHrItemObject, IComparable<Word>
     {
         [NonSerialized]
-        private Iesi.Collections.Generic.ISet<Word> children = new HashedSet<Word>();
+        private ISet<Word> children = new HashSet<Word>();
 
         [NonSerialized]
-        private Iesi.Collections.Generic.ISet<VocabularyWords> vocabularyWords = new HashedSet<VocabularyWords>();
+        private ISet<VocabularyWords> vocabularyWords = new HashSet<VocabularyWords>();
 
         [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
@@ -159,8 +158,8 @@ namespace Diagnosis.Models
         private void OnDeserializedMethod(StreamingContext context)
         {
             healthRecords = new List<HealthRecord>(); // many-2-many bag
-            children = new HashedSet<Word>();
-            vocabularyWords = new HashedSet<VocabularyWords>();
+            children = new HashSet<Word>();
+            vocabularyWords = new HashSet<VocabularyWords>();
         }
     }
 }

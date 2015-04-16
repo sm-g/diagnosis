@@ -1,12 +1,11 @@
-﻿using Iesi.Collections.Generic;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Diagnosis.Models
 {
     public class IcdBlock : EntityBase<int>, IDomainObject, IIcdEntity
     {
-        private Iesi.Collections.Generic.ISet<IcdDisease> icdDiseases = new HashedSet<IcdDisease>();
-        private Iesi.Collections.Generic.ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashedSet<SpecialityIcdBlocks>();
+        private ISet<IcdDisease> icdDiseases = new HashSet<IcdDisease>();
+        private ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashSet<SpecialityIcdBlocks>();
 
         protected IcdBlock()
         {

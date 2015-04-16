@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -11,10 +10,10 @@ namespace Diagnosis.Models
 {
     public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan, IUser, IComparable<Doctor>
     {
-        private Iesi.Collections.Generic.ISet<Appointment> appointments = new HashedSet<Appointment>();
-        private Iesi.Collections.Generic.ISet<Course> courses = new HashedSet<Course>();
-        private Iesi.Collections.Generic.ISet<Setting> settingsSet = new HashedSet<Setting>();
-        private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+        private ISet<Appointment> appointments = new HashSet<Appointment>();
+        private ISet<Course> courses = new HashSet<Course>();
+        private ISet<Setting> settingsSet = new HashSet<Setting>();
+        private ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
 
         private List<Word> cachedWords = new List<Word>();
         private string _fn;
@@ -77,7 +76,7 @@ namespace Diagnosis.Models
             set { SetProperty(ref _isMale, value, () => IsMale); }
         }
 
-        public virtual Iesi.Collections.Generic.ISet<Setting> SettingsSet
+        public virtual ISet<Setting> SettingsSet
         {
             get { return settingsSet; }
         }

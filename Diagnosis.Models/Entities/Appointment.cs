@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models.Validators;
 using FluentValidation.Results;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -12,7 +11,7 @@ namespace Diagnosis.Models
 {
     public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IComparable<Appointment>
     {
-        private Iesi.Collections.Generic.ISet<HealthRecord> healthRecords = new HashedSet<HealthRecord>();
+        private ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
         private DateTime _dateTime;
         private DateTime _updatedAt;
         private DateTime _createdAt;

@@ -1,5 +1,4 @@
-﻿using Iesi.Collections.Generic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +6,7 @@ namespace Diagnosis.Models
 {
     public class IcdChapter : EntityBase<int>, IDomainObject, IIcdEntity
     {
-        private Iesi.Collections.Generic.ISet<IcdBlock> iclBlocks = new HashedSet<IcdBlock>();
+        private ISet<IcdBlock> iclBlocks = new HashSet<IcdBlock>();
 
         protected IcdChapter()
         {

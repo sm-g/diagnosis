@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Iesi.Collections.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,7 +12,7 @@ namespace Diagnosis.Models
     public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation, IComparable<HealthRecord>
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
-        private Iesi.Collections.Generic.ISet<HrItem> hrItems = new HashedSet<HrItem>();
+        private ISet<HrItem> hrItems = new HashSet<HrItem>();
         private int? _year;
         private int? _month;
         private int? _day;
@@ -235,7 +234,7 @@ namespace Diagnosis.Models
         /// Не использовать для сравнения записей по содержимому.
         /// Используем GetOrderedEntities()
         /// </summary>
-        public virtual Iesi.Collections.Generic.ISet<HrItem> HrItems
+        public virtual ISet<HrItem> HrItems
         {
             get { return hrItems; }
             protected internal set
@@ -447,7 +446,7 @@ namespace Diagnosis.Models
             Contract.Requires(item != null);
             Contract.Ensures(hrItems.Contains(item));
 
-            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
+            var hrItemsCopy = new HashSet<HrItem>(hrItems);
             if (hrItems.Add(item))
             {
                 // обновляем другую сторону many-2-many
@@ -467,7 +466,7 @@ namespace Diagnosis.Models
             Contract.Requires(item != null);
             Contract.Ensures(!hrItems.Contains(item));
 
-            var hrItemsCopy = new HashedSet<HrItem>(hrItems);
+            var hrItemsCopy = new HashSet<HrItem>(hrItems);
             if (hrItems.Remove(item))
             {
                 // обновляем другую сторону many-2-many
