@@ -66,6 +66,10 @@ namespace Diagnosis.ViewModels.Screens
                 })
 
             );
+
+#if !DEBUG
+            UseOldMode = true;
+#endif
         }
 
         public bool AllEmpty
