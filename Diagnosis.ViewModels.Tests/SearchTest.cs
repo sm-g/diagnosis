@@ -200,6 +200,22 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
 
         }
+        [TestMethod]
+        public void SearchInOneHolder2()
+        {
+            s.QueryBlocks[0].AutocompleteAny.AddTag(w[31]);
+            s.QueryBlocks[0].AutocompleteAny.AddTag(w[3]);
+            s.AddQbCommand.Execute(null);
+            s.QueryBlocks[1].AutocompleteAny.AddTag(w[1]);
+            s.QueryBlocks[1].AutocompleteAny.AddTag(w[5]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
+
+        }
 
         [TestMethod]
         public void SearchByCategoryFoundAllHrs()
