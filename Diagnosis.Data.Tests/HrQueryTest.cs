@@ -18,7 +18,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordWithAllWords()
+        public void WithAllWords()
         {
             var hrs = HealthRecordQuery.WithAllWords(session)(new Word[] { w[1], w[2] }, HealthRecordQueryAndScope.HealthRecord);
 
@@ -32,7 +32,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordWithAllWordsInApp()
+        public void WithAllWordsInApp()
         {
             var hrs = HealthRecordQuery.WithAllWords(session)(new Word[] { w[5], w[51] }, HealthRecordQueryAndScope.Appointment);
 
@@ -56,7 +56,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordWithAllWordsInCourse()
+        public void WithAllWordsInCourse()
         {
             var hrs = HealthRecordQuery.WithAllWords(session)(new Word[] { w[5], w[51] }, HealthRecordQueryAndScope.Course);
 
@@ -92,7 +92,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordsWithAnyWord()
+        public void WithAnyWord()
         {
             var hrs = HealthRecordQuery.WithAnyWord(session)(new Word[] { w[1], w[3] });
 
@@ -111,7 +111,7 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Count() == 0);
         }
         [TestMethod]
-        public void GetHealthRecordsWithAnyEmptyWord()
+        public void WithAnyEmptyWord()
         {
             var hrs = HealthRecordQuery.WithAnyWord(session)(new Word[] { });
 
@@ -119,7 +119,19 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordsWithAllAndAnyWords()
+        public void WithAnyAtLeastTwoWord()
+        {
+            var hrs = HealthRecordQuery.WithAnyWords(session)(new Word[] { w[1], w[22], w[3] }, 2);
+
+            Assert.AreEqual(4, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70])); // одно слово дважды
+            Assert.IsTrue(hrs.Contains(hr[72]));
+        }
+
+        [TestMethod]
+        public void WithAllAndAnyWords()
         {
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[1] }, new Word[] { w[2], w[3] }, new Word[] { });
 
@@ -131,7 +143,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordsWithAllAndAtLeastOneFromAnyWords()
+        public void WithAllAndAtLeastOneFromAnyWords()
         {
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[1], w[2] }, new Word[] { w[3] }, new Word[] { });
 
@@ -139,7 +151,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordsWithAllAndNotAnyWords()
+        public void WithAllAndNotAnyWords()
         {
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[1] }, new Word[] { }, new Word[] { w[2], w[3] });
 
@@ -150,7 +162,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordsWithAnyAndNotAnyWords()
+        public void WithAnyAndNotAnyWords()
         {
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { }, new Word[] { w[4], w[31] }, new Word[] { w[5], w[3] });
 
@@ -160,7 +172,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void GetHealthRecordsWithoutAnyWords()
+        public void WithoutAnyWords()
         {
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { }, new Word[] { }, new Word[] { w[5], w[22], w[1] });
 

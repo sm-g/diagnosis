@@ -21,25 +21,38 @@ namespace Diagnosis.Data.Queries
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
-                    Word word = null;
-                    HealthRecord hr = null;
-                    HrItem item = null;
 
-                    var q = from hr0 in session.Query<HealthRecord>()
-                            join hri in session.Query<HrItem>() on hr0.Id equals hri.HealthRecord.Id
+                    var q = from hr in session.Query<HealthRecord>()
+                            join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
                             where hri.Word != null
                             join w in session.Query<Word>() on hri.Word.Id equals w.Id
                             where wordsIds.Contains(w.Id)
-                            select hr0;
+                            select hr;
                     return q.Distinct().ToList();
+                }
+            };
+        }
+        /// <summary>
+        /// Возвращает записи с хотя бы N из слов (c повторами слов).
+        /// </summary>
+        public static Func<IEnumerable<Word>, int, IEnumerable<HealthRecord>> WithAnyWords(ISession session)
+        {
+            return (words, count) =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    var wordsIds = words.Select(w => w.Id).ToList();
 
-                    return session.QueryOver<HealthRecord>(() => hr)
-                        .JoinAlias(() => hr.HrItems, () => item)
-                        .WhereRestrictionOn(() => item.Word).IsNotNull
-                        .JoinAlias(() => item.Word, () => word)
-                        .WhereRestrictionOn(() => word.Id).IsIn(wordsIds)
-                        .TransformUsing(Transformers.DistinctRootEntity)
-                        .List();
+                    var q = from hr in session.Query<HealthRecord>()
+                            let hris = from hri in session.Query<HrItem>()
+                                       where hr.Id == hri.HealthRecord.Id
+                                       where hri.Word != null
+                                       join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                                       where wordsIds.Contains(w.Id)
+                                       select hri
+                            where hris.Count() >= count
+                            select hr;
+                    return q.Distinct().ToList();
                 }
             };
         }
