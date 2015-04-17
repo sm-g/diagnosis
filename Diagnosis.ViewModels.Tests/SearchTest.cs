@@ -21,19 +21,21 @@ namespace Diagnosis.ViewModels.Tests
 
             s = new SearchViewModel();
         }
+
         [TestCleanup]
         public void Clean()
         {
             if (s != null)
                 s.Dispose();
         }
+
         [TestMethod]
         public void StateOnCreated()
         {
             Assert.AreEqual(1, s.QueryBlocks.Count);
             Assert.IsTrue(s.AllEmpty);
-
         }
+
         [TestMethod]
         public void CannotSearchWithoutOptions()
         {
@@ -41,10 +43,11 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.AllEmpty);
             Assert.IsFalse(s.SearchCommand.CanExecute(null));
         }
+
         [TestMethod]
         public void SearchNotUsedWords()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[6]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[6]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(true, s.NothingFound);
@@ -54,7 +57,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SearchTwoPatients()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[22]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Patients.Count);
@@ -64,9 +67,9 @@ namespace Diagnosis.ViewModels.Tests
         public void SearchWordsInApp()
         {
             s.UseOldMode = true;
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[1]);
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[4]);
-            s.QueryBlocks[0].QueryScope = HealthRecordQueryAndScope.Appointment;
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[4]);
+            s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Appointment;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.Patients.Count);
@@ -80,7 +83,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void WordsFromHrsInStat()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[5]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(3, s.Result.Statistic.Words.Count); // 10 - все слова пациента
@@ -90,7 +93,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void WordsWithMeasureInStat()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[1]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.WordsWithMeasure.Count);
@@ -101,9 +104,9 @@ namespace Diagnosis.ViewModels.Tests
         public void FoundHrs()
         {
             s.UseOldMode = true;
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[4]);
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[22]);
-            s.QueryBlocks[0].QueryScope = HealthRecordQueryAndScope.Course;
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[4]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
+            s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count); // найденные — только слова в области
@@ -116,9 +119,9 @@ namespace Diagnosis.ViewModels.Tests
         public void AppOrder()
         {
             s.UseOldMode = true;
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[4]);
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[22]);
-            s.QueryBlocks[0].QueryScope = HealthRecordQueryAndScope.Course;
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[4]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
+            s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count);
@@ -129,8 +132,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SearchMeasureAndWord()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[1]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(hr[22], s.Result.Statistic.HealthRecords.Single());
@@ -139,89 +142,131 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SearchMeasureOrWord()
         {
-            s.QueryBlocks[0].AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
-            s.QueryBlocks[0].AutocompleteAny.AddTag(w[5]);
+            s.RootQueryBlock.AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.RootQueryBlock.AutocompleteAny.AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-
         }
 
         [TestMethod]
         public void SearchMeasureAndWordOrWords()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.GreaterOrEqual });
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[1]);
-            s.QueryBlocks[0].AutocompleteAny.AddTag(w[22]);
-            s.QueryBlocks[0].AutocompleteAny.AddTag(w[94]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.GreaterOrEqual });
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
+            s.RootQueryBlock.AutocompleteAny.AddTag(w[22]);
+            s.RootQueryBlock.AutocompleteAny.AddTag(w[94]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-
         }
 
         [TestMethod]
         public void SearchAnyMeasure()
         {
-            s.QueryBlocks[0].AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.RootQueryBlock.AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-
         }
 
         [TestMethod]
         public void SearchMeasureAndWordWhenSameWord()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[3]);
+            s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
+            s.RootQueryBlock.AutocompleteAll.AddTag(w[3]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-
         }
 
         [TestMethod]
         public void SearchInOneHolder()
         {
-            s.QueryBlocks[0].AutocompleteAll.AddTag(w[1]);
-            s.AddQbCommand.Execute(null);
-            s.QueryBlocks[1].AutocompleteAll.AddTag(w[4]);
+            s.RootQueryBlock.SearchScope = SearchScope.Holder;
+            s.RootQueryBlock.All = true;
+            s.RootQueryBlock.AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
+            s.RootQueryBlock.AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[1].AutocompleteAll.AddTag(w[4]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-
         }
+
         [TestMethod]
         public void SearchInOneHolder2()
         {
-            s.QueryBlocks[0].AutocompleteAny.AddTag(w[31]);
-            s.QueryBlocks[0].AutocompleteAny.AddTag(w[3]);
-            s.AddQbCommand.Execute(null);
-            s.QueryBlocks[1].AutocompleteAny.AddTag(w[1]);
-            s.QueryBlocks[1].AutocompleteAny.AddTag(w[5]);
+            s.RootQueryBlock.SearchScope = SearchScope.Holder;
+            s.RootQueryBlock.All = true;
+            s.RootQueryBlock.AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[31]);
+            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
+            s.RootQueryBlock.AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[1]);
+            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
             Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
+        }
 
+        [TestMethod]
+        public void SearchInOnePatient()
+        {
+            s.RootQueryBlock.SearchScope = SearchScope.Patient;
+            s.RootQueryBlock.All = true;
+            s.RootQueryBlock.AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[4]);
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
+        }
+
+        [TestMethod]
+        public void SearchInOnePatient2()
+        {
+            // у пациента записи со словами 4 и в одном списке записи со словами 1 и записи со словами 3
+
+            s.RootQueryBlock.SearchScope = SearchScope.Patient;
+            s.RootQueryBlock.All = true;
+            s.RootQueryBlock.AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[4]);
+            s.RootQueryBlock.AddChildGroupQbCommand.Execute(null);
+            s.RootQueryBlock.Children[1].SearchScope = SearchScope.Holder;
+            s.RootQueryBlock.Children[1].All = true;
+            s.RootQueryBlock.Children[1].AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[1].Children[0].AutocompleteAll.AddTag(w[3]);
+            s.RootQueryBlock.Children[1].AddChildQbCommand.Execute(null);
+            s.RootQueryBlock.Children[1].Children[1].AutocompleteAll.AddTag(w[1]);
+
+            s.SearchCommand.Execute(null);
+
+            Assert.AreEqual(5, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
+            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
         }
 
         [TestMethod]
         public void SearchByCategoryFoundAllHrs()
         {
             Load<HrCategory>();
-            s.QueryBlocks[0].Categories.Where(x => x.category == cat[2]).First().IsChecked = true;
+            s.RootQueryBlock.Categories.Where(x => x.category == cat[2]).First().IsChecked = true;
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);

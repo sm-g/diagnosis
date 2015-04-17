@@ -9,44 +9,95 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             xmlns:con="http://schemas.kent.boogaart.com/converters"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance diag:QueryBlockViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance design:SampleQueryBlockViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="400"
-             d:DesignWidth="300">
-    <Grid>
-        <StackPanel Margin="5,10,5,0">
-            <StackPanel.InputBindings>
-                <KeyBinding Key="Enter"
-                            Command="{Binding SearchCommand}" />
-            </StackPanel.InputBindings>
+             d:DesignWidth="300"
+             Background="Transparent"
+             Focusable="False">
+    <UserControl.InputBindings>
+        <KeyBinding Key="Enter"
+                    Command="{Binding SearchCommand}" />
+    </UserControl.InputBindings>
+    <Grid  Margin="5 2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel LastChildFill="False">
+            <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <CheckBox IsChecked="{Binding All}"
+                          Content="Всё в одном" />
+                <Label Content="Область поиска" />
+                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:SearchScope}}}"
+                          SelectedItem="{Binding SearchScope, Mode=TwoWay}"
+                          ItemTemplate="{StaticResource EnumComboTemplate}" />
+            </StackPanel>
+            <TextBlock Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                       Text="В одной записи" />
+
+            <StackPanel Orientation="Horizontal"
+                        Style="{StaticResource hidingTreeViewItemPanel}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        DockPanel.Dock="Right">
+                <Button Command="{Binding AddChildQbCommand}"
+                        ToolTip="Добавить блок">
+                    <Rectangle Width="12"
+                               Height="12"
+                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{DynamicResource appbar_add}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Command="{Binding AddChildGroupQbCommand}"
+                        ToolTip="Добавить группу условий">
+                    <Rectangle Width="12"
+                               Height="12"
+                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{DynamicResource appbar_add_multiple}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Command="{Binding RemoveQbCommand}"
+                        Visibility="{Binding RemoveQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
+                        ToolTip="Убрать блок">
+                    <Rectangle Width="12"
+                               Height="12"
+                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{DynamicResource appbar_close}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+        <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                    Grid.Row="2">
             <Label Content="Все ключевые _слова" />
             <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
             <Label Content="И хотя бы одно из" />
             <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
             <Label Content="И ни одиного из" />
             <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
-            <DockPanel Style="{StaticResource formLine}">
-                <Label Content="Область поиска" />
 
-                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:HealthRecordQueryAndScope}}}"
-                          SelectedItem="{Binding QueryScope, Mode=TwoWay}"
-                          ItemTemplate="{StaticResource EnumComboTemplate}" />
-            </DockPanel>
             <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
-            <DockPanel Style="{StaticResource formLine}"
-                       HorizontalAlignment="Left">
-                <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
-                    <forms:CategoryChooser.ItemsPanelTemplate>
-                        <ItemsPanelTemplate>
-                            <diag:UniformGridWithOrientation Orientation="Vertical"
-                                                             Columns="2" />
-                        </ItemsPanelTemplate>
-                    </forms:CategoryChooser.ItemsPanelTemplate>
-                </forms:CategoryChooser>
-            </DockPanel>
-            <Button Command="{Binding RemoveQbCommand}"
-                    Content="убрать блок" />
+            <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
+                <forms:CategoryChooser.ItemsPanelTemplate>
+                    <ItemsPanelTemplate>
+                        <diag:UniformGridWithOrientation Orientation="Vertical"
+                                                         Columns="2" />
+                    </ItemsPanelTemplate>
+                </forms:CategoryChooser.ItemsPanelTemplate>
+            </forms:CategoryChooser>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -18,18 +18,6 @@
              Background="Transparent"
              Focusable="False">
     <UserControl.Resources>
-        <Style TargetType="StackPanel"
-               x:Key="hidingButtons">
-            <Setter Property="Visibility"
-                    Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
-                             Value="True">
-                    <Setter Property="Visibility"
-                            Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -117,7 +105,7 @@
 
         <StackPanel x:Name="buttons"
                     Grid.Column="3"
-                    Style="{StaticResource hidingButtons}">
+                    Style="{StaticResource hidingListBoxItemPanel}">
             <StackPanel.Resources>
                 <Style TargetType="Button"
                        BasedOn="{StaticResource {x:Type Button}}">

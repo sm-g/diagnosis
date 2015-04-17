@@ -17,6 +17,17 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
+
+    public class SampleQueryBlockViewModel : QueryBlockViewModel
+    {
+#pragma warning disable 0618
+        public SampleQueryBlockViewModel()
+        {
+            Children.Add(new SampleQueryBlockViewModel());
+        }
+#pragma warning restore 0618
+    }
+
     public class SampleTagViewModel : TagViewModel
     {
         public SampleTagViewModel()
@@ -82,6 +93,7 @@ namespace Diagnosis.Client.App.DesignData
         {
         }
     }
+
     public class SampleDateOffsetViewModel : DateOffsetViewModel
     {
         public SampleDateOffsetViewModel()
@@ -89,6 +101,7 @@ namespace Diagnosis.Client.App.DesignData
         {
         }
     }
+
     public class SampleHrListViewModel : HrListViewModel
     {
         public SampleHrListViewModel() :
@@ -193,7 +206,6 @@ namespace Diagnosis.Client.App.DesignData
             hr = new HealthRecord(course, doc)
             {
                 Category = cats[0],
-
             };
             hr.FromDate.Month = 5;
             hr.AddItems(new IHrItemObject[] { word, word2, new Comment("без осложнений") });

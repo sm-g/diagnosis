@@ -309,6 +309,33 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Запись.
+        /// </summary>
+        public static string SearchScope_HealthRecord {
+            get {
+                return ResourceManager.GetString("SearchScope_HealthRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Список.
+        /// </summary>
+        public static string SearchScope_Holder {
+            get {
+                return ResourceManager.GetString("SearchScope_Holder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Пациент.
+        /// </summary>
+        public static string SearchScope_Patient {
+            get {
+                return ResourceManager.GetString("SearchScope_Patient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap SortAscending {

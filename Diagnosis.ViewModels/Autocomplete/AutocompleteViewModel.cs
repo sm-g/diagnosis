@@ -73,7 +73,10 @@ namespace Diagnosis.ViewModels.Autocomplete
 
                 // кроме добавления пустого тега
                 if (!(e.Action == NotifyCollectionChangedAction.Add && ((TagViewModel)e.NewItems[0]).State == State.Init))
+                {
                     OnEntitiesChanged();
+                    OnPropertyChanged(() => IsEmpty);
+                }
             };
             hanlder = this.Subscribe(Event.WordPersisted, (e) =>
             {// TODO двжды здесь?
@@ -366,6 +369,17 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
+        /// <summary>
+        /// Ни в одном теге нет текста.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return !Tags.Any(x => !x.Query.IsNullOrEmpty());
+            }
+        }
+
         public bool IsPopupOpen
         {
             get
@@ -488,6 +502,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 {
                     MakeSuggestions(EditingTag);
                     RefreshPopup();
+                    OnPropertyChanged(() => IsEmpty);
                 }
                 else if (e.PropertyName == "IsTextBoxFocused")
                 {

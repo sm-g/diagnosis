@@ -10,6 +10,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:con="http://schemas.kent.boogaart.com/converters"
              x:Name="search"
              mc:Ignorable="d"
              d:DesignHeight="500"
@@ -54,6 +55,7 @@
                   Content="Старый поиск" />
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
+                  MaxHeight="{Binding ActualHeight, ElementName=search, Converter={con:ExpressionConverter {}{0} * 8/10}}"
                   Grid.Row="1"
                   IsExpanded="{Binding ControlsVisible}"
                   ExpandDirection="Up">
@@ -90,47 +92,49 @@
                 </StackPanel>
             </Expander.Header>
 
-            <StackPanel Margin="5,10,5,0">
-                <DockPanel>
-                    <Button Margin="10"
-                            Visibility="{Binding UseOldMode,Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                            DockPanel.Dock="Bottom"
-                            Command="{Binding AddQbCommand}"
-                            Content="+ блок" />
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding QueryBlocks}"
-                                      Name="queryBlocks">
-                            <ItemsControl.Resources>
-                                <DataTemplate x:Key="old">
-                                    <search:OldQueryBlock />
-                                </DataTemplate>
-                                <DataTemplate x:Key="new">
-                                    <search:QueryBlock />
-                                </DataTemplate>
-                            </ItemsControl.Resources>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <ContentControl x:Name="cc"
-                                                    Content="{Binding}"
-                                                    ContentTemplate="{DynamicResource new}" />
+            <Grid  Margin="0 10 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <TreeView ItemsSource="{Binding QueryBlocks}">
+                        <ItemsControl.Resources>
+                            <DataTemplate x:Key="old">
+                                <search:OldQueryBlock />
+                            </DataTemplate>
+                            <DataTemplate x:Key="new">
+                                <search:QueryBlock />
+                            </DataTemplate>
+                        </ItemsControl.Resources>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem"
+                                   BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <ContentControl x:Name="cc"
+                                                Content="{Binding}"
+                                                ContentTemplate="{DynamicResource new}" />
 
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding DataContext.UseOldMode,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                     Value="True">
-                                            <Setter TargetName="cc"
-                                                    Property="ContentTemplate"
-                                                    Value="{DynamicResource old}" />
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </DockPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.UseOldMode,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="True">
+                                        <Setter TargetName="cc"
+                                                Property="ContentTemplate"
+                                                Value="{DynamicResource old}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </HierarchicalDataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </TreeView>
+                </Grid>
                 <Button Command="{Binding SearchCommand}"
-                        Margin="10,0,10,10"
-                        HorizontalAlignment="Stretch">Найти</Button>
-            </StackPanel>
+                        Margin="10,5,10,10"
+                        HorizontalAlignment="Stretch"
+                        Grid.Row="2">Найти</Button>
+            </Grid>
         </Expander>
 
         <TreeView ItemsSource="{Binding Result.Patients}"

@@ -323,4 +323,31 @@
         <Setter Property="FontSize"
                 Value="{DynamicResource ScreenTitleFontSize}" />
     </Style>
+
+    <!-- panel -->
+    
+    <Style TargetType="StackPanel"
+           x:Key="hidingListBoxItemPanel">
+        <Setter Property="Visibility"
+                Value="Hidden" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                         Value="True">
+                <Setter Property="Visibility"
+                        Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="StackPanel"
+           x:Key="hidingTreeViewItemPanel">
+        <Setter Property="Visibility"
+                Value="Hidden" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
+                         Value="True">
+                <Setter Property="Visibility"
+                        Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

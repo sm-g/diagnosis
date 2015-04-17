@@ -214,4 +214,13 @@
   <data name="Operator_LtEq" xml:space="preserve">
     <value>≤</value>
   </data>
+  <data name="SearchScope_HealthRecord" xml:space="preserve">
+    <value>Запись</value>
+  </data>
+  <data name="SearchScope_Holder" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="SearchScope_Patient" xml:space="preserve">
+    <value>Пациент</value>
+  </data>
 </root>

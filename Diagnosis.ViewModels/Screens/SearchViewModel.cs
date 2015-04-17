@@ -28,12 +28,18 @@ namespace Diagnosis.ViewModels.Screens
             ControlsVisible = true;
 
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
-            AddNewQb();
+            AddRootQb();
             QueryBlocks.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(() => AllEmpty);
-
             };
+
+#if DEBUG
+            QueryBlocks[0].AddChildQbCommand.Execute(null);
+            QueryBlocks[0].AddChildQbCommand.Execute(null);
+            QueryBlocks[0].AddChildQbCommand.Execute(null);
+            QueryBlocks[0].SearchScope = SearchScope.Holder;
+#endif
 
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
@@ -90,6 +96,8 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; set; }
 
+        public QueryBlockViewModel RootQueryBlock { get { return QueryBlocks.FirstOrDefault(); } }
+
         public SearchResultViewModel Result
         {
             get
@@ -136,6 +144,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public bool UseOldMode
         {
             get
@@ -148,27 +157,23 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _mode = value;
                     if (value && QueryBlocks.Count == 0)
-                        AddNewQb();
+                        AddRootQb();
                     OnPropertyChanged(() => UseOldMode);
                 }
             }
         }
 
-        public RelayCommand AddQbCommand
+        private QueryBlockViewModel AddRootQb()
         {
-            get
+            if (RootQueryBlock != null)
             {
-                return new RelayCommand(() =>
-                {
-                    AddNewQb();
-                });
+                return RootQueryBlock;
             }
-        }
-
-        private QueryBlockViewModel AddNewQb()
-        {
-            var qb = new QueryBlockViewModel();
-            qb.Search = this;
+            var qb = new QueryBlockViewModel(Session, () =>
+                {
+                    if (SearchCommand.CanExecute(null))
+                        SearchCommand.Execute(null);
+                });
             qb.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "AllEmpty")
@@ -177,6 +182,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
             QueryBlocks.Add(qb);
+            qb.IsExpanded = true;
             return qb;
         }
 
@@ -190,31 +196,59 @@ namespace Diagnosis.ViewModels.Screens
             }
             else
             {
-                // ищем записи по каждому блоку
-                var q = from qb in QueryBlocks
-                        let options = qb.MakeOptions()
-                        select new
-                        {
-                            Qb = qb,
-                            Hrs = new HrSearcher().Search(Session, options)
-                        };
-
-                var dict = q.ToDictionary(x => x.Qb, x => x.Hrs);
-                shrs = InOneHolder(dict);
+                shrs = GetResult(QueryBlocks[0]);
             }
 
             Result = new SearchResultViewModel(shrs);
             ControlsVisible = false;
         }
 
+        private IEnumerable<HealthRecord> GetResult(QueryBlockViewModel qb)
+        {
+            if (qb.IsGroup)
+            {
+                var qbResults = (from q in qb.Children
+                                 select new
+                                 {
+                                     Qb = q,
+                                     Hrs = GetResult(q)
+                                 }).ToDictionary(x => x.Qb, x => x.Hrs);
+                switch (qb.SearchScope)
+                {
+                    case SearchScope.HealthRecord:
+                        return InOneHr(qbResults);
+
+                    case SearchScope.Holder:
+                        if (qb.All)
+                            return InOneHolder(qbResults);
+                        else
+                            return AnyInOneHolder(qbResults);
+
+                    case SearchScope.Patient:
+                        if (qb.All)
+                            return InOneScope(qbResults);
+                        else
+                            return AnyInOneHolder(qbResults);
+
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                var opt = qb.MakeOptions();
+                return new HrSearcher().Search(Session, opt);
+            }
+        }
+
         /// <summary>
-        /// Все в том же списке
-        /// 
+        /// Все в том же списке.
+        ///
         /// В каждом блоке должны найтись записи из списка, тогда список попадает в результаты,
-        /// где есть все записи из этих списков.
+        /// где есть все найденные записи из этих списков.
         /// </summary>
         /// <param name="results"></param>
-        /// <returns></returns>
+        /// <returns>Все подходящие записи из подходящих списков</returns>
         private static IEnumerable<HealthRecord> InOneHolder(IDictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
         {
             // плоско все найденные Блок-Список-Записи
@@ -246,32 +280,12 @@ namespace Diagnosis.ViewModels.Screens
                       from hr in a.Hrs
                       select hr;
 
-            //var grs = new Dictionary<QueryBlockViewModel, IEnumerable<IGrouping<IHrsHolder, HealthRecord>>>();
-            //foreach (var qb in results.Keys)
-            //{
-            //    var qw = from hr in results[qb]
-            //             group hr by hr.Holder into g
-            //             select new { Qb = qb, Hrs = g.Cast<HealthRecord>(), Holder = g.Key };
-            //}
-            //   var allHolders = grs.Values.SelectMany(x => x.Select(y => y.Key)).Distinct();
-            //var q3 = (from h in allH
-            //          where grs.Keys.All(x => grs[x].Select(y => y.Key).Contains(h)) // с этим списком все блоки 
-            //          select new
-            //          {
-            //              h,
-            //              hrs = from grs1 in grs.Values
-            //                    from gr in grs1
-            //                    where gr.Key == h
-            //                    from hr in gr
-            //                    select hr
-            //          }
-            //).ToDictionary(x => x.h, x => x.hrs.Distinct());
-
             return hrs.Distinct();
         }
+
         /// <summary>
         /// Все в одной записи
-        /// 
+        ///
         /// В результатах пересечение записей каждого блока.
         /// </summary>
         /// <param name="results"></param>
@@ -287,19 +301,52 @@ namespace Diagnosis.ViewModels.Screens
             }
             return shrs;
         }
+
         /// <summary>
-        /// все в одной области
-        /// 
+        /// Все в одной области
+        ///
+        /// В каждом блоке должны найтись записи из пациента, тогда пациент попадает в результаты,
+        /// где есть все найденные записи из него.
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
         private static IEnumerable<HealthRecord> InOneScope(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
         {
-            throw new NotImplementedException();
+            // плоско все найденные Блок-Список-Записи
+            var qbPatientHrs = from qbHrs in results
+                               let middle =
+                                   from hr in qbHrs.Value
+                                   group hr by hr.GetPatient() into g
+                                   select new { Hrs = g.Cast<HealthRecord>(), Patient = g.Key }
+                               from q in middle
+                               select new { Qb = qbHrs.Key, Hrs = q.Hrs, Patient = q.Patient };
+
+            var qbCount = results.Keys.Count;
+
+            // подходящие списки и подходящие записи из них
+            var holderHrs = from a in qbPatientHrs
+                            group a by a.Patient into g
+                            where g.Count() == qbCount // пациент во всех блоках
+                            select new
+                            {
+                                Patient = g.Key,
+                                Hrs = from b in qbPatientHrs
+                                      where b.Patient == g.Key
+                                      from hr in b.Hrs
+                                      select hr
+                            };
+
+            // записи из них среди найденных
+            var hrs = from a in holderHrs
+                      from hr in a.Hrs
+                      select hr;
+
+            return hrs.Distinct();
         }
+
         /// <summary>
         /// Любое в том же списке
-        /// 
+        ///
         /// Список попадет в результаты, если нашлась хотя бы одна запись из списка в любом блоке.
         /// То есть все записи проходят в результаты.
         /// </summary>
@@ -321,12 +368,14 @@ namespace Diagnosis.ViewModels.Screens
                    from hr in groupedByHolder.Hrs
                    select hr;
         }
+
         private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
         {
-            var options = QueryBlocks.FirstOrDefault();
-            if (!UseOldMode || options == null)
+            var qb = QueryBlocks.FirstOrDefault();
+            if (!UseOldMode)
             {
-                options = AddNewQb();
+                RootQueryBlock.AddChildQbCommand.Execute(null);
+                qb = RootQueryBlock.Children.Last();
             }
 
             // все слова из записей
@@ -339,10 +388,10 @@ namespace Diagnosis.ViewModels.Screens
                 });
 
             // если несколько записей — любое из слов
-            options.AllWords = hrs.Count() != 1;
+            qb.AllWords = hrs.Count() != 1;
 
             // все категории из записей
-            options.Categories.ForAll((cat) => cat.IsChecked = false);
+            qb.Categories.ForAll((cat) => cat.IsChecked = false);
             var allCats = hrs.Aggregate(
                 new HashSet<HrCategory>(),
                 (cats, hr) =>
@@ -350,24 +399,25 @@ namespace Diagnosis.ViewModels.Screens
                     cats.Add(hr.Category);
                     return cats;
                 });
-            options.Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
+            qb.Categories.Where(cat => allCats.Contains(cat.category)).ForAll(cat => cat.IsChecked = true);
 
             // давность из последней записи
             //var lastHr = hrs.Last();
             //HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
 
-            options.AutocompleteAll.ReplaceTagsWith(allWords);
+            qb.AutocompleteAll.ReplaceTagsWith(allWords);
             RemoveLastResults();
         }
 
         private void RecieveHrItemObjects(IEnumerable<IHrItemObject> hios)
         {
-            var options = QueryBlocks.FirstOrDefault();
-            if (!UseOldMode || options == null)
+            var qb = QueryBlocks.FirstOrDefault();
+            if (!UseOldMode)
             {
-                options = AddNewQb();
+                RootQueryBlock.AddChildQbCommand.Execute(null);
+                qb = RootQueryBlock.Children.Last();
             }
-            options.AutocompleteAll.ReplaceTagsWith(hios);
+            qb.AutocompleteAll.ReplaceTagsWith(hios);
 
             RemoveLastResults();
         }
@@ -386,6 +436,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 msgManager.Dispose();
+                QueryBlocks.Clear();
             }
             base.Dispose(disposing);
         }

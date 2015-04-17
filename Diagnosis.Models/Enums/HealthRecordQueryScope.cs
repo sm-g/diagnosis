@@ -18,4 +18,14 @@ namespace Diagnosis.Models
         [LocalizableDescription(@"HealthRecordQueryAndScope_Patient")]
         Patient
     }
+
+    public enum SearchScope
+    {
+        [LocalizableDescription(@"SearchScope_HealthRecord")]
+        HealthRecord,
+        [LocalizableDescription(@"SearchScope_Holder")]
+        Holder,
+        [LocalizableDescription(@"SearchScope_Patient")]
+        Patient
+    }
 }
