@@ -295,10 +295,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Styles\BeforeThemeStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Styles\ListBoxItemAero2Style.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

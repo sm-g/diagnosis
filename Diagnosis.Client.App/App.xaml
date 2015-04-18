@@ -17,9 +17,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Resources/NormalFontResources.xaml" />
 
                 <!--styles-->
-                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/BeforeThemeStyles.xaml" />
-                <!--<ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/ListBoxItemAero2Style.xaml" />-->
-
+                
                 <!-- Mahapps -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />-->
@@ -32,6 +30,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/MahAppsFix.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Styles/MenuItems.xaml" />
 
+                <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/TreeStyle.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Styles/AfterThemeStyles.xaml" />
                 <!--templates-->
                 <ResourceDictionary Source="pack://application:,,,/Diagnosis.Client.App;component/Templates/Controls.xaml" />

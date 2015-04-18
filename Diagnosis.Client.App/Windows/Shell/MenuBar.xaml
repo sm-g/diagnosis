@@ -36,13 +36,13 @@
                           IsChecked="{Binding SearchPanel.IsVisible}"
                           Header="_Поиск" />
             </MenuItem>
-            <MenuItem x:Name="metro" IsCheckable="true"
+            <!--<MenuItem x:Name="metro" IsCheckable="true"
                       IsChecked="{Binding IsMetroTheme}"
-                      Header="_Metro" />
-            <MenuItem x:Name="big"
+                      Header="_Metro" />-->
+            <!--<MenuItem x:Name="big"
                       IsCheckable="true"
                       IsChecked="{Binding IsBigFont}"
-                      Header="Big" />
+                      Header="Big" />-->
         </Menu>
     </Grid>
 </UserControl>

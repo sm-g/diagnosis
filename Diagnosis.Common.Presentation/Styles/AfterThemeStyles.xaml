@@ -88,7 +88,12 @@
 
         <Setter Property="FontSize"
                 Value="{DynamicResource ContentFontSize }" />
+        <Setter Property="KeyboardNavigation.AcceptsReturn"
+                Value="True" />
 
+        <!--<EventSetter Event="Selected"
+                     Handler="item_selected" />-->
+        
         <!-- Hier Vm -->
 
         <Setter Property="IsSelected"
@@ -96,7 +101,7 @@
         <Setter Property="IsExpanded"
                 Value="{Binding IsExpanded, Mode=TwoWay}" />
     </Style>
-
+    
     <!--  buttons  -->
     <Style x:Key="DialogButtonsPanel"
            TargetType="{x:Type StackPanel}">
@@ -172,6 +177,20 @@
         <Setter Property="ToolBarTray.IsLocked"
                 Value="True" />
     </Style>
+
+    <!--disable toolbar image-->
+    <!--<Style x:Key="{x:Static ToolBar.ButtonStyleKey}"
+           TargetType="{x:Type Button}"
+           BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEnabled,
+                                           RelativeSource={RelativeSource Self}}"
+                         Value="False">
+                <Setter Property="Opacity"
+                        Value="0.5" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>-->
 
     <!--  DataGrid  -->
 
@@ -350,4 +369,6 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+  
 </ResourceDictionary>
