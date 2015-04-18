@@ -357,26 +357,14 @@
     <Compile Include="Screens\Doctors.xaml.cs">
       <DependentUpon>Doctors.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Editors\DoctorEditorWindow.xaml.cs">
-      <DependentUpon>DoctorEditorWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Editors\MeasureEditorWindow.xaml.cs">
-      <DependentUpon>MeasureEditorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AdminSettingsWindow.xaml.cs">
-      <DependentUpon>AdminSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Shell\AvalonTemplateSelector.cs" />
     <Compile Include="Windows\Shell\AvalonStyleSelector.cs" />
     <Compile Include="Windows\Shell\LayoutInitializer.cs" />
     <Compile Include="Windows\Shell\MyChildWindow.cs" />
     <Compile Include="Windows\Shell\MyDockingManager.cs" />
-    <Compile Include="Windows\Editors\WordEditorWindow.xaml.cs">
-      <DependentUpon>WordEditorWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\IcdSelectorWindow.xaml.cs">
       <DependentUpon>IcdSelectorWindow.xaml</DependentUpon>
     </Compile>
@@ -405,20 +393,8 @@
     <Compile Include="Controls\Common\FullTree.xaml.cs">
       <DependentUpon>FullTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Editors\AppointmentEditorWindow.xaml.cs">
-      <DependentUpon>AppointmentEditorWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Editors\EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Editors\CourseEditorWindow.xaml.cs">
-      <DependentUpon>CourseEditorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Shell\AsidePanels.xaml.cs">
-      <DependentUpon>AsidePanels.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Shell\MenuBar.xaml.cs">
       <DependentUpon>MenuBar.xaml</DependentUpon>
@@ -567,21 +543,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Editors\DoctorEditorWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\HelpWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Editors\MeasureEditorWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\Editors\WordEditorWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\IcdSelectorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -619,21 +583,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Editors\AppointmentEditorWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\Editors\EditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Editors\CourseEditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AdminSettingsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Shell\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -664,14 +616,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Common\FullTree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Shell\AsidePanels.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

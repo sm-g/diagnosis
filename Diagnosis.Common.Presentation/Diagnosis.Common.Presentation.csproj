@@ -299,10 +299,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Styles\EmptyToggle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Styles\ListBoxItemAero2Style.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
