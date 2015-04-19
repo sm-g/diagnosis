@@ -12,6 +12,8 @@ Source: "{#ClientBuildOutputFolder}\bin\Diagnosis.Models.dll"; DestDir: "{app}\b
 Source: "{#ClientBuildOutputFolder}\bin\Diagnosis.ViewModels.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\EventAggregator.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentMigrator.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\bin\Kent.Boogaart.Converters.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\bin\Kent.Boogaart.HelperTrinity.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentMigrator.Runner.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentValidation.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentValidation.resources.dll"; DestDir: "{app}\bin"; Flags: sharedfile
