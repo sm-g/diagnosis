@@ -223,8 +223,6 @@ namespace Diagnosis.ViewModels.Search
             switch (qb.SearchScope)
             {
                 case SearchScope.HealthRecord:
-                    //if (qb.All)
-                    //if (anyNonExQbInGroup)
                     // не проходят отдельные записи, у которых совпадает атрибут и есть исключенные слова
                     return from holderHrs in beforeExclude
                            from hr in holderHrs.Value
@@ -234,22 +232,8 @@ namespace Diagnosis.ViewModels.Search
                                     hr.Words.Intersect(e.ExWords).Any()
                                    )
                            select hr;
-                //else return // пересечение с каждого блока
-                //    from holderHrs in Intersect(exQbHrsDict)
-                //    from hr in holderHrs.Value
-                //    select hr;
-                //else
-                //    if (anyNonExQbInGroup)
-                //        // + записи где просто нет слов
-                //        return (from holderHrs in beforeExclude
-                //                from hr in holderHrs.Value
-                //                select hr).Union(justNo).Distinct();
-                //    else // объединение с блоков
-                //        return justNo;
 
                 case SearchScope.Holder:
-                    //if (qb.All)
-                    //if (anyNonExQbInGroup)
                     // хоть одна запись, у которых совпадает атрибут и есть исключенные слова - весь список не проходит
                     return from holderHrs in beforeExclude
                            let hrs = holderHrs.Value
@@ -260,21 +244,6 @@ namespace Diagnosis.ViewModels.Search
                                )
                            from hr in hrs
                            select hr;
-                //else
-
-                //    return
-                //    from holderHrs in Intersect(exQbHrsDict)
-                //    from hr in holderHrs.Value
-                //    select hr;
-                //else
-                //    // к спсику применимо любое из
-                //    if (anyNonExQbInGroup)
-                //        return (from holderHrs in beforeExclude
-                //                from hr in holderHrs.Value
-                //                select hr).Union
-                //                    (justNo).Distinct();
-                //    else
-                //        return justNo;
 
                 //case SearchScope.Patient:
                 //    if (qb.All)
@@ -369,11 +338,6 @@ namespace Diagnosis.ViewModels.Search
                                        select hr).Distinct()
                             };
 
-            // записи из них среди найденных
-            //var hrs = from a in holderHrs
-            //          from hr in a.Hrs
-            //          select hr;
-
             return holderHrs.ToDictionary(x => x.Holder, x => x.Hrs);
         }
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolderScope2(
@@ -467,20 +431,12 @@ namespace Diagnosis.ViewModels.Search
         /// <returns></returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolder(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
         {
-            //return from hrs in results.Values
-            //       from hr in hrs
-            //       select hr;
-
             // список и записи из него
             var q = from hrs in results.Values
                     from hr in hrs
                     group hr by hr.Holder into g
                     select new { Holder = g.Key, Hrs = g.Cast<HealthRecord>() };
             return q.ToDictionary(x => x.Holder, x => x.Hrs);
-
-            //return from groupedByHolder in q
-            //       from hr in groupedByHolder.Hrs
-            //       select hr;
         }
 
         /// <summary>
