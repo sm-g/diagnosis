@@ -29,6 +29,12 @@ namespace Diagnosis.Data.Tests
 
             Assert.IsTrue(hrs.Contains(hr[1]));
             Assert.IsTrue(hrs.Contains(hr[2]));
+
+            hrs = HealthRecordQuery.WithAllWords(session)(new Word[] { w[1], w[3] }, HealthRecordQueryAndScope.HealthRecord);
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -179,6 +185,15 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Contains(hr[31]));
             Assert.IsTrue(hrs.Contains(hr[32]));
             Assert.IsTrue(hrs.Contains(hr[71]));
+        }
+
+        [TestMethod]
+        public void WithAllAnyNotWords()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[1] }, new Word[] { w[3], w[22] }, new Word[] { w[94] });
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
     }
 }

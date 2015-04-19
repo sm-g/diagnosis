@@ -35,10 +35,10 @@ namespace Diagnosis.ViewModels.Screens
             };
 
 #if DEBUG
-            QueryBlocks[0].AddChildQbCommand.Execute(null);
-            QueryBlocks[0].AddChildQbCommand.Execute(null);
-            QueryBlocks[0].AddChildQbCommand.Execute(null);
-            QueryBlocks[0].SearchScope = SearchScope.Holder;
+            //QueryBlocks[0].AddChildQbCommand.Execute(null);
+            //QueryBlocks[0].AddChildQbCommand.Execute(null);
+            //QueryBlocks[0].AddChildQbCommand.Execute(null);
+            //QueryBlocks[0].SearchScope = SearchScope.Holder;
 #endif
 
             msgManager = new EventMessageHandlersManager(
@@ -196,178 +196,14 @@ namespace Diagnosis.ViewModels.Screens
             }
             else
             {
-                shrs = GetResult(QueryBlocks[0]);
+                shrs = new HrSearcher().GetResult(Session, QueryBlocks[0]);
             }
 
             Result = new SearchResultViewModel(shrs);
             ControlsVisible = false;
         }
 
-        private IEnumerable<HealthRecord> GetResult(QueryBlockViewModel qb)
-        {
-            if (qb.IsGroup)
-            {
-                var qbResults = (from q in qb.Children
-                                 select new
-                                 {
-                                     Qb = q,
-                                     Hrs = GetResult(q)
-                                 }).ToDictionary(x => x.Qb, x => x.Hrs);
-                switch (qb.SearchScope)
-                {
-                    case SearchScope.HealthRecord:
-                        return InOneHr(qbResults);
 
-                    case SearchScope.Holder:
-                        if (qb.All)
-                            return InOneHolder(qbResults);
-                        else
-                            return AnyInOneHolder(qbResults);
-
-                    case SearchScope.Patient:
-                        if (qb.All)
-                            return InOneScope(qbResults);
-                        else
-                            return AnyInOneHolder(qbResults);
-
-                    default:
-                        throw new NotImplementedException();
-                }
-            }
-            else
-            {
-                var opt = qb.MakeOptions();
-                return new HrSearcher().Search(Session, opt);
-            }
-        }
-
-        /// <summary>
-        /// Все в том же списке.
-        ///
-        /// В каждом блоке должны найтись записи из списка, тогда список попадает в результаты,
-        /// где есть все найденные записи из этих списков.
-        /// </summary>
-        /// <param name="results"></param>
-        /// <returns>Все подходящие записи из подходящих списков</returns>
-        private static IEnumerable<HealthRecord> InOneHolder(IDictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
-        {
-            // плоско все найденные Блок-Список-Записи
-            var qbHolderHrs = from qbHrs in results
-                              let middle =
-                                  from hr in qbHrs.Value
-                                  group hr by hr.Holder into g
-                                  select new { Hrs = g.Cast<HealthRecord>(), Holder = g.Key }
-                              from q in middle
-                              select new { Qb = qbHrs.Key, Hrs = q.Hrs, Holder = q.Holder };
-
-            var qbCount = results.Keys.Count;
-
-            // подходящие списки и подходящие записи из них
-            var holderHrs = from a in qbHolderHrs
-                            group a by a.Holder into g
-                            where g.Count() == qbCount // список во всех блоках
-                            select new
-                            {
-                                Holder = g.Key,
-                                Hrs = from b in qbHolderHrs
-                                      where b.Holder == g.Key
-                                      from hr in b.Hrs
-                                      select hr
-                            };
-
-            // записи из них среди найденных
-            var hrs = from a in holderHrs
-                      from hr in a.Hrs
-                      select hr;
-
-            return hrs.Distinct();
-        }
-
-        /// <summary>
-        /// Все в одной записи
-        ///
-        /// В результатах пересечение записей каждого блока.
-        /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
-        private static IEnumerable<HealthRecord> InOneHr(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
-        {
-            Contract.Requires(results.Count > 0);
-
-            IEnumerable<HealthRecord> shrs = results[results.Keys.First()];
-            for (int i = 1; i < results.Count - 1; i++)
-            {
-                shrs = shrs.Intersect(results[results.Keys.ElementAt(i)]);
-            }
-            return shrs;
-        }
-
-        /// <summary>
-        /// Все в одной области
-        ///
-        /// В каждом блоке должны найтись записи из пациента, тогда пациент попадает в результаты,
-        /// где есть все найденные записи из него.
-        /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
-        private static IEnumerable<HealthRecord> InOneScope(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
-        {
-            // плоско все найденные Блок-Список-Записи
-            var qbPatientHrs = from qbHrs in results
-                               let middle =
-                                   from hr in qbHrs.Value
-                                   group hr by hr.GetPatient() into g
-                                   select new { Hrs = g.Cast<HealthRecord>(), Patient = g.Key }
-                               from q in middle
-                               select new { Qb = qbHrs.Key, Hrs = q.Hrs, Patient = q.Patient };
-
-            var qbCount = results.Keys.Count;
-
-            // подходящие списки и подходящие записи из них
-            var holderHrs = from a in qbPatientHrs
-                            group a by a.Patient into g
-                            where g.Count() == qbCount // пациент во всех блоках
-                            select new
-                            {
-                                Patient = g.Key,
-                                Hrs = from b in qbPatientHrs
-                                      where b.Patient == g.Key
-                                      from hr in b.Hrs
-                                      select hr
-                            };
-
-            // записи из них среди найденных
-            var hrs = from a in holderHrs
-                      from hr in a.Hrs
-                      select hr;
-
-            return hrs.Distinct();
-        }
-
-        /// <summary>
-        /// Любое в том же списке
-        ///
-        /// Список попадет в результаты, если нашлась хотя бы одна запись из списка в любом блоке.
-        /// То есть все записи проходят в результаты.
-        /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
-        private static IEnumerable<HealthRecord> AnyInOneHolder(IDictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
-        {
-            return from hrs in results.Values
-                   from hr in hrs
-                   select hr;
-
-            // список и записи из него
-            var q = from hrs in results.Values
-                    from hr in hrs
-                    group hr by hr.Holder into g
-                    select new { Holder = g.Key, Hrs = g };
-
-            return from groupedByHolder in q
-                   from hr in groupedByHolder.Hrs
-                   select hr;
-        }
 
         private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
         {

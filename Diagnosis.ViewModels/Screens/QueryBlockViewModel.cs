@@ -150,6 +150,20 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Исключающий блок, только "без".
+        /// Категория?
+        /// </summary>
+        public bool IsExcluding
+        {
+            get
+            {
+                return !IsGroup && AutocompleteAll.IsEmpty &&
+                                   AutocompleteAny.IsEmpty &&
+                                  !AutocompleteNot.IsEmpty;
+            }
+        }
+
         #region Old
 
         public bool AllWords
@@ -202,7 +216,9 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        /// <summary>
+        /// Применить все блоки к области поиска (или достаточно одного).
+        /// </summary>
         public bool All
         {
             get
