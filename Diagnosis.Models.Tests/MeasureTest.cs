@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
 using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -38,7 +37,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
             Assert.AreEqual(true, m.Equals(m2));
-
+            Assert.AreEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -49,6 +48,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
             Assert.AreEqual(true, m.Equals(m2));
+            Assert.AreEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -59,6 +59,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -70,6 +71,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m == m2);
             Assert.AreEqual(0, m.CompareTo(m2));
             Assert.AreEqual(true, m.Equals(m2));
+            Assert.AreEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -91,6 +93,8 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -113,6 +117,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -123,6 +128,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -133,6 +139,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -143,6 +150,7 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreNotEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
         [TestMethod]
@@ -154,9 +162,10 @@ namespace Diagnosis.Models.Tests
             Assert.IsTrue(m != m2);
             Assert.AreEqual(0, m.CompareTo(m2));
             Assert.AreEqual(false, m.Equals(m2));
+            Assert.AreNotEqual(0, m.StrictCompareTo(m2));
         }
 
-        #endregion Equality
+        #endregion Equality and compare
 
         #region ValueComparer
 

@@ -105,7 +105,7 @@ namespace Diagnosis.Models
             if (measure != null)
             {
                 var comp = this.CompareTo(measure);
-                if (comp == 0)
+                if (comp == 0 && this.Uom != null && measure.Uom != null)
                     // значение одинково, но единицы (одного типа) разные
                     return this.Uom.Abbr.CompareTo(measure.Uom.Abbr);
                 return comp;
