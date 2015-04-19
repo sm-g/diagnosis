@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Tests
@@ -10,7 +11,7 @@ namespace Diagnosis.ViewModels.Tests
     public class SearchTest : ViewModelTest
     {
         private SearchViewModel s;
-        int hrsTotal;
+        private int hrsTotal;
 
         [TestInitialize]
         public void Init()
@@ -47,7 +48,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void SearchNotUsedWords()
+        public void NotUsedWords()
         {
             s.RootQueryBlock.AutocompleteAll.AddTag(w[6]);
             s.SearchCommand.Execute(null);
@@ -57,7 +58,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void SearchTwoPatients()
+        public void TwoPatients()
         {
             s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
             s.SearchCommand.Execute(null);
@@ -66,7 +67,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void SearchWordsInApp()
+        public void WordsInApp()
         {
             s.UseOldMode = true;
             s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
@@ -78,8 +79,8 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(a[1], s.Result.Patients[0].Children[0].Children[0].Holder);
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
         }
 
         [TestMethod]
@@ -130,9 +131,10 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, s.Result.Patients[0].Children[0].FoundHealthRecords.Count); // 7-14
             Assert.AreEqual(2, s.Result.Patients[0].Children[0].Children[0].HealthRecords.Count); // 14
         }
+        #region Measure
 
         [TestMethod]
-        public void SearchMeasureAndWord()
+        public void MeasureAndWord()
         {
             s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
             s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
@@ -142,19 +144,19 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void SearchMeasureOrWord()
+        public void MeasureOrWord()
         {
             s.RootQueryBlock.AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
             s.RootQueryBlock.AutocompleteAny.AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[30]));
         }
 
         [TestMethod]
-        public void SearchMeasureAndWordOrWords()
+        public void MeasureAndWordOrWords()
         {
             s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.GreaterOrEqual });
             s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
@@ -163,590 +165,663 @@ namespace Diagnosis.ViewModels.Tests
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[20]));
         }
 
         [TestMethod]
-        public void SearchAnyMeasure()
+        public void AnyMeasure()
         {
             s.RootQueryBlock.AutocompleteAny.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[22]));
         }
 
         [TestMethod]
-        public void SearchMeasureAndWordWhenSameWord()
+        public void MeasureAndWordWhenSameWord()
         {
             s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
             s.RootQueryBlock.AutocompleteAll.AddTag(w[3]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[22]));
         }
+        #endregion
+
+        #region Scope
 
         [TestMethod]
-        public void SearchAllInOneHr()
+        public void AllInOneHr()
         {
             // в записи 1 и (3 или 4 или 22)  и (94 или 5)
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[22]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[4]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[94]);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[5]);
-
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+                .Scope(SearchScope.HealthRecord)
+                .All()
+                .AddChild(x =>
+                {
+                    x.SetAll(w[1]);
+                    x.SetAny(w[22], w[3], w[4]);
+                })
+                .AddChild(x => x.SetAny(w[94], w[5]))
+            .Search();
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[20]));
         }
+
         [TestMethod]
-        public void SearchAnyInOneHrDistinct()
+        public void AnyInOneHrDistinct()
         {
             // в записи 1 и 22   или (1 и 3)
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[22]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[1].AutocompleteAll.AddTag(w[3]);
-
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .Any()
+            .AddChild(x => x.SetAll(w[1], w[22]))
+            .AddChild(x => x.SetAll(w[1], w[3]))
+            .Search();
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[72]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[72]));
         }
+
         [TestMethod]
-        public void SearchAnyInOneHr()
+        public void AnyInOneHr()
         {
             // в записи 1 и (4 или 22)  или (94 или 5) и нет 3
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[22]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[4]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[94]);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[5]);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[3]);
-
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .Any()
+            .AddChild(x =>
+            {
+                x.SetAll(w[1]);
+                x.SetAny(w[22], w[4]);
+            })
+            .AddChild(x =>
+            {
+                x.SetAny(w[94], w[5]);
+                x.SetNot(w[3]);
+            })
+            .Search();
 
             Assert.AreEqual(5, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[72]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[72]));
         }
 
         [TestMethod]
-        public void SearchAllInOneHolder()
+        public void AllInOneHolder()
         {
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAll.AddTag(w[4]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetAll(w[1]))
+            .AddChild(x => x.SetAll(w[4]))
+            .Search();
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
         }
 
         [TestMethod]
-        public void SearchAnyInOneHolder()
+        public void AnyInOneHolder()
         {
             // в списке записи со словами 1 и 3 или записи со словом 22 без 1
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[3]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAll.AddTag(w[22]);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[1]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .Any()
+            .AddChild(x => x.SetAll(w[1], w[3]))
+            .AddChild(x =>
+            {
+                x.SetAll(w[22]);
+                x.SetNot(w[1]);
+            })
+            .Search();
 
             Assert.AreEqual(6, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[70]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[73]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[74]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[40]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[70]));
+            Assert.IsTrue(s.Contains(hr[73]));
+            Assert.IsTrue(s.Contains(hr[74]));
+            Assert.IsTrue(s.Contains(hr[40]));
         }
 
         [TestMethod]
-        public void SearchAllInOneHolder2()
+        public void AllInOneHolder2()
         {
             // в спсике записи с 31 или 3 и записи с 1 или 5
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[31]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[1]);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[5]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetAny(w[31], w[3]))
+            .AddChild(x => x.SetAny(w[1], w[5]))
+            .Search();
 
             Assert.AreEqual(6, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[32]));
         }
 
         [TestMethod]
-        public void SearchAllInOnePatient()
+        public void AllInOnePatient()
         {
-            s.RootQueryBlock.SearchScope = SearchScope.Patient;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[4]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Patient)
+            .All()
+            .AddChild(x => x.SetAll(w[4]))
+            .Search();
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[32]));
         }
 
         [TestMethod]
-        public void SearchInOnePatient2()
+        public void AllInOnePatient_AllInOneHolder()
         {
             // у пациента записи со словами 4 и в одном списке записи со словами 1 и записи со словами 3
 
-            s.RootQueryBlock.SearchScope = SearchScope.Patient;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[4]);
-            s.RootQueryBlock.AddChildGroupQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.Children[1].All = true;
-            s.RootQueryBlock.Children[1].AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].Children[0].AutocompleteAll.AddTag(w[3]);
-            s.RootQueryBlock.Children[1].AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].Children[1].AutocompleteAll.AddTag(w[1]);
-
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+                .Scope(SearchScope.Patient)
+                .All()
+                .AddChild(x => x.SetAll(w[4]))
+                .AddChild(x =>
+                {
+                    x
+                    .Scope(SearchScope.Holder)
+                    .All()
+                    .AddChild(y => y.SetAll(w[3]))
+                    .AddChild(y => y.SetAll(w[1]));
+                })
+                .Search();
 
             Assert.AreEqual(5, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[22]));
         }
 
         [TestMethod]
-        public void SearchAllInOneHr_WithExcludingOnly()
+        public void AllInOneHr_WithExcludingOnly()
         {
             // в записи 1 и (3 или 4) и нет 94
             // в записи не должно быть исключаемых слов
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[4]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[94]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x =>
+            {
+                x.SetAll(w[1]);
+                x.SetAny(w[3], w[4]);
+            })
+            .AddChild(x => x.SetNot(w[94]))
+            .Search();
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[22]));
         }
+
         [TestMethod]
-        public void SearchAllInOneHr_WithExcludingOnly2()
+        public void AllInOneHr_TwoExcludingOnly()
         {
-            // в записи нет 1,31 и нет 22
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[31]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            // в записи нет 1, 31 и нет 22
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x => x.SetNot(w[1], w[31]))
+            .AddChild(x => x.SetNot(w[22]))
+            .Search();
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71]));
         }
+
         [TestMethod]
-        public void SearchAnyInOneHr_WithExcludingOnly()
+        public void AnyInOneHr_WithExcludingOnly()
         {
             // в записи 1 и (3 или 4) или нет 94, 22, 31
-            // 
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[4]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[94]);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[22]);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[31]);
-            s.SearchCommand.Execute(null);
+            //
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .Any()
+            .AddChild(x =>
+            {
+                x.SetAll(w[1]);
+                x.SetAny(w[3], w[4]);
+            })
+            .AddChild(x => x.SetNot(w[94], w[22], w[31]))
+            .Search();
 
             Assert.AreEqual(7, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71])); // и пустые
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71])); // и пустые
         }
 
         [TestMethod]
-        public void SearchAllInOneHolder_WithExcludingOnly()
+        public void AllInOneHolder_WithExcludingOnly()
         {
             // в списке записи со словами 3 или 31 и нет записи со словом 5
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[31]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[5]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetAny(w[31], w[3]))
+            .AddChild(x => x.SetNot(w[5]))
+            .Search();
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[22]));
+        }
+
+        [TestMethod]
+        public void AllInOneHolder_WithExcludingOnly_OrderNoMatter()
+        {
+            // в списке нет записи со словом 5 и записи со словами 3 или 31
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .All()
+                .AddChild(x => x.SetNot(w[5]))
+                .AddChild(x => x.SetAny(w[5], w[31]))
+                .Search();
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[20], hr[22]));
         }
         [TestMethod]
-        public void SearchAllInOneHolder_WithExcludingOnly2()
+        public void AllInOneHolder_ExcludingOnly()
         {
-            // как SearchAnyInOneHolder_WithExcludingOnly2
+            // как AnyInOneHolder_ExcludingOnly
 
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[5]);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetNot(w[5], w[22]))
+            .Search();
 
             Assert.AreEqual(7, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71]));
         }
+
         [TestMethod]
-        public void SearchAnyInOneHolder_WithExcludingOnly()
+        public void AnyInOneHolder_WithExcludingOnly()
         {
             // в списке записи со словами 3 или 31 или (нет записей со словами 5, 22)/_(есть запись без слов 5, 22)_
             // _по первому + все записи списка без тех, где 5/22_ или только те, где есть слова 3/31?
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[31]);
-            s.RootQueryBlock.Children[0].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[5]);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .Any()
+            .AddChild(x => x.SetAny(w[31], w[3]))
+            .AddChild(x => x.SetNot(w[5], w[22]))
+            .Search();
 
             Assert.AreEqual(9, s.Result.Statistic.HealthRecords.Count);
 
             // если все записи списка
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21])); // потому что есть запись без 22
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[71]));
+            Assert.IsTrue(s.Contains(hr[21])); // потому что есть запись без 22
 
-
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[32]));
         }
 
         [TestMethod]
-        public void SearchAnyInOneHolder_WithExcludingOnly2()
+        public void AnyInOneHolder_ExcludingOnly()
         {
             // в списке нашлась запись без слов 5, 22
             // все записи списка или _только те, где нет этих слов_?
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[5]);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .Any()
+            .AddChild(x => x.SetNot(w[5], w[22]))
+            .Search();
 
             Assert.AreEqual(7, s.Result.Statistic.HealthRecords.Count);
             // если все записи списка
-            //Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            //Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
+            //Assert.IsTrue(s.Contains(hr[22]));
+            //Assert.IsTrue(s.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71]));
         }
+
         [TestMethod]
-        public void SearchAllInOneHolder_TwoExcludingOnly()
+        public void AllInOneHolder_TwoExcludingOnly()
         {
             // в спсике нет записей с 1 и записей с 22
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[1]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetNot(w[1]))
+            .AddChild(x => x.SetNot(w[22]))
+            .Search();
 
             Assert.AreEqual(4, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
+            Assert.IsTrue(s.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71]));
         }
+
         [TestMethod]
-        public void SearchAllInOneHolder_TwoExcludingOnly_WithCats()
+        public void AllInOneHolder_TwoExcludingOnly_WithCats()
         {
             // в спсике нет запись с 22 категории 2 или 1 и нет запись с 4 категории 1
             Load<HrCategory>();
 
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[22]);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[1]).First().IsChecked = true;
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[2]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[4]);
-            s.RootQueryBlock.Children[1].Categories.Where(x => x.category == cat[1]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x =>
+            {
+                x.SetNot(w[22]);
+                x.Check(cat[1], cat[2]);
+            })
+            .AddChild(x =>
+            {
+                x.SetNot(w[4]);
+                x.Check(cat[1]);
+            })
+            .Search();
 
             Assert.AreEqual(6, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[72]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[73]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[74]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[71]));
+            Assert.IsTrue(s.Contains(hr[72]));
+            Assert.IsTrue(s.Contains(hr[73]));
+            Assert.IsTrue(s.Contains(hr[74]));
         }
+
         [TestMethod]
-        public void SearchAnyInOneHolder_TwoExcludingOnly_WithCats()
+        public void AnyInOneHolder_TwoExcludingOnly_WithCats()
         {
             // в спсике нашлась запись без 22 категории 2 или 1 или без 4 категории 1
             // то есть все записи
             Load<HrCategory>();
 
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[22]);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[1]).First().IsChecked = true;
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[2]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[4]);
-            s.RootQueryBlock.Children[1].Categories.Where(x => x.category == cat[1]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .Any()
+            .AddChild(x =>
+            {
+                x.SetNot(w[22]);
+                x.Check(cat[1], cat[2]);
+            })
+            .AddChild(x =>
+            {
+                x.SetNot(w[4]);
+                x.Check(cat[1]);
+            })
+            .Search();
 
             Assert.AreEqual(hrsTotal, s.Result.Statistic.HealthRecords.Count);
         }
+
         [TestMethod]
-        public void SearchAllInOneHolder_ExcludingOnly_AndCat()
+        public void AllInOneHolder_ExcludingOnly_WithCats()
         {
             // записи 2 категории списка, где нет слов 22
             Load<HrCategory>();
 
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[2]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.Check(cat[2]))
+            .AddChild(x => x.SetNot(w[22]))
+            .Search();
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[31]));
         }
+
         [TestMethod]
-        public void SearchAnyInOneHolder_TwoExcludingOnly_As()
+        public void AnyInOneHolder_TwoExcludingOnly()
         {
             // в спсике нашлась запись без 1 или запись без 22
             // с каждого блока только те, где нет любого из этих слов
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[1]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .Any()
+                .AddChild(x => x.SetNot(w[1]))
+                .AddChild(x => x.SetNot(w[22]))
+                .Search();
 
             // все записи, кроме
             Assert.AreEqual(hrsTotal - 2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(!s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(!s.Result.Statistic.HealthRecords.Contains(hr[72]));
+            Assert.IsTrue(!s.Contains(hr[22]));
+            Assert.IsTrue(!s.Contains(hr[72]));
         }
+
         [TestMethod]
-        public void AllAnyWIthSingleBlockSameResults()
+        public void AllAny_WithSingleChild_SameResults()
         {
+
         }
 
-        [TestMethod]
-        public void SearchAllInOneHolder_WithExcludingOnly_OrderNoMatter()
-        {
-            // в списке нет записи со словом 5 и записи со словами 3 или 31
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].AutocompleteNot.AddTag(w[5]);
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[3]);
-            s.RootQueryBlock.Children[1].AutocompleteAny.AddTag(w[31]);
-            s.SearchCommand.Execute(null);
-
-            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-        }
 
         [TestMethod]
-        public void SearchByCategoryFoundAllHrs()
+        public void AllInOneHr_WithCats_FoundAllHrs()
         {
             Load<HrCategory>();
-            s.RootQueryBlock.Categories.Where(x => x.category == cat[2]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x => x.Check(cat[2]))
+            .Search();
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[31]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[22]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[40]));
+            Assert.IsTrue(s.Contains(hr[31]));
+            Assert.IsTrue(s.Contains(hr[22]));
+            Assert.IsTrue(s.Contains(hr[40]));
         }
 
         [TestMethod]
-        public void SearchByCategoryFoundAllHrs2()
+        public void AllInOneHr_WithCats_FoundAllHrs2()
         {
             // записи 3 или 5 кат
             Load<HrCategory>();
-            s.RootQueryBlock.Categories.Where(x => x.category == cat[3]).First().IsChecked = true;
-            s.RootQueryBlock.Categories.Where(x => x.category == cat[5]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x => x.Check(cat[3]))
+            .AddChild(x => x.Check(cat[5]))
+            .Search();
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[21]));
         }
 
         [TestMethod]
-        public void SearchAllInOneHolder_ByCategory()
+        public void AllInOneHolder_WithCats()
         {
-            // в списке есть записи 1 и 5 кат 
+            // в списке есть записи 1 и 5 кат
             Load<HrCategory>();
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[1]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].Categories.Where(x => x.category == cat[5]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.Check(cat[1]))
+            .AddChild(x => x.Check(cat[5]))
+            .Search();
 
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[21]));
         }
 
         [TestMethod]
-        public void SearchAnyInOneHolder_ByCategory()
+        public void AnyInOneHolder_WithCats()
         {
             // в списке записи 3 или 5 кат
             Load<HrCategory>();
-            s.RootQueryBlock.SearchScope = SearchScope.Holder;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[3]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].Categories.Where(x => x.category == cat[5]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .Any()
+            .AddChild(x => x.Check(cat[3]))
+            .AddChild(x => x.Check(cat[5]))
+            .Search();
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
+            // AnyInOneHr_WithCats просто совпадение
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[21]));
         }
 
         [TestMethod]
-        public void SearchAllInOneHr_ByCategory()
+        public void AllInOneHr_WithCats()
         {
-            // у записи вообще не бывает 2 категории
+            // у записи вообще не бывает две категории
             Load<HrCategory>();
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[3]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].Categories.Where(x => x.category == cat[5]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x => x.Check(cat[3]))
+            .AddChild(x => x.Check(cat[5]))
+            .Search();
 
             Assert.AreEqual(0, s.Result.Statistic.HealthRecords.Count);
         }
+
         [TestMethod]
-        public void SearchAnyInOneHr_ByCategory()
+        public void AnyInOneHr_WithCats()
         {
             // записи 3 или 5 кат
             Load<HrCategory>();
-            s.RootQueryBlock.SearchScope = SearchScope.HealthRecord;
-            s.RootQueryBlock.All = false;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[0].Categories.Where(x => x.category == cat[3]).First().IsChecked = true;
-            s.RootQueryBlock.AddChildQbCommand.Execute(null);
-            s.RootQueryBlock.Children[1].Categories.Where(x => x.category == cat[5]).First().IsChecked = true;
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .Any()
+            .AddChild(x => x.Check(cat[3]))
+            .AddChild(x => x.Check(cat[5]))
+            .Search();
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[1]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[2]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[21]));
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[21]));
         }
 
         [TestMethod]
-        public void Search_RootExcludingOnly_WithCat()
+        public void RootExcludingOnly_WithCat()
         {
             // записи 1 категории, где нет слов 22
             Load<HrCategory>();
 
-            s.RootQueryBlock.Categories.Where(x => x.category == cat[1]).First().IsChecked = true;
-            s.RootQueryBlock.AutocompleteNot.AddTag(w[22]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+                .Check(cat[1])
+                .SetNot(w[22])
+                .Search();
 
             Assert.AreEqual(4, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[20]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[30]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[32]));
-            Assert.IsTrue(s.Result.Statistic.HealthRecords.Contains(hr[71]));
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[30]));
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71]));
+        }
+        #endregion
+
+    }
+
+    public static class QbExtensions
+    {
+        public static QueryBlockViewModel AddChild(this QueryBlockViewModel parent, Action<QueryBlockViewModel> onChild)
+        {
+            parent.AddChildQbCommand.Execute(null);
+            var child = parent.Children.Last();
+            onChild(child);
+            return parent;
+        }
+
+        public static QueryBlockViewModel All(this QueryBlockViewModel qb)
+        {
+            qb.All = true;
+            return qb;
+        }
+
+        public static QueryBlockViewModel Any(this QueryBlockViewModel qb)
+        {
+            qb.All = false;
+            return qb;
+        }
+
+        public static QueryBlockViewModel Scope(this QueryBlockViewModel qb, SearchScope scope)
+        {
+            qb.SearchScope = scope;
+            return qb;
+        }
+
+        public static QueryBlockViewModel SetAll(this QueryBlockViewModel qb, params IHrItemObject[] all)
+        {
+            qb.AutocompleteAll.ReplaceTagsWith(all);
+            return qb;
+        }
+
+        public static QueryBlockViewModel SetAny(this QueryBlockViewModel qb, params IHrItemObject[] any)
+        {
+            qb.AutocompleteAny.ReplaceTagsWith(any);
+            return qb;
+        }
+
+        public static QueryBlockViewModel SetNot(this QueryBlockViewModel qb, params IHrItemObject[] not)
+        {
+            qb.AutocompleteNot.ReplaceTagsWith(not);
+            return qb;
+        }
+
+        public static QueryBlockViewModel Check(this QueryBlockViewModel qb, params HrCategory[] cats)
+        {
+            qb.SelectCategory(cats);
+            return qb;
+        }
+
+        public static QueryBlockViewModel Search(this QueryBlockViewModel qb)
+        {
+            qb.SearchCommand.Execute(null);
+            return qb;
+        }
+
+        public static bool Contains(this SearchViewModel s, params HealthRecord[] hrs)
+        {
+            return hrs.All(x => s.Contains(x));
         }
     }
 }

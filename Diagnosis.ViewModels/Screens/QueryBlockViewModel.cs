@@ -320,7 +320,14 @@ namespace Diagnosis.ViewModels.Screens
             Options = options;
             return options;
         }
+        internal void SelectCategory(params HrCategory[] cats)
+        {
+            var vms = from c in cats
+                      join vm in Categories on c equals vm.category
+                      select vm;
+            vms.ForEach(x => x.IsChecked = true);
 
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
