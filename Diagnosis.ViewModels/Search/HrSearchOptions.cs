@@ -18,6 +18,10 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         public IEnumerable<Word> WordsAny { get; set; }
         /// <summary>
+        /// Хотя бы столько элементов из Any
+        /// </summary>
+        public int MinAny { get; set; }
+        /// <summary>
         /// B ни одного слова из.
         /// </summary>
         public IEnumerable<Word> WordsNot { get; set; }

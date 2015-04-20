@@ -183,14 +183,36 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void MeasureAndWordWhenSameWord()
         {
-            s.RootQueryBlock.AutocompleteAll.AddTag(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal });
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[3]);
-            s.SearchCommand.Execute(null);
+            s.RootQueryBlock
+               .SetAll(w[3],new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal })
+               .Search();
 
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[22]));
         }
 
+        [TestMethod]
+        public void AnyMinTwoMeasureAndWord()
+        {
+            s.RootQueryBlock
+                .SetAny(w[22], new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.GreaterOrEqual })
+                .MinAny(2)
+                .Search();
+
+            Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[22]));
+        }
+        [TestMethod]
+        public void AllMeasure_AnyMeasure()
+        {
+            s.RootQueryBlock
+                .SetAll(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal })
+                .SetAny(new MeasureOp(0.05, uom[1]) { Word = w[3], Operator = MeasureOperator.Equal })
+                .Search();
+
+            Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[22]));
+        }
         #endregion Measure
 
         #region Scope
@@ -643,7 +665,7 @@ namespace Diagnosis.ViewModels.Tests
             .Scope(SearchScope.HealthRecord)
             .Any()
             .AddChild(x => x.Check(cat.Values
-                .Union(HrCategory.Null.ToEnumerable())
+                .Union(HrCategory.Null.ToEnumerable()) //
                 .Except(cat[1]).ToArray()))
             .AddChild(x => x
                 .SetNot(w[22], w[31])
@@ -849,7 +871,11 @@ namespace Diagnosis.ViewModels.Tests
             qb.AutocompleteNot.ReplaceTagsWith(not);
             return qb;
         }
-
+        public static QueryBlockViewModel MinAny(this QueryBlockViewModel qb, int min)
+        {
+            qb.AnyMin = min;
+            return qb;
+        }
         public static QueryBlockViewModel Check(this QueryBlockViewModel qb, params HrCategory[] cats)
         {
             qb.SelectCategory(cats);

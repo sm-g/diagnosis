@@ -90,6 +90,25 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        private int _anyMin;
+        public int AnyMin
+        {
+            get
+            {
+                return _anyMin;
+            }
+            set
+            {
+                if (_anyMin != value)
+                {
+                    _anyMin = value;
+                    OnPropertyChanged(() => AnyMin);
+                }
+            }
+        }
+
+        public IEnumerable<int> AnyMinValues { get { return Enumerable.Range(1, 3); } }
+
         /// <summary>
         /// Опции поиска.
         /// </summary>
@@ -306,6 +325,7 @@ namespace Diagnosis.ViewModels.Screens
             options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
+            options.MinAny = AnyMin;
 
             Options = options;
             return options;

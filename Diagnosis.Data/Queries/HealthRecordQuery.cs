@@ -2,7 +2,6 @@
 using Diagnosis.Models;
 using NHibernate;
 using NHibernate.Linq;
-using NHibernate.Transform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,16 +21,17 @@ namespace Diagnosis.Data.Queries
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
 
-                    var q = from hr in session.Query<HealthRecord>()
-                            join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
-                            where hri.Word != null
-                            join w in session.Query<Word>() on hri.Word.Id equals w.Id
-                            where wordsIds.Contains(w.Id)
-                            select hr;
-                    return q.Distinct().ToList();
+                    var hrs = from hr in session.Query<HealthRecord>()
+                              join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                              where hri.Word != null
+                              join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                              where wordsIds.Contains(w.Id)
+                              select hr;
+                    return hrs.Distinct().ToList();
                 }
             };
         }
+
         /// <summary>
         /// Возвращает записи с хотя бы N из слов (c повторами слов).
         /// </summary>
@@ -39,20 +39,21 @@ namespace Diagnosis.Data.Queries
         {
             return (words, count) =>
             {
+                count = count > 0 ? count : 1;
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
 
-                    var q = from hr in session.Query<HealthRecord>()
-                            let hris = from hri in session.Query<HrItem>()
-                                       where hr.Id == hri.HealthRecord.Id
-                                       where hri.Word != null
-                                       join w in session.Query<Word>() on hri.Word.Id equals w.Id
-                                       where wordsIds.Contains(w.Id)
-                                       select hri
-                            where hris.Count() >= count
-                            select hr;
-                    return q.Distinct().ToList();
+                    var hrs = from hr in session.Query<HealthRecord>()
+                              let hris = from hri in session.Query<HrItem>()
+                                         where hr.Id == hri.HealthRecord.Id
+                                         where hri.Word != null
+                                         join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                                         where wordsIds.Contains(w.Id)
+                                         select hri
+                              where hris.Count() >= count
+                              select hr;
+                    return hrs.Distinct().ToList();
                 }
             };
         }
@@ -60,7 +61,7 @@ namespace Diagnosis.Data.Queries
         /// <summary>
         /// Возвращает записи со всеми словами в области поиска.
         /// </summary>
-        public static Func<IEnumerable<Word>, HealthRecordQueryAndScope, IEnumerable<HealthRecord>> WithAllWords(ISession session)
+        public static Func<IEnumerable<Word>, HealthRecordQueryAndScope, IEnumerable<HealthRecord>> WithAllWordsInScope(ISession session)
         {
             return (words, scope) =>
             {
@@ -129,10 +130,29 @@ namespace Diagnosis.Data.Queries
                 }
                 else
                 {
+                    // все записи без этих слов
                     return session.Query<HealthRecord>().ToList()
                         .Where(x => x.Words.All(w => !not.Contains(w))).ToList();
                 }
+            };
+        }
 
+        public static Func<IEnumerable<Word>, IEnumerable<Word>, IEnumerable<Word>, int, IEnumerable<HealthRecord>> WithAllAnyNotWordsMinAny(ISession session)
+        {
+            return (all, any, not, minAny) =>
+            {
+                if (any.Any() || all.Any())
+                {
+                    var withAny = WithAnyWords(session)(any.Any() ? any : all, minAny);
+                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.Words));
+                    return withall.Where(hr => !hr.Words.Any(w => not.Contains(w)));
+                }
+                else
+                {
+                    // все записи без этих слов
+                    return session.Query<HealthRecord>().ToList()
+                        .Where(x => x.Words.All(w => !not.Contains(w))).ToList();
+                }
             };
         }
     }
