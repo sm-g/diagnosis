@@ -40,7 +40,7 @@ namespace Diagnosis.Models.Tests
             var cat = HrCategory.Null;
             HrCategory cat2 = null;
             Assert.IsTrue(cat != cat2);
-            Assert.IsFalse(cat.Equals(cat2));
+            Assert.IsTrue(cat.Equals(cat2));
             Assert.IsFalse(object.Equals(cat, cat2));
         }
 

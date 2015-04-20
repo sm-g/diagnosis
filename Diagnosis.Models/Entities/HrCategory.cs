@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
-    public class HrCategory : EntityBase<Guid>, IDomainObject, IComparable//, IEquatable<HrCategory>
+    public class HrCategory : EntityBase<Guid>, IDomainObject, IComparable, IEquatable<HrCategory>
     {
         public static HrCategory Null = new HrCategory("Не задано", int.MaxValue); // upper case to show in checkbox
 
@@ -45,6 +45,14 @@ namespace Diagnosis.Models
                 return this.Ord.CompareTo(other.Ord);
             else
                 throw new ArgumentException("Object is not a HrCategory");
+        }
+
+        public virtual bool Equals(HrCategory other)
+        {
+            if (ReferenceEquals(this, Null) && other == null)
+                return true;
+
+            return Equals(other as object);
         }
     }
 }
