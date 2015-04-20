@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _all;
         private bool _group;
         private VisibleRelayCommand _removeQbCommand;
+        private VisibleRelayCommand _addSyblingQbCommand;
 
         public QueryBlockViewModel(ISession session, Action executeSearch)
         {
@@ -289,15 +290,16 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand AddChildGroupQbCommand
+        public VisibleRelayCommand AddSyblingQbCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return _addSyblingQbCommand ?? (_addSyblingQbCommand = new VisibleRelayCommand(() =>
                 {
-                    var qb = AddChildQb();
-
-                    qb.SearchScope = SearchScope.Holder;
+                    Parent.AddChildQb();
+                }, () => !IsRoot)
+                {
+                    IsVisible = !IsRoot
                 });
             }
         }
@@ -368,6 +370,10 @@ namespace Diagnosis.ViewModels.Screens
                 AutocompleteNot.Dispose();
             }
             base.Dispose(disposing);
+        }
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", All, SearchScope);
         }
 
         private QueryBlockViewModel AddChildQb()

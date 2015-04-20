@@ -45,7 +45,8 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         DockPanel.Dock="Right">
-                <Button Command="{Binding AddChildQbCommand}"
+                <Button Command="{Binding AddSyblingQbCommand}"
+                        Visibility="{Binding AddSyblingQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
                         ToolTip="Добавить блок">
                     <Rectangle Width="12"
                                Height="12"
@@ -56,8 +57,8 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
-                <Button Command="{Binding AddChildGroupQbCommand}"
-                        ToolTip="Добавить группу условий">
+                <Button Command="{Binding AddChildQbCommand}"
+                        ToolTip="Добавить дочерний блок">
                     <Rectangle Width="12"
                                Height="12"
                                Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
