@@ -91,7 +91,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Опции поиска при последнем поиске.
+        /// Опции поиска.
         /// </summary>
         public HrSearchOptions Options
         {
@@ -146,6 +146,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _group = value;
                     OnPropertyChanged(() => IsGroup);
+                    OnPropertyChanged(() => DescriptionVisible);
                 }
             }
         }
@@ -161,6 +162,14 @@ namespace Diagnosis.ViewModels.Screens
                 return !IsGroup && AutocompleteAll.IsEmpty &&
                                    AutocompleteAny.IsEmpty &&
                                   !AutocompleteNot.IsEmpty;
+            }
+        }
+
+        public bool DescriptionVisible
+        {
+            get
+            {
+                return !IsSelected && !IsGroup;
             }
         }
 
@@ -261,25 +270,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private QueryBlockViewModel AddChildQb()
-        {
-            var qb = new QueryBlockViewModel(session, executeSearch);
-
-            qb.PropertyChanged += qb_PropertyChanged;
-
-            Add(qb);
-            this.IsExpanded = true;
-            return qb;
-        }
-
-        private void qb_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "AllEmpty")
-            {
-                OnPropertyChanged(() => AllEmpty);
-            }
-        }
-
         public RelayCommand AddChildGroupQbCommand
         {
             get
@@ -320,6 +310,7 @@ namespace Diagnosis.ViewModels.Screens
             Options = options;
             return options;
         }
+
         internal void SelectCategory(params HrCategory[] cats)
         {
             var vms = from c in cats
@@ -328,6 +319,17 @@ namespace Diagnosis.ViewModels.Screens
             vms.ForEach(x => x.IsChecked = true);
 
         }
+
+        protected override void OnSelectedChanged()
+        {
+            base.OnSelectedChanged();
+            if (!IsSelected)
+            {
+                MakeOptions();
+            }
+            OnPropertyChanged(() => DescriptionVisible);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -348,6 +350,24 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
+        private QueryBlockViewModel AddChildQb()
+        {
+            var qb = new QueryBlockViewModel(session, executeSearch);
+
+            qb.PropertyChanged += qb_PropertyChanged;
+
+            Add(qb);
+            this.IsExpanded = true;
+            return qb;
+        }
+
+        private void qb_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AllEmpty")
+            {
+                OnPropertyChanged(() => AllEmpty);
+            }
+        }
         private void Autocomplete_InputEnded(object sender, BoolEventArgs e)
         {
             executeSearch();
@@ -356,7 +376,6 @@ namespace Diagnosis.ViewModels.Screens
         private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
-            //OnPropertyChanged(() => AllEmpty);
         }
 
         private void Autocomplete_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -368,8 +387,6 @@ namespace Diagnosis.ViewModels.Screens
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            //  Contract.Invariant(!IsGroup || AutocompleteAll.Tags.Count == 1);
-
             // листовой блок - все в записи
             //Contract.Invariant(IsGroup || SearchScope == SearchScope.HealthRecord && All);
         }

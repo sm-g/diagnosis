@@ -62,6 +62,7 @@
             <Expander.Header>
                 <!--Описание запроса, к которому относятся результаты-->
                 <StackPanel x:Name="searchDescription"
+                            Visibility="{Binding UseOldMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Margin="5,0,0,0">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">

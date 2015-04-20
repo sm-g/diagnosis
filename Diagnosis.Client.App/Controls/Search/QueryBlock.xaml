@@ -24,6 +24,7 @@
     <Grid  Margin="5 2">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -80,24 +81,67 @@
                 </Button>
             </StackPanel>
         </DockPanel>
-        <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                    Grid.Row="2">
-            <Label Content="Все ключевые _слова" />
-            <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
-            <Label Content="И хотя бы одно из" />
-            <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
-            <Label Content="И ни одиного из" />
-            <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
 
-            <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
-            <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
-                <forms:CategoryChooser.ItemsPanelTemplate>
-                    <ItemsPanelTemplate>
-                        <diag:UniformGridWithOrientation Orientation="Vertical"
-                                                         Columns="2" />
-                    </ItemsPanelTemplate>
-                </forms:CategoryChooser.ItemsPanelTemplate>
-            </forms:CategoryChooser>
+        <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                    Grid.Row="1">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </StackPanel.Resources>
+
+            <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding AutocompleteAll.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <TextBlock Text="всё из: " />
+                    <diag:CommaList ItemsSource="{Binding Options.WordsAll}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding AutocompleteAny.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <TextBlock>хотя бы <Run Text="{Binding AnyMin, Mode=OneWay}" /> <Run Text="из: " /></TextBlock>
+                    <diag:CommaList ItemsSource="{Binding Options.WordsAny}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding AutocompleteNot.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+                    <TextBlock Text="ни одного из: " />
+                    <diag:CommaList ItemsSource="{Binding Options.WordsNot}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding SelectedCategories.Count, Converter={StaticResource MoreThanToVisibility}}">
+                    <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat='{}{0}: '}"></TextBlock>
+                    <diag:CommaList ItemsSource="{Binding SelectedCategories}" />
+                </StackPanel>
+                <TextBlock Text="Не заданы условия поиска."
+                           Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter IsReversed=True}}"
+                        Grid.Row="2">
+                <Label Content="Всё из" />
+                <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
+                <Label>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="И хотя бы 1" />
+                        <!--<diag:HyperlinkContextMenu Value="{Binding AnyMin}"
+                                                   ItemsSource="{Binding AnyMinValues}" />-->
+                        <TextBlock Text=" из: " />
+                    </StackPanel>
+                </Label>
+                <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
+                <Label Content="И ни одиного из" />
+                <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
+
+                <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
+                <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
+                    <forms:CategoryChooser.ItemsPanelTemplate>
+                        <ItemsPanelTemplate>
+                            <diag:UniformGridWithOrientation Orientation="Vertical"
+                                                             Columns="2" />
+                        </ItemsPanelTemplate>
+                    </forms:CategoryChooser.ItemsPanelTemplate>
+                </forms:CategoryChooser>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
