@@ -314,7 +314,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AllInOneHolder2()
         {
-            // в спсике записи с 31 или 3 и записи с 1 или 5
+            // в списке записи с 31 или 3 и записи с 1 или 5
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
             .All()
@@ -387,6 +387,26 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[2]));
             Assert.IsTrue(s.Contains(hr[22]));
         }
+        [TestMethod]
+        public void AllInOneHr_WithExcludingOnly_WithCats()
+        {
+            // в записи 1 и (3 или 4) и нет (94 категории 1)
+            Load<HrCategory>();
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x => x
+                .SetAll(w[1])
+                .SetAny(w[3], w[4]))
+            .AddChild(x => x
+                .SetNot(w[94])
+                .Check(cat[1]))
+            .Search();
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[2]));
+            Assert.IsTrue(s.Contains(hr[22]));
+        }
 
         [TestMethod]
         public void AllInOneHr_TwoExcludingOnly()
@@ -432,6 +452,7 @@ namespace Diagnosis.ViewModels.Tests
         public void AllInOneHolder_WithExcludingOnly()
         {
             // в списке записи со словами 3 или 31 и нет записи со словом 5
+            Load<HrCategory>();
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
             .All()
@@ -442,6 +463,26 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[20]));
             Assert.IsTrue(s.Contains(hr[22]));
+        }
+        [TestMethod]
+        public void AllInOneHolder_WithExcludingOnly_WithCats()
+        {
+            // в списке записи со словами 3 или 31 и нет записи со словом (5 категории 2)
+            Load<HrCategory>();
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetAny(w[31], w[3]))
+            .AddChild(x => x.SetNot(w[5]).Check(cat[2]))
+            .Search();
+
+            Assert.AreEqual(5, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(
+                hr[20],
+                hr[22],
+                hr[30],
+                hr[31],
+                hr[32]));
         }
 
         [TestMethod]
@@ -511,7 +552,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AllInOneHolder_TwoExcludingOnly()
         {
-            // в спсике нет записей с 1 и записей с 22
+            // в списке нет записей с 1 и записей с 22
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
             .All()
@@ -527,21 +568,21 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
-        public void AllInOneHolder_TwoExcludingOnly_WithCats()
+        public void AllInOneHolder_WithTwoExcludingOnly_WithCats1()
         {
-            // в спсике нет записей с 22 категории 2 или 1 и нет записей с 4 категории 1
+            // в списке нет записей с 22 категории 2 или 1 и нет записей с 4 категории 1
             Load<HrCategory>();
 
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
             .All()
+            .AddChild(x => x.Check(AllCats().ToArray()))
             .AddChild(x => x
                 .SetNot(w[22])
-                .Check(cat.Values.Except(new[] { cat[1], cat[2] }).ToArray()))
+                .Check(cat[1], cat[2]))
             .AddChild(x => x
                 .SetNot(w[4])
-                .Check(cat.Values.Except(cat[1]).ToArray()))
+                .Check(cat[1]))
             .Search();
 
             Assert.AreEqual(6, s.Result.Statistic.HealthRecords.Count);
@@ -554,7 +595,37 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
+        public void AllInOneHolder_WithTwoExcludingOnly_WithCats2()
+        {
+            // в списке запись с 94 и нет записи с (4 категории 1) и нет записи с 22
+            Load<HrCategory>();
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetAny(w[94]))
+            .AddChild(x => x.SetNot(w[4]).Check(cat[1]))
+            .AddChild(x => x.SetNot(w[22]))
+            .Search();
+
+            Assert.AreEqual(0, s.Result.Statistic.HealthRecords.Count);
+        }
+        [TestMethod]
+        public void AllInOneHolder_WithTwoExcludingOnly_WithCats3()
+        {
+            // в списке запись с 3 и нет записи с (94 категории 2) и нет записи с 22
+            Load<HrCategory>();
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x.SetAny(w[3]))
+            .AddChild(x => x.SetNot(w[94]).Check(cat[2]))
+            .AddChild(x => x.SetNot(w[22]))
+            .Search();
+            Assert.AreEqual(0, s.Result.Statistic.HealthRecords.Count);
+        }
+
+        [TestMethod]
+        //[ExpectedException(typeof(AssertFailedException))]
         public void AnyInOneHolder_TwoExcludingOnly_WithCats()
         {
             // в спсике нашлась запись без 22 категории 2 или 1 или без 4 категории 1
@@ -578,7 +649,24 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AllInOneHolder_ExcludingOnly_WithCats()
         {
-            // список, где есть записи 2 категории и записи без 94
+            // список, где есть записи 2 категории без 94
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+            .Scope(SearchScope.Holder)
+            .All()
+            .AddChild(x => x
+                .Check(cat[2])
+                .SetNot(w[94]))
+            .Search();
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[40], hr[22]));
+        }
+        [TestMethod]
+        public void AllInOneHolder_WithExcludingOnly_WithCats2()
+        {
+            // записи 2 категории списка, где нет 94
             Load<HrCategory>();
 
             s.RootQueryBlock
@@ -588,27 +676,11 @@ namespace Diagnosis.ViewModels.Tests
             .AddChild(x => x.SetNot(w[94]))
             .Search();
 
-            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
-            Assert.IsTrue(s.Contains(hr[40], hr[22]));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(AssertFailedException))]
-        public void AllInOneHolder_ExcludingOnly_WithCats2()
-        {
-            // записи 2 категории списка, где нет 94
-            Load<HrCategory>();
-
-            s.RootQueryBlock
-            .Scope(SearchScope.Holder)
-            .All()
-            .AddChild(x => x.Check(cat[2]))
-            .AddChild(x => x.SetNot(w[94])) // ?
-            .Search();
-
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[40]));
         }
+
+
 
         [TestMethod]
         public void AnyInOneHr_ExcludingOnly_AndCats()
@@ -619,9 +691,9 @@ namespace Diagnosis.ViewModels.Tests
             s.RootQueryBlock
             .Scope(SearchScope.HealthRecord)
             .Any()
-            .AddChild(x => x.Check(cat.Values
-                .Union(HrCategory.Null.ToEnumerable())
-                .Except(cat[1]).ToArray()))
+            .AddChild(x => x
+                .Check(AllCats()
+                    .Except(cat[1]).ToArray()))
             .AddChild(x => x
                 .SetNot(w[22], w[31])
                 .Check(cat[1]))
@@ -654,7 +726,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AnyInOneHolder_TwoExcludingOnly()
         {
-            // в спсике нашлась запись без 1 или запись без 22
+            // в списке нашлась запись без 1 или запись без 22
             // с каждого блока только те, где нет любого из этих слов
             s.RootQueryBlock
                 .Scope(SearchScope.Holder)
@@ -844,6 +916,11 @@ namespace Diagnosis.ViewModels.Tests
         #endregion
 
         #endregion Scope
+        private System.Collections.Generic.IEnumerable<HrCategory> AllCats()
+        {
+            return cat.Values.Union(HrCategory.Null.ToEnumerable());
+        }
+
     }
 
     public static class QbExtensions

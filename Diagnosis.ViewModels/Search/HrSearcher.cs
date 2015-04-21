@@ -257,13 +257,12 @@ namespace Diagnosis.ViewModels.Search
                 case SearchScope.Holder:
                     // хоть одна запись, у которых совпадает атрибут и есть исключенные слова - весь список не проходит
                     return from holderHrs in beforeExclude
-                           let hrs = holderHrs.Value
-                           from e in ex
-                           where !hrs.Any(hr =>
-                                           (!e.Cats.Any() || e.Cats.Contains(hr.Category)) &&
-                                           hr.Words.Intersect(e.ExWords).Any()
+                           let hrs = holderHrs.Key.HealthRecords // все записи списка
+                           where ex.All(e => !hrs.Any(hr => // ни одной записи из исключающих блоков
+                                           (!e.Cats.Any() || e.Cats.Contains(hr.Category)) && // категории
+                                           hr.Words.Intersect(e.ExWords).Any()) // со словами
                                )
-                           from hr in hrs
+                           from hr in holderHrs.Value // записи из beforeExclude
                            select hr;
 
                 //case SearchScope.Patient:
