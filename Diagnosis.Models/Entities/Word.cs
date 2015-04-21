@@ -112,8 +112,8 @@ namespace Diagnosis.Models
             var word = hio as Word;
             if (word != null)
                 return this.CompareTo(word);
-
-            return 1; // 'biggest'
+            else
+                return new HrItemObjectComparer().Compare(this, hio);
         }
 
         public virtual int CompareTo(Word other)

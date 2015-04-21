@@ -80,15 +80,11 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(IHrItemObject hio)
         {
-            var icd = hio as IcdDisease;
-            if (icd != null)
-                return 1;
-
             var measure = hio as Measure;
             if (measure != null)
                 return this.CompareTo(measure);
-
-            return -1;
+            else
+                return new HrItemObjectComparer().Compare(this, hio);
         }
         /// <summary>
         /// Сравнивает измерения учитывая единицу измерения (для OrderedBag).
@@ -97,10 +93,6 @@ namespace Diagnosis.Models
         /// <returns></returns>
         public virtual int StrictCompareTo(IHrItemObject hio)
         {
-            var icd = hio as IcdDisease;
-            if (icd != null)
-                return 1;
-
             var measure = hio as Measure;
             if (measure != null)
             {
@@ -110,8 +102,8 @@ namespace Diagnosis.Models
                     return this.Uom.Abbr.CompareTo(measure.Uom.Abbr);
                 return comp;
             }
-
-            return -1;
+            else
+                return new HrItemObjectComparer().Compare(this, hio);
         }
 
         public virtual int CompareTo(Measure other)

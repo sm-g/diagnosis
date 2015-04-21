@@ -41,8 +41,8 @@ namespace Diagnosis.Models
             var icd = hio as IcdDisease;
             if (icd != null)
                 return this.CompareTo(icd);
-
-            return -1; // 'smallest'
+            else
+                return new HrItemObjectComparer().Compare(this, hio);
         }
 
         public virtual int CompareTo(IcdDisease other)

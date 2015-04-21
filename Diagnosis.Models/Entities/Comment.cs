@@ -30,12 +30,8 @@ namespace Diagnosis.Models
             var comment = hio as Comment;
             if (comment != null)
                 return this.CompareTo(comment);
-
-            var word = hio as Word;
-            if (word != null)
-                return -1;
-
-            return 1;
+            else
+                return new HrItemObjectComparer().Compare(this, hio);
         }
 
         public override bool Equals(object obj)
