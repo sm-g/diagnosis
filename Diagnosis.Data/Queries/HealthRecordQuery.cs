@@ -37,12 +37,33 @@ namespace Diagnosis.Data.Queries
         /// </summary>
         public static Func<IEnumerable<Word>, int, IEnumerable<HealthRecord>> WithAnyWords(ISession session)
         {
-            return (words, count) =>
+            return (words, mincount) =>
             {
-                count = count > 0 ? count : 1;
+                mincount = mincount > 0 ? mincount : 1;
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
+
+                    // fix for sqlce
+                    var hrIdQ = session.CreateSQLQuery(string.Join(" ",
+                        "select distinct hr.ID",
+                        "from HealthRecord as hr",
+                        "join HrItem as hri on hr.Id = hri.HealthRecordID",
+                        "join  Word as w on hri.WordID = w.Id",
+                        "where hri.WordID is not null",
+                        "and (hri.WordID in (:words))",
+                        "group by hr.ID",
+                        "having count(hri.WordID)>=:mincount")
+                    );
+                    hrIdQ.SetParameterList("words", wordsIds);
+                    hrIdQ.SetParameter("mincount", mincount);
+
+                    var hrIds = hrIdQ.List<Guid>();
+                    var hrQ = from hr in session.Query<HealthRecord>()
+                              where hrIds.Contains(hr.Id)
+                              select hr;
+
+                    return hrQ.ToList();
 
                     var hrs = from hr in session.Query<HealthRecord>()
                               let hris = from hri in session.Query<HrItem>()
@@ -51,7 +72,7 @@ namespace Diagnosis.Data.Queries
                                          join w in session.Query<Word>() on hri.Word.Id equals w.Id
                                          where wordsIds.Contains(w.Id)
                                          select hri
-                              where hris.Count() >= count
+                              where hris.Count() >= mincount
                               select hr;
                     return hrs.Distinct().ToList();
                 }
