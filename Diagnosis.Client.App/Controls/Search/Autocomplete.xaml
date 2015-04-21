@@ -23,6 +23,10 @@
                     Command="{Binding EditCommand}" />
         <KeyBinding Key="F8"
                     Command="{Binding ToggleConfidenceCommand}" />
+        <KeyBinding Gesture="Control+3"
+                    Command="{Binding AddIcdCommand}" />
+        <KeyBinding Gesture="Control+4"
+                    Command="{Binding AddMeasureCommand}" />
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"

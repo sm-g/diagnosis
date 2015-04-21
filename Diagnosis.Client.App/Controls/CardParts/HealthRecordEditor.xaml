@@ -34,10 +34,6 @@
                     CommandParameter="{StaticResource False}" />
         <KeyBinding Gesture="Control+S"
                     Command="{Binding CloseCommand}" />
-        <KeyBinding Gesture="Control+3"
-                    Command="{Binding AddIcdCommand}" />
-        <KeyBinding Gesture="Control+4"
-                    Command="{Binding AddMeasureCommand}" />
     </UserControl.InputBindings>
     <Grid x:Name="grid"
           AllowDrop="True"
