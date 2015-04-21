@@ -200,7 +200,9 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             Result = new SearchResultViewModel(shrs);
+#if !DEBUG            
             ControlsVisible = false;
+#endif
         }
 
 

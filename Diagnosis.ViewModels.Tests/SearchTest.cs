@@ -568,7 +568,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithTwoExcludingOnly_WithCats1()
+        public void AllInOneHolder_WithTwoExcludingOnly_WithCats()
         {
             // в списке нет записей с 22 категории 2 или 1 и нет записей с 4 категории 1
             Load<HrCategory>();
@@ -628,7 +628,7 @@ namespace Diagnosis.ViewModels.Tests
         //[ExpectedException(typeof(AssertFailedException))]
         public void AnyInOneHolder_TwoExcludingOnly_WithCats()
         {
-            // в спсике нашлась запись без 22 категории 2 или 1 или без 4 категории 1
+            // в списке нашлась запись без 22 категории (2 или 1) или без 4 категории 1
             // то есть все записи
             Load<HrCategory>();
 
