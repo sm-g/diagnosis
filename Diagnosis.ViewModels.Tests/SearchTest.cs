@@ -202,6 +202,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[22]));
         }
+
         [TestMethod]
         public void AllMeasure_AnyMeasure()
         {
@@ -213,6 +214,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[22]));
         }
+
         #endregion Measure
 
         #region Scope
@@ -387,6 +389,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[2]));
             Assert.IsTrue(s.Contains(hr[22]));
         }
+
         [TestMethod]
         public void AllInOneHr_WithExcludingOnly_WithCats()
         {
@@ -464,6 +467,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[20]));
             Assert.IsTrue(s.Contains(hr[22]));
         }
+
         [TestMethod]
         public void AllInOneHolder_WithExcludingOnly_WithCats()
         {
@@ -504,19 +508,17 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AllInOneHolder_ExcludingOnly()
         {
+            // в списке нет записей с 5 или 22
+
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
             .All()
             .AddChild(x => x.SetNot(w[5], w[22]))
             .Search();
 
-            Assert.AreEqual(7, s.Result.Statistic.HealthRecords.Count);
+            Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[1]));
             Assert.IsTrue(s.Contains(hr[2]));
-            Assert.IsTrue(s.Contains(hr[20]));
-            Assert.IsTrue(s.Contains(hr[21]));
-            Assert.IsTrue(s.Contains(hr[31]));
-            Assert.IsTrue(s.Contains(hr[32]));
             Assert.IsTrue(s.Contains(hr[71]));
         }
 
@@ -547,16 +549,14 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[32]));
         }
 
-
-
         [TestMethod]
         public void AllInOneHolder_TwoExcludingOnly()
         {
-            // в списке нет записей с 1 и записей с 22
+            // в списке нет записей с 2 и записей с 22
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
             .All()
-            .AddChild(x => x.SetNot(w[1]))
+            .AddChild(x => x.SetNot(w[2]))
             .AddChild(x => x.SetNot(w[22]))
             .Search();
 
@@ -609,6 +609,7 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(0, s.Result.Statistic.HealthRecords.Count);
         }
+
         [TestMethod]
         public void AllInOneHolder_WithTwoExcludingOnly_WithCats3()
         {
@@ -663,6 +664,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[40], hr[22]));
         }
+
         [TestMethod]
         public void AllInOneHolder_WithExcludingOnly_WithCats2()
         {
@@ -679,8 +681,6 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[40]));
         }
-
-
 
         [TestMethod]
         public void AnyInOneHr_ExcludingOnly_AndCats()
@@ -741,6 +741,7 @@ namespace Diagnosis.ViewModels.Tests
                 hr[22],
                 hr[72]));
         }
+
         [TestMethod]
         public void AllInOneHr_WithCats_FoundAllHrs()
         {
@@ -845,6 +846,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         #region AllAny_WithSingleChild_SameResults
+
         [TestMethod]
         public void AnyInOnePatient()
         {
@@ -858,6 +860,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[2]));
             Assert.IsTrue(s.Contains(hr[32]));
         }
+
         [TestMethod]
         public void AnyInOneHolder_ExcludingOnly()
         {
@@ -881,6 +884,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[32]));
             Assert.IsTrue(s.Contains(hr[71]));
         }
+
         [TestMethod]
         public void AnyInOneHr_WithCats_FoundAllHrs()
         {
@@ -896,6 +900,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[22]));
             Assert.IsTrue(s.Contains(hr[40]));
         }
+
         [TestMethod]
         public void AnyInOneHr_ExcludingOnly_WithCats()
         {
@@ -913,14 +918,15 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[31], hr[40]));
         }
-        #endregion
+
+        #endregion AllAny_WithSingleChild_SameResults
 
         #endregion Scope
+
         private System.Collections.Generic.IEnumerable<HrCategory> AllCats()
         {
             return cat.Values.Union(HrCategory.Null.ToEnumerable());
         }
-
     }
 
     public static class QbExtensions
@@ -968,11 +974,13 @@ namespace Diagnosis.ViewModels.Tests
             qb.AutocompleteNot.ReplaceTagsWith(not);
             return qb;
         }
+
         public static QueryBlockViewModel MinAny(this QueryBlockViewModel qb, int min)
         {
             qb.AnyMin = min;
             return qb;
         }
+
         public static QueryBlockViewModel Check(this QueryBlockViewModel qb, params HrCategory[] cats)
         {
             qb.SelectCategory(cats);
