@@ -337,7 +337,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _addSyblingQbCommand ?? (_addSyblingQbCommand = new VisibleRelayCommand(() =>
                 {
-                    Parent.AddChildQb();
+                    var brother = Parent.AddChildQb();
+                    brother.IsSelected = true;
                 }, () => !IsRoot)
                 {
                     IsVisible = !IsRoot
