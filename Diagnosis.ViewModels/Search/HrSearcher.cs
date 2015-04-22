@@ -96,7 +96,7 @@ namespace Diagnosis.ViewModels.Search
             return hrs.ToList();
         }
 
-        public IEnumerable<HealthRecord> SearchOld(ISession session, HrSearchOptions options)
+        public IEnumerable<HealthRecord> SearchOld(ISession session, OldHrSearchOptions options)
         {
             Contract.Requires(options != null);
             Contract.Requires(session != null);
@@ -252,8 +252,8 @@ namespace Diagnosis.ViewModels.Search
             {
                 case SearchScope.HealthRecord:
                     // не проходят отдельные записи, у которых совпадает атрибут и есть исключенные слова
-                    return from holderHrs in beforeExclude
-                           from hr in holderHrs.Value
+                    return from hrs in beforeExclude.Values
+                           from hr in hrs
                            from e in ex
                            where !(
                                     (!e.Cats.Any() || e.Cats.Contains(hr.Category)) &&
@@ -308,7 +308,7 @@ namespace Diagnosis.ViewModels.Search
 
             switch (qb.SearchScope)
             {
-                case SearchScope.HealthRecord:
+                case SearchScope.HealthRecord: // группировка по holder не используется
                     if (qb.All)
                         return InOneHr(qbResults);
                     else

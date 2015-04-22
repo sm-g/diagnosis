@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
+    [Serializable]
     public class HrCategory : EntityBase<Guid>, IDomainObject, IComparable, IEquatable<HrCategory>
     {
         public static HrCategory Null = new HrCategory("Не задано", int.MaxValue); // upper case to show in checkbox

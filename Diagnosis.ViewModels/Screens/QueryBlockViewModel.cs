@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class QueryBlockViewModel : HierarchicalBase<QueryBlockViewModel>
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(QueryBlockViewModel));
         private ISession session;
         private Action executeSearch;
 
@@ -60,11 +61,36 @@ namespace Diagnosis.ViewModels.Screens
             {
                 IsGroup = Children.Count > 0;
                 OnPropertyChanged(() => AllEmpty);
+
+                switch (e.Action)
+                {
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                        Options.Children.Add((e.NewItems[0] as QueryBlockViewModel).Options);
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                        Options.Children.Remove((e.OldItems[0] as QueryBlockViewModel).Options);
+                        break;
+                    default:
+                        break;
+                }
             };
 
             All = true;
-        }
+            AnyMin = 1;
 
+            this.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case "IsSelected":
+                    case "IsGroup":
+                    case "IsExpanded":
+                        RefreshDescription();
+                        OnPropertyChanged(() => DescriptionVisible);
+                        break;
+                }
+            };
+        }
         [Obsolete("For xaml only.")]
         public QueryBlockViewModel()
         {
@@ -115,10 +141,11 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public HrSearchOptions Options
         {
-            get { return _options; }
+            get { return _options ?? (_options = MakeOptions()); }
             private set
             {
                 _options = value;
+                logger.DebugFormat("{0}", value);
                 OnPropertyChanged("Options");
             }
         }
@@ -140,12 +167,12 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         OnPropertyChanged(() => SelectedCategories);
                         OnPropertyChanged(() => AllEmpty);
+                        RefreshDescription();
                     });
                 }
                 return _categories;
             }
         }
-
         public IList<HrCategoryViewModel> SelectedCategories
         {
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
@@ -173,7 +200,6 @@ namespace Diagnosis.ViewModels.Screens
 
         /// <summary>
         /// Исключающий блок, только "без".
-        /// Категория?
         /// </summary>
         public bool IsExcluding
         {
@@ -189,7 +215,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return !IsSelected && !IsGroup;
+                return (!IsSelected && !IsGroup) ||
+                        !IsExpanded && IsGroup;
             }
         }
 
@@ -241,6 +268,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_sscope != value)
                 {
                     _sscope = value;
+                    RefreshDescription();
                     OnPropertyChanged(() => SearchScope);
                 }
             }
@@ -259,6 +287,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_all != value)
                 {
                     _all = value;
+                    RefreshDescription();
                     OnPropertyChanged(() => All);
                 }
             }
@@ -316,9 +345,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             var options = new HrSearchOptions();
 
-            options.AllWords = AllWords;
-            options.QueryScope = QueryScope;
-
             options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
             options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
             options.WordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
@@ -328,8 +354,34 @@ namespace Diagnosis.ViewModels.Screens
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.MinAny = AnyMin;
+            options.All = All;
+            options.Scope = SearchScope;
 
+            if (_options != null) // копируем детей
+            {
+                _options.Children.ForAll(x =>
+                    options.Children.Add(x));
+            }
+            if (!IsRoot && _options != null) // изменились - обновляем ссылку в родительских опциях через родительский блок
+            {
+                Parent.Options.Children.Remove(_options);
+                Parent.Options.Children.Add(options);
+            }
             Options = options;
+            return options;
+        }
+        public OldHrSearchOptions GetOldOptions()
+        {
+            var options = new OldHrSearchOptions();
+
+            options.AllWords = AllWords;
+            options.QueryScope = QueryScope;
+
+            options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+
+            options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+
+            options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             return options;
         }
 
@@ -342,15 +394,6 @@ namespace Diagnosis.ViewModels.Screens
 
         }
 
-        protected override void OnSelectedChanged()
-        {
-            base.OnSelectedChanged();
-            if (!IsSelected)
-            {
-                MakeOptions();
-            }
-            OnPropertyChanged(() => DescriptionVisible);
-        }
 
         protected override void Dispose(bool disposing)
         {
@@ -374,6 +417,12 @@ namespace Diagnosis.ViewModels.Screens
         public override string ToString()
         {
             return string.Format("{0} {1}", All, SearchScope);
+        }
+
+        private void RefreshDescription()
+        {
+            if (DescriptionVisible)
+                MakeOptions();
         }
 
         private QueryBlockViewModel AddChildQb()
@@ -402,11 +451,16 @@ namespace Diagnosis.ViewModels.Screens
         private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
+
         }
 
         private void Autocomplete_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsEmpty") { OnPropertyChanged(() => AllEmpty); }
+            if (e.PropertyName == "IsEmpty")
+            {
+                OnPropertyChanged(() => AllEmpty);
+                RefreshDescription();
+            }
         }
 
         [ContractInvariantMethod]

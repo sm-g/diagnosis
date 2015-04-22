@@ -10,8 +10,11 @@ namespace Diagnosis.ViewModels.Search
 {
     public class SearchResultViewModel : ViewModelBase
     {
-        public SearchResultViewModel(IEnumerable<HealthRecord> hrs)
+        private HrSearchOptions _options;
+        public SearchResultViewModel(IEnumerable<HealthRecord> hrs, HrSearchOptions options)
         {
+            Options = options;
+
             Patients = new ObservableCollection<HrHolderSearchResultViewModel>();
 
             HrHolderSearchResultViewModel.MakeFrom(hrs).ForAll(x =>
@@ -27,6 +30,18 @@ namespace Diagnosis.ViewModels.Search
 
         public Statistic Statistic { get; private set; }
 
+        /// <summary>
+        /// Опции последнго поиска.
+        /// </summary>
+        public HrSearchOptions Options
+        {
+            get { return _options; }
+            private set
+            {
+                _options = value;
+                OnPropertyChanged("Options");
+            }
+        }
         public RelayCommand ExportCommand
         {
             get

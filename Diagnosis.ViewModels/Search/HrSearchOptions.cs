@@ -1,38 +1,142 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using Diagnosis.Data.Queries;
+using System.Collections.ObjectModel;
+using System.Text;
 
 namespace Diagnosis.ViewModels.Search
 {
+    [Serializable]
     public class HrSearchOptions
+    {
+        public HrSearchOptions()
+        {
+            Children = new ObservableCollection<HrSearchOptions>();
+        }
+
+        /// <summary>
+        /// Записи со всеми словами
+        /// </summary>
+        public IEnumerable<Word> WordsAll { get; set; }
+
+        /// <summary>
+        /// И любым словом из
+        /// </summary>
+        public IEnumerable<Word> WordsAny { get; set; }
+
+        /// <summary>
+        /// Хотя бы столько элементов из Any
+        /// </summary>
+        public int MinAny { get; set; }
+
+        /// <summary>
+        /// B ни одного слова из.
+        /// </summary>
+        public IEnumerable<Word> WordsNot { get; set; }
+
+        /// <summary>
+        /// Записи со всеми измерениями
+        /// </summary>
+        public IEnumerable<MeasureOp> MeasuresAll { get; set; }
+
+        /// <summary>
+        /// И любым из
+        /// </summary>
+        public IEnumerable<MeasureOp> MeasuresAny { get; set; }
+
+        /// <summary>
+        /// Категория. Если несколько, то любая их них.
+        /// </summary>
+        public IEnumerable<HrCategory> Categories { get; set; }
+
+        public bool All { get; set; }
+
+        public SearchScope Scope { get; set; }
+
+        public ObservableCollection<HrSearchOptions> Children { get; private set; }
+
+        public bool IsGroup { get { return Children.Count > 0; } }
+
+        public List<ConfindenceHrItemObject> ChiosAll { get; set; }
+
+        public override string ToString()
+        {
+            //var all = "всё {0}".FormatStr(string.Join(", ", WordsAll));
+            //var any = "хотя бы {0} {1}".FormatStr(MinAny, string.Join(", ", WordsAny));
+            //var not = "ни одного {0}".FormatStr(string.Join(", ", WordsNot));
+            //var cat = "разделы {0}".FormatStr(string.Join(", ", Categories));
+            if (IsGroup)
+            {
+                var child = string.Join(All ? " и " : " или ", Children);
+                return "({0} в {1})".FormatStr(child, Scope);
+            }
+            var sb = new StringBuilder();
+
+            //var anystr = string.Join(", ", WordsAny);
+            //var allstr = string.Join(", ", WordsAll);
+
+            var alls = WordsAll;
+            if (WordsAny.Count() <= MinAny)
+                alls = alls.Union(WordsAny); // оставить повторы
+
+            if (alls.Count() > 0)
+            {
+                if (alls.Count() > 1)
+                {
+                    sb.Append("всё: ");
+                }
+                sb.Append(string.Join(", ", alls));
+                sb.Append("/");
+            }
+
+            if (WordsAny.Count() > 0)
+            {
+                if (WordsAny.Count() > MinAny)
+                {
+                    sb.AppendFormat("хотя бы {0}: ", MinAny);
+
+                    sb.Append(string.Join(", ", WordsAny));
+                    sb.Append("/");
+                }
+            }
+
+            if (WordsNot.Count() > 0)
+            {
+                if (WordsNot.Count() > 1)
+                {
+                    sb.AppendFormat("ни одного: ");
+                }
+                else
+                    sb.AppendFormat("без ");
+
+                sb.Append(string.Join(", ", WordsNot));
+                sb.Append("/");
+            }
+            if (Categories.Count() > 0)
+            {
+                sb.AppendFormat("разделы: ");
+                sb.Append(string.Join(", ", Categories));
+                sb.Append("/");
+            }
+            return sb.ToString().Trim('/');
+        }
+    }
+
+    public class OldHrSearchOptions
     {
         /// <summary>
         /// Записи со всеми словами
         /// </summary>
         public IEnumerable<Word> WordsAll { get; set; }
-        /// <summary>
-        /// И любым словом из
-        /// </summary>
-        public IEnumerable<Word> WordsAny { get; set; }
-        /// <summary>
-        /// Хотя бы столько элементов из Any
-        /// </summary>
-        public int MinAny { get; set; }
-        /// <summary>
-        /// B ни одного слова из.
-        /// </summary>
-        public IEnumerable<Word> WordsNot { get; set; }
+
         /// <summary>
         /// Записи со всеми измерениями
         /// </summary>
         public IEnumerable<MeasureOp> MeasuresAll { get; set; }
+
         /// <summary>
-        /// И любым из
-        /// </summary>
-        public IEnumerable<MeasureOp> MeasuresAny { get; set; }
 
         /// <summary>
         /// В области должны быть все слова из запроса.
@@ -48,6 +152,5 @@ namespace Diagnosis.ViewModels.Search
         /// Категория. Если несколько, то любая их них.
         /// </summary>
         public IEnumerable<HrCategory> Categories { get; set; }
-
     }
 }

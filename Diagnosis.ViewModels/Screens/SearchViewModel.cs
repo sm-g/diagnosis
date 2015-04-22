@@ -20,6 +20,7 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandlersManager msgManager;
 
         public const string ToolContentId = "Search";
+        private HrSearchOptions _options;
 
         public SearchViewModel()
         {
@@ -189,17 +190,17 @@ namespace Diagnosis.ViewModels.Screens
         private void Search()
         {
             IEnumerable<HealthRecord> shrs;
+            var options = QueryBlocks[0].MakeOptions();
             if (UseOldMode)
             {
-                QueryBlocks[0].MakeOptions();
-                shrs = new HrSearcher().SearchOld(Session, QueryBlocks[0].Options);
+                shrs = new HrSearcher().SearchOld(Session, RootQueryBlock.GetOldOptions());
             }
             else
             {
                 shrs = HrSearcher.GetResult(Session, QueryBlocks[0]);
             }
 
-            Result = new SearchResultViewModel(shrs);
+            Result = new SearchResultViewModel(shrs, options);
 #if !DEBUG            
             ControlsVisible = false;
 #endif

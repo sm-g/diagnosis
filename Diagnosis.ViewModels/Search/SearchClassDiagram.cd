@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Diagnosis.ViewModels.Search.Exporter" Collapsed="true">
-    <Position X="5.5" Y="1.75" Width="1.5" />
+    <Position X="7" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAAgAAAAAAAASAAAAAABAAgAAAAAAAABAAAAAEAA=</HashCode>
       <FileName>Search\Exporter.cs</FileName>
@@ -24,7 +24,7 @@
   <Class Name="Diagnosis.ViewModels.Search.SearchResultViewModel" Collapsed="true">
     <Position X="4.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAAAAAAgAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAQAABAAAAAAgAAAAAAAAAAAABAAAAABAAAA=</HashCode>
       <FileName>Search\SearchResultViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -35,37 +35,55 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.Search.HrSearcher" Collapsed="true">
-    <Position X="0.5" Y="3.75" Width="1.5" />
+    <Position X="7.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <HashCode>AAAAAAAAACQAAAACgABEAACAAAgCAgABAEBAAAAgwgA=</HashCode>
       <FileName>Search\HrSearcher.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Search.HrSearchOptions" Collapsed="true">
+  <Class Name="Diagnosis.ViewModels.Search.OldHrSearchOptions" Collapsed="true">
     <Position X="7.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgBAAEgECAACAEAAAAAAAAAAEAAEAAAABAQAAEgAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAIAEAAAA=</HashCode>
       <FileName>Search\HrSearchOptions.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.SearchViewModel" Collapsed="true">
+  <Class Name="Diagnosis.ViewModels.Screens.SearchViewModel">
     <Position X="1.75" Y="2.75" Width="1.5" />
-    <NestedTypes>
-      <Class Name="Diagnosis.ViewModels.Screens.SearchViewModel.HrCategoryViewModel" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Screens\SearchViewModel.cs</NewMemberFileName>
-        </TypeIdentifier>
-        <Lollipop Position="0.2" />
-      </Class>
-    </NestedTypes>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AGpIEgAEASAAxAIAICQApNQAEECAFQCAAQQCBIVgAAA=</HashCode>
+      <HashCode>AQBAEgAAQSAIpAAAAgAABEQAAAAAAQCAAQAABAAgAAA=</HashCode>
       <FileName>Screens\SearchViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Result" />
-      <Property Name="Options" />
     </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="QueryBlocks" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.QueryBlockViewModel">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EAAIAAAiASQA0gEGMAMIgFGHEEBAFAABAKQQiAFIACA=</HashCode>
+      <FileName>Screens\QueryBlockViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="AutocompleteAll" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Autocomplete.AutocompleteViewModel" Collapsed="true">
+    <Position X="14.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JARARiIMFbCgxhHiRCGYIAWoGkCBAEA44RQSCxRGSCY=</HashCode>
+      <FileName>Autocomplete\AutocompleteViewModel - ClipboardTarget.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
