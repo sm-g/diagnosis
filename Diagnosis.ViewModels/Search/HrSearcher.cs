@@ -1,7 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Screens;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -135,9 +134,6 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// Записи, возвращаемые блоком.
         /// </summary>
-        /// <param name="session"></param>
-        /// <param name="qb"></param>
-        /// <returns></returns>
         public static IEnumerable<HealthRecord> GetResult(ISession session, HrSearchOptions qb)
         {
             // по исключающим блокам не ищем
@@ -288,9 +284,6 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// Записи, полученные из результатов неисключающих блоков
         /// </summary>
-        /// <param name="qb"></param>
-        /// <param name="qbResults"></param>
-        /// <returns></returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrs(ISession session, HrSearchOptions qb)
         {
             Contract.Requires(!qb.IsExcluding);
@@ -333,7 +326,6 @@ namespace Diagnosis.ViewModels.Search
         ///
         /// И не должно быть ни одной исключающей записи.
         /// </summary>
-        /// <param name="results"></param>
         /// <returns>Все подходящие записи из подходящих областей.</returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolderScope(
             IList<IEnumerable<HealthRecord>> results,
@@ -362,25 +354,28 @@ namespace Diagnosis.ViewModels.Search
             return holderHrs.ToDictionary(x => x.Scope, x => x.Hrs);
         }
 
-        //private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolderScope2(
-        //   IEnumerable<HealthRecord> results,
-        //   Func<HealthRecord, IHrsHolder> holder)
-        //{
-        //    var qbHolderHrs = from hr in results
-        //                      group hr by holder(hr) into g
-        //                      where g.Key.HealthRecords.Count() == g.Count() // все записи списка переданы
-        //                      select new { Hrs = g.Cast<HealthRecord>(), Holder = g.Key };
-
-        //    return qbHolderHrs.ToDictionary(x => x.Holder, x => x.Hrs);
-        //}
+        /// <summary>
+        /// Любое в области
+        ///
+        /// Область попадет в результаты, если нашлась хотя бы одна запись из нее в любом блоке.
+        /// То есть все записи проходят в результаты.
+        /// </summary>
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolderScope(
+            IList<IEnumerable<HealthRecord>> results,
+            Func<HealthRecord, IHrsHolder> getScope)
+        {
+            var q = from hrs in results
+                    from hr in hrs
+                    group hr by getScope(hr) into g
+                    select new { Holder = g.Key, Hrs = g.Cast<HealthRecord>() };
+            return q.ToDictionary(x => x.Holder as IHrsHolder, x => x.Hrs);
+        }
 
         /// <summary>
         /// Все в одной записи
         ///
         /// В результатах пересечение записей каждого блока.
         /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHr(IList<IEnumerable<HealthRecord>> results)
         {
             Contract.Requires(results.Count > 0);
@@ -389,33 +384,10 @@ namespace Diagnosis.ViewModels.Search
         }
 
         /// <summary>
-        /// Пересечение в каждом блоке.
-        /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> Intersect(IList<IEnumerable<HealthRecord>> results)
-        {
-            if (results.Count == 0)
-                return new Dictionary<IHrsHolder, IEnumerable<HealthRecord>>();
-
-            var hrs = results[0];
-            for (int i = 1; i < results.Count; i++)
-            {
-                hrs = hrs.Intersect(results[i]);
-            }
-
-            return hrs
-                .GroupBy(x => x.Holder)
-                .ToDictionary(x => x.Key, x => x.Distinct());
-        }
-
-        /// <summary>
         /// Любое в одной записи
         ///
         /// В результатах все записи полученные из каждого блока.
         /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHr(IList<IEnumerable<HealthRecord>> results)
         {
             return (from hrs in results
@@ -429,8 +401,6 @@ namespace Diagnosis.ViewModels.Search
         /// В каждом блоке должны найтись записи из пациента, тогда пациент попадает в результаты,
         /// где есть все найденные записи из него.
         /// </summary>
-        /// <param name="results"></param>
-        /// <returns></returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOnePatient(IList<IEnumerable<HealthRecord>> results)
         {
             return InOneHolderScope(results, (hr) => hr.GetPatient());
@@ -462,24 +432,27 @@ namespace Diagnosis.ViewModels.Search
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOnePatient(IList<IEnumerable<HealthRecord>> results)
         {
             return AnyInOneHolderScope(results, (hr) => hr.GetPatient());
+        }
 
-        }
         /// <summary>
-        /// Любое в области
-        ///
-        /// Область попадет в результаты, если нашлась хотя бы одна запись из нее в любом блоке.
-        /// То есть все записи проходят в результаты.
+        /// Пересечение в каждом блоке.
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolderScope(
-            IList<IEnumerable<HealthRecord>> results,
-            Func<HealthRecord, IHrsHolder> getScope)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> Intersect(IList<IEnumerable<HealthRecord>> results)
         {
-            var q = from hrs in results
-                    from hr in hrs
-                    group hr by getScope(hr) into g
-                    select new { Holder = g.Key, Hrs = g.Cast<HealthRecord>() };
-            return q.ToDictionary(x => x.Holder as IHrsHolder, x => x.Hrs);
+            if (results.Count == 0)
+                return new Dictionary<IHrsHolder, IEnumerable<HealthRecord>>();
+
+            var hrs = results[0];
+            for (int i = 1; i < results.Count; i++)
+            {
+                hrs = hrs.Intersect(results[i]);
+            }
+
+            return hrs
+                .GroupBy(x => x.Holder)
+                .ToDictionary(x => x.Key, x => x.Distinct());
         }
+
         private static string Log(IEnumerable<HealthRecord> hrs)
         {
             return string.Join<HealthRecord>("\n", hrs.ToArray());
