@@ -6,6 +6,7 @@ using EventAggregator;
 using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -24,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
         private IList<HrCategoryViewModel> _categories;
         private SearchScope _sscope;
         private bool _all;
+        private int _anyMin;
         private bool _group;
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
@@ -67,9 +69,11 @@ namespace Diagnosis.ViewModels.Screens
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
                         Options.Children.Add((e.NewItems[0] as QueryBlockViewModel).Options);
                         break;
+
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
                         Options.Children.Remove((e.OldItems[0] as QueryBlockViewModel).Options);
                         break;
+
                     default:
                         break;
                 }
@@ -90,11 +94,21 @@ namespace Diagnosis.ViewModels.Screens
                         break;
                 }
             };
+
+            AnyMinMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("один", new RelayCommand(()=>AnyMin = 1)),
+                new MenuItem("два", new RelayCommand(()=>AnyMin = 2)),
+                new MenuItem("три", new RelayCommand(()=>AnyMin = 3)),
+            };
         }
+
         [Obsolete("For xaml only.")]
         public QueryBlockViewModel()
         {
         }
+
+        public ObservableCollection<MenuItem> AnyMinMenuItems { get; private set; }
 
         public AutocompleteViewModel AutocompleteAll { get; set; }
 
@@ -116,8 +130,6 @@ namespace Diagnosis.ViewModels.Screens
                     && AutocompleteNot.IsEmpty);
             }
         }
-
-        private int _anyMin;
         public int AnyMin
         {
             get
@@ -133,8 +145,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        public IEnumerable<int> AnyMinValues { get { return Enumerable.Range(1, 3); } }
 
         /// <summary>
         /// Опции поиска.
@@ -173,6 +183,7 @@ namespace Diagnosis.ViewModels.Screens
                 return _categories;
             }
         }
+
         public IList<HrCategoryViewModel> SelectedCategories
         {
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
@@ -273,6 +284,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         /// <summary>
         /// Применить все блоки к области поиска (или достаточно одного).
         /// </summary>
@@ -362,14 +374,19 @@ namespace Diagnosis.ViewModels.Screens
                 _options.Children.ForAll(x =>
                     options.Children.Add(x));
             }
-            if (!IsRoot && _options != null) // изменились - обновляем ссылку в родительских опциях через родительский блок
+            if (!IsRoot && _options != null)
             {
+                // изменились
+                // обновляем ссылку в родительских опциях через родительский блок
+                // у родителей не видно опсиание, поэтому не надо менять опции, при поиске все равно обновляем
                 Parent.Options.Children.Remove(_options);
                 Parent.Options.Children.Add(options);
             }
+
             Options = options;
             return options;
         }
+
         public OldHrSearchOptions GetOldOptions()
         {
             var options = new OldHrSearchOptions();
@@ -391,9 +408,7 @@ namespace Diagnosis.ViewModels.Screens
                       join vm in Categories on c equals vm.category
                       select vm;
             vms.ForEach(x => x.IsChecked = true);
-
         }
-
 
         protected override void Dispose(bool disposing)
         {
@@ -414,6 +429,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
+
         public override string ToString()
         {
             return string.Format("{0} {1}", All, SearchScope);
@@ -443,6 +459,7 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(() => AllEmpty);
             }
         }
+
         private void Autocomplete_InputEnded(object sender, BoolEventArgs e)
         {
             executeSearch();
@@ -451,7 +468,6 @@ namespace Diagnosis.ViewModels.Screens
         private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             CommandManager.InvalidateRequerySuggested(); // when drop tag, search button still disabled
-
         }
 
         private void Autocomplete_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

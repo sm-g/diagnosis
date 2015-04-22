@@ -1,17 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels
 {
-    class MenuItem : ViewModelBase
+    public class MenuItem : ViewModelBase
     {
         private string _text;
-        bool _visible;
+        private bool _visible;
+
+        public MenuItem(string item, ICommand command)
+        {
+            Text = item;
+            Command = command;
+            IsVisible = true;
+            Children = new ObservableCollection<MenuItem>();
+        }
+
         public string Text
         {
             get
@@ -27,9 +33,13 @@ namespace Diagnosis.ViewModels
                 }
             }
         }
+
         public string InputGestureText { get; set; }
+
         public ObservableCollection<MenuItem> Children { get; private set; }
+
         public ICommand Command { get; set; }
+
         public bool IsVisible
         {
             get
@@ -44,13 +54,6 @@ namespace Diagnosis.ViewModels
                     OnPropertyChanged(() => IsVisible);
                 }
             }
-        }
-        public MenuItem(string item, ICommand command)
-        {
-            Text = item;
-            Command = command;
-            IsVisible = true;
-            Children = new ObservableCollection<MenuItem>();
         }
     }
 }

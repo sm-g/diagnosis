@@ -123,9 +123,9 @@
                 <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
                 <Label>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="И хотя бы 1" />
-                        <!--<diag:HyperlinkContextMenu Value="{Binding AnyMin}"
-                                                   ItemsSource="{Binding AnyMinValues}" />-->
+                        <TextBlock Text="И хотя бы " />
+                        <diag:HyperlinkContextMenu Value="{Binding AnyMin}" Width="20"
+                                                   MenuItemsSource="{Binding AnyMinMenuItems}" />
                         <TextBlock Text=" из: " />
                     </StackPanel>
                 </Label>
