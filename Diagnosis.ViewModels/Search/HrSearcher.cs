@@ -333,8 +333,17 @@ namespace Diagnosis.ViewModels.Search
         {
             // плоско все найденные #Блока-Область-Записи
             var qbHolderHrs = results
-                .Select((hrs, i) => new { Numer = i, Gr = hrs.GroupBy(hr => getScope(hr)) })
-                .SelectMany(x => x.Gr.Select(gr => new { Numer = x.Numer, Scope = gr.Key, Hrs = gr.Cast<HealthRecord>() }));
+                .Select((hrs, i) => new
+                {
+                    Numer = i,
+                    Gr = hrs.GroupBy(hr => getScope(hr))
+                })
+                .SelectMany(x => x.Gr.Select(gr => new
+                {
+                    Numer = x.Numer,
+                    Scope = gr.Key,
+                    Hrs = gr.Cast<HealthRecord>()
+                }));
 
             var qbCount = results.Count;
 

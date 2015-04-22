@@ -86,6 +86,32 @@ namespace Diagnosis.Data.Queries
         {
             return (words, scope) =>
             {
+                if (scope == HealthRecordQueryAndScope.HealthRecord)
+                {
+                    // with help of http://stackoverflow.com/questions/8425232/sql-select-all-rows-where-subset-exists
+                    // and http://stackoverflow.com/questions/448203/linq-to-sql-using-group-by-and-countdistinct
+                    // also http://sqlfiddle.com/#!2/327514/1 and http://johnreilly.me/2009/12/sql-contains-all-query/
+                    var wordsIds = words.Select(w => w.Id).ToList();
+
+                    var hriWithAnyWords = (from hr in session.Query<HealthRecord>()
+                                           join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                                           where hri.Word != null
+                                           join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                                           where wordsIds.Contains(w.Id)
+                                           select hri).ToList();
+
+                    // one query - nhib Query Source could not be identified.
+
+                    var hrIds = (from hri in hriWithAnyWords
+                                 group hri by hri.HealthRecord.Id into g
+                                 where g.Select(x => x.Word.Id).Distinct().Count() == wordsIds.Count // а если 2 слова в запросе
+                                 select g.Key).ToList();
+
+                    var qq = from hr in session.Query<HealthRecord>()
+                             where hrIds.Contains(hr.Id)
+                             select hr;
+                    return qq.ToList();
+                }
                 var withAny = WithAnyWord(session)(words);
                 switch (scope)
                 {
@@ -124,14 +150,35 @@ namespace Diagnosis.Data.Queries
                 //var allIds = all.Select(w => w.Id).ToList();
                 //var anyIds = any.Select(w => w.Id).ToList();
                 //var notIds = not.Select(w => w.Id).ToList();
+                //int count = 1;
 
+                //var hriWithAnyWords = (from hr in session.Query<HealthRecord>()
+                //                       join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                //                       where hri.Word != null
+                //                       join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                //                       where allIds.Contains(w.Id)
+                //                       select hri).ToList();
+
+                //// one query - nhib Query Source could not be identified.
+
+                //var hrIds = (from hri in hriWithAnyWords
+                //             group hri by hri.HealthRecord.Id into g
+                //             where g.Select(x => x.Word.Id).Distinct().Count() == allIds.Count
+                //             select g.Key).ToList();
+
+                //var qq = from hr in session.Query<HealthRecord>()
+                //         where hrIds.Contains(hr.Id)
+                //         select hr;
 
                 //var q = from hr in session.Query<HealthRecord>()
-                //        join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
-                //        where hri.Word != null
-                //        join w in session.Query<Word>() on hri.Word.Id equals w.Id
-                //        where !notIds.Contains(w.Id)
-                //        where (anyIds.Count == 0 || anyIds.Contains(w.Id))
+                //        let hris = from hri in session.Query<HrItem>()
+                //                   where hr.Id == hri.HealthRecord.Id
+                //                   where hri.Word != null
+                //                   join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                //                   where !notIds.Contains(w.Id)
+                //                   where (anyIds.Count == 0 || anyIds.Contains(w.Id))
+                //                   select hri
+                //        where hris.Count() >= count
                 //        select hr;
 
                 //var wordsInHr = from hr0 in q

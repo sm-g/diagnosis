@@ -92,6 +92,7 @@ namespace Diagnosis.Data.Mappings
                 {
                     k.Column(Names.Id.HealthRecord);
                 });
+                s.Fetch(CollectionFetchMode.Subselect);
                 s.Inverse(true);
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Access(Accessor.Field);
