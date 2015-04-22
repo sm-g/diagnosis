@@ -356,7 +356,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HrSearchOptions MakeOptions()
         {
-            var options = new HrSearchOptions();
+            var options = new HrSearchOptions(IsRoot);
 
             options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
             options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
@@ -368,7 +368,7 @@ namespace Diagnosis.ViewModels.Screens
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.MinAny = AnyMin;
             options.All = All;
-            options.Scope = SearchScope;
+            options.SearchScope = SearchScope;
 
             if (_options != null) // копируем детей
             {

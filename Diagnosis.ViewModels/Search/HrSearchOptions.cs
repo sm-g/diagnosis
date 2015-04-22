@@ -11,9 +11,10 @@ namespace Diagnosis.ViewModels.Search
     [Serializable]
     public class HrSearchOptions
     {
-        public HrSearchOptions()
+        public HrSearchOptions(bool isRoot = false)
         {
             Children = new ObservableCollection<HrSearchOptions>();
+            IsRoot = isRoot;
         }
 
         /// <summary>
@@ -53,12 +54,21 @@ namespace Diagnosis.ViewModels.Search
 
         public bool All { get; set; }
 
-        public SearchScope Scope { get; set; }
+        public SearchScope SearchScope { get; set; }
 
         public ObservableCollection<HrSearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
-
+        public bool IsRoot { get; private set; }
+        public bool IsExcluding
+        {
+            get
+            {
+                return !IsGroup && WordsAll.Count() == 0 &&
+                                   WordsAny.Count() == 0 &&
+                                   WordsNot.Any();
+            }
+        }
         public List<ConfindenceHrItemObject> ChiosAll { get; set; }
 
         public override string ToString()
@@ -70,7 +80,7 @@ namespace Diagnosis.ViewModels.Search
             if (IsGroup)
             {
                 var child = string.Join(All ? " и " : " или ", Children);
-                return "({0} в {1})".FormatStr(child, Scope);
+                return "({0} в {1})".FormatStr(child, SearchScope);
             }
             var sb = new StringBuilder();
 

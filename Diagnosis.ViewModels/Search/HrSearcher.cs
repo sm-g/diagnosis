@@ -138,7 +138,7 @@ namespace Diagnosis.ViewModels.Search
         /// <param name="session"></param>
         /// <param name="qb"></param>
         /// <returns></returns>
-        public static IEnumerable<HealthRecord> GetResult(ISession session, QueryBlockViewModel qb)
+        public static IEnumerable<HealthRecord> GetResult(ISession session, HrSearchOptions qb)
         {
             // по исключающим блокам не ищем
             Contract.Assume(qb.IsRoot || !qb.IsExcluding);
@@ -178,13 +178,12 @@ namespace Diagnosis.ViewModels.Search
             }
             else
             {
-                var opt = qb.MakeOptions();
-                return new HrSearcher().Search(session, opt);
+                return new HrSearcher().Search(session, qb);
             }
         }
 
         private static IEnumerable<HealthRecord> ApplyExcluding(ISession session,
-            QueryBlockViewModel qb,
+            HrSearchOptions qb,
             bool anyNonExQbInGroup,
             Dictionary<IHrsHolder, IEnumerable<HealthRecord>> beforeExclude)
         {
@@ -195,13 +194,12 @@ namespace Diagnosis.ViewModels.Search
             //
             var ex = from q in qb.Children
                      where q.IsExcluding
-                     let opt = q.MakeOptions()
                      select new
                      {
                          Qb = q,
-                         ExWords = opt.WordsNot,
-                         Cats = opt.Categories,
-                         JustNoHrs = new HrSearcher().SearchJustNoWords(session, opt)
+                         ExWords = q.WordsNot,
+                         Cats = q.Categories,
+                         JustNoHrs = new HrSearcher().SearchJustNoWords(session, q)
                      };
 
             if (!qb.All)
@@ -293,7 +291,7 @@ namespace Diagnosis.ViewModels.Search
         /// <param name="qb"></param>
         /// <param name="qbResults"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrs(ISession session, QueryBlockViewModel qb)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrs(ISession session, HrSearchOptions qb)
         {
             Contract.Requires(!qb.IsExcluding);
 
@@ -342,10 +340,10 @@ namespace Diagnosis.ViewModels.Search
         /// <param name="results"></param>
         /// <returns>Все подходящие записи из подходящих областей.</returns>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolderScope(
-            Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results,
+            Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results,
             Func<HealthRecord, IHrsHolder> getScope)
         {
-            // QueryBlockViewModel только разные значения для группировки
+            // HrSearchOptions только разные значения для группировки
 
             // плоско все найденные Блок-Область-Записи
             var qbHolderHrs = from qbHrs in results
@@ -393,7 +391,7 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHr(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHr(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
             Contract.Requires(results.Count > 0);
 
@@ -405,9 +403,9 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> Intersect(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> Intersect(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
-            // QueryBlockViewModel только разные значения для группировки
+            // HrSearchOptions только разные значения для группировки
 
             if (results.Count == 0)
                 return new Dictionary<IHrsHolder, IEnumerable<HealthRecord>>();
@@ -431,7 +429,7 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHr(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHr(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
             return (from hrs in results.Values
                     from hr in hrs
@@ -446,12 +444,12 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOnePatient(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOnePatient(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
             return InOneHolderScope(results, (hr) => hr.GetPatient());
         }
 
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolder(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolder(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
             return InOneHolderScope(results, (hr) => hr.Holder);
         }
@@ -466,7 +464,7 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolder(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolder(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
             // список и записи из него
             var q = from hrs in results.Values
@@ -484,7 +482,7 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="results"></param>
         /// <returns></returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOnePatient(Dictionary<QueryBlockViewModel, IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOnePatient(Dictionary<HrSearchOptions, IEnumerable<HealthRecord>> results)
         {
             var q = from hrs in results.Values
                     from hr in hrs

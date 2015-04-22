@@ -197,7 +197,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             else
             {
-                shrs = HrSearcher.GetResult(Session, QueryBlocks[0]);
+                shrs = HrSearcher.GetResult(Session, options);
             }
 
             Result = new SearchResultViewModel(shrs, options);
