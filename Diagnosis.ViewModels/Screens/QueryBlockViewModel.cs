@@ -30,34 +30,15 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
 
-        public QueryBlockViewModel(ISession session, Action executeSearch)
+        public QueryBlockViewModel(ISession session, Action executeSearch, HrSearchOptions options = null)
         {
             this.session = session;
             this.executeSearch = executeSearch;
 
-            var rec = new Recognizer(session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true };
-            AutocompleteAll = new AutocompleteViewModel(
-                rec,
-                AutocompleteViewModel.OptionsMode.Search,
-                null);
-            AutocompleteAny = new AutocompleteViewModel(
-                rec,
-                AutocompleteViewModel.OptionsMode.Search,
-                null);
-            AutocompleteNot = new AutocompleteViewModel(
-                rec,
-                AutocompleteViewModel.OptionsMode.Search,
-                null);
+            _all = true;
+            _anyMin = 1;
 
-            AutocompleteAll.InputEnded += Autocomplete_InputEnded;
-            AutocompleteAny.InputEnded += Autocomplete_InputEnded;
-            AutocompleteNot.InputEnded += Autocomplete_InputEnded;
-            AutocompleteAll.PropertyChanged += Autocomplete_PropertyChanged;
-            AutocompleteAny.PropertyChanged += Autocomplete_PropertyChanged;
-            AutocompleteNot.PropertyChanged += Autocomplete_PropertyChanged;
-            AutocompleteAll.Tags.CollectionChanged += Tags_CollectionChanged;
-            AutocompleteAny.Tags.CollectionChanged += Tags_CollectionChanged;
-            AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
+            CreateAutocompletes(session);
 
             Children.CollectionChanged += (s, e) =>
             {
@@ -79,9 +60,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            All = true;
-            AnyMin = 1;
-
             this.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -101,6 +79,9 @@ namespace Diagnosis.ViewModels.Screens
                 new MenuItem("два", new RelayCommand(()=>AnyMin = 2)),
                 new MenuItem("три", new RelayCommand(()=>AnyMin = 3)),
             };
+
+            if (options != null)
+                FillFromOptions(options);
         }
 
         [Obsolete("For xaml only.")]
@@ -130,6 +111,7 @@ namespace Diagnosis.ViewModels.Screens
                     && AutocompleteNot.IsEmpty);
             }
         }
+
         public int AnyMin
         {
             get
@@ -403,6 +385,11 @@ namespace Diagnosis.ViewModels.Screens
             return options;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", All, SearchScope);
+        }
+
         internal void SelectCategory(params HrCategory[] cats)
         {
             var vms = from c in cats
@@ -431,9 +418,47 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
-        public override string ToString()
+        private void CreateAutocompletes(ISession session)
         {
-            return string.Format("{0} {1}", All, SearchScope);
+            var rec = new Recognizer(session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true };
+            AutocompleteAll = new AutocompleteViewModel(
+                rec,
+                AutocompleteViewModel.OptionsMode.Search,
+                null);
+            AutocompleteAny = new AutocompleteViewModel(
+                rec,
+                AutocompleteViewModel.OptionsMode.Search,
+                null);
+            AutocompleteNot = new AutocompleteViewModel(
+                rec,
+                AutocompleteViewModel.OptionsMode.Search,
+                null);
+
+            AutocompleteAll.InputEnded += Autocomplete_InputEnded;
+            AutocompleteAny.InputEnded += Autocomplete_InputEnded;
+            AutocompleteNot.InputEnded += Autocomplete_InputEnded;
+            AutocompleteAll.PropertyChanged += Autocomplete_PropertyChanged;
+            AutocompleteAny.PropertyChanged += Autocomplete_PropertyChanged;
+            AutocompleteNot.PropertyChanged += Autocomplete_PropertyChanged;
+            AutocompleteAll.Tags.CollectionChanged += Tags_CollectionChanged;
+            AutocompleteAny.Tags.CollectionChanged += Tags_CollectionChanged;
+            AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
+        }
+
+        private void FillFromOptions(HrSearchOptions options)
+        {
+            All = options.All;
+            SearchScope = options.SearchScope;
+            AnyMin = options.MinAny;
+            SelectCategory(options.Categories.ToArray());
+
+            AutocompleteAll.ReplaceTagsWith(options.WordsAll);
+            AutocompleteAny.ReplaceTagsWith(options.WordsAny);
+            AutocompleteNot.ReplaceTagsWith(options.WordsNot);
+            // +measure
+
+            foreach (var opt in options.Children)
+                AddChildQb(opt);
         }
 
         private void RefreshDescription()
@@ -442,9 +467,9 @@ namespace Diagnosis.ViewModels.Screens
                 MakeOptions();
         }
 
-        private QueryBlockViewModel AddChildQb()
+        private QueryBlockViewModel AddChildQb(HrSearchOptions options = null)
         {
-            var qb = new QueryBlockViewModel(session, executeSearch);
+            var qb = new QueryBlockViewModel(session, executeSearch, options);
 
             qb.PropertyChanged += qb_PropertyChanged;
 

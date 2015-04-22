@@ -7,6 +7,8 @@ namespace Diagnosis.Models
     public class HrCategory : EntityBase<Guid>, IDomainObject, IComparable, IEquatable<HrCategory>
     {
         public static HrCategory Null = new HrCategory("Не задано", int.MaxValue); // upper case to show in checkbox
+        [NonSerialized]
+        private int _ord;
 
         public HrCategory(string title, int ord)
         {
@@ -24,7 +26,11 @@ namespace Diagnosis.Models
         /// <summary>
         /// Порядок, уникальный.
         /// </summary>
-        public virtual int Ord { get; set; }
+        public virtual int Ord
+        {
+            get { return _ord; }
+            set { _ord = value; }
+        }
 
         public static bool ConsideredNull(HrCategory x)
         {

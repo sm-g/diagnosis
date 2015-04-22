@@ -5,27 +5,49 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Runtime.Serialization;
+using NHibernate;
+using Diagnosis.Data.Queries;
+using Diagnosis.Data.DTOs;
+using AutoMapper;
 
 namespace Diagnosis.ViewModels.Search
 {
+
     [Serializable]
+
     public class HrSearchOptions
     {
-        public HrSearchOptions(bool isRoot = false)
+        [NonSerialized]
+        private bool _isRoot;
+        public HrSearchOptions(bool isRoot)
         {
             Children = new ObservableCollection<HrSearchOptions>();
-            IsRoot = isRoot;
+
+            WordsAll = new List<Word>();
+            WordsAny = new List<Word>();
+            WordsNot = new List<Word>();
+            MeasuresAny = new List<MeasureOp>();
+            MeasuresAll = new List<MeasureOp>();
+            Categories = new List<HrCategory>();
+
+            _isRoot = isRoot;
+        }
+        public HrSearchOptions()
+            : this(false)
+        {
+
         }
 
         /// <summary>
         /// Записи со всеми словами
         /// </summary>
-        public IEnumerable<Word> WordsAll { get; set; }
+        public List<Word> WordsAll { get; set; }
 
         /// <summary>
         /// И любым словом из
         /// </summary>
-        public IEnumerable<Word> WordsAny { get; set; }
+        public List<Word> WordsAny { get; set; }
 
         /// <summary>
         /// Хотя бы столько элементов из Any
@@ -35,22 +57,22 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// B ни одного слова из.
         /// </summary>
-        public IEnumerable<Word> WordsNot { get; set; }
+        public List<Word> WordsNot { get; set; }
 
         /// <summary>
         /// Записи со всеми измерениями
         /// </summary>
-        public IEnumerable<MeasureOp> MeasuresAll { get; set; }
+        public List<MeasureOp> MeasuresAll { get; set; }
 
         /// <summary>
         /// И любым из
         /// </summary>
-        public IEnumerable<MeasureOp> MeasuresAny { get; set; }
+        public List<MeasureOp> MeasuresAny { get; set; }
 
         /// <summary>
         /// Категория. Если несколько, то любая их них.
         /// </summary>
-        public IEnumerable<HrCategory> Categories { get; set; }
+        public List<HrCategory> Categories { get; set; }
 
         public bool All { get; set; }
 
@@ -59,7 +81,8 @@ namespace Diagnosis.ViewModels.Search
         public ObservableCollection<HrSearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
-        public bool IsRoot { get; private set; }
+
+        public bool IsRoot { get { return _isRoot; } }
         public bool IsExcluding
         {
             get
@@ -69,7 +92,7 @@ namespace Diagnosis.ViewModels.Search
                                    WordsNot.Any();
             }
         }
-        public List<ConfindenceHrItemObject> ChiosAll { get; set; }
+        //        public List<ConfindenceHrItemObject> ChiosAll { get; set; }
 
         public override string ToString()
         {
@@ -89,7 +112,7 @@ namespace Diagnosis.ViewModels.Search
 
             var alls = WordsAll;
             if (WordsAny.Count() <= MinAny)
-                alls = alls.Union(WordsAny); // оставить повторы
+                alls.AddRange(WordsAny); // повторы?
 
             if (alls.Count() > 0)
             {
@@ -133,6 +156,7 @@ namespace Diagnosis.ViewModels.Search
             return sb.ToString().Trim('/');
         }
     }
+
 
     public class OldHrSearchOptions
     {

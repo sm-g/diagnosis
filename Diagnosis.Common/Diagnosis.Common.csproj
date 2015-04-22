@@ -136,6 +136,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -152,6 +153,7 @@
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Types\AsyncObservableCollection.cs" />
     <Compile Include="Types\ConnectionInfo.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />

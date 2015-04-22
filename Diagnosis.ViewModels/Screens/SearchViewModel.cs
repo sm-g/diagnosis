@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -27,6 +29,15 @@ namespace Diagnosis.ViewModels.Screens
             ContentId = ToolContentId;
 
             ControlsVisible = true;
+            History = new SearchHistory();
+            History.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "CurrentOptions")
+                {
+                    LoadOptions(History.CurrentOptions);
+                }
+            };
+            Loader = new OptionsLoader(Session, this);
 
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
             AddRootQb();
@@ -94,6 +105,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(Search, () => !AllEmpty);
             }
         }
+
 
         public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; set; }
 
@@ -164,17 +176,23 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private QueryBlockViewModel AddRootQb()
+        public SearchHistory History { get; set; }
+
+        public OptionsLoader Loader { get; set; }
+
+        private QueryBlockViewModel AddRootQb(HrSearchOptions opttions = null)
         {
             if (RootQueryBlock != null)
             {
                 return RootQueryBlock;
             }
-            var qb = new QueryBlockViewModel(Session, () =>
+            var qb = new QueryBlockViewModel(Session,
+                () =>
                 {
                     if (SearchCommand.CanExecute(null))
                         SearchCommand.Execute(null);
-                });
+                },
+                opttions);
             qb.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "AllEmpty")
@@ -201,9 +219,17 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             Result = new SearchResultViewModel(shrs, options);
+            History.AddOptions(options);
 #if !DEBUG            
             ControlsVisible = false;
 #endif
+        }
+
+        public void LoadOptions(HrSearchOptions opt)
+        {
+            QueryBlocks.Clear();
+            AddRootQb(opt);
+            History.AddOptions(opt);
         }
 
 
@@ -280,4 +306,6 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
     }
+
+
 }

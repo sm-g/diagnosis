@@ -11,7 +11,11 @@ namespace Diagnosis.Models
     [Serializable]
     public class UomType : EntityBase<Guid>, IDomainObject, IComparable<UomType>
     {
+        [NonSerialized]
         private ISet<Uom> uoms = new HashSet<Uom>();
+        [NonSerialized]
+        private int _ord;
+
         private string _title;
 
         public UomType(string title, int ord)
@@ -28,7 +32,11 @@ namespace Diagnosis.Models
         /// <summary>
         /// Порядок, уникальный.
         /// </summary>
-        public virtual int Ord { get; set; }
+        public virtual int Ord
+        {
+            get { return _ord; }
+            set { _ord = value; }
+        }
 
         public virtual string Title
         {

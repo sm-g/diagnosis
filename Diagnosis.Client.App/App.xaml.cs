@@ -20,6 +20,7 @@ using System.Windows;
 using NHibernate.Linq;
 using Diagnosis.Models;
 using Diagnosis.Common.Attributes;
+using Diagnosis.Data.DTOs;
 
 namespace Diagnosis.Client.App
 {
@@ -78,6 +79,8 @@ namespace Diagnosis.Client.App
 #endif
 
             DbMaintenance();
+
+            ModelDtosMapper.Map();
 
             StartMainWindow();
         }
