@@ -230,28 +230,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand AddIcdCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    Autocomplete.AddFromEditor(BlankType.Icd);
-                });
-            }
-        }
-
-        public RelayCommand AddMeasureCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    Autocomplete.AddFromEditor(BlankType.Measure);
-                });
-            }
-        }
-
         /// <summary>
         /// Закрывает редактор (даже без записи).
         /// </summary>

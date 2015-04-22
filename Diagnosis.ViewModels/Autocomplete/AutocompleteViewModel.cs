@@ -215,6 +215,27 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
+        public RelayCommand AddIcdCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AddFromEditor(BlankType.Icd);
+                });
+            }
+        }
+
+        public RelayCommand AddMeasureCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AddFromEditor(BlankType.Measure);
+                });
+            }
+        }
 
         public RelayCommand EditCommand
         {
