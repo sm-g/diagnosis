@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels.Search
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrSearcher));
 
-        public IEnumerable<HealthRecord> Search(ISession session, HrSearchOptions options)
+        public IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
         {
             Contract.Requires(options != null);
             Contract.Requires(session != null);
@@ -76,7 +76,7 @@ namespace Diagnosis.ViewModels.Search
             return hrs.ToList();
         }
 
-        public IEnumerable<HealthRecord> SearchJustNoWords(ISession session, HrSearchOptions options)
+        public IEnumerable<HealthRecord> SearchJustNoWords(ISession session, SearchOptions options)
         {
             Contract.Requires(options != null);
             Contract.Requires(session != null);
@@ -134,7 +134,7 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// Записи, возвращаемые блоком.
         /// </summary>
-        public static IEnumerable<HealthRecord> GetResult(ISession session, HrSearchOptions qb)
+        public static IEnumerable<HealthRecord> GetResult(ISession session, SearchOptions qb)
         {
             // по исключающим блокам не ищем
             Contract.Assume(qb.IsRoot || !qb.IsExcluding);
@@ -179,7 +179,7 @@ namespace Diagnosis.ViewModels.Search
         }
 
         private static IEnumerable<HealthRecord> ApplyExcluding(ISession session,
-            HrSearchOptions qb,
+            SearchOptions qb,
             bool anyNonExQbInGroup,
             Dictionary<IHrsHolder, IEnumerable<HealthRecord>> beforeExclude)
         {
@@ -284,7 +284,7 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// Записи, полученные из результатов неисключающих блоков
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrs(ISession session, HrSearchOptions qb)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrs(ISession session, SearchOptions qb)
         {
             Contract.Requires(!qb.IsExcluding);
 

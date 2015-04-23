@@ -22,7 +22,7 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandlersManager msgManager;
 
         public const string ToolContentId = "Search";
-        private HrSearchOptions _options;
+        private SearchOptions _options;
 
         public SearchViewModel()
         {
@@ -180,7 +180,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public OptionsLoader Loader { get; set; }
 
-        private QueryBlockViewModel AddRootQb(HrSearchOptions opttions = null)
+        private QueryBlockViewModel AddRootQb(SearchOptions opttions = null)
         {
             if (RootQueryBlock != null)
             {
@@ -225,7 +225,7 @@ namespace Diagnosis.ViewModels.Screens
 #endif
         }
 
-        public void LoadOptions(HrSearchOptions opt)
+        public void LoadOptions(SearchOptions opt)
         {
             QueryBlocks.Clear();
             AddRootQb(opt);

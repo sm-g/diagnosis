@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private bool _allWords;
         private HealthRecordQueryAndScope _scope;
-        private HrSearchOptions _options;
+        private SearchOptions _options;
         private IList<HrCategoryViewModel> _categories;
         private SearchScope _sscope;
         private bool _all;
@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
 
-        public QueryBlockViewModel(ISession session, Action executeSearch, HrSearchOptions options = null)
+        public QueryBlockViewModel(ISession session, Action executeSearch, SearchOptions options = null)
         {
             this.session = session;
             this.executeSearch = executeSearch;
@@ -131,7 +131,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Опции поиска.
         /// </summary>
-        public HrSearchOptions Options
+        public SearchOptions Options
         {
             get { return _options ?? (_options = MakeOptions()); }
             private set
@@ -336,9 +336,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public HrSearchOptions MakeOptions()
+        public SearchOptions MakeOptions()
         {
-            var options = new HrSearchOptions(IsRoot);
+            var options = new SearchOptions(IsRoot);
 
             options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
             options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
@@ -445,7 +445,7 @@ namespace Diagnosis.ViewModels.Screens
             AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
         }
 
-        private void FillFromOptions(HrSearchOptions options)
+        private void FillFromOptions(SearchOptions options)
         {
             All = options.All;
             SearchScope = options.SearchScope;
@@ -467,7 +467,7 @@ namespace Diagnosis.ViewModels.Screens
                 MakeOptions();
         }
 
-        private QueryBlockViewModel AddChildQb(HrSearchOptions options = null)
+        private QueryBlockViewModel AddChildQb(SearchOptions options = null)
         {
             var qb = new QueryBlockViewModel(session, executeSearch, options);
 

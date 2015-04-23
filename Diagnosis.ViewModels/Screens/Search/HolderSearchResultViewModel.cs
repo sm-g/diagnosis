@@ -8,9 +8,9 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Search
 {
-    public class HrHolderSearchResultViewModel : HierarchicalBase<HrHolderSearchResultViewModel>
+    public class HolderSearchResultViewModel : HierarchicalBase<HolderSearchResultViewModel>
     {
-        private HrHolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> foundHrs = null)
+        private HolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> foundHrs = null)
         {
             Holder = holder;
             // автообновление результатов поиска - сейчас только удаляются запись и добавляется, но не обновляется текст записи
@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         /// <param name="hrs"></param>
         /// <returns></returns>
-        public static IEnumerable<HrHolderSearchResultViewModel> MakeFrom(IEnumerable<HealthRecord> hrs)
+        public static IEnumerable<HolderSearchResultViewModel> MakeFrom(IEnumerable<HealthRecord> hrs)
         {
             return MakeTreeResults1(hrs);
         }
@@ -66,7 +66,7 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        private static IEnumerable<HrHolderSearchResultViewModel> MakeTreeResults1(IEnumerable<HealthRecord> hrs)
+        private static IEnumerable<HolderSearchResultViewModel> MakeTreeResults1(IEnumerable<HealthRecord> hrs)
         {
             // результаты для каждой записи с держателем записи
             var appRvms = CreateResultsWithHolder(hrs, (hr) => hr.Appointment);
@@ -81,7 +81,7 @@ namespace Diagnosis.ViewModels.Search
                 var cRvm = courseRvms.Where(rvm => (Course)rvm.Holder == course).FirstOrDefault();
                 if (cRvm == null)
                 {
-                    cRvm = new HrHolderSearchResultViewModel(course);
+                    cRvm = new HolderSearchResultViewModel(course);
                     courseRvms.Add(cRvm);
                 }
                 cRvm.Children.Add(appRvm);
@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Search
                 var pRvm = patRvms.Where(rvm => (Patient)rvm.Holder == patient).FirstOrDefault();
                 if (pRvm == null)
                 {
-                    pRvm = new HrHolderSearchResultViewModel(patient);
+                    pRvm = new HolderSearchResultViewModel(patient);
                     patRvms.Add(pRvm);
                 }
                 pRvm.Children.Add(courseRvm);
@@ -102,7 +102,7 @@ namespace Diagnosis.ViewModels.Search
             return patRvms;
         }
 
-        private static IEnumerable<HrHolderSearchResultViewModel> MakeTreeResults2(IEnumerable<HealthRecord> hrs)
+        private static IEnumerable<HolderSearchResultViewModel> MakeTreeResults2(IEnumerable<HealthRecord> hrs)
         {
             // сверху вниз, сначала все записи в результатах с пациентом
             var pRvms = CreateResultsWithHolder(hrs, (hr) => hr.GetPatient());
@@ -131,13 +131,13 @@ namespace Diagnosis.ViewModels.Search
         /// <summary>
         /// Создает результаты поиска для найденных записей, группируя по держателю записей.
         /// </summary>
-        private static List<HrHolderSearchResultViewModel> CreateResultsWithHolder(IEnumerable<HealthRecord> hrs, Func<HealthRecord, IHrsHolder> holderOf)
+        private static List<HolderSearchResultViewModel> CreateResultsWithHolder(IEnumerable<HealthRecord> hrs, Func<HealthRecord, IHrsHolder> holderOf)
         {
             return (from hr in hrs
                     where holderOf(hr) != null
                     group hr by holderOf(hr) into g
                     orderby g.Key
-                    select new HrHolderSearchResultViewModel(g.Key, g)).ToList();
+                    select new HolderSearchResultViewModel(g.Key, g)).ToList();
         }
 
         private void Holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

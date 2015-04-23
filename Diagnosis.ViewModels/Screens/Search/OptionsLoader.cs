@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Search
 
         static OptionsLoader()
         {
-            Mapper.CreateMap(typeof(HrSearchOptions), typeof(SearchOptionsDTO));
+            Mapper.CreateMap(typeof(SearchOptions), typeof(SearchOptionsDTO));
         }
 
         public OptionsLoader(ISession session, SearchViewModel s)
@@ -103,9 +103,9 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        public static HrSearchOptions Load(ISession session, SearchOptionsDTO dto)
+        public static SearchOptions Load(ISession session, SearchOptionsDTO dto)
         {
-            var result = new HrSearchOptions();
+            var result = new SearchOptions();
 
             var words = dto.WordsAll.Select(x =>
                 WordQuery.ByTitle(session)(x.Title))

@@ -10,14 +10,14 @@ namespace Diagnosis.ViewModels.Search
 {
     public class SearchResultViewModel : ViewModelBase
     {
-        private HrSearchOptions _options;
-        public SearchResultViewModel(IEnumerable<HealthRecord> hrs, HrSearchOptions options)
+        private SearchOptions _options;
+        public SearchResultViewModel(IEnumerable<HealthRecord> hrs, SearchOptions options)
         {
             Options = options;
 
-            Patients = new ObservableCollection<HrHolderSearchResultViewModel>();
+            Patients = new ObservableCollection<HolderSearchResultViewModel>();
 
-            HrHolderSearchResultViewModel.MakeFrom(hrs).ForAll(x =>
+            HolderSearchResultViewModel.MakeFrom(hrs).ForAll(x =>
             {
                 x.ForBranch(rvm => rvm.IsExpanded = true);
                 Patients.Add(x);
@@ -26,14 +26,14 @@ namespace Diagnosis.ViewModels.Search
             Statistic = new Statistic(hrs);
         }
 
-        public ObservableCollection<HrHolderSearchResultViewModel> Patients { get; private set; }
+        public ObservableCollection<HolderSearchResultViewModel> Patients { get; private set; }
 
         public Statistic Statistic { get; private set; }
 
         /// <summary>
         /// Опции последнго поиска.
         /// </summary>
-        public HrSearchOptions Options
+        public SearchOptions Options
         {
             get { return _options; }
             private set

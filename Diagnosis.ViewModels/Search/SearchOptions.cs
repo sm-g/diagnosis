@@ -16,13 +16,13 @@ namespace Diagnosis.ViewModels.Search
 
     [Serializable]
 
-    public class HrSearchOptions
+    public class SearchOptions
     {
         [NonSerialized]
         private bool _isRoot;
-        public HrSearchOptions(bool isRoot)
+        public SearchOptions(bool isRoot)
         {
-            Children = new ObservableCollection<HrSearchOptions>();
+            Children = new ObservableCollection<SearchOptions>();
 
             WordsAll = new List<Word>();
             WordsAny = new List<Word>();
@@ -33,7 +33,7 @@ namespace Diagnosis.ViewModels.Search
 
             _isRoot = isRoot;
         }
-        public HrSearchOptions()
+        public SearchOptions()
             : this(false)
         {
 
@@ -78,7 +78,7 @@ namespace Diagnosis.ViewModels.Search
 
         public SearchScope SearchScope { get; set; }
 
-        public ObservableCollection<HrSearchOptions> Children { get; private set; }
+        public ObservableCollection<SearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
 

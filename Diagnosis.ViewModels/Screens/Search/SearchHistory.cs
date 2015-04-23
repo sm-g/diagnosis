@@ -9,12 +9,12 @@ namespace Diagnosis.ViewModels.Search
 {
     public class SearchHistory : ViewModelBase
     {
-        private HrSearchOptions _currentOptions;
+        private SearchOptions _currentOptions;
         private int currnetPos;
 
         public SearchHistory()
         {
-            History = new ObservableCollection<HrSearchOptions>();
+            History = new ObservableCollection<SearchOptions>();
         }
 
         public RelayCommand NextOptionsCommand
@@ -41,9 +41,9 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        public ObservableCollection<HrSearchOptions> History { get; private set; }
+        public ObservableCollection<SearchOptions> History { get; private set; }
 
-        public HrSearchOptions CurrentOptions
+        public SearchOptions CurrentOptions
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        public void AddOptions(HrSearchOptions opt)
+        public void AddOptions(SearchOptions opt)
         {
             if (History.Contains(opt))
                 return;
