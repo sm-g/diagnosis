@@ -137,6 +137,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_anyMin != value)
                 {
                     _anyMin = value;
+                    RefreshDescription();
                     OnPropertyChanged(() => AnyMin);
                 }
             }
@@ -312,6 +313,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_operator != value)
                 {
                     _operator = value;
+                    RefreshDescription();
                     OnPropertyChanged(() => GroupOperator);
                 }
             }
