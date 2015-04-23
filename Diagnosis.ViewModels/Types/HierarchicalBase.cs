@@ -41,6 +41,7 @@ namespace Diagnosis.ViewModels
             {
                 _parent = value;
                 OnPropertyChanged("Parent");
+                OnPropertyChanged(() => Level);
                 OnParentChanged(new HierarchicalEventAgrs<T>((T)this));
             }
         }
@@ -101,6 +102,23 @@ namespace Diagnosis.ViewModels
                     _isExpanded = value;
                     OnPropertyChanged("IsExpanded");
                 }
+            }
+        }
+        /// <summary>
+        /// Уровень иерархии, 0 у корня.
+        /// </summary>
+        public int Level
+        {
+            get
+            {
+                var hb = this;
+                int level = 0;
+                while (!hb.IsRoot)
+                {
+                    hb = hb.Parent;
+                    level++;
+                }
+                return level;
             }
         }
 

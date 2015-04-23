@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        public ObservableCollection<SearchOptions> History { get; private set; }
+        ObservableCollection<SearchOptions> History { get; set; }
 
         public SearchOptions CurrentOptions
         {
@@ -51,13 +51,18 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        public void AddOptions(SearchOptions opt)
+        public void Memorize(SearchOptions opt)
         {
-            if (History.Contains(opt))
-                return;
-
-            History.Add(opt);
-            currnetPos = History.Count - 1;
+            var ind = History.IndexOf(opt);
+            if (ind >= 0)
+            {
+                currnetPos = ind;
+            }
+            else
+            {
+                History.Add(opt);
+                currnetPos = History.Count - 1;
+            }
             OnPropertyChanged(() => CurrentOptions);
         }
     }

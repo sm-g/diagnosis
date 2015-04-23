@@ -13,6 +13,7 @@ namespace Diagnosis.ViewModels.Search
     public class OptionsLoader : ViewModelBase
     {
         private string _buffer;
+        private bool _part;
         private bool _showB;
         private SearchViewModel searchVm;
         private ISession session;
@@ -34,13 +35,20 @@ namespace Diagnosis.ViewModels.Search
             {
                 return new RelayCommand(() =>
                 {
-                    var dto = Buffer.DeserializeDC<SearchOptionsDTO>();
-                    var opt = Load(session, dto);
-                    searchVm.LoadOptions(opt);
+                    try
+                    {
+                        var dto = Buffer.DeserializeDC<SearchOptionsDTO>();
+                        var opt = Load(session, dto);
+                        searchVm.SetOptions(opt);
+                        Buffer = "";
+                        ShowBuffer = false;
+                    }
+                    catch (Exception)
+                    {
 
-                    Buffer = "";
-                    ShowBuffer = false;
-                });
+                    }
+
+                }, () => ShowBuffer);
             }
         }
 
@@ -50,10 +58,17 @@ namespace Diagnosis.ViewModels.Search
             {
                 return new RelayCommand(() =>
                 {
-                    if (searchVm.History.CurrentOptions != null)
+                    if (searchVm.RootQueryBlock != null)
                     {
-                        var dto = Mapper.Map<SearchOptionsDTO>(searchVm.History.CurrentOptions);
-                        Buffer = dto.SerializeDC();
+                        var dto = Mapper.Map<SearchOptionsDTO>(searchVm.RootQueryBlock.GetSearchOptions());
+                        try
+                        {
+                            Buffer = dto.SerializeDC();
+                        }
+                        catch (Exception ex)
+                        {
+                            Buffer = ex.ToString();
+                        }
                         ShowBuffer = true;
                     }
                 });
@@ -102,20 +117,93 @@ namespace Diagnosis.ViewModels.Search
                 }
             }
         }
-
-        public static SearchOptions Load(ISession session, SearchOptionsDTO dto)
+        public bool PartialLoaded
+        {
+            get
+            {
+                return _part;
+            }
+            set
+            {
+                if (_part != value)
+                {
+                    _part = value;
+                    OnPropertyChanged(() => PartialLoaded);
+                }
+            }
+        }
+        /// <summary>
+        /// Делает опции с реальными сущностями.
+        /// </summary>
+        public SearchOptions Load(ISession session, SearchOptionsDTO dto)
         {
             var result = new SearchOptions();
+            result.All = dto.All;
+            result.SearchScope = dto.SearchScope;
+            result.MinAny = dto.MinAny;
 
-            var words = dto.WordsAll.Select(x =>
-                WordQuery.ByTitle(session)(x.Title))
-                .Where(x => x != null);
+            var words = WordQuery.ByTitles(session)(dto.WordsAll.Select(x => x.Title));
             result.WordsAll = new List<Word>(words);
 
-            var cats = dto.Categories.Select(x =>
-              CategoryQuery.ByTitle(session)(x.Title))
-              .Where(x => x != null);
+            words = WordQuery.ByTitles(session)(dto.WordsAny.Select(x => x.Title));
+            result.WordsAny = new List<Word>(words);
+
+            words = WordQuery.ByTitles(session)(dto.WordsNot.Select(x => x.Title));
+            result.WordsNot = new List<Word>(words);
+
+            var mWordTitles = from w in dto.MeasuresAll
+                                         .Union(dto.MeasuresAny)
+                                         .Select(x => x.Word)
+                              where w != null
+                              select w.Title;
+            var mWords = WordQuery.ByTitles(session)(mWordTitles);
+
+            var uomTitles = from u in dto.MeasuresAll
+                                         .Union(dto.MeasuresAny)
+                                         .Select(x => x.Uom)
+                            where u != null
+                            select new { Abbr = u.Abbr, TypeName = u.UomType.Title };
+            var uoms = uomTitles.Select(x => UomQuery.ByAbbrAndTypeName(session)(x.Abbr, x.TypeName));
+
+            var mAll = dto.MeasuresAll.Select(x =>
+                new MeasureOp(x.DbValue,
+                    uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
+                    {
+                        Operator = x.Operator,
+                        Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
+                    });
+            var mAny = dto.MeasuresAny.Select(x =>
+                new MeasureOp(x.DbValue,
+                    uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
+                    {
+                        Operator = x.Operator,
+                        Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
+                    });
+
+            result.MeasuresAll = new List<MeasureOp>(mAll);
+            result.MeasuresAny = new List<MeasureOp>(mAny);
+
+            var cats = CategoryQuery.ByTitles(session)(dto.Categories.Select(x => x.Title));
             result.Categories = new List<HrCategory>(cats);
+
+            dto.Children.ForAll(x =>
+            {
+                var child = Load(session, x);
+                result.Children.Add(child);
+            });
+
+            if (result.WordsAll.Count != dto.WordsAll.Count ||
+                result.WordsAny.Count != dto.WordsAny.Count ||
+                result.WordsNot.Count != dto.WordsNot.Count ||
+                result.MeasuresAll.Count != dto.MeasuresAll.Count ||
+                result.MeasuresAny.Count != dto.MeasuresAny.Count ||
+                result.Categories.Count != dto.Categories.Count
+                )
+            {
+                // чего-то нет на клиенте, запрос не такой, каким был сохранен
+                PartialLoaded = true;
+                result.PartialLoaded = true;
+            }
 
             return result;
         }

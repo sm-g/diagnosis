@@ -137,7 +137,7 @@ namespace Diagnosis.ViewModels.Screens
             private set
             {
                 _options = value;
-                logger.DebugFormat("{0}", value);
+                logger.DebugFormat("options set: {0} \n{1}", this, value);
                 OnPropertyChanged("Options");
             }
         }
@@ -369,6 +369,17 @@ namespace Diagnosis.ViewModels.Screens
             Options = options;
             return options;
         }
+        /// <summary>
+        /// Свежие опции, пригодные для поиска
+        /// </summary>
+        /// <returns></returns>
+        public SearchOptions GetSearchOptions()
+        {
+            if (DescriptionVisible) // обновлять не надо
+                return Options;
+            return MakeOptions();
+        }
+
 
         public OldHrSearchOptions GetOldOptions()
         {
@@ -387,7 +398,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", All, SearchScope);
+            return string.Format("{0}: {1},{2}", Level, All, SearchScope);
         }
 
         internal void SelectCategory(params HrCategory[] cats)
@@ -452,10 +463,9 @@ namespace Diagnosis.ViewModels.Screens
             AnyMin = options.MinAny;
             SelectCategory(options.Categories.ToArray());
 
-            AutocompleteAll.ReplaceTagsWith(options.WordsAll);
-            AutocompleteAny.ReplaceTagsWith(options.WordsAny);
+            AutocompleteAll.ReplaceTagsWith(options.WordsAll.Union<IHrItemObject>(options.MeasuresAll));
+            AutocompleteAny.ReplaceTagsWith(options.WordsAny.Union<IHrItemObject>(options.MeasuresAny));
             AutocompleteNot.ReplaceTagsWith(options.WordsNot);
-            // +measure
 
             foreach (var opt in options.Children)
                 AddChildQb(opt);

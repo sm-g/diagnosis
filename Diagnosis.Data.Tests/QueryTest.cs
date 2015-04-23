@@ -24,7 +24,17 @@ namespace Diagnosis.Data.Tests
             var res = WordQuery.ByTitle(session)(w1.Title.ToUpper());
             Assert.AreEqual(w1, res);
         }
+        [TestMethod]
+        public void WordQueryByTitlesUpperCase()
+        {
+            var w1 = session.Load<Word>(IntToGuid<Word>(1));
+            var w2 = session.Load<Word>(IntToGuid<Word>(2));
+            var res = WordQuery.ByTitles(session)(new[] { w1.Title.ToUpper(), w2.Title.ToUpper() });
 
+            Assert.AreEqual(2, res.Count());
+            Assert.IsTrue(res.Contains(w1));
+            Assert.IsTrue(res.Contains(w2));
+        }
         [TestMethod]
         public void WordQueryStartingWithUpperCase()
         {
@@ -42,10 +52,17 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void UomQueryStartingWithUpperCase()
+        public void UomQueryContainsWithUpperCase()
         {
             var u = session.Load<Uom>(IntToGuid<Uom>(1));
             var res = UomQuery.Contains(session)(u.Abbr.ToUpper());
+            Assert.IsTrue(res.Contains(u));
+        }
+        [TestMethod]
+        public void UomQueryByAbbrAndType()
+        {
+            var u = session.Load<Uom>(IntToGuid<Uom>(1));
+            var res = UomQuery.ByAbbrAndTypeName(session)(u.Abbr, u.Type.Title);
             Assert.IsTrue(res.Contains(u));
         }
 

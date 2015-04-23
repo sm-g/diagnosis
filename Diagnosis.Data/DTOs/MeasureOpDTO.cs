@@ -17,7 +17,7 @@ namespace Diagnosis.Data.DTOs
         [DataMember]
         public WordDTO Word { get; set; }
         [DataMember]
-        public MeasureOp Operator { get; set; }
+        public MeasureOperator Operator { get; set; }
 
     }
 }

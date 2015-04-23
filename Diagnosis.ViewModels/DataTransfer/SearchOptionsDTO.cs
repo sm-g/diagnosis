@@ -32,6 +32,9 @@ namespace Diagnosis.ViewModels.Search
         public bool All { get; set; }
 
         [DataMember]
+        public int MinAny { get; set; }
+
+        [DataMember]
         public SearchScope SearchScope { get; set; }
 
         [DataMember]

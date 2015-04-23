@@ -24,7 +24,7 @@ namespace Diagnosis.Data.Queries
                     if (!str.IsNullOrEmpty())
                     {
                         var disjunction = new Disjunction();
-                        disjunction.Add(Restrictions.On<Uom>(w => w.Abbr).IsLike(str, MatchMode.Anywhere)); // do not work with sqlite
+                        disjunction.Add(Restrictions.On<Uom>(w => w.Abbr).IsInsensitiveLike(str, MatchMode.Anywhere)); // do not work with sqlite
                         disjunction.Add(Restrictions.On<Uom>(w => w.Description).IsInsensitiveLike(str, MatchMode.Anywhere));
 
                         q = q.Where(disjunction);
@@ -34,6 +34,24 @@ namespace Diagnosis.Data.Queries
                             .ThenBy(s => s.Factor)
                             .ThenBy(s => s.Abbr)
                             .ToList();
+                }
+            };
+        }
+
+        public static Func<string, string, Uom> ByAbbrAndTypeName(ISession session)
+        {
+            return (abbr, typename) =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    if (abbr.IsNullOrEmpty() || typename.IsNullOrEmpty())
+                        return null;
+                    UomType type = null;
+                    var q = session.QueryOver<Uom>()
+                        .AndRestrictionOn(w => w.Abbr).IsInsensitiveLike(abbr, MatchMode.Anywhere)
+                        .JoinAlias(x => x.Type, () => type)
+                        .AndRestrictionOn(() => type.Title).IsInsensitiveLike(typename, MatchMode.Anywhere);
+                    return q.SingleOrDefault();
                 }
             };
         }

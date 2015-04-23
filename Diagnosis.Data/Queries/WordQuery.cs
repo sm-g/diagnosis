@@ -44,6 +44,26 @@ namespace Diagnosis.Data.Queries
         }
 
         /// <summary>
+        /// Возвращает существующие слова по заголовкам.
+        /// </summary>
+        public static Func<IEnumerable<string>, IEnumerable<Word>> ByTitles(ISession session)
+        {
+            return (strs) =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    var upper = strs.Select(x => x.ToUpperInvariant()).ToArray();
+                    return session.QueryOver<Word>()
+                        .Where(Restrictions.In(Projections.SqlFunction(
+                                "upper", NHibernateUtil.String,
+                                Projections.Property<Word>(x => x.Title)),
+                            upper))
+                        .List<Word>();
+                }
+            };
+        }
+
+        /// <summary>
         /// Возвращает все слова, которые начинаются на строку.
         /// Если у слова есть родитель, вместо этого слова возвращается самый верхний предок слова.
         ///

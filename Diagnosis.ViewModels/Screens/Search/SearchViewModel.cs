@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "CurrentOptions")
                 {
-                    LoadOptions(History.CurrentOptions);
+                    SetOptions(History.CurrentOptions);
                 }
             };
             Loader = new OptionsLoader(Session, this);
@@ -208,7 +208,7 @@ namespace Diagnosis.ViewModels.Screens
         private void Search()
         {
             IEnumerable<HealthRecord> shrs;
-            var options = QueryBlocks[0].MakeOptions();
+            var options = QueryBlocks[0].GetSearchOptions();
             if (UseOldMode)
             {
                 shrs = new HrSearcher().SearchOld(Session, RootQueryBlock.GetOldOptions());
@@ -219,17 +219,23 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             Result = new SearchResultViewModel(shrs, options);
-            History.AddOptions(options);
+            History.Memorize(options);
 #if !DEBUG            
             ControlsVisible = false;
 #endif
         }
 
-        public void LoadOptions(SearchOptions opt)
+        /// <summary>
+        /// Меняет опции. Текущие опции теряются, если не совпадают.
+        /// </summary>
+        /// <param name="opt"></param>
+        public void SetOptions(SearchOptions opt)
         {
+            if (opt == RootQueryBlock.Options)
+                return;
+
             QueryBlocks.Clear();
             AddRootQb(opt);
-            History.AddOptions(opt);
         }
 
 

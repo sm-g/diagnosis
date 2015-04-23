@@ -21,13 +21,22 @@
         <KeyBinding Key="Enter"
                     Command="{Binding SearchCommand}" />
     </UserControl.InputBindings>
-    <Grid  Margin="5 2">
+    <Grid>
+        <Rectangle Width="3"
+                   HorizontalAlignment="Left"
+                   Fill="Orange"
+                   ToolTip="Блок загружен частично"
+                   Visibility="{Binding Options.PartialLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   >
+        </Rectangle>
+
+        <Grid  Margin="5 2">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
+        
         <DockPanel LastChildFill="False">
             <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <CheckBox IsChecked="{Binding All}"
@@ -149,5 +158,6 @@
                 </forms:CategoryChooser>
             </StackPanel>
         </StackPanel>
+    </Grid>
     </Grid>
 </UserControl>

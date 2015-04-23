@@ -20,6 +20,9 @@ namespace Diagnosis.ViewModels.Search
     {
         [NonSerialized]
         private bool _isRoot;
+        [NonSerialized]
+        private bool _part;
+
         public SearchOptions(bool isRoot)
         {
             Children = new ObservableCollection<SearchOptions>();
@@ -81,7 +84,9 @@ namespace Diagnosis.ViewModels.Search
         public ObservableCollection<SearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
-
+        /// <summary>
+        /// Разрешает искать исключающий блок-корень.
+        /// </summary>
         public bool IsRoot { get { return _isRoot; } }
         public bool IsExcluding
         {
@@ -92,6 +97,14 @@ namespace Diagnosis.ViewModels.Search
                                    WordsNot.Any();
             }
         }
+
+
+        public bool PartialLoaded
+        {
+            get { return _part; }
+            set { _part = value; }
+        }
+
         //        public List<ConfindenceHrItemObject> ChiosAll { get; set; }
 
         public override string ToString()
@@ -109,6 +122,8 @@ namespace Diagnosis.ViewModels.Search
 
             //var anystr = string.Join(", ", WordsAny);
             //var allstr = string.Join(", ", WordsAll);
+
+            // TODO measure
 
             var alls = WordsAll;
             if (WordsAny.Count() <= MinAny)

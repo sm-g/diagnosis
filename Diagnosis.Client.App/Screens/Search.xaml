@@ -63,6 +63,8 @@
                       Content="Старый поиск" />
             <TextBox Text="{Binding Loader.Buffer}"
                      Height="50"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     AcceptsReturn="True"
                      Visibility="{Binding Loader.ShowBuffer, Converter={con:BooleanToVisibilityConverter}}" />
         </StackPanel>
 
