@@ -32,6 +32,7 @@ namespace Diagnosis.Data.Tests
         {
             var hrs = HealthRecordQuery.WithAllWordsInScope(session)(new Word[] { w[1] }, HealthRecordQueryAndScope.HealthRecord);
 
+            Assert.AreEqual(6, hrs.Count());        
             Assert.IsTrue(hrs.Contains(hr[1]));
             Assert.IsTrue(hrs.Contains(hr[2]));
         }
@@ -44,6 +45,15 @@ namespace Diagnosis.Data.Tests
             Assert.AreEqual(2, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[20]));
             Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+
+        [TestMethod]
+        public void WithAllWordsRepeat()
+        {
+            var hrs = HealthRecordQuery.WithAllWordsInScope(session)(new Word[] { w[22], w[22] }, HealthRecordQueryAndScope.HealthRecord);
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[70]));
         }
 
         [TestMethod]

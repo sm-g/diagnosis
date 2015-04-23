@@ -81,6 +81,7 @@ namespace Diagnosis.Data.Queries
 
         /// <summary>
         /// Возвращает записи со всеми словами в области поиска.
+        /// Повторы слов должны быть в записи минимум столько раз, сколько передано.
         /// </summary>
         public static Func<IEnumerable<Word>, HealthRecordQueryAndScope, IEnumerable<HealthRecord>> WithAllWordsInScope(ISession session)
         {
@@ -104,7 +105,7 @@ namespace Diagnosis.Data.Queries
 
                     var hrIds = (from hri in hriWithAnyWords
                                  group hri by hri.HealthRecord.Id into g
-                                 where g.Select(x => x.Word.Id).Distinct().Count() == wordsIds.Count // а если 2 слова в запросе
+                                 where g.Select(x => x.Word.Id).Count() == wordsIds.Count // те hr, где кол-во слов в hri == переданному
                                  select g.Key).ToList();
 
                     var qq = from hr in session.Query<HealthRecord>()
@@ -163,7 +164,7 @@ namespace Diagnosis.Data.Queries
 
                 //var hrIds = (from hri in hriWithAnyWords
                 //             group hri by hri.HealthRecord.Id into g
-                //             where g.Select(x => x.Word.Id).Distinct().Count() == allIds.Count
+                //             where g.Select(x => x.Word.Id).Count() == allIds.Count
                 //             select g.Key).ToList();
 
                 //var qq = from hr in session.Query<HealthRecord>()
