@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
+using System;
 using System.Diagnostics.Contracts;
+
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -56,13 +54,11 @@ namespace Diagnosis.Models
         {
             get
             {
-                return Math.Round(
-                    DbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1),
-                    Uom != null && (Uom.Factor % 1) == 0 ? Scale : 3); // для времени с дробным фактором округляем до 3
+                return GetValueFromDbValue(DbValue);
             }
             set
             {
-                DbValue = value * (Uom != null ? (double)Math.Pow(10, Uom.Factor) : 1);
+                DbValue = ValueToDbValue(value);
             }
         }
 
@@ -89,6 +85,7 @@ namespace Diagnosis.Models
             else
                 return new HrItemObjectComparer().Compare(this, hio);
         }
+
         /// <summary>
         /// Сравнивает измерения учитывая единицу измерения (для OrderedBag).
         /// </summary>
@@ -127,6 +124,47 @@ namespace Diagnosis.Models
             // одинаковые слова и тип единицы - по значению
             var byDbVal = this.DbValue.CompareTo(other.DbValue);
             return byDbVal;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Measure;
+            if (other == null)
+            {
+                return false;
+            }
+            else
+            {
+                // не равны, даже если одно значение выражено разными единицами
+                // 1 л != 1000 мл
+                return this.Word == other.Word && this.Uom == other.Uom && this.DbValue == other.DbValue;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                if (Word != null)
+                    hash = hash * 23 + Word.GetHashCode();
+                if (Uom != null)
+                    hash = hash * 23 + Uom.GetHashCode();
+                hash = hash * 23 + DbValue.GetHashCode();
+                return hash;
+            }
+        }
+
+        internal double ValueToDbValue(double value)
+        {
+            return value * (Uom != null ? (double)Math.Pow(10, Uom.Factor) : 1);
+        }
+
+        internal double GetValueFromDbValue(double dbValue)
+        {
+            return Math.Round(
+                dbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1),
+                Uom != null && (Uom.Factor % 1) == 0 ? Scale : 3); // для времени с дробным фактором округляем до 3
         }
 
         /// <summary>
@@ -168,50 +206,21 @@ namespace Diagnosis.Models
             // нет слов, нельзя сравнить
             return null;
         }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as Measure;
-            if (other == null)
-            {
-                return false;
-            }
-            else
-            {
-                // не равны, даже если одно значение выражено разными единицами
-                // 1 л != 1000 мл
-                return this.Word == other.Word && this.Uom == other.Uom && this.DbValue == other.DbValue;
-            }
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                if (Word != null)
-                    hash = hash * 23 + Word.GetHashCode();
-                if (Uom != null)
-                    hash = hash * 23 + Uom.GetHashCode();
-                hash = hash * 23 + DbValue.GetHashCode();
-                return hash;
-            }
-        }
     }
 
     [Serializable]
     public class MeasureOp : Measure
     {
         private MeasureOperator op;
-        double leftValue;
+        private double andDbValue;
 
         public MeasureOp(MeasureOperator op, double value, Uom uom = null, Word word = null)
             : base(value, uom, word)
         {
             Operator = op;
-            if (value < LeftBetweenValue)
+            if (value > RightBetweenValue)
             {
-                LeftBetweenValue--;
+                RightBetweenValue++;
             }
         }
 
@@ -221,23 +230,57 @@ namespace Diagnosis.Models
             set { op = value; }
         }
 
-        public double LeftBetweenValue
+        public double RightBetweenValue
         {
-            get { return leftValue; }
+            get
+            {
+                return GetValueFromDbValue(RightBetweenDbValue);
+            }
             set
             {
-                if (value > DbValue)
+                RightBetweenDbValue = ValueToDbValue(value);
+            }
+        }
+
+        public double RightBetweenDbValue
+        {
+            get { return andDbValue; }
+            set
+            {
+                if (value < DbValue)
                 {
                     var x = DbValue;
                     DbValue = value;
-                    leftValue = x;
+                    andDbValue = x;
                 }
                 else
                 {
-                    leftValue = value;
+                    andDbValue = value;
                 }
             }
         }
+
+        public override double DbValue
+        {
+            get
+            {
+                return base.DbValue;
+            }
+            protected set
+            {
+                if (value > RightBetweenDbValue)
+                {
+                    var x = RightBetweenDbValue;
+                    RightBetweenDbValue = value;
+                    base.DbValue = x;
+                }
+                else
+                {
+                    base.DbValue = value;
+                }
+            }
+        }
+
         /// <summary>
         /// m Operator this
         /// </summary>
@@ -274,8 +317,8 @@ namespace Diagnosis.Models
                     if (byUom.HasValue && byUom != 0)
                         return false;
 
-                    var byLeftDbVal = m.DbValue.CompareTo(this.LeftBetweenValue);
-                    var byRightDbVal = m.DbValue.CompareTo(this.DbValue);
+                    var byLeftDbVal = m.DbValue.CompareTo(this.DbValue);
+                    var byRightDbVal = m.DbValue.CompareTo(this.RightBetweenValue);
                     return byLeftDbVal >= 0 &&
                            byRightDbVal <= 0;
 
@@ -284,68 +327,20 @@ namespace Diagnosis.Models
             }
         }
 
-        [ContractInvariantMethod]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(LeftBetweenValue <= DbValue);
-        }
-
         public override string ToString()
         {
             string operatorString = AttributesHelper.GetEnumDescription(Operator);
 
-            return string.Format("{0} {1} {2}{3}", Word, operatorString, Value, Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
-        }
-    }
-    /// <summary>
-    /// usage:
-    /// mOp = new MeasureOp(5, MeasureOperator.Equal)
-    /// 
-    /// есть измерения, равные 5
-    /// Measures.Contains(mOp, new MeasureValueComparer(mOp.Operator))
-    /// 
-    /// m == m2 по значению
-    /// new MeasureValueComparer(MeasureOperator.Equal).Equals(m, m2)
-    /// </summary>
-    public class MeasureValueComparer : IEqualityComparer<Measure>
-    {
-        private MeasureOperator op;
-
-        public MeasureValueComparer(MeasureOperator op)
-        {
-            this.op = op;
+            return string.Format("{0} {1} {2}{3}{4}", Word, operatorString, Value,
+                Operator == MeasureOperator.Between ? " и " + RightBetweenValue.ToString() : "",
+                Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
         }
 
-        public bool Equals(Measure x, Measure y)
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
         {
-            switch (op)
-            {
-                case MeasureOperator.GreaterOrEqual:
-                    return x.CompareTo(y) >= 0;
-
-                case MeasureOperator.Greater:
-                    return x.CompareTo(y) > 0;
-
-                case MeasureOperator.Equal:
-                    return x.CompareTo(y) == 0;
-
-                case MeasureOperator.Less:
-                    return x.CompareTo(y) < 0;
-
-                case MeasureOperator.LessOrEqual:
-                    return x.CompareTo(y) <= 0;
-
-                case MeasureOperator.Between:
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-        public int GetHashCode(Measure obj)
-        {
-            // разный хеш - equals not called
-            return 0;
+            Contract.Invariant(RightBetweenValue >= DbValue);
         }
     }
 }

@@ -217,7 +217,7 @@ namespace Diagnosis.Models.Tests
         public void CompareBetween()
         {
             var m = new Measure(1);
-            var op = new MeasureOp(MeasureOperator.Between, 2) { LeftBetweenValue = 1 };
+            var op = new MeasureOp(MeasureOperator.Between, 2) { RightBetweenValue = 1 };
 
             Assert.AreEqual(true, op.ResultFor(m));
         }
