@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Diagnosis.Common;
 
 namespace Diagnosis.Models
 {
@@ -185,16 +186,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            string operatorString = Operator.ToString();
-            FieldInfo fi = Operator.GetType().GetField(operatorString);
-            if (fi != null)
-            {
-                var attribs = fi.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>().ToArray();
-                if (null != attribs && attribs.FirstOrDefault() != null && !String.IsNullOrEmpty(attribs[0].Description))
-                {
-                    operatorString = attribs[0].Description;
-                }
-            }
+            string operatorString = AttributesHelper.GetEnumDescription(Operator);
 
             return string.Format("{0} {1} {2}{3}", Word, operatorString, Value, Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
         }

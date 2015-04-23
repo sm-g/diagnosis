@@ -150,6 +150,7 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Helpers\AttributesHelper.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />

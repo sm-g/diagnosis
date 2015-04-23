@@ -26,18 +26,7 @@ namespace Diagnosis.Common.Presentation.Converters
             // To get around the stupid WPF designer bug
             if (value != null)
             {
-                FieldInfo fi = value.GetType().GetField(value.ToString());
-
-                // To get around the stupid WPF designer bug
-                if (fi != null)
-                {
-                    var attribs = fi.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>().ToArray();
-                    if (null != attribs && attribs.FirstOrDefault() != null && !String.IsNullOrEmpty(attribs[0].Description))
-                    {
-                        return attribs[0].Description;
-                    }
-                    return value.ToString();
-                }
+                return Diagnosis.Common.AttributesHelper.GetEnumDescription(value);
             }
 
             return string.Empty;
