@@ -166,17 +166,13 @@ namespace Diagnosis.ViewModels.Search
             var uoms = uomTitles.Select(x => UomQuery.ByAbbrAndTypeName(session)(x.Abbr, x.TypeName));
 
             var mAll = dto.MeasuresAll.Select(x =>
-                new MeasureOp(x.DbValue,
-                    uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
+                new MeasureOp(x.Operator, x.DbValue, uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
                     {
-                        Operator = x.Operator,
                         Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
                     });
             var mAny = dto.MeasuresAny.Select(x =>
-                new MeasureOp(x.DbValue,
-                    uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
+                new MeasureOp(x.Operator, x.DbValue, uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
                     {
-                        Operator = x.Operator,
                         Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
                     });
 

@@ -173,45 +173,53 @@ namespace Diagnosis.Models.Tests
         public void CompareGr()
         {
             var m = new Measure(5, uom[1]);
-            var m2 = new Measure(1, uom[1]);
-
-            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Greater).Equals(m, m2));
+            var op = new MeasureOp(MeasureOperator.GreaterOrEqual, 1, uom[1]);
+            Assert.AreEqual(true, op.ResultFor(m));
         }
 
         [TestMethod]
         public void CompareGrDiffUom()
         {
             var m = new Measure(2, uom[1]); // 2 л
-            var m2 = new Measure(Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
+            var op = new MeasureOp(MeasureOperator.Greater, Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
 
-            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Greater).Equals(m, m2));
+            Assert.AreEqual(true, op.ResultFor(m));
         }
 
         [TestMethod]
         public void CompareEqDiffUom()
         {
             var m = new Measure(1, uom[1]); // 1 л
-            var m2 = new Measure(Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
+            var op = new MeasureOp(MeasureOperator.Equal, Math.Pow(10, uom[1].Factor - uom[2].Factor), uom[2]); // 1000 мл
 
-            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Equal).Equals(m, m2));
+            Assert.AreEqual(true, op.ResultFor(m));
         }
 
         [TestMethod]
         public void CompareEqDiffUomType()
         {
             var m = new Measure(1, uom[1]);
-            var m2 = new Measure(1, uom[5]);
+            var op = new MeasureOp(MeasureOperator.Equal, 1, uom[5]);
 
-            Assert.AreEqual(false, new ValueComparer(MeasureOperator.Equal).Equals(m, m2));
+            Assert.AreEqual(false, op.ResultFor(m));
         }
 
         [TestMethod]
         public void CompareEqNoUom()
         {
             var m = new Measure(1);
-            var m2 = new Measure(1);
+            var op = new MeasureOp(MeasureOperator.Equal, 1);
 
-            Assert.AreEqual(true, new ValueComparer(MeasureOperator.Equal).Equals(m, m2));
+            Assert.AreEqual(true, op.ResultFor(m));
+        }
+
+        [TestMethod]
+        public void CompareBetween()
+        {
+            var m = new Measure(1);
+            var op = new MeasureOp(MeasureOperator.Between, 2) { LeftBetweenValue = 1 };
+
+            Assert.AreEqual(true, op.ResultFor(m));
         }
 
         #endregion ValueComparer

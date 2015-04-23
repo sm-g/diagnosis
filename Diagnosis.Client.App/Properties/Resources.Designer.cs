@@ -254,6 +254,15 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to между.
+        /// </summary>
+        public static string Operator_Between {
+            get {
+                return ResourceManager.GetString("Operator_Between", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to =.
         /// </summary>
         public static string Operator_Eq {

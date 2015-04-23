@@ -17,6 +17,8 @@ namespace Diagnosis.Models
         [LocalizableDescription(@"Operator_Lt")]
         Less,
         [LocalizableDescription(@"Operator_LtEq")]
-        LessOrEqual
+        LessOrEqual,
+        [LocalizableDescription(@"Operator_Between")]
+        Between
     }
 }

@@ -32,12 +32,12 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             if (measure == null)
             {
-                Measure = WithCompare ? new MeasureOp(0) : new Measure(0);
+                Measure = WithCompare ? new MeasureOp(MeasureOperator.Equal, 0) : new Measure(0);
                 Measure.Word = w;
             }
             else
             {
-                Measure = WithCompare ? new MeasureOp(measure.Value, measure.Uom) : new Measure(measure.Value, measure.Uom);
+                Measure = WithCompare ? new MeasureOp(MeasureOperator.Equal, measure.Value, measure.Uom) : new Measure(measure.Value, measure.Uom);
                 Measure.Word = w ?? measure.Word; // новое слово или бывшее с измерением
                 if (measure is MeasureOp)
                     Operator = (measure as MeasureOp).Operator;

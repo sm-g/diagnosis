@@ -232,4 +232,7 @@
   <data name="QueryGroupOperator_NotAny" xml:space="preserve">
     <value>нет любого</value>
   </data>
+  <data name="Operator_Between" xml:space="preserve">
+    <value>между</value>
+  </data>
 </root>

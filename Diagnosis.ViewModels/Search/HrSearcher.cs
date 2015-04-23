@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels.Search
     public class HrSearcher
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrSearcher));
-
+        static bool logOn = false;
         public IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
         {
             Contract.Requires(options != null);
@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Search
                 // фильтр по WordsAll и MeasuresAny
                 hrsWithM = hrsWithM.Where(x =>
                    options.WordsAll.IsSubsetOf(x.Words) &&
-                   options.MeasuresAny.Any(m => x.Measures.Contains(m, new ValueComparer(m.Operator)))
+                   options.MeasuresAny.Any(op => x.Measures.Any(m => op.ResultFor(m)))
                    );
 
                 if (options.WordsAll.Any() || options.WordsAny.Any())
@@ -54,7 +54,7 @@ namespace Diagnosis.ViewModels.Search
                     // проверяем, набрала ли запись общее кол-во элементов из Any
                     hrs = from hr in hrs
                           let ws = hr.Words.Intersect(options.WordsAny).Count()
-                          let ms = options.MeasuresAny.Where(m => hr.Measures.Contains(m, new ValueComparer(m.Operator))).Count()
+                          let ms = options.MeasuresAny.Where(op => hr.Measures.Any(m => op.ResultFor(m))).Count()
                           where ms + ws >= options.MinAny
                           select hr;
                 }
@@ -63,8 +63,9 @@ namespace Diagnosis.ViewModels.Search
             // все измерения - просто фильтр
             if (options.MeasuresAll.Count() > 0)
             {
+                // одно измерение повторно используется для сравнения
                 hrs = hrs.Where(x =>
-                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
+                   options.MeasuresAll.All(op => x.Measures.Any(m => op.ResultFor(m))));
             }
 
             if (options.Categories.Count() > 0)
@@ -119,7 +120,7 @@ namespace Diagnosis.ViewModels.Search
             if (options.MeasuresAll.Count() > 0)
             {
                 hrs = hrs.Where(x =>
-                   options.MeasuresAll.All(m => x.Measures.Contains(m, new ValueComparer(m.Operator))));
+                   options.MeasuresAll.All(op => x.Measures.Any(m => op.ResultFor(m))));
             }
 
             if (options.Categories.Count() > 0)
@@ -155,13 +156,14 @@ namespace Diagnosis.ViewModels.Search
                     // все записи списка/вообще все - их и хотели найти
                     //    ведь надо что-то показывать
                 }
-
-                logger.DebugFormat("beforeExclude {0}: {1}", beforeExclude.Values.Count(), Log(beforeExclude.SelectMany(d => d.Value)));
+                if (logOn)
+                    logger.DebugFormat("beforeExclude {0}: {1}", beforeExclude.Values.Count(), Log(beforeExclude.SelectMany(d => d.Value)));
 
                 if (anyExQbInGroup)
                 {
                     var hrs = ApplyExcluding(session, qb, anyNonExQbInGroup, beforeExclude);
-                    logger.DebugFormat("apply ex: {0}", Log(hrs));
+                    if (logOn)
+                        logger.DebugFormat("apply ex: {0}", Log(hrs));
                     return hrs;
                 }
                 else
@@ -208,7 +210,8 @@ namespace Diagnosis.ViewModels.Search
                 var beforeHrs = beforeExclude.SelectMany(x => x.Value);
                 var justNo = ex.SelectMany(x => x.JustNoHrs);
 
-                logger.DebugFormat("any. before\n {0}\n+ justNo\n {1}", Log(beforeHrs), Log(justNo));
+                if (logOn)
+                    logger.DebugFormat("any. before\n {0}\n+ justNo\n {1}", Log(beforeHrs), Log(justNo));
 
                 return beforeHrs.Union(justNo).Distinct();
             }
@@ -216,7 +219,8 @@ namespace Diagnosis.ViewModels.Search
             {
                 var exQbHrsList = ex.Select(x => x.JustNoHrs).ToList();
 
-                logger.DebugFormat("all, only ex. justNo {0}", Log(exQbHrsList.SelectMany(d => d)));
+                if (logOn)
+                    logger.DebugFormat("all, only ex. justNo {0}", Log(exQbHrsList.SelectMany(d => d)));
 
                 switch (qb.SearchScope)
                 {
@@ -240,7 +244,8 @@ namespace Diagnosis.ViewModels.Search
                 }
             }
 
-            logger.DebugFormat("all, with non ex, scope {0}", qb.SearchScope);
+            if (logOn)
+                logger.DebugFormat("all, with non ex, scope {0}", qb.SearchScope);
 
             switch (qb.SearchScope)
             {
