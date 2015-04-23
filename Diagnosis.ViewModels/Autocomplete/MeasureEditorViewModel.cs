@@ -12,60 +12,13 @@ namespace Diagnosis.ViewModels.Autocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(MeasureEditorViewModel));
 
+        private readonly bool withCompare;
         private List<Uom> _uoms;
         private string _val;
         private MeasureOperator _op;
         private bool isValueValid;
-        private readonly bool withCompare;
-
-        private MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
-        {
-            this.withCompare = withCompare;
-
-            _uoms = new List<Uom> { Uom.Null };
-            var allUoms = UomQuery.Contains(Session)("");
-            _uoms.AddRange(allUoms);
-
-            var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_uoms);
-            view.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
-
-
-            if (measure == null)
-            {
-                Measure = WithCompare ? new MeasureOp(MeasureOperator.Equal, 0) : new Measure(0);
-                Measure.Word = w;
-            }
-            else
-            {
-                Measure = WithCompare ? new MeasureOp(MeasureOperator.Equal, measure.Value, measure.Uom) : new Measure(measure.Value, measure.Uom);
-                Measure.Word = w ?? measure.Word; // новое слово или бывшее с измерением
-                if (measure is MeasureOp)
-                    Operator = (measure as MeasureOp).Operator;
-            }
-            Value = Measure.Value.ToString();
-
-            Autocomplete = new AutocompleteViewModel(
-                new Recognizer(Session)
-                {
-                    AddQueryToSuggestions = true,
-                    CanChangeAddQueryToSuggstions = false
-                },
-                AutocompleteViewModel.OptionsMode.MeasureEditor,
-                Word == null ? null : new[] { new ConfindenceHrItemObject(Word, Confidence.Present) })
-                {
-                    IsDragSourceEnabled = false,
-                    IsDropTargetEnabled = false
-                };
-            Autocomplete.EntitiesChanged += (s, e) =>
-            {
-                var wordHio = Autocomplete.GetCHIOs().FirstOrDefault();
-                Word = wordHio != null ? wordHio.HIO as Word : null;
-            };
-
-            Title = "Редактирование измерения";
-            HelpTopic = "editmeasure";
-            WithHelpButton = false;
-        }
+        private bool _withAndValue;
+        private string _andval;
 
         /// <summary>
         /// Edit
@@ -93,9 +46,46 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
         }
 
+        private MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
+        {
+            this.withCompare = withCompare;
+
+            _uoms = new List<Uom> { Uom.Null };
+            var allUoms = UomQuery.Contains(Session)("");
+            _uoms.AddRange(allUoms);
+
+            var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_uoms);
+            view.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
+
+            Operator = MeasureOperator.Equal;
+
+            SetupMeasure(measure, w);
+            CreateAutocomplete();
+
+            Title = "Редактирование измерения";
+            HelpTopic = "editmeasure";
+            WithHelpButton = false;
+        }
+
         public AutocompleteViewModel Autocomplete { get; private set; }
 
         public bool WithCompare { get { return withCompare; } }
+
+        public bool WithAndValue
+        {
+            get
+            {
+                return _withAndValue && withCompare;
+            }
+            set
+            {
+                if (_withAndValue != value)
+                {
+                    _withAndValue = value;
+                    OnPropertyChanged(() => WithAndValue);
+                }
+            }
+        }
 
         public Word Word
         {
@@ -109,6 +99,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             set { _val = value; }
         }
 
+        public string AndValue
+        {
+            get { return _andval; }
+            set { _andval = value; }
+        }
+
         public MeasureOperator Operator
         {
             get
@@ -120,7 +116,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_op != value)
                 {
                     _op = value;
-
+                    WithAndValue = _op == MeasureOperator.Between;
                     OnPropertyChanged(() => Operator);
                 }
             }
@@ -153,6 +149,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                 double d;
                 if (columnName == "Value")
                     isValueValid = double.TryParse(Value, out d);
+                if (columnName == "AndValue" && WithAndValue)
+                    isValueValid = double.TryParse(AndValue, out d);
 
                 if (!isValueValid)
                     return "Из этого не получается число.";
@@ -162,9 +160,17 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         protected override void OnOk()
         {
-            Measure.Value = double.Parse(Value);
             if (WithCompare)
-                (Measure as MeasureOp).Operator = Operator;
+            {
+                var op = Measure as MeasureOp;
+                op.Operator = Operator;
+                op.RightBetweenValue = double.Parse(AndValue);
+                op.Value = double.Parse(Value); // corrects RightBetweenValue
+            }
+            else
+            {
+                Measure.Value = double.Parse(Value);
+            }
         }
 
         protected override void OnCancel()
@@ -177,6 +183,49 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
             }
             base.Dispose(disposing);
+        }
+
+        private void SetupMeasure(Measure measure, Word w)
+        {
+            var asOp = measure as MeasureOp;
+            if (measure == null)
+            {
+                Measure = WithCompare ? new MeasureOp(MeasureOperator.Equal, 0) : new Measure(0);
+                Measure.Word = w;
+            }
+            else
+            {
+                if (asOp != null)
+                    Operator = asOp.Operator;
+
+                Measure = WithCompare
+                    ? new MeasureOp(Operator, measure.Value, measure.Uom) { RightBetweenValue = asOp.RightBetweenValue }
+                    : new Measure(measure.Value, measure.Uom);
+                Measure.Word = w ?? measure.Word; // новое слово или бывшее с измерением
+            }
+            Value = Measure.Value.ToString();
+            AndValue = asOp == null ? Value : asOp.RightBetweenValue.ToString();
+        }
+
+        private void CreateAutocomplete()
+        {
+            Autocomplete = new AutocompleteViewModel(
+                new Recognizer(Session)
+                {
+                    AddQueryToSuggestions = true,
+                    CanChangeAddQueryToSuggstions = false
+                },
+                AutocompleteViewModel.OptionsMode.MeasureEditor,
+                Word == null ? null : new[] { new ConfindenceHrItemObject(Word, Confidence.Present) })
+            {
+                IsDragSourceEnabled = false,
+                IsDropTargetEnabled = false
+            };
+            Autocomplete.EntitiesChanged += (s, e) =>
+            {
+                var wordHio = Autocomplete.GetCHIOs().FirstOrDefault();
+                Word = wordHio != null ? wordHio.HIO as Word : null;
+            };
         }
     }
 }

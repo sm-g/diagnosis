@@ -54,7 +54,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return GetValueFromDbValue(DbValue);
+                return DbValueToValue(DbValue);
             }
             set
             {
@@ -160,7 +160,7 @@ namespace Diagnosis.Models
             return value * (Uom != null ? (double)Math.Pow(10, Uom.Factor) : 1);
         }
 
-        internal double GetValueFromDbValue(double dbValue)
+        internal double DbValueToValue(double dbValue)
         {
             return Math.Round(
                 dbValue * (Uom != null ? (double)Math.Pow(10, -Uom.Factor) : 1),
@@ -218,10 +218,7 @@ namespace Diagnosis.Models
             : base(value, uom, word)
         {
             Operator = op;
-            if (value > RightBetweenValue)
-            {
-                RightBetweenValue++;
-            }
+            RightBetweenValue = value;
         }
 
         public MeasureOperator Operator
@@ -234,7 +231,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return GetValueFromDbValue(RightBetweenDbValue);
+                return DbValueToValue(RightBetweenDbValue);
             }
             set
             {
@@ -247,16 +244,20 @@ namespace Diagnosis.Models
             get { return andDbValue; }
             set
             {
-                if (value < DbValue)
-                {
-                    var x = DbValue;
-                    DbValue = value;
-                    andDbValue = x;
-                }
-                else
-                {
-                    andDbValue = value;
-                }
+                andDbValue = value;
+                CorrectValues();
+            }
+        }
+
+        public override double Value
+        {
+            get
+            {
+                return DbValueToValue(DbValue);
+            }
+            set
+            {
+                DbValue = ValueToDbValue(value);
             }
         }
 
@@ -268,19 +269,10 @@ namespace Diagnosis.Models
             }
             protected set
             {
-                if (value > RightBetweenDbValue)
-                {
-                    var x = RightBetweenDbValue;
-                    RightBetweenDbValue = value;
-                    base.DbValue = x;
-                }
-                else
-                {
-                    base.DbValue = value;
-                }
+                base.DbValue = value;
+                CorrectValues();
             }
         }
-
         /// <summary>
         /// m Operator this
         /// </summary>
@@ -336,11 +328,27 @@ namespace Diagnosis.Models
                 Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
         }
 
+        private void CorrectValues()
+        {
+            if (DbValue > RightBetweenDbValue)
+            {
+                if (Operator == MeasureOperator.Between)
+                {
+
+                    var x = RightBetweenDbValue;
+                    RightBetweenDbValue = DbValue;
+                    DbValue = x;
+                }
+                else
+                    RightBetweenDbValue = DbValue;
+            }
+        }
+
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(RightBetweenValue >= DbValue);
+            Contract.Invariant(RightBetweenDbValue >= DbValue);
         }
     }
 }

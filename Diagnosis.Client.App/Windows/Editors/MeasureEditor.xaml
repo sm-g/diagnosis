@@ -7,21 +7,16 @@
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:mahControls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
-             Width="450"
+             Width="550"
              d:DataContext="{d:DesignInstance design:SampleMeasureEditorViewModel,
                                               IsDesignTimeCreatable=True}"
              d:DesignHeight="100">
     <Grid>
         <Grid.Resources>
-            <Style TargetType="DockPanel"
-                   BasedOn="{StaticResource formLine}" />
-            <Style TargetType="Label"
-                   BasedOn="{StaticResource label90}" />
         </Grid.Resources>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -34,16 +29,17 @@
                HorizontalAlignment="Left"
                VerticalAlignment="Top" />
         <Label Content="Сколько"
-               Grid.Column="2"
+               Grid.Column="1"
                Grid.ColumnSpan="2"
                HorizontalAlignment="Left"
                VerticalAlignment="Top" />
         <search:Autocomplete x:Name="autocomplete"
                              DataContext="{Binding Autocomplete}"
+                             Margin="0 0 10 0"
                              Grid.Row="1" />
 
         <ComboBox Grid.Row="1"
-                  Grid.Column="2"
+                  Grid.Column="1"
                   Visibility="{Binding WithCompare, Converter={StaticResource BooleanToVisibilityConverter}}"
                   Margin="0 0 10 0"
                   ItemsSource="{Binding Operators}"
@@ -59,14 +55,34 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="value"
-                     Text="{Binding Value,
+            <UniformGrid Rows="1">
+                <TextBox x:Name="value"
+                         Text="{Binding Value,
                                     Mode=TwoWay,
                                     ValidatesOnDataErrors=True,
                                     UpdateSourceTrigger=PropertyChanged}"
-                     mahControls:TextBoxHelper.SelectAllOnFocus="True"
-                     HorizontalContentAlignment="Right"
-                     VerticalContentAlignment="Top" />
+                         mahControls:TextBoxHelper.SelectAllOnFocus="True"
+                         HorizontalContentAlignment="Right"
+                         VerticalContentAlignment="Top" />
+                <DockPanel
+                           Visibility="{Binding WithAndValue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Grid.Column="1"
+                           FontSize="{StaticResource ContentFontSize}"
+                           VerticalAlignment="Center"
+                           Margin="5 0"
+                           Text="и" />
+
+                <TextBox x:Name="andvalue"
+                         Grid.Column="2"
+                         Text="{Binding AndValue,
+                                    Mode=TwoWay,
+                                    ValidatesOnDataErrors=True,
+                                    UpdateSourceTrigger=PropertyChanged}"
+                         mahControls:TextBoxHelper.SelectAllOnFocus="True"
+                         HorizontalContentAlignment="Right"
+                         VerticalContentAlignment="Top" />
+                </DockPanel>
+            </UniformGrid>
             <ComboBox x:Name="uom"
                       MinWidth="120"
                       SelectedItem="{Binding Uom,
@@ -74,7 +90,7 @@
                       IsEditable="True"
                       ItemsSource="{Binding Uoms}"
                       TextSearch.TextPath="Abbr"
-                      Grid.Column="2">
+                      Grid.Column="4">
                 <ComboBox.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.HeaderTemplate>

@@ -81,6 +81,7 @@
     <Compile Include="HealthRecordTest.cs" />
     <Compile Include="HrCategoryTest.cs" />
     <Compile Include="HrItemTest.cs" />
+    <Compile Include="MeasureOpTest.cs" />
     <Compile Include="MeasureTest.cs" />
     <Compile Include="PatientTest.cs" />
     <Compile Include="RelationsTest.cs" />
