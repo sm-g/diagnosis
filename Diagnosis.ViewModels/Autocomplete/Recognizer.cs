@@ -360,9 +360,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             Word parent = prev as Word;
 
-            var unsaved = AddNotPersistedToSuggestions ?
-                created.Where(w => w.Title.StartsWith(query, StringComparison.InvariantCultureIgnoreCase)) :
-                Enumerable.Empty<Word>();
+            var unsaved = AddNotPersistedToSuggestions
+                ? created.Where(w => w.Title.StartsWith(query, StringComparison.OrdinalIgnoreCase))
+                : Enumerable.Empty<Word>();
 
             var fromDB = ShowChildrenFirst ?
                 WordQuery.StartingWithChildrenFirst(session)(parent, query) :

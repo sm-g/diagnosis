@@ -25,7 +25,7 @@ namespace Diagnosis.Models
         public bool IcdTopLevelOnly
         {
             get
-            {                
+            {
                 bool res = false;
                 bool.TryParse(Get(IcdTopLevelOnlySetting), out res);
                 return res;
@@ -93,13 +93,13 @@ namespace Diagnosis.Models
 
         private string Get(string setting)
         {
-            var set = doctor.SettingsSet.FirstOrDefault(s => s.Title.Equals(setting, StringComparison.InvariantCultureIgnoreCase));
+            var set = doctor.SettingsSet.FirstOrDefault(s => s.Title.Equals(setting, StringComparison.OrdinalIgnoreCase));
             return set != null ? set.Value : null;
         }
 
         private void Set(string setting, string value)
         {
-            var set = doctor.SettingsSet.FirstOrDefault(s => s.Title.Equals(setting, StringComparison.InvariantCultureIgnoreCase));
+            var set = doctor.SettingsSet.FirstOrDefault(s => s.Title.Equals(setting, StringComparison.OrdinalIgnoreCase));
             if (set == null)
             {
                 doctor.SettingsSet.Add(new Setting(doctor, setting) { Value = value });
