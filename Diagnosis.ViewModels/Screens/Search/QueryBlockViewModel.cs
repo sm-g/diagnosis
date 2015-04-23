@@ -36,6 +36,7 @@ namespace Diagnosis.ViewModels.Screens
             this.executeSearch = executeSearch;
 
             _all = true;
+            _operator = QueryGroupOperator.All;
             _anyMin = 1;
 
             CreateAutocompletes(session);
@@ -79,6 +80,17 @@ namespace Diagnosis.ViewModels.Screens
                 new MenuItem("два", new RelayCommand(()=>AnyMin = 2)),
                 new MenuItem("три", new RelayCommand(()=>AnyMin = 3)),
             };
+            GroupOperatorMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("всё", new RelayCommand(()=>GroupOperator=QueryGroupOperator.All)),
+                new MenuItem("любое", new RelayCommand(()=>GroupOperator=QueryGroupOperator.Any)),
+            };
+            SearchScopeMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("запись", new RelayCommand(()=>SearchScope = Models.SearchScope.HealthRecord)),
+                new MenuItem("список", new RelayCommand(()=>SearchScope = Models.SearchScope.Holder)),
+                new MenuItem("пациент", new RelayCommand(()=>SearchScope = Models.SearchScope.Patient)),
+            };
 
             if (options != null)
                 FillFromOptions(options);
@@ -90,6 +102,8 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public ObservableCollection<MenuItem> AnyMinMenuItems { get; private set; }
+        public ObservableCollection<MenuItem> GroupOperatorMenuItems { get; private set; }
+        public ObservableCollection<MenuItem> SearchScopeMenuItems { get; private set; }
 
         public AutocompleteViewModel AutocompleteAll { get; set; }
 
@@ -286,7 +300,22 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        private QueryGroupOperator _operator;
+        public QueryGroupOperator GroupOperator
+        {
+            get
+            {
+                return _operator;
+            }
+            set
+            {
+                if (_operator != value)
+                {
+                    _operator = value;
+                    OnPropertyChanged(() => GroupOperator);
+                }
+            }
+        }
         public VisibleRelayCommand RemoveQbCommand
         {
             get
@@ -349,7 +378,7 @@ namespace Diagnosis.ViewModels.Screens
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.MinAny = AnyMin;
-            options.All = All;
+            options.All = GroupOperator == QueryGroupOperator.All;
             options.SearchScope = SearchScope;
 
             if (_options != null) // копируем детей
@@ -459,6 +488,7 @@ namespace Diagnosis.ViewModels.Screens
         private void FillFromOptions(SearchOptions options)
         {
             All = options.All;
+            GroupOperator = options.All ? QueryGroupOperator.All : QueryGroupOperator.Any;
             SearchScope = options.SearchScope;
             AnyMin = options.MinAny;
             SelectCategory(options.Categories.ToArray());

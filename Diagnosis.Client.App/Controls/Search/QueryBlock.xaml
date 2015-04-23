@@ -30,7 +30,7 @@
                    >
         </Rectangle>
 
-        <Grid  Margin="5 2">
+        <Grid  Margin="5 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -38,16 +38,31 @@
         </Grid.RowDefinitions>
         
         <DockPanel LastChildFill="False">
-            <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <CheckBox IsChecked="{Binding All}"
-                          Content="Всё в одном" />
-                <Label Content="Область поиска" />
-                <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:SearchScope}}}"
+            <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <TextBlock Text="Записи, где "
+                               VerticalAlignment="Center" />
+                    <!--<diag:HyperlinkContextMenu Value="{Binding GroupOperator}"
+                                               ItemConverter="{StaticResource EnumToLabel}"
+                                               MenuItemsSource="{Binding  GroupOperatorMenuItems}" />-->
+                    <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:QueryGroupOperator}}}"
+                              SelectedItem="{Binding GroupOperator, Mode=TwoWay}"
+                              ItemTemplate="{StaticResource EnumComboTemplate}" />
+                    <!--<CheckBox IsChecked="{Binding All}"
+                          Content="всё," />-->
+                    <TextBlock Text=" в области "
+                               VerticalAlignment="Center" />
+                    <!--<diag:HyperlinkContextMenu Value="{Binding SearchScope}"
+                                               ItemConverter="{StaticResource EnumToLabel}"
+                                               MenuItemsSource="{Binding  SearchScopeMenuItems}" />-->
+                    <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:SearchScope}}}"
                           SelectedItem="{Binding SearchScope, Mode=TwoWay}"
                           ItemTemplate="{StaticResource EnumComboTemplate}" />
             </StackPanel>
             <TextBlock Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                       Text="В одной записи" />
+                       VerticalAlignment="Center"
+                       Text="Записи, где" />
 
             <StackPanel Orientation="Horizontal"
                         Style="{StaticResource hidingTreeViewItemPanel}"

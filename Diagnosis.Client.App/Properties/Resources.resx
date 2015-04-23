@@ -223,4 +223,13 @@
   <data name="SearchScope_Patient" xml:space="preserve">
     <value>Пациент</value>
   </data>
+  <data name="QueryGroupOperator_All" xml:space="preserve">
+    <value>всё</value>
+  </data>
+  <data name="QueryGroupOperator_Any" xml:space="preserve">
+    <value>любое</value>
+  </data>
+  <data name="QueryGroupOperator_NotAny" xml:space="preserve">
+    <value>нет любого</value>
+  </data>
 </root>

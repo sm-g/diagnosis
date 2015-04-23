@@ -299,6 +299,33 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to всё.
+        /// </summary>
+        public static string QueryGroupOperator_All {
+            get {
+                return ResourceManager.GetString("QueryGroupOperator_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to любое.
+        /// </summary>
+        public static string QueryGroupOperator_Any {
+            get {
+                return ResourceManager.GetString("QueryGroupOperator_Any", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to нет любого.
+        /// </summary>
+        public static string QueryGroupOperator_NotAny {
+            get {
+                return ResourceManager.GetString("QueryGroupOperator_NotAny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap save_16xLG {

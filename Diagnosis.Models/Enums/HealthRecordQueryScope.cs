@@ -28,4 +28,14 @@ namespace Diagnosis.Models
         [LocalizableDescription(@"SearchScope_Patient")]
         Patient
     }
+
+    public enum QueryGroupOperator
+    {
+        [LocalizableDescription(@"QueryGroupOperator_All")]
+        All,
+        [LocalizableDescription(@"QueryGroupOperator_Any")]
+        Any,
+        [LocalizableDescription(@"QueryGroupOperator_NotAny")]
+        NotAny
+    }
 }

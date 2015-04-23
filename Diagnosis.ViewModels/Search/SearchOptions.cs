@@ -120,14 +120,11 @@ namespace Diagnosis.ViewModels.Search
             }
             var sb = new StringBuilder();
 
-            //var anystr = string.Join(", ", WordsAny);
-            //var allstr = string.Join(", ", WordsAll);
 
-            // TODO measure
-
-            var alls = WordsAll;
-            if (WordsAny.Count() <= MinAny)
-                alls.AddRange(WordsAny); // повторы?
+            var alls = WordsAll.Union<IHrItemObject>(MeasuresAll).ToList();
+            var anys = WordsAny.Union<IHrItemObject>(MeasuresAny);
+            if (anys.Count() <= MinAny)
+                alls.AddRange(anys); // повторы?
 
             if (alls.Count() > 0)
             {
@@ -139,15 +136,12 @@ namespace Diagnosis.ViewModels.Search
                 sb.Append("/");
             }
 
-            if (WordsAny.Count() > 0)
+            if (anys.Count() > MinAny)
             {
-                if (WordsAny.Count() > MinAny)
-                {
-                    sb.AppendFormat("хотя бы {0}: ", MinAny);
+                sb.AppendFormat("хотя бы {0}: ", MinAny);
 
-                    sb.Append(string.Join(", ", WordsAny));
-                    sb.Append("/");
-                }
+                sb.Append(string.Join(", ", anys));
+                sb.Append("/");
             }
 
             if (WordsNot.Count() > 0)

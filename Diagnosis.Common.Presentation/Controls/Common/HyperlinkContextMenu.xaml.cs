@@ -41,6 +41,19 @@ namespace Diagnosis.Common.Presentation.Controls
                 }
             }));
 
+
+
+
+        public IValueConverter ItemConverter
+        {
+            get { return (IValueConverter)GetValue(ItemConverterProperty); }
+            set { SetValue(ItemConverterProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemConverterProperty =
+            DependencyProperty.Register("ItemConverter", typeof(IValueConverter), typeof(HyperlinkContextMenu), new PropertyMetadata(null));
+
+
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             menu.IsOpen = true;

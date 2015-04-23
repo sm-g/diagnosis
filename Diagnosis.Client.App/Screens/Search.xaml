@@ -126,6 +126,10 @@
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="TreeViewItem"
                                    BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                <Setter Property="BorderThickness"
+                                        Value="0,1,0,0" />
+                                <Setter Property="BorderBrush"
+                                        Value="{StaticResource AccentColorBrush2}" />
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <ItemsControl.ItemTemplate>
@@ -147,7 +151,7 @@
                     </TreeView>
                 </Grid>
                 <Button Command="{Binding SearchCommand}"
-                        Margin="10,5,10,10"
+                        Margin="5"
                         HorizontalAlignment="Stretch"
                         Grid.Row="2">Найти</Button>
             </Grid>
