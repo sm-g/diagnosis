@@ -100,6 +100,10 @@ namespace Diagnosis.Models
         public virtual void OnDelete()
         {
             Vocabularies.ForEach(x => x.RemoveWord(this));
+            HealthRecords
+                .Select(x => x.Doctor)
+                .Distinct()
+                .ForEach(x => x.RemoveWordFromCache(this));
         }
 
         public override string ToString()

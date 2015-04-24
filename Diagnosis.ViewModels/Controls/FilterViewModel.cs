@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels.Controls
         private int _updResBound;
         private bool _resultsOnQueryChanges;
         private bool _autoFiltered;
-        private bool filtered;
 
         public FilterViewModel(Func<string, IEnumerable<T>> finder)
         {
@@ -40,7 +39,6 @@ namespace Diagnosis.ViewModels.Controls
                 if (_query != value)
                 {
                     _query = value;
-                    filtered = false;
                     if (IsQueryEmpty)
                     {
                         OnCleared();
@@ -102,9 +100,6 @@ namespace Diagnosis.ViewModels.Controls
 
         public void Filter()
         {
-            if (filtered) return;
-            filtered = true;
-
             IEnumerable<T> res;
             if (IsQueryEmpty)
             {

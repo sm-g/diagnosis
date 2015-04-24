@@ -249,5 +249,10 @@ namespace Diagnosis.Models
             Contract.Requires(hr.Doctor == this);
             healthRecords.Remove(hr);
         }
+
+        protected internal virtual void RemoveWordFromCache(Word word)
+        {
+            cachedWords.Remove(word);
+        }
     }
 }

@@ -19,7 +19,6 @@ namespace Diagnosis.ViewModels.Screens
     {
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;
-        private bool _noWords;
         private WordViewModel _current;
         private EventMessageHandlersManager emhManager;
         private Saver saver;
@@ -50,7 +49,6 @@ namespace Diagnosis.ViewModels.Screens
             });
 
             Title = "Словарь";
-            NoWords = Words.Count == 0;
         }
         public FilterViewModel<Word> Filter
         {
@@ -136,19 +134,20 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
+                    // можно удалить неиспользованные любым врачом слова
                     var toDel = SelectedWords
                         .Select(w => w.word)
                         .Where(w => w.IsEmpty())
                         .ToArray();
 
-                    // todo не просто удалять, а убирать для этого врача
                     toDel.ForAll(x => x.OnDelete());
                     saver.Delete(toDel);
 
-                    // убираем удаленных из списка
+                    // убираем удаленные из списка
                     Filter.Filter();
 
-                    NoWords = Words.Count == 0;
+                    OnPropertyChanged(() => NoWords);
+
                 }, () => SelectedWords.Any(w => w.word.IsEmpty()));
             }
         }
@@ -168,15 +167,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return _noWords;
-            }
-            set
-            {
-                if (_noWords != value)
-                {
-                    _noWords = value;
-                    OnPropertyChanged(() => NoWords);
-                }
+                return doctor.Words.Count() == 0;
             }
         }
 
@@ -204,14 +195,11 @@ namespace Diagnosis.ViewModels.Screens
             // новое слово или изменившееся с учетом фильтра
             Filter.Filter();
 
-            // сохраненное слово с таким текстом
-            var persisted = WordQuery.ByTitle(Session)(saved.Title);
-
-            var vm = Words.Where(w => w.word == persisted).FirstOrDefault();
+            var vm = Words.Where(w => w.word.Title == saved.Title).FirstOrDefault();
             if (vm != null)
                 vm.IsSelected = true;
 
-            NoWords = false;
+            OnPropertyChanged(() => NoWords);
         }
 
         internal void SelectWord(Word w)

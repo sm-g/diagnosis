@@ -45,17 +45,31 @@ namespace Diagnosis.ViewModels.Tests
                 // это слово в двух пользовательских словарях
                 Assert.IsTrue(newW.Vocabularies.Count() == 2);
                 Assert.IsTrue(newW.Vocabularies.All(x => x.IsCustom));
+            }
+        }
+        [TestMethod]
+        public void DeleteWordRemovesFromDoctorVocs()
+        {
+            var newW = CreateWordAsInEditor("123");
 
-                // при удалении одним врачом остается для другого
+            AuthorityController.TryLogIn(d2);
+            var newW2 = CreateWordAsInEditor("123");
+
+            using (var wordList = new WordsListViewModel())
+            {
                 wordList.SelectWord(newW2);
                 wordList.DeleteCommand.Execute(null);
 
                 Assert.IsFalse(wordList.Words.Select(x => x.word).Contains(newW2));
+                Assert.IsFalse(d2.Words.Contains(newW2));
+
                 // пока врач удаляет как админ, сразу для всех врачей
+
+                // при удалении одним врачом остается для другого
+                //Assert.IsTrue(d1.Words.Contains(newW2));
                 //Assert.AreEqual(d1, newW.Vocabularies.Single().Doctor);
             }
         }
-
         [TestMethod]
         public void CanCreateWordInHiddenVoc()
         {
