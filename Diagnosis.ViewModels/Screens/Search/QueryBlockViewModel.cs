@@ -296,6 +296,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_all != value)
                 {
                     _all = value;
+                    _operator = value ? QueryGroupOperator.All : QueryGroupOperator.Any;
                     RefreshDescription();
                     OnPropertyChanged(() => All);
                 }

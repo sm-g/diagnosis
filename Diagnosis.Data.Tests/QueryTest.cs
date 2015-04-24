@@ -63,7 +63,7 @@ namespace Diagnosis.Data.Tests
         {
             var u = session.Load<Uom>(IntToGuid<Uom>(1));
             var res = UomQuery.ByAbbrAndTypeName(session)(u.Abbr, u.Type.Title);
-            Assert.IsTrue(res.Contains(u));
+            Assert.AreEqual(u, res);
         }
 
         [TestMethod]

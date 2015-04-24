@@ -48,9 +48,9 @@ namespace Diagnosis.Data.Queries
                         return null;
                     UomType type = null;
                     var q = session.QueryOver<Uom>()
-                        .AndRestrictionOn(w => w.Abbr).IsInsensitiveLike(abbr, MatchMode.Anywhere)
+                        .AndRestrictionOn(w => w.Abbr).IsInsensitiveLike(abbr, MatchMode.Exact)
                         .JoinAlias(x => x.Type, () => type)
-                        .AndRestrictionOn(() => type.Title).IsInsensitiveLike(typename, MatchMode.Anywhere);
+                        .AndRestrictionOn(() => type.Title).IsInsensitiveLike(typename, MatchMode.Exact);
                     return q.SingleOrDefault();
                 }
             };
