@@ -217,7 +217,9 @@ namespace Diagnosis.ViewModels.Screens
                 switch (screen)
                 {
                     case Screen.Login:
-                        CurrentView = new LoginViewModel();
+                        var vm = new LoginViewModel();
+                        if (!vm.LoggedIn) // автовход - не открываем логин
+                            CurrentView = vm;
                         break;
 
                     case Screen.Doctors:

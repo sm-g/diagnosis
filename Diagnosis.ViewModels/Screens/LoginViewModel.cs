@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (doc != null)
                 {
                     SelectedUser = doc;
-                    DelayedLogon();
+                    AutoLogIn();
                 }
             }
         }
@@ -145,6 +145,7 @@ namespace Diagnosis.ViewModels.Screens
                             user.Passport.Remember = IsRemembered;
                             new Diagnosis.Data.Saver(Session).Save(user);
                         }
+                        LoggedIn = true;
                     }
                     else
                     {
@@ -154,20 +155,12 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void DelayedLogon()
+        public bool LoggedIn { get; set; }
+        
+        private void AutoLogIn()
         {
-            // need time to complete LoginViewModel ctor and change Current screen
-            var timer = new System.Timers.Timer(100);
-            timer.Elapsed += (obj, args) =>
-            {
-                uiTaskFactory.StartNew(()=>
-                {
-                    IsRemembered = true;
-                    LoginCommand.Execute(null);
-                });
-            };
-            timer.AutoReset = false;
-            timer.Start();
+            IsRemembered = true;
+            LoginCommand.Execute(null);
         }
     }
 }
