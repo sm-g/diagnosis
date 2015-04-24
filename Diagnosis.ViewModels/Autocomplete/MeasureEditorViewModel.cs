@@ -116,7 +116,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_op != value)
                 {
                     _op = value;
-                    WithAndValue = _op == MeasureOperator.Between;
+                    WithAndValue = _op.IsBinary();
                     OnPropertyChanged(() => Operator);
                 }
             }
@@ -164,7 +164,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 var op = Measure as MeasureOp;
                 op.Operator = Operator;
-                op.RightBetweenValue = double.Parse(AndValue);
+                op.RightValue = double.Parse(AndValue);
                 op.Value = double.Parse(Value); // corrects RightBetweenValue
             }
             else
@@ -199,12 +199,12 @@ namespace Diagnosis.ViewModels.Autocomplete
                     Operator = asOp.Operator;
 
                 Measure = WithCompare
-                    ? new MeasureOp(Operator, measure.Value, measure.Uom) { RightBetweenValue = asOp.RightBetweenValue }
+                    ? new MeasureOp(Operator, measure.Value, measure.Uom) { RightValue = asOp.RightValue }
                     : new Measure(measure.Value, measure.Uom);
                 Measure.Word = w ?? measure.Word; // новое слово или бывшее с измерением
             }
             Value = Measure.Value.ToString();
-            AndValue = asOp == null ? Value : asOp.RightBetweenValue.ToString();
+            AndValue = asOp == null ? Value : asOp.RightValue.ToString();
         }
 
         private void CreateAutocomplete()

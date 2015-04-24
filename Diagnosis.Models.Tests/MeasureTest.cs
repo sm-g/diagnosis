@@ -217,11 +217,42 @@ namespace Diagnosis.Models.Tests
         public void CompareBetween()
         {
             var m = new Measure(1);
-            var op = new MeasureOp(MeasureOperator.Between, 2) { RightBetweenValue = 1 };
+            var op = new MeasureOp(MeasureOperator.Between, 0) { RightValue = 2 };
 
             Assert.AreEqual(true, op.ResultFor(m));
         }
+        [TestMethod]
+        public void CompareBetweenRightEq()
+        {
+            var m = new Measure(1);
+            var op = new MeasureOp(MeasureOperator.Between, 0) { RightValue = 1 };
 
+            Assert.AreEqual(true, op.ResultFor(m));
+        }
+        [TestMethod]
+        public void CompareBetweenLeftEq()
+        {
+            var m = new Measure(1);
+            var op = new MeasureOp(MeasureOperator.Between, 1) { RightValue = 2 };
+
+            Assert.AreEqual(false, op.ResultFor(m));
+        }
+        [TestMethod]
+        public void CompareBetweenNotInterval()
+        {
+            var m = new Measure(1);
+            var op = new MeasureOp(MeasureOperator.Between, 1) { RightValue = 1 };
+
+            Assert.AreEqual(true, op.ResultFor(m));
+        }
+        [TestMethod]
+        public void CompareBetweenReverse()
+        {
+            var m = new Measure(1);
+            var op = new MeasureOp(MeasureOperator.Between, 2) { RightValue = 0 };
+
+            Assert.AreEqual(true, op.ResultFor(m));
+        }
         #endregion ValueComparer
     }
 }

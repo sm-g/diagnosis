@@ -21,7 +21,7 @@ namespace Diagnosis.Models
         /// </summary>
         ByAge
     }
-    public static class EnumExtensions
+    public static class HealthRecordUnitExtensions
     {
         public static DateUnit GetNextDateUnit(this DateUnit unit)
         {

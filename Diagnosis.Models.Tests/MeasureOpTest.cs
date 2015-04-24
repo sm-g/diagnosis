@@ -13,16 +13,15 @@ namespace Diagnosis.Models.Tests
         public void Create()
         {
             var op = new MeasureOp(MeasureOperator.Between, 3);
-            Assert.AreEqual(3, op.RightBetweenValue);
             Assert.AreEqual(3, op.Value);
-        
+
         }
 
         [TestMethod]
         public void SetRightBetweenValue()
         {
-            var op = new MeasureOp(MeasureOperator.Between, 3) { RightBetweenValue = 5 };
-            Assert.AreEqual(5, op.RightBetweenValue);
+            var op = new MeasureOp(MeasureOperator.Between, 3) { RightValue = 5 };
+            Assert.AreEqual(5, op.RightValue);
             Assert.AreEqual(3, op.Value);
         }
 
@@ -31,39 +30,37 @@ namespace Diagnosis.Models.Tests
         {
             var op = new MeasureOp(MeasureOperator.Between, 3);
             op.Value = 4;
-            Assert.AreEqual(4, op.RightBetweenDbValue);
             Assert.AreEqual(4, op.Value);
         }
 
         [TestMethod]
         public void ChangeRightBetweenValue()
         {
-            var op = new MeasureOp(MeasureOperator.Between, 3) { RightBetweenValue = 5 };
-            op.RightBetweenValue = 4;
-            Assert.AreEqual(4, op.RightBetweenDbValue);
+            var op = new MeasureOp(MeasureOperator.Between, 3) { RightValue = 5 };
+            op.RightValue = 4;
+            Assert.AreEqual(4, op.RightValue);
             Assert.AreEqual(3, op.Value);
         }
         [TestMethod]
         public void SetRightBetweenValueLessThanValue()
         {
-            var op = new MeasureOp(MeasureOperator.Between, 3) { RightBetweenValue = 2 };
-            Assert.AreEqual(3, op.RightBetweenValue);
-            Assert.AreEqual(2, op.Value);
+            var op = new MeasureOp(MeasureOperator.Between, 3) { RightValue = 2 };
+            Assert.AreEqual(2, op.RightValue);
+            Assert.AreEqual(3, op.Value);
         }
         [TestMethod]
         public void ChangeRightBetweenValueOutOfRange()
         {
-            var op = new MeasureOp(MeasureOperator.Between, 3) { RightBetweenValue = 5 };
-            op.RightBetweenValue = 2;
-            Assert.AreEqual(3, op.RightBetweenDbValue);
-            Assert.AreEqual(2, op.Value);
+            var op = new MeasureOp(MeasureOperator.Between, 3) { RightValue = 5 };
+            op.RightValue = 2;
+            Assert.AreEqual(2, op.RightValue);
+            Assert.AreEqual(3, op.Value);
         }
 
         [TestMethod]
         public void CreateNotBetweenOp()
         {
             var op = new MeasureOp(MeasureOperator.Equal, 3);
-            Assert.AreEqual(3, op.RightBetweenValue);
             Assert.AreEqual(3, op.Value);
         }
 
@@ -81,7 +78,6 @@ namespace Diagnosis.Models.Tests
             var op = new MeasureOp(MeasureOperator.Equal, 3);
             op.Operator = MeasureOperator.Between;
             Assert.AreEqual(3, op.Value);
-            Assert.AreEqual(3, op.RightBetweenValue);
         }
     }
 }

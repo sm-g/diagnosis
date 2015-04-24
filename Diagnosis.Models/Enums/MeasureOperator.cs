@@ -21,4 +21,31 @@ namespace Diagnosis.Models
         [LocalizableDescription(@"Operator_Between")]
         Between
     }
+    public static class MeasureOperatorExtensions
+    {
+        public static bool IsBinary(this MeasureOperator op)
+        {
+            return op == MeasureOperator.Between;
+        }
+        public static string ToStr(this MeasureOperator op)
+        {
+            switch (op)
+            {
+                case MeasureOperator.GreaterOrEqual:
+                    return "≥";
+                case MeasureOperator.Greater:
+                    return ">";
+                case MeasureOperator.Equal:
+                    return "=";
+                case MeasureOperator.Less:
+                    return "<";
+                case MeasureOperator.LessOrEqual:
+                    return "≤";
+                case MeasureOperator.Between:
+                    return "—";
+                default:
+                    return op.ToString();
+            }
+        }
+    }
 }

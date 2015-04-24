@@ -10,6 +10,7 @@ namespace Diagnosis.Models
     public class Measure : IDomainObject, IHrItemObject, IComparable<Measure>
     {
         public const short Scale = 6;
+        protected const string nbsp = "\u00A0";
 
         private Uom _uom;
 
@@ -74,7 +75,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
+            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
         }
 
         public virtual int CompareTo(IHrItemObject hio)
@@ -218,7 +219,6 @@ namespace Diagnosis.Models
             : base(value, uom, word)
         {
             Operator = op;
-            RightBetweenValue = value;
         }
 
         public MeasureOperator Operator
@@ -227,52 +227,27 @@ namespace Diagnosis.Models
             set { op = value; }
         }
 
-        public double RightBetweenValue
+        public double RightValue
         {
             get
             {
-                return DbValueToValue(RightBetweenDbValue);
+                return DbValueToValue(RightDbValue);
             }
             set
             {
-                RightBetweenDbValue = ValueToDbValue(value);
+                RightDbValue = ValueToDbValue(value);
             }
         }
 
-        public double RightBetweenDbValue
+        public double RightDbValue
         {
             get { return andDbValue; }
             set
             {
                 andDbValue = value;
-                CorrectValues();
             }
         }
 
-        public override double Value
-        {
-            get
-            {
-                return DbValueToValue(DbValue);
-            }
-            set
-            {
-                DbValue = ValueToDbValue(value);
-            }
-        }
-
-        public override double DbValue
-        {
-            get
-            {
-                return base.DbValue;
-            }
-            protected set
-            {
-                base.DbValue = value;
-                CorrectValues();
-            }
-        }
         /// <summary>
         /// m Operator this
         /// </summary>
@@ -309,10 +284,15 @@ namespace Diagnosis.Models
                     if (byUom.HasValue && byUom != 0)
                         return false;
 
-                    var byLeftDbVal = m.DbValue.CompareTo(this.DbValue);
-                    var byRightDbVal = m.DbValue.CompareTo(this.RightBetweenValue);
-                    return byLeftDbVal >= 0 &&
-                           byRightDbVal <= 0;
+                    // порядок не важен
+                    var less = Math.Min(DbValue, RightDbValue);
+                    var great = Math.Max(DbValue, RightDbValue);
+
+                    if (less == great)
+                        return m.DbValue == great;
+
+                    return less < m.DbValue && // left < x <= right
+                           m.DbValue <= great;
 
                 default:
                     throw new NotImplementedException();
@@ -321,34 +301,30 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            string operatorString = AttributesHelper.GetEnumDescription(Operator);
+            string opValue;
 
-            return string.Format("{0} {1} {2}{3}{4}", Word, operatorString, Value,
-                Operator == MeasureOperator.Between ? " и " + RightBetweenValue.ToString() : "",
-                Uom != null ? "\u00A0" + Uom.Abbr.Replace(" ", "\u00A0") : ""); // nbsp in and before abbr
+            if (Operator.IsBinary())
+                opValue = string.Format("{0}{1}{2}", Value, Operator.ToStr(), RightValue);
+            else
+                opValue = string.Format("{0} {1}", Operator.ToStr(), Value);
+
+            return string.Format("{0}\u00A0{1} {2}", Word, opValue,
+                Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
         }
 
         private void CorrectValues()
         {
-            if (DbValue > RightBetweenDbValue)
+            if (DbValue > RightDbValue)
             {
-                if (Operator == MeasureOperator.Between)
+                if (Operator.IsBinary())
                 {
-
-                    var x = RightBetweenDbValue;
-                    RightBetweenDbValue = DbValue;
+                    var x = RightDbValue;
+                    RightDbValue = DbValue;
                     DbValue = x;
                 }
                 else
-                    RightBetweenDbValue = DbValue;
+                    RightDbValue = DbValue;
             }
-        }
-
-        [ContractInvariantMethod]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(RightBetweenDbValue >= DbValue);
         }
     }
 }
