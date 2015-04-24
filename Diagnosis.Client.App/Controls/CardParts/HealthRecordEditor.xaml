@@ -139,13 +139,13 @@
                     </DockPanel>
                 </ToggleButton>
                 <Separator />
-                <Button Command="{Binding AddIcdCommand}"
+                <Button Command="{Binding Autocomplete.AddIcdCommand}"
                         ToolTip="Добавить МКБ (Ctrl+3)">
                     <DockPanel>
                         <TextBlock Text="МКБ" />
                     </DockPanel>
                 </Button>
-                <Button Command="{Binding AddMeasureCommand}"
+                <Button Command="{Binding Autocomplete.AddMeasureCommand}"
                         ToolTip="Добавить измерение (Ctrl+4)">
                     <DockPanel>
                         <TextBlock Text="Измерение" />
