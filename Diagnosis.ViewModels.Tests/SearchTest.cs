@@ -220,7 +220,7 @@ namespace Diagnosis.ViewModels.Tests
         #region Scope
 
         [TestMethod]
-        public void AllInOneHr()
+        public void AllInHr()
         {
             // в записи 1 и (3 или 4 или 22)  и (94 или 5)
             s.RootQueryBlock
@@ -237,7 +237,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHrDistinct()
+        public void AnyInHrDistinct()
         {
             // в записи 1 и 22   или (1 и 3)
             s.RootQueryBlock
@@ -254,7 +254,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHr()
+        public void AnyInHr()
         {
             // в записи 1 и (4 или 22)  или (94 или 5) и нет 3
             s.RootQueryBlock
@@ -277,7 +277,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder()
+        public void AllInHolder()
         {
             s.RootQueryBlock
             .Scope(SearchScope.Holder)
@@ -292,7 +292,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHolder()
+        public void AnyInHolder()
         {
             // в списке записи со словами 1 и 3 или записи со словом 22 без 1
             s.RootQueryBlock
@@ -314,7 +314,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder2()
+        public void AllInHolder2()
         {
             // в списке записи с 31 или 3 и записи с 1 или 5
             s.RootQueryBlock
@@ -334,7 +334,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOnePatient()
+        public void AllInPatient()
         {
             s.RootQueryBlock
             .Scope(SearchScope.Patient)
@@ -348,7 +348,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOnePatient_AllInOneHolder()
+        public void AllInPatient_AllInHolder()
         {
             // у пациента записи со словами 4 и в одном списке записи со словами 1 и записи со словами 3
 
@@ -372,7 +372,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHr_WithExcludingOnly()
+        public void AllInHr_WithExcludingOnly()
         {
             // в записи 1 и (3 или 4) и нет 94
             // в записи не должно быть исключаемых слов
@@ -391,7 +391,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHr_WithExcludingOnly_WithCats()
+        public void AllInHr_WithExcludingOnly_WithCats()
         {
             // в записи 1 и (3 или 4) и нет (94 категории 1)
             Load<HrCategory>();
@@ -412,7 +412,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHr_TwoExcludingOnly()
+        public void AllInHr_TwoExcludingOnly()
         {
             // в записи нет 1, 31 и нет 22
             s.RootQueryBlock
@@ -428,7 +428,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHr_WithExcludingOnly()
+        public void AnyInHr_WithExcludingOnly()
         {
             // в записи 1 и (3 или 4) или нет 94, 22, 31
             //
@@ -452,7 +452,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithExcludingOnly()
+        public void AllInHolder_WithExcludingOnly()
         {
             // в списке записи со словами 3 или 31 и нет записи со словом 5
             Load<HrCategory>();
@@ -469,7 +469,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithExcludingOnly_WithCats()
+        public void AllInHolder_WithExcludingOnly_WithCats()
         {
             // в списке записи со словами 3 или 31 и нет записи со словом (5 категории 2)
             Load<HrCategory>();
@@ -490,7 +490,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithExcludingOnly_OrderNoMatter()
+        public void AllInHolder_WithExcludingOnly_OrderNoMatter()
         {
             // в списке нет записи со словом 5 и есть записи со словами 3 или 31
 
@@ -506,7 +506,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_ExcludingOnly()
+        public void AllInHolder_ExcludingOnly()
         {
             // в списке нет записей с 5 или 22
 
@@ -522,7 +522,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[71]));
         }
         [TestMethod]
-        public void InHolder_AnyInOneHr_TwoExcludingOnly()
+        public void InHolder_AnyInHr_TwoExcludingOnly()
         {
             // в списке нашлась запись без слов 5, 22
             s.RootQueryBlock
@@ -538,7 +538,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(hrsTotal, s.Result.Statistic.HealthRecords.Count);
         }
         [TestMethod]
-        public void AnyInOneHolder_WithExcludingOnly()
+        public void AnyInHolder_WithExcludingOnly()
         {
             // в списке записи со словами 3 или 31 или нет записей со словами 5, 22
             // _по первому + все записи списка без тех, где 5/22_ или только те, где есть слова 3/31?
@@ -565,7 +565,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_TwoExcludingOnly()
+        public void AllInHolder_TwoExcludingOnly()
         {
             // в списке нет записей с 2 и записей с 22
             s.RootQueryBlock
@@ -583,7 +583,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHolder_TwoExcludingOnly()
+        public void AnyInHolder_TwoExcludingOnly()
         {
             // в списке нашлась запись без 1 или запись без 22
             // с каждого блока только те, где нет любого из этих слов
@@ -602,7 +602,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithTwoExcludingOnly_WithCats()
+        public void AllInHolder_WithTwoExcludingOnly_WithCats()
         {
             // в списке нет записей с (22 категории 2 или 1) и нет записей с (4 категории 1)
             Load<HrCategory>();
@@ -629,7 +629,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithTwoExcludingOnly_WithCats2()
+        public void AllInHolder_WithTwoExcludingOnly_WithCats2()
         {
             // в списке запись с 94 и нет записи с (4 категории 1) и нет записи с 22
             Load<HrCategory>();
@@ -644,7 +644,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(0, s.Result.Statistic.HealthRecords.Count);
         }
         [TestMethod]
-        public void AllInOneHolder_WithTwoExcludingOnly_WithCats3()
+        public void AllInHolder_WithTwoExcludingOnly_WithCats3()
         {
             // в списке запись с 94 и есть запись без (4 категории 1) и нет записи с 22
             Load<HrCategory>();
@@ -669,7 +669,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[31]));
         }
         [TestMethod]
-        public void AllInOneHolder_WithTwoExcludingOnly_WithCats4()
+        public void AllInHolder_WithTwoExcludingOnly_WithCats4()
         {
             // в списке запись с 3 и нет записи с (94 категории 2) и нет записи с 22
             Load<HrCategory>();
@@ -684,7 +684,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHolder_TwoExcludingOnly_WithCats()
+        public void AnyInHolder_TwoExcludingOnly_WithCats()
         {
             // в списке нашлась запись без (22 категории 2 или 1) или без (4 категории 1)
             // то есть все записи
@@ -719,7 +719,7 @@ namespace Diagnosis.ViewModels.Tests
         }
         [TestMethod]
 
-        public void AllInOneHolder_TwoExcludingOnly_WithCats()
+        public void AllInHolder_TwoExcludingOnly_WithCats()
         {
             // в списке есть запись без 22 категории (2 или 1) и без 4 категории 1
             Load<HrCategory>();
@@ -755,7 +755,7 @@ namespace Diagnosis.ViewModels.Tests
                 hr[40]));
         }
         [TestMethod]
-        public void AllInOneHolder_ExcludingOnly_WithCats()
+        public void AllInHolder_ExcludingOnly_WithCats()
         {
             // список, где есть записи 2 категории без 94
             Load<HrCategory>();
@@ -773,7 +773,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithExcludingOnly_WithCats2()
+        public void AllInHolder_WithExcludingOnly_WithCats2()
         {
             // записи 2 категории списка, где нет 94
             Load<HrCategory>();
@@ -790,7 +790,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHr_ExcludingOnly_AndCats()
+        public void AnyInHr_ExcludingOnly_AndCats()
         {
             // записи кроме (1 категории со словом 31 или 22)
             Load<HrCategory>();
@@ -813,7 +813,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHr_ExcludingOnly_WithCats()
+        public void AllInHr_ExcludingOnly_WithCats()
         {
             // записи 2 категории без 1
             Load<HrCategory>();
@@ -831,7 +831,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHr_WithCats0()
+        public void AllInHr_WithCats0()
         {
             Load<HrCategory>();
             s.RootQueryBlock
@@ -847,7 +847,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AllInOneHolder_WithCats()
+        public void AllInHolder_WithCats()
         {
             // в списке есть записи 1 и 5 кат
             Load<HrCategory>();
@@ -864,7 +864,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHolder_WithCats()
+        public void AnyInHolder_WithCats()
         {
             // в списке записи 3 или 5 кат
             Load<HrCategory>();
@@ -876,14 +876,14 @@ namespace Diagnosis.ViewModels.Tests
             .Search();
 
             Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
-            // совпадает с AnyInOneHr_WithCats, смысл - здесь ищем список, показываем только подходящие записи
+            // совпадает с AnyInHr_WithCats, смысл - здесь ищем список, показываем только подходящие записи
             Assert.IsTrue(s.Contains(hr[1]));
             Assert.IsTrue(s.Contains(hr[2]));
             Assert.IsTrue(s.Contains(hr[21]));
         }
 
         [TestMethod]
-        public void AllInOneHr_WithCats()
+        public void AllInHr_WithCats()
         {
             // у записи вообще не бывает две категории
             Load<HrCategory>();
@@ -898,7 +898,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHr_WithCats()
+        public void AnyInHr_WithCats()
         {
             // записи 3 или 5 кат
             Load<HrCategory>();
@@ -936,7 +936,7 @@ namespace Diagnosis.ViewModels.Tests
         #region AllAny_WithSingleChild_SameResults
 
         [TestMethod]
-        public void AnyInOneHolder_ExcludingOnly()
+        public void AnyInHolder_ExcludingOnly()
         {
             // в списке нет записей с 5 или 22
             s.RootQueryBlock
@@ -952,7 +952,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOnePatient()
+        public void AnyInPatient()
         {
             s.RootQueryBlock
             .Scope(SearchScope.Patient)
@@ -968,7 +968,7 @@ namespace Diagnosis.ViewModels.Tests
 
 
         [TestMethod]
-        public void AnyInOneHr_WithCats_FoundAllHrs()
+        public void AnyInHr_WithCats_FoundAllHrs()
         {
             Load<HrCategory>();
             s.RootQueryBlock
@@ -984,7 +984,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyInOneHr_ExcludingOnly_WithCats()
+        public void AnyInHr_ExcludingOnly_WithCats()
         {
             // записи 2 категории без 1
             Load<HrCategory>();
