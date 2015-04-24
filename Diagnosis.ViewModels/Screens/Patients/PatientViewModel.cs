@@ -72,9 +72,10 @@ namespace Diagnosis.ViewModels.Screens
                 if (null != value)
                 {
                     var names = value.Split(' ');
+
                     LastName = names[0];
                     FirstName = names.Length > 1 ? names[1] : null;
-                    MiddleName = names.Length > 2 ? names[2] : null;
+                    MiddleName = names.Length > 2 ? string.Join(" ", names.Skip(2)) : null; // если больше 2 пробелов
                 }
             }
         }
