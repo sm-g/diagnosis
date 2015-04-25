@@ -7,7 +7,7 @@ using System.Linq;
 namespace Diagnosis.Models.Tests
 {
     [TestClass]
-    public class MeasureTest : InMemoryDatabaseTest // static uom
+    public class MeasureTest : InMemoryDatabaseTest
     {
         private new Word w = new Word("word");
 
