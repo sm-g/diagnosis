@@ -327,6 +327,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     this.Remove();
                     this.PropertyChanged -= qb_PropertyChanged;
+                    this.Dispose();
                 }, () => !IsRoot)
                 {
                     IsVisible = !IsRoot
@@ -457,6 +458,10 @@ namespace Diagnosis.ViewModels.Screens
                 AutocompleteAll.Dispose();
                 AutocompleteAny.Dispose();
                 AutocompleteNot.Dispose();
+                if (_categories != null)
+                {
+                    _categories.Clear();
+                }
             }
             base.Dispose(disposing);
         }

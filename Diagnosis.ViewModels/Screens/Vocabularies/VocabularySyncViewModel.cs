@@ -339,7 +339,13 @@ namespace Diagnosis.ViewModels.Screens
             {
                 Syncer.SyncEnded -= syncer_SyncEnded;
                 Syncer.MessagePosted -= syncer_MessagePosted;
-
+                uiTaskFactory.StartNew(() =>
+                {
+                    Vocs.Clear();
+                    AvailableVocs.Clear();
+                    SelectedVocs.Clear();
+                    SelectedAvailableVocs.Clear();
+                });
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, Remote.ConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, Remote.ProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
             }

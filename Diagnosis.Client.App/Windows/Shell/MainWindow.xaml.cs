@@ -227,29 +227,33 @@ namespace Diagnosis.Client.App.Windows.Shell
             //    logger.DebugFormat("grid Focused {0}", grid.IsFocused);
             //logger.DebugFormat("rec Focused {0}", rec.IsFocused);
 
-            dockManager.Layout.ConsoleDump(0);
-            var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
-            if (SaveLayoutCommand != null)
-            {
-                string xmlLayoutString = "";
+            GC.Collect();
+            var mb = string.Format("{0:0.00} MB", GC.GetTotalMemory(true) / 1024.0 / 1024.0);
+            logger.DebugFormat("{0}", mb);
 
-                using (StringWriter fs = new StringWriter())
-                {
-                    var serializer = new XmlLayoutSerializer(dockManager);
-                    serializer.Serialize(fs);
+            //dockManager.Layout.ConsoleDump(0);
+            //var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
+            //if (SaveLayoutCommand != null)
+            //{
+            //    string xmlLayoutString = "";
 
-                    xmlLayoutString = fs.ToString();
-                }
+            //    using (StringWriter fs = new StringWriter())
+            //    {
+            //        var serializer = new XmlLayoutSerializer(dockManager);
+            //        serializer.Serialize(fs);
 
-                if (SaveLayoutCommand is RoutedCommand)
-                {
-                    (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
-                }
-                else
-                {
-                    SaveLayoutCommand.Execute(xmlLayoutString);
-                }
-            }
+            //        xmlLayoutString = fs.ToString();
+            //    }
+
+            //    if (SaveLayoutCommand is RoutedCommand)
+            //    {
+            //        (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
+            //    }
+            //    else
+            //    {
+            //        SaveLayoutCommand.Execute(xmlLayoutString);
+            //    }
+            //}
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
