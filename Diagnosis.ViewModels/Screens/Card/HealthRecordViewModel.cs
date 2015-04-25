@@ -64,32 +64,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion Model
 
-        /// <summary>
-        /// Откруглять давность.
-        /// </summary>
-        //public bool DoRound
-        //{
-        //    get
-        //    {
-        //        return _doRound;
-        //    }
-        //    set
-        //    {
-        //        if (_doRound != value)
-        //        {
-        //            _doRound = value;
-        //            if (value)
-        //            {
-        //                DateOffset.Settings = DateOffset.DateOffsetSettings.Rounding();
-        //            }
-        //            else
-        //            {
-        //                DateOffset.Settings = DateOffset.DateOffsetSettings.ExactSetting();
-        //            }
-        //            OnPropertyChanged(() => DoRound);
-        //        }
-        //    }
-        //}
 
         #region DateEditor
 
