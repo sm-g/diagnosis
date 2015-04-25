@@ -226,9 +226,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                Speciality.Dispose();
                 spec.BlocksChanged -= spec_BlocksChanged;
                 spec.VocsChanged -= spec_VocsChanged;
+
+                Speciality.Dispose();
+                SpecDiagnosisSearch.Dispose();
+                DiagnosisSearch.Dispose();
             }
             base.Dispose(disposing);
         }

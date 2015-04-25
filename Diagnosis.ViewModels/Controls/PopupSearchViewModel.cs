@@ -149,6 +149,22 @@ namespace Diagnosis.ViewModels.Controls
             if (HideResultsAfterSelected)
                 IsResultsVisible = false;
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    Filter.Dispose();
+                }
+
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
     }
 
 

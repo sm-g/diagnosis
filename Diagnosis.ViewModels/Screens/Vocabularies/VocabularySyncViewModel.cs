@@ -346,6 +346,8 @@ namespace Diagnosis.ViewModels.Screens
                     SelectedVocs.Clear();
                     SelectedAvailableVocs.Clear();
                 });
+
+                Remote.Dispose();
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, Remote.ConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, Remote.ProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
             }

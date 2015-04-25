@@ -311,6 +311,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             if (disposing)
             {
+                DiagnosisSearch.Dispose();
             }
             base.Dispose(disposing);
         }

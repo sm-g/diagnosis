@@ -311,6 +311,8 @@ namespace Diagnosis.ViewModels.Screens
                 Syncer.SyncEnded -= syncer_SyncEnded;
                 Syncer.MessagePosted -= syncer_MessagePosted;
 
+                Remote.Dispose();
+
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerConstrSettingName, RemoteConnectionString }.AsParams(MessageKeys.Name, MessageKeys.Value));
                 this.Send(Event.PushToSettings, new object[] { Constants.SyncServerProviderSettingName, RemoteProviderName }.AsParams(MessageKeys.Name, MessageKeys.Value));
             }
