@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels.Screens
         private string LocalConnectionString;
         private string LocalProviderName;
 
-        public VocabularySyncViewModel(ConnectionInfo server = null)
+        public VocabularySyncViewModel(ConnectionInfo server = new ConnectionInfo())
         {
             Contract.Requires(Constants.IsClient);
 

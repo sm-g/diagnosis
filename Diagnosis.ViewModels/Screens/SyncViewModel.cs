@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         private string _localProvider;
         private DataConnectionViewModel _remote;
 
-        public SyncViewModel(ConnectionInfo server = null)
+        public SyncViewModel(ConnectionInfo server = new ConnectionInfo())
         {
             Title = "Синхронизация";
 

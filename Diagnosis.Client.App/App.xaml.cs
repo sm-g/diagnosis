@@ -145,7 +145,7 @@ namespace Diagnosis.Client.App
 
         private void DbMaintenance()
         {
-            ConnectionInfo conInfo = null;
+            ConnectionInfo conInfo;
             var constrsettings = ConfigurationManager.ConnectionStrings[Constants.clientConStrName];
             if (constrsettings != null)
                 conInfo = new ConnectionInfo(constrsettings.ConnectionString.ExpandVariables(), constrsettings.ProviderName);
@@ -158,13 +158,13 @@ namespace Diagnosis.Client.App
             {
             }
 
-            if (!NHibernateHelper.Default.Init(conInfo, Side.Client))
-            {
-                demoMode = true;
-            }
+            NHibernateHelper.Default.Init(conInfo, Side.Client);
 
             if (NHibernateHelper.Default.InMemory)
+            {
+                demoMode = true;
                 return;
+            }
 
             // backup
 #if !DEBUG

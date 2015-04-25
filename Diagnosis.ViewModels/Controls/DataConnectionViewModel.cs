@@ -19,11 +19,8 @@ namespace Diagnosis.ViewModels.Controls
 
         public DataConnectionViewModel(ConnectionInfo initial)
         {
-            if (initial != null)
-            {
-                ConnectionString = initial.ConnectionString;
-                ProviderName = initial.ProviderName;
-            }
+            ConnectionString = initial.ConnectionString;
+            ProviderName = initial.ProviderName;
 #if DEBUG
 
             ProviderName = Constants.SqlCeProvider;
@@ -88,6 +85,11 @@ namespace Diagnosis.ViewModels.Controls
                     OnPropertyChanged(() => ProviderName);
                 }
             }
+        }
+
+        public ConnectionInfo ConnectionInfo
+        {
+            get { return new ConnectionInfo(ConnectionString, ProviderName); }
         }
     }
 }

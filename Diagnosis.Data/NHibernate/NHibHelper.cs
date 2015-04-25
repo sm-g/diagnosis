@@ -33,6 +33,7 @@ namespace Diagnosis.Data
         private bool useSavedCfg;
 
         private bool inmem;
+        private const string sqliteInmemoryConstr = "data source=:memory:;BinaryGuid=False";
 
         protected NHibernateHelper()
         {
@@ -45,7 +46,7 @@ namespace Diagnosis.Data
             set
             {
                 inmem = value;
-                if (value) connection = null;
+                if (value) connection = new ConnectionInfo(sqliteInmemoryConstr, Constants.SqliteProvider);
             }
         }
 
@@ -59,7 +60,7 @@ namespace Diagnosis.Data
             {
                 if (_cfg == null)
                 {
-                    if (connection == null && !InMemory)
+                    if (connection == default(ConnectionInfo) && !InMemory)
                         throw new System.InvalidOperationException("First initialize with right connection.");
 
                     _cfg = LoadConfiguration();
@@ -84,10 +85,7 @@ namespace Diagnosis.Data
             {
                 if (_mapping == null)
                 {
-                    var provider = connection == null
-                        ? Constants.SqliteProvider // inmem
-                        : connection.ProviderName;
-                    _mapping = CreateMapping(provider);
+                    _mapping = CreateMapping(connection.ProviderName);
                 }
                 return _mapping;
             }
@@ -146,22 +144,23 @@ namespace Diagnosis.Data
         {
             var cfg = new Configuration();
 
-            if (connection == null)
-                ConfigureSqlLiteInMemory(cfg, showsql);
-            else
-                switch (connection.ProviderName)
-                {
-                    case Constants.SqlCeProvider:
-                        ConfigureSqlCe(cfg, connection.ConnectionString, showsql);
-                        break;
+            switch (connection.ProviderName)
+            {
+                case Constants.SqlCeProvider:
+                    ConfigureSqlCe(cfg, connection.ConnectionString, showsql);
+                    break;
 
-                    case Constants.SqlServerProvider:
-                        ConfigureSqlServer(cfg, connection.ConnectionString, showsql);
-                        break;
+                case Constants.SqlServerProvider:
+                    ConfigureSqlServer(cfg, connection.ConnectionString, showsql);
+                    break;
 
-                    default:
-                        throw new System.NotSupportedException("ProviderName");
-                }
+                case Constants.SqliteProvider:
+                    ConfigureSqlLiteInMemory(cfg, connection.ConnectionString, showsql);
+                    break;
+
+                default:
+                    throw new System.NotSupportedException("ProviderName");
+            }
 
             var preListener = new PreEventListener();
             cfg.AppendListeners(ListenerType.PreUpdate, new IPreUpdateEventListener[] { preListener });
@@ -201,12 +200,12 @@ namespace Diagnosis.Data
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
-        public static void ConfigureSqlLiteInMemory(Configuration cfg, bool showSql)
+        public static void ConfigureSqlLiteInMemory(Configuration cfg, string constr, bool showSql)
         {
             cfg.SetProperty(Environment.ReleaseConnections, "on_close")
                .SetProperty(Environment.Dialect, typeof(SQLiteDialect).AssemblyQualifiedName)
                .SetProperty(Environment.ConnectionDriver, typeof(SQLite20Driver).AssemblyQualifiedName)
-               .SetProperty(Environment.ConnectionString, "data source=:memory:;BinaryGuid=False")
+               .SetProperty(Environment.ConnectionString, constr)
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
@@ -218,23 +217,15 @@ namespace Diagnosis.Data
         /// <returns>Connection success</returns>
         public bool Init(ConnectionInfo conn, Side side)
         {
-            if (conn == null)
-            {
-                InMemory = true;
-                return false;
-            }
-
             var fail = !conn.IsAvailable();
 
-            if (fail)
-            {
+            if (fail || conn == default(ConnectionInfo))
                 InMemory = true;
-                connection = null;
+
+            if (InMemory) // maybe set before Init call
                 return false;
-            }
-            if (inmem)
-                return false;
-            connection = new ConnectionInfo(conn.ConnectionString, conn.ProviderName);
+
+            connection = conn;
             return true;
         }
 
