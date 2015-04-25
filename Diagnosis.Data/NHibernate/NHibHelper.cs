@@ -33,7 +33,7 @@ namespace Diagnosis.Data
         private bool useSavedCfg;
 
         private bool inmem;
-        private const string sqliteInmemoryConstr = "data source=:memory:;BinaryGuid=False";
+        private const string sqliteInmemoryConstr = "Data Source=:memory:;Version=3;New=True;BinaryGuid=False";
 
         protected NHibernateHelper()
         {
@@ -46,7 +46,11 @@ namespace Diagnosis.Data
             set
             {
                 inmem = value;
-                if (value) connection = new ConnectionInfo(sqliteInmemoryConstr, Constants.SqliteProvider);
+                if (value)
+                {
+                    connection = new ConnectionInfo(sqliteInmemoryConstr, Constants.SqliteProvider);
+                    useSavedCfg = false;
+                }
             }
         }
 
@@ -96,27 +100,6 @@ namespace Diagnosis.Data
             get { return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory()); }
         }
 
-        private bool IsConfigurationFileValid
-        {
-            get
-            {
-                // cfg.xml changing not updates assInfo.LastWriteTime
-                var ass = Assembly.GetEntryAssembly();
-                if (ass.Location == null)
-                    return false;
-
-                var serializedConfigInfo = new FileInfo(Constants.SerializedConfig);
-
-                var appConfigFile = System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-                var configFileInfo = new FileInfo(appConfigFile); // may be other connection string
-                var assInfo = new FileInfo(ass.Location);
-
-                if (serializedConfigInfo.LastWriteTime < assInfo.LastWriteTime ||
-                    serializedConfigInfo.LastWriteTime < configFileInfo.LastWriteTime)
-                    return false;
-                return true;
-            }
-        }
 
         public static NHibernateHelper FromServerConnectionInfo(ConnectionInfo conn)
         {
@@ -256,7 +239,7 @@ namespace Diagnosis.Data
 
         private Configuration LoadConfiguration()
         {
-            if (inmem || !useSavedCfg || IsConfigurationFileValid == false)
+            if (!useSavedCfg || !IsConfigurationFileValid())
                 return null;
             try
             {
@@ -274,7 +257,7 @@ namespace Diagnosis.Data
 
         private void SaveConfiguration(Configuration cfg)
         {
-            if (inmem || !useSavedCfg)
+            if (!useSavedCfg)
                 return;
 
             try
@@ -288,6 +271,24 @@ namespace Diagnosis.Data
             catch
             {
             }
+        }
+        private static bool IsConfigurationFileValid()
+        {
+            // cfg.xml changing not updates assInfo.LastWriteTime
+            var ass = Assembly.GetEntryAssembly();
+            if (ass.Location == null)
+                return false;
+
+            var serializedConfigInfo = new FileInfo(Constants.SerializedConfig);
+
+            var appConfigFile = System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+            var configFileInfo = new FileInfo(appConfigFile); // may be other connection string
+            var assInfo = new FileInfo(ass.Location);
+
+            if (serializedConfigInfo.LastWriteTime < assInfo.LastWriteTime ||
+                serializedConfigInfo.LastWriteTime < configFileInfo.LastWriteTime)
+                return false;
+            return true;
         }
 
         private static void ExportSchemaToFile(Configuration cfg)
