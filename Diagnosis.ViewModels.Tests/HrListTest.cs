@@ -447,12 +447,12 @@ namespace Diagnosis.ViewModels.Tests
 
             card.HrList.SelectHealthRecord(hr0);
 
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false));
             card.HrList.MoveHrCommand.Execute(false); //down
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false));
             card.HrList.MoveHrCommand.Execute(false); //down
 
-            Assert.AreEqual(hr0, card.HrList.HealthRecordsView.Last().healthRecord);
+            var lastHr = card.HrList.view.Cast<ShortHealthRecordViewModel>().Last().healthRecord;
+
+            Assert.AreEqual(hr0, lastHr);
         }
 
         [TestMethod]

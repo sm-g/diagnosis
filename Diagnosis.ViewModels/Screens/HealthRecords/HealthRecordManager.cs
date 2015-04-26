@@ -104,7 +104,15 @@ namespace Diagnosis.ViewModels.Screens
                     holder.RemoveHealthRecord(hr);
             });
         }
-
+        /// <summary>
+        /// Меняет порядок записей, учитывая сортировку, группировку и удаленные записи.
+        /// </summary>
+        /// <param name="moved"></param>
+        /// <param name="view"></param>
+        /// <param name="insertView">Target place in view</param>
+        /// <param name="targetGroup"></param>
+        /// <param name="aboveBorder"></param>
+        /// <param name="SetGroupObject"></param>
         public void Reorder(IEnumerable<ShortHealthRecordViewModel> moved, IList<ShortHealthRecordViewModel> view, int insertView, object targetGroup,
                bool aboveBorder, Action<ShortHealthRecordViewModel, object> SetGroupObject)
         {
@@ -113,25 +121,29 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(view != null);
             Contract.Assume(inner.IsOrdered(x => x.Ord));
 
+            // insert at the end of group
+            var toGroupEnd = aboveBorder || insertView == view.Count;
+
+            // сравниваем с элементом ниже указателя или с тем, что над границей/над концом списка, если указатель прямо под ним
+            var toCompareView = toGroupEnd ? insertView - 1 : insertView;
+            var toCompareHr = (ShortHealthRecordViewModel)view[toCompareView];
+            var toCompare = inner.IndexOf(toCompareHr);
+
+            // dest index may differ in view and in original collection
+            // rule: always move before next element, but after last in group
+
+            // перемещаем на место элемента, с которым сравниваем,
+            // если над границей - на место следующего
+
+            // compare with item at insert position or before (when adoner appears at end of group)
+            int moveBeforeItemAt = toGroupEnd ? toCompare + 1 : toCompare;
+
             // move hrs
-            foreach (var hr in moved)
+            foreach (var hr in moved.ToList())
             {
                 var old = inner.IndexOf(hr);
                 var oldView = view.IndexOf(hr);
 
-                // insert above group border or at the end
-                var aboveBorderOrAtEnd = aboveBorder || insertView == view.Count;
-
-                // сравниваем с элементом ниже указателя или с тем, что над границей/над концом списка, если указатель прямо под ним
-                var toCompareView = aboveBorderOrAtEnd ? insertView - 1 : insertView;
-                var toCompareHr = (ShortHealthRecordViewModel)view[toCompareView];
-                var toCompare = inner.IndexOf(toCompareHr);
-
-                // in view: always move before next element, but after last in group
-
-                // перемещаем на место элемента, с которым сравниваем,
-                // если над границей - на место следующего
-                int moveBeforeItemAt = aboveBorderOrAtEnd ? toCompare + 1 : toCompare;
                 var down = old < moveBeforeItemAt; // move = remove + insert
                 var dest = down ? moveBeforeItemAt - 1 : moveBeforeItemAt;
 
@@ -140,18 +152,16 @@ namespace Diagnosis.ViewModels.Screens
                 //if (old < dest)
                 //    dest--;
 
-                logger.DebugFormat("move {0}({1}) - {2}({3}) \n{4} compareTo {5}\n aboveBorderOrAtEnd = {6}\ndropInfo.TargetGroup {7}",
+                logger.DebugFormat("move {0}({1} in view) - {2}({3} in view) \n{4} compareTo {5}\n toGroupEnd = {6}\ndropInfo.TargetGroup {7}",
                     old, oldView, dest, insertView,
                     hr, toCompareHr,
-                    aboveBorderOrAtEnd,
+                    toGroupEnd,
                     targetGroup);
                 if (old != dest)
                 {
                     inner.Move(old, dest);
                 }
             }
-
-            // Dragging to other group makes in two passes: first change group, second reorder items in that group.
 
             // set group
             if (targetGroup != null)

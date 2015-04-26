@@ -117,7 +117,7 @@ namespace Diagnosis.ViewModels.Screens
                 pasted.Add(newHr);
             }
 
-            hrManager.Reorder(pastedVms, HealthRecordsView, index);
+            hrManager.Reorder(pastedVms, view.Cast<ShortHealthRecordViewModel>().ToList(), index);
 
             SelectHealthRecords(pasted);
             OnSaveNeeded(); // save all
