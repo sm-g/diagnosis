@@ -32,9 +32,7 @@
             
             <MenuItem x:Name="view"
                       Header="_Вид">
-                <MenuItem IsCheckable="true"
-                          IsChecked="{Binding SearchPanel.IsVisible}"
-                          Header="_Поиск" />
+                
             </MenuItem>
             <!--<MenuItem x:Name="metro" IsCheckable="true"
                       IsChecked="{Binding IsMetroTheme}"

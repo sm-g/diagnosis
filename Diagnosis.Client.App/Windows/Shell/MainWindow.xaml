@@ -251,7 +251,9 @@
                                     Value="{Binding Model.IsActive, Mode=TwoWay}" />
                             <Setter Property="CanClose"
                                     Value="False" />
-
+                            <Setter Property="CanHide"
+                                    Value="False" />
+                            
                             <Setter Property="Visibility"
                                     Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
                             <Setter Property="DockAsDocumentCommand"

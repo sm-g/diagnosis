@@ -33,7 +33,7 @@ namespace Diagnosis.ViewModels.Screens
                         // AD call LayoutAnchorable.Hide() after
                         // to prevent empty LayoutAnchorGroup, call ToggleAutoHide() for him
 
-                        //  wasDeAutoHiddenBeforeHide = IsAutoHidden;
+                        //wasDeAutoHiddenBeforeHide = IsAutoHidden;
 
                         // there is no callback before layout loaded
                         // ShowAutoHidden();

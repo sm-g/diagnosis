@@ -196,6 +196,14 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public bool WithSearch
+        {
+            get
+            {
+                return AuthorityController.CurrentDoctor != null;
+            }
+        }
+
         /// <summary>
         /// Открывает экран.
         /// </summary>

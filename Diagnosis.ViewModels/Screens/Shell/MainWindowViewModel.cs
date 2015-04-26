@@ -29,9 +29,9 @@ namespace Diagnosis.ViewModels.Screens
                 titlePrefix = "Демо :: ";
             }
 
-            switcher = new ScreenSwitcher();
             OverlayService = new OverlayServiceViewModel();
 
+            switcher = new ScreenSwitcher();
             switcher.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CurrentView")
@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Screens
                     logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
                     // показываем поиск на первом экране, где он может быть
-                    // searchPanel.IsVisible = CanShowSearch && (searchVisByUser ?? true);
+                    //searchPanel.IsVisible = switcher.WithSearch && (searchVisByUser ?? true);
 
                     Panes.Add(CurrentView);
                     Panes.Remove(prevScreen);
@@ -62,28 +62,26 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "IsVisible")
                 {
-                    if (CanShowSearch)
+                    if (switcher.WithSearch)
                         // пользователь скрыл/показал поиск, сохраняем
                         searchVisByUser = searchPanel.IsVisible;
                 }
             };
             Panes = new ObservableCollection<PaneViewModel>();
             //Panes.Add(searchPanel);
-            Panes.CollectionChanged += (s, e) =>
-            {
-                logger.DebugFormat("Panes {0}", e.Action);
-            };
+            //Panes.CollectionChanged += (s, e) =>
+            //{
+            //    logger.DebugFormat("Panes {0}", e.Action);
+            //};
 
             ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
-            MenuBar = new MenuBarViewModel(switcher, searchPanel);
             ADLayout.LayoutLoading += (s, e) =>
             {
                 // сначала открываем первый экран
                 switcher.OpenScreen(Screen.Login, replace: true);
             };
-            ADLayout.LayoutLoaded += (s, e) =>
-            {
-            };
+
+            MenuBar = new MenuBarViewModel(switcher, searchPanel);
 
             AuthorityController.LoggedIn += (s, e) =>
             {
@@ -204,15 +202,6 @@ namespace Diagnosis.ViewModels.Screens
                     _sexes = value;
                     OnPropertyChanged(() => Sexes);
                 }
-            }
-        }
-
-        private bool CanShowSearch
-        {
-            get
-            {
-                return (switcher.Screen != Screen.Login) &&
-                      (switcher.Screen != Screen.Doctors);
             }
         }
 
