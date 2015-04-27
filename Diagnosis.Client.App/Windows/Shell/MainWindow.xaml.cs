@@ -1,5 +1,4 @@
-﻿// using AvalonDock.Layout.Serialization;
-using Diagnosis.Client.App.Behaviors;
+﻿using Diagnosis.Client.App.Behaviors;
 using Diagnosis.Common;
 using Diagnosis.Common.Presentation.Controls;
 using Diagnosis.ViewModels;
@@ -32,14 +31,7 @@ namespace Diagnosis.Client.App.Windows.Shell
         public MainWindow(bool demoMode)
         {
             InitializeComponent();
-            dockManager.Layout.ElementAdded += (s, e) =>
-            {
-                logger.DebugFormat("added {0} {1}", e.Element.GetType().Name, "");
-            };
-            dockManager.Layout.ElementRemoved += (s, e) =>
-            {
-                logger.DebugFormat("removed {0} {1}", e.Element.GetType().Name, "");
-            };
+
             this.Subscribe(Event.OpenDialog, (e) =>
             {
                 var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
@@ -64,43 +56,7 @@ namespace Diagnosis.Client.App.Windows.Shell
             this.Subscribe(Event.ShowHelp, (e) =>
             {
                 var topic = e.GetValue<string>(MessageKeys.String);
-                // create new window or show it on top
-                if (help == null)
-                {
-                    help = new HelpViewModel(topic);
-                    help.PropertyChanged += (s, e1) =>
-                    {
-                        if (e1.PropertyName == "IsClosed")
-                        {
-                            help = null;
-                        }
-                    };
-                    // to access help form modal dialog
-                    // https://eprystupa.wordpress.com/2008/07/28/running-wpf-application-with-multiple-ui-threads/
-                    var thread = new Thread(() =>
-                    {
-                        var window = new HelpWindow();
-                        ShowWindow(help, window, false);
-
-                        this.Closed += (s, e1) =>
-                        {
-                            window.Dispatcher.Invoke((Action)(() =>
-                            {
-                                window.Close();
-                            }));
-                        };
-                        window.Closed += (s, e2) => window.Dispatcher.InvokeShutdown();
-                        System.Windows.Threading.Dispatcher.Run();
-                    });
-
-                    thread.SetApartmentState(ApartmentState.STA);
-                    thread.Start();
-                }
-                else
-                {
-                    help.Topic = topic;
-                    help.IsActive = true;
-                }
+                OpenHelpWIndow(topic);
 
             });
 
@@ -168,6 +124,60 @@ namespace Diagnosis.Client.App.Windows.Shell
 
                 }
             };
+            
+
+            dockManager.Layout.ElementAdded += (s, e) =>
+            {
+                logger.DebugFormat("added {0} {1}", e.Element.GetType().Name, "");
+            };
+            dockManager.Layout.ElementRemoved += (s, e) =>
+            {
+                logger.DebugFormat("removed {0} {1}", e.Element.GetType().Name, "");
+            };
+        }
+
+        /// <summary>
+        /// create new window or show it on top
+        /// </summary>
+        /// <param name="topic"></param>
+        private void OpenHelpWIndow(string topic)
+        {
+            if (help == null)
+            {
+                help = new HelpViewModel(topic);
+                help.PropertyChanged += (s, e1) =>
+                {
+                    if (e1.PropertyName == "IsClosed")
+                    {
+                        help = null;
+                    }
+                };
+                // to access help form modal dialog
+                // https://eprystupa.wordpress.com/2008/07/28/running-wpf-application-with-multiple-ui-threads/
+                var thread = new Thread(() =>
+                {
+                    var window = new HelpWindow();
+                    ShowWindow(help, window, false);
+
+                    this.Closed += (s, e1) =>
+                    {
+                        window.Dispatcher.Invoke((Action)(() =>
+                        {
+                            window.Close();
+                        }));
+                    };
+                    window.Closed += (s, e2) => window.Dispatcher.InvokeShutdown();
+                    System.Windows.Threading.Dispatcher.Run();
+                });
+
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+            }
+            else
+            {
+                help.Topic = topic;
+                help.IsActive = true;
+            }
         }
 
         MainWindowViewModel Vm { get { return DataContext as MainWindowViewModel; } }
