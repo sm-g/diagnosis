@@ -309,8 +309,8 @@ namespace Diagnosis.Models
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
-            var willBag = new OrderedBag<ConfindenceHrItemObject>(willChios);
-            var wasBag = new OrderedBag<ConfindenceHrItemObject>(wasChios);
+            var willBag = new Bag<ConfindenceHrItemObject>(willChios);
+            var wasBag = new Bag<ConfindenceHrItemObject>(wasChios);
 
             // добалвяем все существующие, чьи сущности не надо убирать
             var toR = wasBag.Difference(willBag);
