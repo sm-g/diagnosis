@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -40,14 +41,18 @@ namespace Diagnosis.Models
         }
         private int PriorityFor(Type type)
         {
-            if (priorities.ContainsKey(type))
-                return priorities[type];
-            else
+            var actualType = priorities.Keys.FirstOrDefault(x => x.IsAssignableFrom(type));
+            if (actualType == null)
                 return int.MinValue;
+
+            return priorities[actualType];
         }
 
         public int Compare(IHrItemObject x, IHrItemObject y)
         {
+            // always use IHrItemObject.CompareTo to compare same types
+            Contract.Ensures(Contract.Result<int>() != 0);
+
             int p1 = PriorityFor(x.GetType());
             int p2 = PriorityFor(y.GetType());
             return p1.CompareTo(p2);

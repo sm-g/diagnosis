@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +12,7 @@ namespace Diagnosis.ViewModels.Tests
     {
         private HrEditorViewModel e;
         private new HealthRecord hr;
-        private Word word;
+        private Word word3;
         private HealthRecord hr2;
 
         private new AutocompleteViewModel a { get { return e.Autocomplete; } }
@@ -27,7 +26,7 @@ namespace Diagnosis.ViewModels.Tests
             e = new HrEditorViewModel(session);
             hr = session.Get<HealthRecord>(IntToGuid<HealthRecord>(1));
             hr2 = session.Get<HealthRecord>(IntToGuid<HealthRecord>(2));
-            word = session.Get<Word>(IntToGuid<Word>(3));
+            word3 = session.Get<Word>(IntToGuid<Word>(3));
         }
 
         [TestCleanup]
@@ -277,21 +276,33 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void OrderAddedItem()
         {
-            Assert.IsFalse(hr.Words.Contains(word));
+            Assert.IsFalse(hr.Words.Contains(word3));
 
             var countBefore = hr.HrItems.Count;
 
             e.Load(hr);
             a.SelectedTag = a.Tags.Last();
-            a.SelectedTag.Query = word.Title.Substring(0, word.Title.Length - 1);
+            a.SelectedTag.Query = word3.Title.Substring(0, word3.Title.Length - 1);
             a.EnterCommand.Execute(a.SelectedTag);
 
             e.Unload();
 
             Assert.IsTrue(hr.HrItems.Count == countBefore + 1);
 
-            var addedItem = hr.HrItems.Where(i => (Word)i.Entity == word).Single();
+            var addedItem = hr.HrItems.Where(i => (Word)i.Entity == word3).Single();
             Assert.IsTrue(addedItem.Ord == countBefore);
+        }
+
+        [TestMethod]
+        public void ConvertWordToComment()
+        {
+            e.Load(hr);
+            a.SelectedTag = a.Tags.First();
+            var word = a.SelectedTag.Blank as Word;
+            a.SelectedTag.ConvertToCommand.Execute(BlankType.Comment);
+
+            Assert.AreEqual(word.Title, hr.GetOrderedEntities().OfType<Comment>().Single().String);
+            Assert.IsTrue(!hr.GetOrderedEntities().Contains(word));
         }
 
         [TestMethod]
@@ -314,7 +325,7 @@ namespace Diagnosis.ViewModels.Tests
             // слова становятся видны доктору только после сохранения записи
             AuthorityController.TryLogIn(d2);
 
-            Word wForD1Only = word;
+            Word wForD1Only = word3;
             Assert.IsTrue(!d2.Words.Contains(wForD1Only));
             using (var card = new CardViewModel(hr))
             {

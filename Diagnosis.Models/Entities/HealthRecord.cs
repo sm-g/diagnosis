@@ -13,9 +13,6 @@ namespace Diagnosis.Models
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
         private ISet<HrItem> hrItems = new HashSet<HrItem>();
-        private int? _year;
-        private int? _month;
-        private int? _day;
         private bool _isDeleted;
         private HrCategory _category;
         private HealthRecordUnit _unit;
@@ -293,46 +290,45 @@ namespace Diagnosis.Models
         /// Устанавливает сущности элементов записи.
         /// Полученные элементы нумеруются по порядку.
         /// </summary>
-        /// <param name="chiosToBe"></param>
-        public virtual void SetItems(IList<ConfindenceHrItemObject> chiosToBe)
+        public virtual void SetItems(IList<ConfindenceHrItemObject> willChios)
         {
-            Contract.Requires(chiosToBe != null);
-            Contract.Ensures(HrItems.Count == chiosToBe.Count);
+            Contract.Requires(willChios != null);
+            Contract.Ensures(HrItems.Count == willChios.Count);
             Contract.Ensures(HrItems.Select(x => x.Entity)
-                .ScrambledEquals(chiosToBe.Select(x => x.HIO))); // same HIOs
+                .ScrambledEquals(willChios.Select(x => x.HIO))); // same HIOs
             Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count); // Order is unique
             Contract.Ensures(HrItems.Select(x => x.Word).Where(x => x != null).All(x => x.HealthRecords.Contains(this))); // word2hr relation
 
-            var hrChios = this.HrItems.Select(x => x.CHIO).ToList();
-            var hiosToBe = chiosToBe.Select(x => x.HIO).ToList();
+            var hrItems = HrItems.ToList();
+            var wasChios = hrItems.Select(x => x.CHIO).ToList();
 
-            var willSet = new OrderedBag<ConfindenceHrItemObject>(chiosToBe);
-            var wasSet = new OrderedBag<ConfindenceHrItemObject>(hrChios);
-
-            logger.DebugFormat("set HrItems. IHrItemObject was: {0}, will: {1}", wasSet.FlattenString(), willSet.FlattenString());
+            logger.DebugFormat("set HrItems. Chios was: {0}, will: {1}", wasChios.FlattenString(), willChios.FlattenString());
 
             // items to be in Hr = this.HrItems - itemsToRem + itemsToAdd
             var itemsToBe = new List<HrItem>();
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
+            var willBag = new OrderedBag<ConfindenceHrItemObject>(willChios);
+            var wasBag = new OrderedBag<ConfindenceHrItemObject>(wasChios);
+
             // добалвяем все существующие, чьи сущности не надо убирать
-            var toR = wasSet.Difference(willSet);
-            for (int i = 0; i < hrChios.Count; i++)
+            var toR = wasBag.Difference(willBag);
+            for (int i = 0; i < wasChios.Count; i++)
             {
-                var needRem = toR.Contains(hrChios[i]);
-                if (needRem)
+                if (toR.Contains(wasChios[i])) // убрать
                 {
-                    toR.Remove(hrChios[i]);
-                    itemsToRem.Add(this.HrItems.ElementAt(i));
+                    toR.Remove(wasChios[i]);
+                    itemsToRem.Add(hrItems[i]);
                 }
-                else
+                else // оставить
                 {
-                    itemsToBe.Add(this.HrItems.ElementAt(i));
+                    itemsToBe.Add(hrItems[i]);
                 }
             }
             // добавляем новые
-            var toA = willSet.Difference(wasSet);
+
+            var toA = willBag.Difference(wasBag);
             foreach (var item in toA)
             {
                 var n = new HrItem(this, item.HIO) { Confidence = item.Confidence };
@@ -347,6 +343,7 @@ namespace Diagnosis.Models
 
             // ставим порядок
             bool reordered = false;
+            var hiosToBe = willChios.Select(x => x.HIO).ToList();
             for (int i = 0; i < itemsToBe.Count; i++)
             {
                 var e = itemsToBe[i].Entity;
@@ -354,7 +351,7 @@ namespace Diagnosis.Models
                 dict.TryGetValue(e, out start);
                 var index = hiosToBe.IndexOf(e, start);
 
-                Debug.Assert(index != -1, "entitiesToBe does not contain entity from itemsToBe");
+                Debug.Assert(index != -1, "hiosToBe does not contain entity from itemsToBe");
 
                 dict[e] = index + 1;
 

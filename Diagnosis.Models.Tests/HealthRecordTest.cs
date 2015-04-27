@@ -11,9 +11,9 @@ namespace Diagnosis.Models.Tests
     [TestClass]
     public class HealthRecordTest : InMemoryDatabaseTest
     {
-        private static Word w1 = new Word("1");
-        private static Word w2 = new Word("2");
-        private static Word w3 = new Word("3");
+        private static Word w1;
+        private static Word w2;
+        private static Word w3;
         private static Comment com = new Comment("comment");
         private HealthRecord hr1;
 
@@ -22,6 +22,10 @@ namespace Diagnosis.Models.Tests
         {
             Load<Uom>();
             hr1 = session.Load<HealthRecord>(IntToGuid<HealthRecord>(71));
+            w1 = session.Get<Word>(IntToGuid<Word>(1));
+            w2 = session.Get<Word>(IntToGuid<Word>(2));
+            w3 = session.Get<Word>(IntToGuid<Word>(3));
+
         }
 
         [TestMethod]
@@ -121,6 +125,20 @@ namespace Diagnosis.Models.Tests
             hr1.SetItems(hiosSequence2);
 
             Assert.IsFalse(changed);
+        }
+
+        [TestMethod]
+        public void ChangeWordToComment()
+        {
+            // OrderedBag.Difference был с тем же самымм словом, из-за Proxy
+            // (c1, w2).Difference(w1, w2) == (c1, w2)
+            var hiosSequence = new IHrItemObject[] { w1, w2 };
+            var hiosSequence2 = new IHrItemObject[] { new Comment(w1.Title), w2 };
+            hr1.SetItems(hiosSequence);
+            hr1.SetItems(hiosSequence2);
+
+            Assert.AreEqual(1, hr1.GetOrderedEntities().OfType<Comment>().Count());
+            Assert.AreEqual(1, hr1.GetOrderedEntities().OfType<Word>().Count());        
         }
 
         [TestMethod]

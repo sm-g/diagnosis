@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 using Wintellect.PowerCollections;
 
 namespace Diagnosis.Data.Tests
@@ -21,74 +22,78 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void WordComments()
         {
-            var bag1 = new OrderedBag<IHrItemObject>();
-            var bag2 = new OrderedBag<IHrItemObject>();
             var c1 = new Comment("1");
             var w1 = new Word("1");
-            bag1.AddMany(new List<IHrItemObject> { w1, c1 });
-            bag2.AddMany(new[] { w1 });
+            var bag1 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w1, c1 });
+            var bag2 = new OrderedBag<IHrItemObject>(new[] { w1 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
-            Assert.IsTrue(diff1.Count == 1);
+            Assert.IsTrue(diff1.Single() == c1);
             Assert.IsTrue(diff2.Count == 0);
         }
 
         [TestMethod]
         public void SameComment()
         {
-            var bag1 = new OrderedBag<IHrItemObject>();
-            var bag2 = new OrderedBag<IHrItemObject>();
             var w1 = new Word("1");
             var c1 = new Comment("1");
             var c2 = new Comment("1");
-            bag1.AddMany(new List<IHrItemObject> { w[1], w[2], w[2], c1 });
-            bag2.AddMany(new List<IHrItemObject> { c2, w[1], w1 });
+            var bag1 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w[1], w[2], w[2], c1 });
+            var bag2 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { c2, w[1], w1 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
             Assert.IsTrue(diff1.Count == 2);
-            Assert.IsTrue(diff2.Count == 1);
+            Assert.IsTrue(diff2.Single() as Word == w1);
         }
 
         [TestMethod]
         public void Words()
         {
-            var bag1 = new OrderedBag<IHrItemObject>();
-            var bag2 = new OrderedBag<IHrItemObject>();
-            bag1.AddMany(new[] { w[1], w[2], w[3], w[3] });
-            bag2.AddMany(new[] { w[2], w[2], w[3] });
+            var bag1 = new OrderedBag<IHrItemObject>(new[] { w[1], w[2], w[3], w[3] });
+            var bag2 = new OrderedBag<IHrItemObject>(new[] { w[2], w[2], w[3] });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
             Assert.IsTrue(diff1.Count == 2);
-            Assert.IsTrue(diff2.Count == 1);
+            Assert.IsTrue(diff2.Single() as Word == w[2]);
         }
+        [TestMethod]
+        public void CHIOs()
+        {
+            var chio1 = new ConfindenceHrItemObject(w[1], Confidence.Present);
+            var chio2 = new ConfindenceHrItemObject(w[2], Confidence.Present);
+            var chio1comment = new ConfindenceHrItemObject(new Comment(w[1].Title), Confidence.Present);
 
+            var bag1 = new OrderedBag<ConfindenceHrItemObject>(new[] { chio1, chio2 });
+            var bag2 = new OrderedBag<ConfindenceHrItemObject>(new[] { chio1comment, chio2 });
+
+            var diff1 = bag1.Difference(bag2);
+            var diff2 = bag2.Difference(bag1);
+            Assert.IsTrue(diff1.Single() == chio1);
+            Assert.IsTrue(diff2.Single() == chio1comment);
+        }
         [TestMethod]
         public void Transient()
         {
-            var bag1 = new OrderedBag<IHrItemObject>();
-            var bag2 = new OrderedBag<IHrItemObject>();
             var w1 = new Word("1");
             var w2 = new Word("2");
             var w3 = new Word("3");
-            bag1.AddMany(new[] { w1, w2, w3, w3 });
-            bag2.AddMany(new[] { w2, w2, w3 });
+            var bag1 = new OrderedBag<IHrItemObject>(new[] { w1, w2, w3, w3 });
+            var bag2 = new OrderedBag<IHrItemObject>(new[] { w2, w2, w3 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
             Assert.IsTrue(diff1.Count == 2);
-            Assert.IsTrue(diff2.Count == 1);
+            Assert.IsTrue(diff2.Single() as Word == w2);
         }
 
         [TestMethod]
         public void SameIds()
         {
-            var bag1 = new OrderedBag<IHrItemObject>();
-            var bag2 = new OrderedBag<IHrItemObject>();
-            bag1.AddMany(new List<IHrItemObject> { w[1], icd[2], w[2], w[3], w[3] });
-            bag2.AddMany(new List<IHrItemObject> { w[2], w[2], icd[3] });
+            var bag1 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w[1], icd[2], w[2], w[3], w[3] });
+            var bag2 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w[2], w[2], icd[3] });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -99,19 +104,16 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void MeasureSameUomType()
         {
-            var bag1 = new OrderedBag<IHrItemObject>();
-            var bag2 = new OrderedBag<IHrItemObject>();
             var m = new Measure(0, uom[1]);
             var m2 = new Measure(0, uom[2]);
-
-            bag1.AddMany(new List<IHrItemObject> { m, m2 });
-            bag2.AddMany(new List<IHrItemObject> { m });
+            var comparer = new StrictIHrItemObjectComparer();
+            var bag1 = new OrderedBag<IHrItemObject>(new[] { m, m2 }, comparer);
+            var bag2 = new OrderedBag<IHrItemObject>(new[] { m }, comparer);
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
-            Assert.IsTrue(diff1.Count == 1);
+            Assert.IsTrue(diff1.Single() as Measure == m2);
             Assert.IsTrue(diff2.Count == 0);
-            Assert.IsTrue(diff1.Contains(m2));
         }
     }
 }

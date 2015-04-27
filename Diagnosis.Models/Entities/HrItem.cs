@@ -137,7 +137,7 @@ namespace Diagnosis.Models
     /// Сущность элемента записи с уверенностью.
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("CHIO {HIO} {Confidence}")]
+    [DebuggerDisplay("CHIO {HIO}{HioType} {Confidence}")]
     public class ConfindenceHrItemObject : IDomainObject, IComparable<ConfindenceHrItemObject>
     {
         public Confidence Confidence { get; set; }
@@ -156,7 +156,6 @@ namespace Diagnosis.Models
         {
             // сравниваем строго, так что измерения с одним значением, 
             // выраженным разными единицами, не равны
-
             var res = StrictIHrItemObjectComparer.StrictCompare(this.HIO, other.HIO);
             if (res != 0) return res;
 
@@ -200,5 +199,7 @@ namespace Diagnosis.Models
             }
             return string.Format("{0}{1}", HIO, suf);
         }
+
+        private Type HioType { get { return HIO.GetType(); } }
     }
 }
