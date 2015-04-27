@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -125,49 +126,26 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand(async () =>
                 {
-                    Contract.Requires(Constants.IsClient);
+                    var vocsToLoad = SelectedAvailableVocs.Select(x => x.voc).ToList();
 
-                    var syncer = new Syncer(
-                         serverConStr: Remote.ConnectionString,
-                         clientConStr: LocalConnectionString,
-                         serverProviderName: Remote.ProviderName);
-
-                    var vocsToLoad = SelectedAvailableVocs.Select(x => x.voc);
                     try
                     {
-                        using (var s = nhib.OpenSession())
-                            syncer = syncer.OnlySelectedVocs(s, vocsToLoad);
+                        await SyncVocsToLoad(Remote.ConnectionInfo,
+                            LocalConnectionString,
+                            vocsToLoad);
                     }
                     catch (Exception e)
                     {
                         Log += e + Environment.NewLine;
-                        return;
                     }
 
-                    DoWithCursor(syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable()).ContinueWith((t) =>
-                    {
-                        var ids = vocsToLoad.Select(x => x.Id).ToList();
-                        var selectedSynced = Session.Query<Vocabulary>()
-                            .Where(v => ids.Contains(v.Id))
-                            .ToList();
+                    AfterLoad(vocsToLoad);
 
-                        loader.LoadOrUpdateVocs(selectedSynced);
-                    }
-                    ).ContinueWith((t) =>
-                    {
-                        MakeInstalledVms();
-                        MakeAvailableVms();
-#if DEBUG
-                        AuthorityController.LoadVocsAfterLogin(Session); // загружаем словари не меняя пользователя
-#endif
-                    })
-                    , Cursors.AppStarting);
                 }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
             }
         }
-
         /// <summary>
         /// Обновляет выбранные установленные словари.
         /// </summary>
@@ -244,6 +222,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public string Log
         {
             get
@@ -260,26 +239,53 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public static async Task SyncVocsToLoad(ConnectionInfo remote, string local, IEnumerable<Vocabulary> vocsToLoad)
+        {
+            Contract.Requires(Constants.IsClient);
+
+            var syncer = new Syncer(
+                 serverConStr: remote.ConnectionString,
+                 clientConStr: local,
+                 serverProviderName: remote.ProviderName);
+
+            using (var s = nhib.OpenSession())
+                syncer = syncer.OnlySelectedVocs(s, vocsToLoad);
+
+            Mouse.OverrideCursor = Cursors.AppStarting;
+            await syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+            Mouse.OverrideCursor = null;
+        }
+
+        public void AfterLoad(IEnumerable<Vocabulary> vocsToLoad)
+        {
+            var ids = vocsToLoad.Select(x => x.Id).ToList();
+            var selectedSynced = Session.Query<Vocabulary>()
+                .Where(v => ids.Contains(v.Id))
+                .ToList();
+
+            loader.LoadOrUpdateVocs(selectedSynced);
+
+            MakeInstalledVms();
+            MakeAvailableVms();
+#if DEBUG
+            AuthorityController.LoadVocsAfterLogin(Session); // загружаем словари не меняя пользователя
+#endif
+        }
+
         private void TryGetAvailableVocs()
         {
-            // подкключаемся к источнику
-            var conn = new ConnectionInfo(Remote.ConnectionString, Remote.ProviderName);
-
-            if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
-                nhib = NHibernateHelper.FromServerConnectionInfo(conn);
+            CreateNhibHelper();
 
             MakeInstalledVms();
             try
             {
                 int available;
                 using (var s = nhib.OpenSession())
-                using (var tr = s.BeginTransaction())
                 {
                     serverNonCustomVocs = VocabularyQuery.NonCustom(s)()
                        .ToList();
 
                     available = MakeAvailableVms();
-                    tr.Commit();
                 }
                 IsConnected = true;
                 NoAvailableVocs = available == 0;
@@ -291,6 +297,19 @@ namespace Diagnosis.ViewModels.Screens
                 IsConnected = false;
                 NoAvailableVocs = false; // пока нет подключения, этого сообщения нет
             }
+        }
+
+        /// <summary>
+        /// подкключаемся к источнику
+        /// </summary>
+        private NHibernateHelper CreateNhibHelper()
+        {
+            var conn = new ConnectionInfo(Remote.ConnectionString, Remote.ProviderName);
+
+            if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
+                nhib = NHibernateHelper.FromServerConnectionInfo(conn);
+
+            return nhib;
         }
 
         private int MakeInstalledVms()
@@ -323,6 +342,7 @@ namespace Diagnosis.ViewModels.Screens
 
             return vms.Count();
         }
+
         private void syncer_MessagePosted(object sender, StringEventArgs e)
         {
             Log += string.Format("[{0:mm:ss:fff}] {1}\n", DateTime.Now, e.str);
