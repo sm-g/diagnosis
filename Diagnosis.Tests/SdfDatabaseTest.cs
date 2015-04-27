@@ -35,7 +35,7 @@ namespace Diagnosis.Tests
 
             Diagnosis.Data.Mappings.Helper.Reset();
             var clMap = NHibernateHelper.CreateMapping(clientCon.ProviderName);
-            var sMap = NHibernateHelper.CreateMapping(serverCon.ProviderName);
+            var sMap = NHibernateHelper.CreateMapping(serverCon.ProviderName); // TODO должен быть отдельный маппинг или скрипт
 
             clCfg = NHibernateHelper.CreateConfiguration(clientCon, clMap, true);
             sCfg = NHibernateHelper.CreateConfiguration(serverCon, sMap, true);
