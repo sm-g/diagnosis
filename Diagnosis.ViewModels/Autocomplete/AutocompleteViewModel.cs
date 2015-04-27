@@ -7,9 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -34,7 +32,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
         private VisibleRelayCommand toggleConfidence;
-        OptionsMode mode;
+        private OptionsMode mode;
+
         public AutocompleteViewModel(Recognizer recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
             : this(recognizer,
                 allowTagConvertion: mode != OptionsMode.MeasureEditor,
@@ -215,6 +214,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return Tags.Where(t => t.IsSelected).ToList(); }
         }
+
         public RelayCommand AddIcdCommand
         {
             get
@@ -511,12 +511,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 Tags.Remove(tag);
                 StartEdit(LastTag);
             };
-            tag.Converting += (s, e) =>
-            {
-                CompleteOnConvert(tag, e.type);
-                {
-                }
-            };
+            tag.Converting += CompleteOnConvert;
             tag.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "Query")
@@ -742,34 +737,114 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        private void CompleteOnConvert(TagViewModel tag, BlankType toType)
+        private void CompleteOnConvert(object s, BlankTypeEventArgs e)
         {
+            var tag = s as TagViewModel;
             var measure = (tag.Blank as Measure);
             var wasLast = tag.IsLast;
-            var x = recognizer.ConvertBlank(tag, toType) //.ConfigureAwait<bool>(false);
-                .ContinueWith(t =>
-                 {
-                     if (t.Result)
-                     {
-                         uiTaskFactory.StartNew(() =>
-                         {
-                             if (measure != null && toType != BlankType.Comment)
-                             {
-                                 // отдельный комментарий из числа измерения
-                                 var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
-                                 AddTag(comment, Tags.IndexOf(tag) + 1);
-                             }
+            Action onConverted = () =>
+            {
+                if (measure != null && e.type != BlankType.Comment)
+                {
+                    // отдельный комментарий из числа измерения
+                    var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                    AddTag(comment, Tags.IndexOf(tag) + 1);
+                }
 
-                             CompleteEnding(tag);
+                CompleteEnding(tag);
 
-                             OnEntitiesChanged(); // повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
+                OnEntitiesChanged(); // TODO повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
 
-                             if (wasLast)
-                                 // convert from Last - continue typing
-                                 StartEdit();
-                         });
-                     }
-                 }, TaskContinuationOptions.ExecuteSynchronously);
+                if (wasLast)
+                {
+                    // convert from Last - continue typing
+                    StartEdit();
+                }
+            };
+            ConvertBlank(tag, e.type, onConverted);
+        }
+
+        /// <summary>
+        /// Изменяет заготовку тега с одной сущности на другую.
+        /// Возвращает успешность конвертации.
+        /// </summary>
+        public void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
+        {
+            Contract.Requires(tag.BlankType != toType);
+            Contract.Requires(toType != BlankType.None);
+
+            // if queryOrMeasureWord == null - initial or after clear query
+            string queryOrMeasureWord = null;
+            if (tag.BlankType == BlankType.Measure)
+            {
+                var w = (tag.Blank as Measure).Word;
+                if (w != null)
+                    queryOrMeasureWord = w.Title;
+            }
+            else
+                queryOrMeasureWord = tag.Query;
+
+
+            switch (toType)
+            {
+                case BlankType.Comment:
+                    tag.Blank = new Comment(tag.Query);
+                    onConverted();
+                    break;
+
+                case BlankType.Word: // новое или существующее
+                    Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
+
+                    tag.Blank = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
+                    onConverted();
+                    break;
+
+                case BlankType.Measure: // слово
+                    MeasureEditorViewModel meVm;
+                    if (queryOrMeasureWord.IsNullOrEmpty())
+                    {
+                        meVm = new MeasureEditorViewModel(recognizer.MeasureEditorWithCompare);
+                    }
+                    else
+                    {
+                        var w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
+                        meVm = new MeasureEditorViewModel(w, recognizer.MeasureEditorWithCompare);
+                    }
+                    meVm.OnDialogResult((res) =>
+                    {
+                        if (res)
+                        {
+                            tag.Blank = meVm.Measure;
+                            onConverted();
+                        }
+                    });
+                    uiTaskFactory.StartNew(() =>
+                    {
+                        this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
+                    });
+                    break;
+
+                case BlankType.Icd: // слово/коммент в поисковый запрос
+                    IcdSelectorViewModel isVm;
+                    if (queryOrMeasureWord.IsNullOrEmpty())
+                        isVm = new IcdSelectorViewModel();
+                    else
+                        isVm = new IcdSelectorViewModel(queryOrMeasureWord);
+
+                    isVm.OnDialogResult((res) =>
+                    {
+                        if (res)
+                        {
+                            tag.Blank = isVm.SelectedIcd;
+                            onConverted();
+                        }
+                    });
+                    uiTaskFactory.StartNew(() =>
+                    {
+                        this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
+                    });
+                    break;
+            }
         }
 
         public void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
