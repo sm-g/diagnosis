@@ -5,11 +5,12 @@ namespace Diagnosis.ViewModels
 {
     public class SessionVMBase : ViewModelBase
     {
+        static NHibernateHelper nhib;
         static SessionVMBase()
         {
             if (IsInDesignMode)
             {
-                NHibernateHelper.Default.InMemory = true;
+                Nhib.InMemory = true;
             }
         }
 
@@ -21,9 +22,23 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return NHibernateHelper.Default.GetSession();
+                return Nhib.GetSession();
             }
         }
+
+        public static NHibernateHelper Nhib
+        {
+            get
+            {
+                if (nhib == null) nhib = NHibernateHelper.Default;
+                return nhib;
+            }
+            set
+            {
+                nhib = value;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

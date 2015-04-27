@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace Diagnosis.Common.Types
 {
+    [DebuggerDisplay("{ConnectionString} {ProviderName}")]
     public struct ConnectionInfo
     {
         public ConnectionInfo(string constr, string providerName)

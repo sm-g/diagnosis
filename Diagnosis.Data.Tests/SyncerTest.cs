@@ -232,7 +232,7 @@ namespace Diagnosis.Data.Tests
             await syncer.WithoutDoctors().SendFrom(Side.Server, scopes);
 
             // пробуем достать словари
-            var nhib = NHibernateHelper.FromServerConnectionInfo(sdfFileCon);
+            var nhib = NHibernateHelper.FromConnectionInfo(sdfFileCon);
 
             int exVocsCount;
             using (var s = nhib.OpenSession())

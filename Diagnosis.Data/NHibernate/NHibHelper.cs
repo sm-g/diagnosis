@@ -9,10 +9,8 @@ using NHibernate.Connection;
 using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Event;
-using NHibernate.Event.Default;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -20,11 +18,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Diagnosis.Data
 {
-
-
     public class NHibernateHelper
     {
-        private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper() { useSavedCfg = true });
+        private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper());
         private Configuration _cfg;
         private HbmMapping _mapping;
         private ISession _session;
@@ -37,9 +33,14 @@ namespace Diagnosis.Data
 
         protected NHibernateHelper()
         {
+            useSavedCfg = true;
         }
 
+        /// <summary>
+        /// Хелпер приложения, использует сохраненный конфиг. Требует инициализации.
+        /// </summary>
         public static NHibernateHelper Default { get { return lazyInstance.Value; } }
+
         public bool InMemory
         {
             get { return inmem; }
@@ -100,12 +101,13 @@ namespace Diagnosis.Data
             get { return _sessionFactory ?? (_sessionFactory = Configuration.BuildSessionFactory()); }
         }
 
-
-        public static NHibernateHelper FromServerConnectionInfo(ConnectionInfo conn)
+        /// <summary>
+        /// Хелпер для указанного подключения. Не требует инициализации.
+        /// </summary>
+        public static NHibernateHelper FromConnectionInfo(ConnectionInfo conn)
         {
             var instance = new NHibernateHelper();
-            instance.useSavedCfg = false;
-            instance.Init(conn, Side.Server);
+            instance.Init(conn, false);
 
             return instance;
         }
@@ -196,10 +198,15 @@ namespace Diagnosis.Data
         /// Initialize connection, set InMemory if any error occured.
         /// </summary>
         /// <param name="conn"></param>
-        /// <param name="side"></param>
+        ///
         /// <returns>Connection success</returns>
-        public bool Init(ConnectionInfo conn, Side side)
+        public bool Init(ConnectionInfo conn, bool useSavedCfg = true)
         {
+            if (connection != default(ConnectionInfo))
+                throw new System.InvalidOperationException("Already initialized");
+
+            this.useSavedCfg = useSavedCfg;
+
             var fail = !conn.IsAvailable();
 
             if (fail || conn == default(ConnectionInfo))
@@ -272,6 +279,7 @@ namespace Diagnosis.Data
             {
             }
         }
+
         private static bool IsConfigurationFileValid()
         {
             // cfg.xml changing not updates assInfo.LastWriteTime
@@ -300,7 +308,4 @@ namespace Diagnosis.Data
                 .Execute(true, false, false);
         }
     }
-
-
-
 }

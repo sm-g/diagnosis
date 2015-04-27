@@ -107,7 +107,7 @@ namespace Diagnosis.Server.App
                 {
                 }
 
-            NHibernateHelper.Default.Init(conInfo, Side.Server);
+            NHibernateHelper.Default.Init(conInfo);
 
             if (NHibernateHelper.Default.InMemory)
             {

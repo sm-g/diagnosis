@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Title = "Синхронизация";
 
-            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
+            LocalConnectionString = Nhib.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             Remote = new DataConnectionViewModel(server);

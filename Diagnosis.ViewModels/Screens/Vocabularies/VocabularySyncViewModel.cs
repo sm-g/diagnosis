@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             saver = new Saver(Session);
             loader = new VocLoader(Session);
 
-            LocalConnectionString = NHibernateHelper.Default.ConnectionString;
+            LocalConnectionString = Nhib.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
             SelectedVocs = new ObservableCollection<VocabularyViewModel>();
@@ -146,19 +146,6 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
             }
         }
-        /// <summary>
-        /// Обновляет выбранные установленные словари.
-        /// </summary>
-        public RelayCommand ReloadVocsCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    // это же при синхронизации для всех словарей?
-                }, () => SelectedVocs.Count > 0);
-            }
-        }
 
         /// <summary>
         /// Удаляет выбранные установленные словари.
@@ -169,18 +156,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    var toDel = SelectedVocs
-                        .Select(w => w.voc)
-                        .ToArray();
+                    var toDel = SelectedVocs.Select(w => w.voc).ToList();
 
-                    loader.DeleteVocs(toDel);
-
-                    MakeInstalledVms();
-                    MakeAvailableVms();
-
-#if DEBUG
-                    AuthorityController.LoadVocsAfterLogin(Session); // обновляем доступные слова не меняя пользователя
-#endif
+                    DeleteVocs(toDel);
                 }, () => SelectedVocs.Count > 0);
             }
         }
@@ -223,6 +201,19 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public NHibernateHelper NHib
+        {
+            get
+            {
+                var conn = Remote.ConnectionInfo;
+                if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
+                    // подключаемся к источнику
+                    nhib = NHibernateHelper.FromConnectionInfo(conn);
+
+                return nhib;
+            }
+        }
+
         public string Log
         {
             get
@@ -239,7 +230,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public static async Task SyncVocsToLoad(ConnectionInfo remote, string local, IEnumerable<Vocabulary> vocsToLoad)
+        public async Task SyncVocsToLoad(ConnectionInfo remote, string local, IEnumerable<Vocabulary> vocsToLoad)
         {
             Contract.Requires(Constants.IsClient);
 
@@ -248,7 +239,7 @@ namespace Diagnosis.ViewModels.Screens
                  clientConStr: local,
                  serverProviderName: remote.ProviderName);
 
-            using (var s = nhib.OpenSession())
+            using (var s = NHib.OpenSession())
                 syncer = syncer.OnlySelectedVocs(s, vocsToLoad);
 
             Mouse.OverrideCursor = Cursors.AppStarting;
@@ -272,15 +263,26 @@ namespace Diagnosis.ViewModels.Screens
 #endif
         }
 
+        public void DeleteVocs(IEnumerable<Vocabulary> toDel)
+        {
+            loader.DeleteVocs(toDel);
+
+            MakeInstalledVms();
+            MakeAvailableVms();
+
+#if DEBUG
+            AuthorityController.LoadVocsAfterLogin(Session); // обновляем доступные слова не меняя пользователя
+#endif
+        }
+
+
         private void TryGetAvailableVocs()
         {
-            CreateNhibHelper();
-
             MakeInstalledVms();
             try
             {
                 int available;
-                using (var s = nhib.OpenSession())
+                using (var s = NHib.OpenSession())
                 {
                     serverNonCustomVocs = VocabularyQuery.NonCustom(s)()
                        .ToList();
@@ -298,20 +300,6 @@ namespace Diagnosis.ViewModels.Screens
                 NoAvailableVocs = false; // пока нет подключения, этого сообщения нет
             }
         }
-
-        /// <summary>
-        /// подкключаемся к источнику
-        /// </summary>
-        private NHibernateHelper CreateNhibHelper()
-        {
-            var conn = new ConnectionInfo(Remote.ConnectionString, Remote.ProviderName);
-
-            if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
-                nhib = NHibernateHelper.FromServerConnectionInfo(conn);
-
-            return nhib;
-        }
-
         private int MakeInstalledVms()
         {
             var vms = VocabularyQuery.NonCustom(Session)()
