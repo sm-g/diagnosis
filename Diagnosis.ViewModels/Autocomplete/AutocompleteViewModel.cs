@@ -768,7 +768,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Изменяет заготовку тега с одной сущности на другую.
         /// Возвращает успешность конвертации.
         /// </summary>
-        public void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
+        private void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
         {
             Contract.Requires(tag.BlankType != toType);
             Contract.Requires(toType != BlankType.None);
@@ -847,7 +847,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
+        internal void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
         {
             switch (tag.State)
             {

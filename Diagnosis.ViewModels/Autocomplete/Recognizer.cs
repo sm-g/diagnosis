@@ -24,48 +24,9 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// несохраненные слова, созданные через автокомплит
         /// </summary>
         private static List<Word> created = new List<Word>();
-        private Doctor doctor;
-
         private readonly ISession session;
+        private Doctor doctor;
         private bool _addQueryToSug;
-
-        /// <summary>
-        /// При поиске предположений-слов первыми - дети предыдущего слова.
-        /// </summary>
-        public bool ShowChildrenFirst { get; set; }
-
-        /// <summary>
-        /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
-        /// </summary>
-        public bool ShowAllWordsOnEmptyQuery { get; set; }
-
-        /// <summary>
-        /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
-        /// </summary>
-        public bool AddQueryToSuggestions
-        {
-            get { return _addQueryToSug; }
-            set
-            {
-                if (CanChangeAddQueryToSuggstions && _addQueryToSug != value)
-                {
-                    _addQueryToSug = value;
-                    OnPropertyChanged(() => AddQueryToSuggestions);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Можно менять режим добавления запроса в предположения. Default is true.
-        /// </summary>
-        public bool CanChangeAddQueryToSuggstions { get; set; }
-
-        /// <summary>
-        /// Добавлять созданное несохраненное слово в список предположений. Default is true.
-        /// </summary>
-        public bool AddNotPersistedToSuggestions { get; set; }
-
-        public bool MeasureEditorWithCompare { get; set; }
 
         static Recognizer()
         {
@@ -105,11 +66,60 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
         }
 
-        private bool CanMakeEntityFrom(string query)
+        /// <summary>
+        /// При поиске предположений-слов первыми - дети предыдущего слова.
+        /// </summary>
+        public bool ShowChildrenFirst { get; set; }
+
+        /// <summary>
+        /// Показывать все предположения-слова при пустом запросе. Если false, требуется первый символ.
+        /// </summary>
+        public bool ShowAllWordsOnEmptyQuery { get; set; }
+
+        /// <summary>
+        /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
+        /// </summary>
+        public bool AddQueryToSuggestions
         {
-            if (query.IsNullOrEmpty())
-                return false;
-            return true;
+            get { return _addQueryToSug; }
+            set
+            {
+                if (CanChangeAddQueryToSuggstions && _addQueryToSug != value)
+                {
+                    _addQueryToSug = value;
+                    OnPropertyChanged(() => AddQueryToSuggestions);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Можно менять режим добавления запроса в предположения. Default is true.
+        /// </summary>
+        public bool CanChangeAddQueryToSuggstions { get; set; }
+
+        /// <summary>
+        /// Добавлять созданное несохраненное слово в список предположений. Default is true.
+        /// </summary>
+        public bool AddNotPersistedToSuggestions { get; set; }
+
+        public bool MeasureEditorWithCompare { get; set; }
+        public static Word GetWordFromCreated(Word word)
+        {
+            Contract.Requires(word != null);
+
+            // при вставке создается другой объект
+
+            if (word.IsTransient)
+            {
+                // несохраненное слово
+                // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
+                // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
+                var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
+
+                if (same != null)
+                    return same;
+            }
+            return word;
         }
 
         public void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
@@ -147,8 +157,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 Debug.Assert(tag.BlankType == BlankType.Word);
             }
         }
-
-        
 
         /// <summary>
         /// Возвращает сущность из тега.
@@ -219,25 +227,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             hios.SyncAfterPaste(session);
         }
 
-        public static Word GetWordFromCreated(Word word)
-        {
-            Contract.Requires(word != null);
-
-            // при вставке создается другой объект
-
-            if (word.IsTransient)
-            {
-                // несохраненное слово
-                // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
-                // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
-                var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
-
-                if (same != null)
-                    return same;
-            }
-            return word;
-        }
-
         /// <summary>
         /// Первое точно подходящее слово из БД или новое.
         /// </summary>
@@ -263,6 +252,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             return query.MatchesAsStrings(suggestion);
         }
 
+        private bool CanMakeEntityFrom(string query)
+        {
+            if (query.IsNullOrEmpty())
+                return false;
+            return true;
+        }
         /// <summary>
         /// Все слова с началом как у запроса с учетом предыдущего.
         /// </summary>
