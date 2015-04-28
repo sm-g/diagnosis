@@ -177,6 +177,16 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
+        public void WithoutAnyWord()
+        {
+            var hrs = HealthRecordQuery.WithoutAnyWord(session)(new Word[] { w[1], w[3], w[22] });
+
+            Assert.IsTrue(hrs.Contains(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+        }
+
+        [TestMethod]
         public void WithAnyWordsAtLeastTwoWords()
         {
             var hrs = HealthRecordQuery.WithAnyWords(session)(new Word[] { w[1], w[22], w[3] }, 2);

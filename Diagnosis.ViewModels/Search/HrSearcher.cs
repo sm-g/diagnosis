@@ -82,9 +82,7 @@ namespace Diagnosis.ViewModels.Search
             Contract.Requires(options != null);
             Contract.Requires(session != null);
 
-            var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(
-                Enumerable.Empty<Word>(),
-                Enumerable.Empty<Word>(),
+            var hrs = HealthRecordQuery.WithoutAnyWord(session)(
                 options.WordsNot);
 
             if (options.Categories.Count() > 0)
