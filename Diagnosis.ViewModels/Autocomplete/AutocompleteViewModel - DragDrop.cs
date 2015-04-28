@@ -171,8 +171,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                             }
                             else
                             {
-                                var item = master.recognizer.EntityOf(tag);
-                                master.AddTag(item, insertIndex).Validate(master.Validator);
+                                master.AddTag(tag.Blank, insertIndex).Validate(master.Validator);
                             }
                         }
                     }

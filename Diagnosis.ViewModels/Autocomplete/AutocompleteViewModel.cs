@@ -340,7 +340,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 {
                     IEnumerable<IHrItemObject> entities;
                     if (t != null)
-                        entities = recognizer.EntityOf(t).ToEnumerable();
+                        entities = t.Blank.ToEnumerable();
                     else
                         entities = GetCHIOsOfSelectedCompleted().Select(x => x.HIO);
                     this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
@@ -670,7 +670,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != BlankType.None)
-                    result.Add(new ConfindenceHrItemObject(recognizer.EntityOf(tag), tag.Confidence));
+                    result.Add(new ConfindenceHrItemObject(tag.Blank, tag.Confidence));
                 else if (tag.State != State.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
@@ -686,7 +686,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             var completed = Tags.Where(t => t.State == State.Completed);
 
             var hios = completed
-                 .Select(t => new ConfindenceHrItemObject(recognizer.EntityOf(t), t.Confidence))
+                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence))
                  .ToList();
             return hios;
         }
@@ -700,7 +700,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             var completed = SelectedTags.Where(t => t.State == State.Completed);
 
             var hios = completed
-                 .Select(t => new ConfindenceHrItemObject(recognizer.EntityOf(t), t.Confidence))
+                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence))
                  .ToList();
             return hios;
         }
@@ -727,7 +727,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             if (vm != null)
                 hio = vm.Hio;
 
-            recognizer.SetBlank(tag, hio, exactMatchRequired, inverse);
+            SetBlank(tag, hio, exactMatchRequired, inverse);
 
             CompleteEnding(tag);
 
@@ -762,6 +762,38 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             };
             ConvertBlank(tag, e.type, onConverted);
+        }
+        public void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
+        {
+            Contract.Requires(tag != null);
+
+            if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
+            {
+                if (!tag.Query.IsNullOrEmpty())
+                {
+                    tag.Blank = new Comment(tag.Query);
+                }
+                else
+                {
+                    tag.Blank = null; // для поиска или ентер в пустом непоследнем
+                }
+            }
+            else if (!inverse) // direct with suggestion
+            {
+                if (!exactMatchRequired || tag.Query.MatchesAsStrings(suggestion))
+                {
+                    tag.Blank = suggestion; // main
+                }
+                else
+                {
+                    tag.Blank = new Comment(tag.Query); // запрос не совпал с предположением (CompleteOnLostFocus)
+                }
+            }
+            else // inverse, no suggestion
+            {
+                Contract.Assume(!tag.Query.IsNullOrEmpty());
+                tag.Blank = recognizer.FirstMatchingOrNewWord(tag.Query);
+            }
         }
 
         /// <summary>
@@ -803,12 +835,12 @@ namespace Diagnosis.ViewModels.Autocomplete
                     MeasureEditorViewModel meVm;
                     if (queryOrMeasureWord.IsNullOrEmpty())
                     {
-                        meVm = new MeasureEditorViewModel(recognizer.MeasureEditorWithCompare);
+                        meVm = new MeasureEditorViewModel(measureEditorWithCompare);
                     }
                     else
                     {
                         var w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
-                        meVm = new MeasureEditorViewModel(w, recognizer.MeasureEditorWithCompare);
+                        meVm = new MeasureEditorViewModel(w, measureEditorWithCompare);
                     }
                     meVm.OnDialogResult((res) =>
                     {
@@ -1003,20 +1035,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             logger.DebugFormat("drop {0}", e.Data.ToString());
 
-            string text = null;
-            string unicodeText = null;
-
-            // prefer unicode format
-            if (e.Data.GetDataPresent(DataFormats.Text))
-            {
-                text = (string)e.Data.GetData(DataFormats.Text);
-            }
-            if (e.Data.GetDataPresent(DataFormats.UnicodeText))
-            {
-                unicodeText = (string)e.Data.GetData(DataFormats.UnicodeText);
-            }
-            if (unicodeText != null)
-                text = unicodeText;
+            string text = GetDroppedText(e);
 
             if (text != null)
             {
@@ -1031,6 +1050,25 @@ namespace Diagnosis.ViewModels.Autocomplete
                     AddTag(tag);
                 }
             }
+        }
+
+        private static string GetDroppedText(DragEventArgs e)
+        {
+            string text = null;
+            string unicodeText = null;
+
+            // prefer unicode format
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                text = (string)e.Data.GetData(DataFormats.Text);
+            }
+            if (e.Data.GetDataPresent(DataFormats.UnicodeText))
+            {
+                unicodeText = (string)e.Data.GetData(DataFormats.UnicodeText);
+            }
+            if (unicodeText != null)
+                text = unicodeText;
+            return text;
         }
 
         System.Windows.Input.ICommand IAutocompleteViewModel.EditCommand

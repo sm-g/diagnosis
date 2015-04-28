@@ -5,11 +5,8 @@ using Diagnosis.Models;
 using NHibernate;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
@@ -24,6 +21,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// несохраненные слова, созданные через автокомплит
         /// </summary>
         private static List<Word> created = new List<Word>();
+
         private readonly ISession session;
         private Doctor doctor;
         private bool _addQueryToSug;
@@ -102,7 +100,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public bool AddNotPersistedToSuggestions { get; set; }
 
-        public bool MeasureEditorWithCompare { get; set; }
         public static Word GetWordFromCreated(Word word)
         {
             Contract.Requires(word != null);
@@ -120,51 +117,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                     return same;
             }
             return word;
-        }
-
-        public void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
-        {
-            Contract.Requires(tag != null);
-
-            if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
-            {
-                if (CanMakeEntityFrom(tag.Query))
-                {
-                    tag.Blank = new Comment(tag.Query); // текст-комментарий
-                }
-                else
-                {
-                    tag.Blank = null; // для поиска или ентер в пустом непоследнем
-                    Debug.Assert(tag.BlankType == BlankType.None);
-                }
-            }
-            else if (!inverse) // direct with suggestion
-            {
-                if (!exactMatchRequired || Recognizer.Matches(suggestion, tag.Query))
-                {
-                    tag.Blank = suggestion; // main
-                    Debug.Assert(tag.BlankType != BlankType.None);
-                }
-                else
-                {
-                    tag.Blank = new Comment(tag.Query); // запрос не совпал с предположением (CompleteOnLostFocus)
-                }
-            }
-            else // inverse, no suggestion
-            {
-                Contract.Assume(!tag.Query.IsNullOrEmpty());
-                tag.Blank = FirstMatchingOrNewWord(tag.Query);
-                Debug.Assert(tag.BlankType == BlankType.Word);
-            }
-        }
-
-        /// <summary>
-        /// Возвращает сущность из тега.
-        /// </summary>
-        public IHrItemObject EntityOf(TagViewModel tag)
-        {
-            Contract.Requires(tag.BlankType != BlankType.None);
-            return tag.Blank;
         }
 
         /// <summary>
@@ -252,12 +204,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             return query.MatchesAsStrings(suggestion);
         }
 
-        private bool CanMakeEntityFrom(string query)
-        {
-            if (query.IsNullOrEmpty())
-                return false;
-            return true;
-        }
         /// <summary>
         /// Все слова с началом как у запроса с учетом предыдущего.
         /// </summary>
