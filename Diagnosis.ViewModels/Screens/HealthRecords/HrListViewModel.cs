@@ -33,17 +33,19 @@ namespace Diagnosis.ViewModels.Screens
         private static HrViewer hrViewer = new HrViewer();
 
         internal readonly IHrsHolder holder;
-        internal readonly HealthRecordManager hrManager;
         /// <summary>
         /// Visible HealthRecords in right order (with sorting, grouping, filtering).
         /// </summary>
         internal readonly ListCollectionView view;
+
+        private readonly HealthRecordManager hrManager;
+        private readonly ReentrantFlag unselectPrev = new ReentrantFlag();
+        private readonly ReentrantFlag doNotNotifySelectedChanged = new ReentrantFlag();
+        private readonly FlagActionWrapper doNotNotifyLastSelectedChanged;
+
         private ShortHealthRecordViewModel _selectedHealthRecord;
         private ShortHealthRecordViewModel _selectedCopy;
         private List<ShortHealthRecordViewModel> selectedOrder = new List<ShortHealthRecordViewModel>();
-        private ReentrantFlag unselectPrev = new ReentrantFlag();
-        private ReentrantFlag doNotNotifySelectedChanged = new ReentrantFlag();
-        private FlagActionWrapper doNotNotifyLastSelectedChanged;
         private HrViewColumn _sort = HrViewColumn.None; // to change in ctor
         private HrViewColumn _group = HrViewColumn.None;
         private bool _rectSelect;
@@ -716,7 +718,7 @@ namespace Diagnosis.ViewModels.Screens
             return false;
         }
 
-        private void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
+        internal void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
         {
             Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
             // don't change selection

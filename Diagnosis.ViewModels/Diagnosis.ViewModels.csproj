@@ -351,6 +351,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Screens\Card\CodeMap1.dgml" />
+    <None Include="Screens\HealthRecords\CodeMap1.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />

@@ -360,7 +360,7 @@ namespace Diagnosis.ViewModels.Tests
             var vms = card.HrList.HealthRecords[1].ToEnumerable();
             Assert.IsTrue(card.HrList.CanDropTo(vms, null));
 
-            card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 0);
+            card.HrList.Reorder(vms, 0, null);
             // hrs -> b a c d
 
             card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
@@ -392,7 +392,7 @@ namespace Diagnosis.ViewModels.Tests
             card.HrList.Grouping = HrViewColumn.None;
 
             var vms = card.HrList.HealthRecords[1].ToEnumerable();
-            card.HrList.hrManager.Reorder(vms, card.HrList.HealthRecords, 3);
+            card.HrList.Reorder(vms, 3, null);
             // hrs -> a (c) d b
 
             card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
