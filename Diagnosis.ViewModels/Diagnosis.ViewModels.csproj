@@ -318,7 +318,7 @@
     <Compile Include="Screens\Settings\SettingsViewModel.cs" />
     <Compile Include="Screens\Words\WordsListViewModel.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel.cs" />
-    <Compile Include="Autocomplete\Recognizer.cs" />
+    <Compile Include="Autocomplete\SuggestionsMaker.cs" />
     <Compile Include="Autocomplete\TagViewModel.cs" />
     <Compile Include="Controls\FilterViewModel.cs" />
     <Compile Include="Search\SearchOptions.cs" />

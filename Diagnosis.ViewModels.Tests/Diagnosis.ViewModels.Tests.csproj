@@ -86,7 +86,7 @@
     <Compile Include="HrEditorTest.cs" />
     <Compile Include="HrListTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecognizerTest.cs" />
+    <Compile Include="SuggestionsMakerTest.cs" />
     <Compile Include="SearchTest.cs" />
     <Compile Include="ViewModelTest.cs" />
     <Compile Include="VocabularySyncTest.cs" />

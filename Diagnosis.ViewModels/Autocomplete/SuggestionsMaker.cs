@@ -11,11 +11,11 @@ using System.Linq;
 namespace Diagnosis.ViewModels.Autocomplete
 {
     /// <summary>
-    /// Создает сущности из тегов, ищет предположения.
+    /// Ищет предположения, создает слова.
     /// </summary>
-    public class Recognizer : NotifyPropertyChangedBase
+    public class SuggestionsMaker
     {
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Recognizer));
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(SuggestionsMaker));
 
         /// <summary>
         /// несохраненные слова, созданные через автокомплит
@@ -26,9 +26,9 @@ namespace Diagnosis.ViewModels.Autocomplete
         private Doctor doctor;
         private bool _addQueryToSug;
 
-        static Recognizer()
+        static SuggestionsMaker()
         {
-            typeof(Recognizer).Subscribe(Event.WordPersisted, (e) =>
+            typeof(SuggestionsMaker).Subscribe(Event.WordPersisted, (e) =>
             {
                 // now word can be retrieved from db
                 var word = e.GetValue<Word>(MessageKeys.Word);
@@ -44,7 +44,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         ///
         /// </summary>
         /// <param name="session"></param>
-        public Recognizer(ISession session, bool clearCreated = false)
+        public SuggestionsMaker(ISession session, bool clearCreated = false)
         {
             Contract.Requires(session != null);
 
@@ -85,7 +85,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (CanChangeAddQueryToSuggstions && _addQueryToSug != value)
                 {
                     _addQueryToSug = value;
-                    OnPropertyChanged(() => AddQueryToSuggestions);
                 }
             }
         }

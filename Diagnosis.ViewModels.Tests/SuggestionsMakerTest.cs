@@ -11,9 +11,9 @@ using System.Linq;
 namespace Diagnosis.ViewModels.Tests
 {
     [TestClass]
-    public class RecognizerTest : InMemoryDatabaseTest
+    public class SuggestionsMakerTest : InMemoryDatabaseTest
     {
-        private Recognizer r;
+        private SuggestionsMaker r;
 
         private static string notExistQ = "qwe";
 
@@ -22,7 +22,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             Load<Doctor>();
             Load<Word>();
-            r = new Recognizer(session, clearCreated: true);
+            r = new SuggestionsMaker(session, clearCreated: true);
             AuthorityController.TryLogIn(d1);
         }
 
@@ -57,7 +57,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(word2.IsTransient);
             Assert.AreNotEqual(word, word2);
 
-            var tryToGetWordBut = Recognizer.GetWordFromCreated(word2);
+            var tryToGetWordBut = SuggestionsMaker.GetWordFromCreated(word2);
             Assert.AreEqual(word2, tryToGetWordBut);
         }
     }

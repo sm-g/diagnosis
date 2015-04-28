@@ -210,7 +210,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CreateAutocomplete()
         {
             Autocomplete = new AutocompleteViewModel(
-                new Recognizer(Session)
+                new SuggestionsMaker(Session)
                 {
                     AddQueryToSuggestions = true,
                     CanChangeAddQueryToSuggstions = false

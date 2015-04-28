@@ -24,7 +24,6 @@ namespace Diagnosis.ViewModels.Screens
         private Doctor doctor;
         private bool _focused;
         private IEnumerable<HrCategory> _categories;
-        private Recognizer recognizer;
 
         public HrEditorViewModel(ISession session)
         {
@@ -168,12 +167,12 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return recognizer != null ? recognizer.AddQueryToSuggestions : false;
+                return Autocomplete != null ? Autocomplete.AddQueryToSuggestions : false;
             }
             set
             {
-                if (recognizer != null)
-                    recognizer.AddQueryToSuggestions = value;
+                if (Autocomplete != null)
+                    Autocomplete.AddQueryToSuggestions = value;
             }
         }
 
@@ -274,20 +273,13 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             var initials = HealthRecord.healthRecord.GetOrderedCHIOs();
-            recognizer = new Recognizer(session)
+            var recognizer = new SuggestionsMaker(session)
             {
                 ShowChildrenFirst = true,
                 AddQueryToSuggestions = doctor.Settings.AddQueryToSuggestions,
             };
             // update button state
             OnPropertyChanged(() => AddQueryToSuggestions);
-            recognizer.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "AddQueryToSuggestions")
-                {
-                    OnPropertyChanged(() => AddQueryToSuggestions);
-                }
-            };
 
             Autocomplete = new AutocompleteViewModel(
                 recognizer,
@@ -436,11 +428,10 @@ namespace Diagnosis.ViewModels.Screens
                 session.SetReadOnly(hr, false);
                 session.Evict(hr);
 
-                var addQuery = recognizer.AddQueryToSuggestions;
+                var addQuery = Autocomplete.AddQueryToSuggestions;
 
                 Autocomplete.Dispose();
                 _autocomplete = null;
-                recognizer = null;
 
                 // сохраняем запись
                 OnUnloaded(hr);

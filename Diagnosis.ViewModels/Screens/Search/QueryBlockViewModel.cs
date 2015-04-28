@@ -468,7 +468,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void CreateAutocompletes(ISession session)
         {
-            var rec = new Recognizer(session) { AddNotPersistedToSuggestions = false, MeasureEditorWithCompare = true };
+            var rec = new SuggestionsMaker(session) { AddNotPersistedToSuggestions = false };
             AutocompleteAll = new AutocompleteViewModel(
                 rec,
                 AutocompleteViewModel.OptionsMode.Search,

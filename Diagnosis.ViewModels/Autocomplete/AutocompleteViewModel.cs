@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels.Autocomplete
     public partial class AutocompleteViewModel : ViewModelBase, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
-        private readonly Recognizer recognizer;
+        private readonly SuggestionsMaker recognizer;
         private readonly bool allowSendToSearch;
         private readonly bool allowTagConvertion;
         private readonly bool allowConfidenceToggle;
@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private VisibleRelayCommand toggleConfidence;
         private OptionsMode mode;
 
-        public AutocompleteViewModel(Recognizer recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
+        public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
             : this(recognizer,
                 allowTagConvertion: mode != OptionsMode.MeasureEditor,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.mode = mode;
         }
 
-        public AutocompleteViewModel(Recognizer recognizer,
+        public AutocompleteViewModel(SuggestionsMaker recognizer,
             bool allowTagConvertion,
             bool allowSendToSearch,
             bool allowConfidenceToggle,
@@ -451,6 +451,18 @@ namespace Diagnosis.ViewModels.Autocomplete
                     Suggestions.ForEach(x => x.IsAlter = value);
                     OnPropertyChanged(() => ShowAltSuggestion);
                 }
+            }
+        }
+        /// <summary>
+        /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
+        /// </summary>
+        public bool AddQueryToSuggestions
+        {
+            get { return recognizer.AddQueryToSuggestions; }
+            set
+            {
+                recognizer.AddQueryToSuggestions = value;
+                OnPropertyChanged(() => AddQueryToSuggestions);
             }
         }
 

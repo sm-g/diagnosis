@@ -9,7 +9,7 @@ namespace Diagnosis.ViewModels.Tests
     [TestClass]
     public class AutocompleteTest : ViewModelTest
     {
-        private Recognizer r;
+        private SuggestionsMaker r;
         private new AutocompleteViewModel a;
         private string q;
         private string qFull;
@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             Load<Doctor>();
             AuthorityController.TryLogIn(d1);
-            r = new Recognizer(session, clearCreated: true);
+            r = new SuggestionsMaker(session, clearCreated: true);
             a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
@@ -98,7 +98,7 @@ namespace Diagnosis.ViewModels.Tests
             a.SelectedTag.Query = notExistQ;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            var r = new Recognizer(session);
+            var r = new SuggestionsMaker(session);
             var other = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
             other.StartEdit();
             other.SelectedTag.Query = notExistQ;
@@ -311,7 +311,7 @@ namespace Diagnosis.ViewModels.Tests
             a.SelectedTag = a.Tags.First();
             a.Copy();
 
-            var r2 = new Recognizer(session);
+            var r2 = new SuggestionsMaker(session);
             var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
             a2.Paste();
 
@@ -326,7 +326,7 @@ namespace Diagnosis.ViewModels.Tests
             a.SelectedTag = a.Tags.First();
             a.Copy();
 
-            var r2 = new Recognizer(session);
+            var r2 = new SuggestionsMaker(session);
             var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
 
             session.SaveOrUpdate(w);

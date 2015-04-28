@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels
             {
                 Word res = null;
                 if (word.IsTransient) // новое может быть в автокомплите
-                    res = Recognizer.GetWordFromCreated(word);
+                    res = SuggestionsMaker.GetWordFromCreated(word);
 
                 if (res == null) // пробуем достать из БД
                     using (var tr = session.BeginTransaction())
