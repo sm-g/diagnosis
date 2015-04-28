@@ -163,8 +163,15 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_categories == null && session != null)
                 {
-                    var cats = new List<HrCategory>(session.QueryOver<HrCategory>().List());
-                    cats.Add(HrCategory.Null);
+                    var cats = new List<HrCategory>() { HrCategory.Null };
+
+                    try
+                    {
+                        cats.AddRange(session.QueryOver<HrCategory>().List());
+                    }
+                    catch
+                    {
+                    }
 
                     _categories = cats
                         .OrderBy(cat => cat.Ord)
