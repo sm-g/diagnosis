@@ -138,7 +138,7 @@ namespace Diagnosis.ViewModels.Search
         public SearchOptions Load(ISession session, SearchOptionsDTO dto)
         {
             var result = new SearchOptions();
-            result.All = dto.All;
+            result.GroupOperator = dto.GroupOperator;
             result.SearchScope = dto.SearchScope;
             result.MinAny = dto.MinAny;
 

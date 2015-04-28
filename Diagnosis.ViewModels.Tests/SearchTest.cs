@@ -1023,13 +1023,18 @@ namespace Diagnosis.ViewModels.Tests
 
         public static QueryBlockViewModel All(this QueryBlockViewModel qb)
         {
-            qb.All = true;
+            qb.GroupOperator = QueryGroupOperator.All;
             return qb;
         }
 
         public static QueryBlockViewModel Any(this QueryBlockViewModel qb)
         {
-            qb.All = false;
+            qb.GroupOperator = QueryGroupOperator.Any;
+            return qb;
+        }
+        public static QueryBlockViewModel NotAny(this QueryBlockViewModel qb)
+        {
+            qb.GroupOperator = QueryGroupOperator.NotAny;
             return qb;
         }
 

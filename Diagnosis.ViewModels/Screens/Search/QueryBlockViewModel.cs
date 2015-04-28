@@ -282,27 +282,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Применить все блоки к области поиска (или достаточно одного).
-        /// </summary>
-        public bool All
-        {
-            get
-            {
-                return _all;
-            }
-            set
-            {
-                if (_all != value)
-                {
-                    _all = value;
-                    _operator = value ? QueryGroupOperator.All : QueryGroupOperator.Any;
-                    RefreshDescription();
-                    OnPropertyChanged(() => All);
-                }
-            }
-        }
         private QueryGroupOperator _operator;
+        /// <summary>
+        /// Применить блоки к области поиска и выбрать записи, которые удовлетворяют всем/любому/не любому.
+        /// </summary>
         public QueryGroupOperator GroupOperator
         {
             get
@@ -382,7 +365,7 @@ namespace Diagnosis.ViewModels.Screens
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.MinAny = AnyMin;
-            options.All = GroupOperator == QueryGroupOperator.All;
+            options.GroupOperator = GroupOperator;
             options.SearchScope = SearchScope;
 
             if (_options != null) // копируем детей
@@ -431,7 +414,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public override string ToString()
         {
-            return string.Format("{0}: {1},{2}", Level, All, SearchScope);
+            return string.Format("{0}: {1},{2}", Level, GroupOperator, SearchScope);
         }
 
         internal void SelectCategory(params HrCategory[] cats)
@@ -495,8 +478,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void FillFromOptions(SearchOptions options)
         {
-            All = options.All;
-            GroupOperator = options.All ? QueryGroupOperator.All : QueryGroupOperator.Any;
+            GroupOperator = options.GroupOperator;
             SearchScope = options.SearchScope;
             AnyMin = options.MinAny;
             SelectCategory(options.Categories.ToArray());

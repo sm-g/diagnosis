@@ -152,9 +152,7 @@ namespace Diagnosis.ViewModels.Search
                 else
                 {
                     // если в группе только исключающие блоки, в результате
-                    // (нет записей - чтобы только не видеть записи с тем словами)
-                    // все записи списка/вообще все - их и хотели найти
-                    //    ведь надо что-то показывать
+                    // все записи, которые хотели найти (без слов, в категории)
                 }
                 if (logOn)
                     logger.DebugFormat("beforeExclude {0}: {1}", beforeExclude.Values.Count(), Log(beforeExclude.SelectMany(d => d.Value)));
@@ -185,11 +183,18 @@ namespace Diagnosis.ViewModels.Search
             bool anyNonExQbInGroup,
             Dictionary<IHrsHolder, IEnumerable<HealthRecord>> beforeExclude)
         {
-            // исключающие блоки в режиме All убирают записи
+            // исключающие блоки 
+            // All убирают записи
             // "в списке записи со словом Х и ни одной со словом У"
-            // в режиме Any добавляют
+            Contract.Ensures(qb.GroupOperator != QueryGroupOperator.All || !anyNonExQbInGroup ||
+                Contract.Result<IEnumerable<HealthRecord>>().Count() <= beforeExclude.SelectMany(x => x.Value).Count());
+            // Any добавляют
             // "в списке записи со словом Х или без слова У"
-            //
+            // NotAny убирают
+            // в записях ни X ни У
+
+            //если только исключающие
+
             var ex = from q in qb.Children
                      where q.IsExcluding
                      select new
@@ -200,7 +205,7 @@ namespace Diagnosis.ViewModels.Search
                          JustNoHrs = new HrSearcher().SearchJustNoWords(session, q)
                      };
 
-            if (!qb.All)
+            if (qb.GroupOperator == QueryGroupOperator.Any)
             {
                 // к записям, полученным из результатов неисключающих блоков +
                 // те, где просто нет исключенных слов
@@ -215,12 +220,12 @@ namespace Diagnosis.ViewModels.Search
 
                 return beforeHrs.Union(justNo).Distinct();
             }
-            if (!anyNonExQbInGroup) // all, only ex blocks
+            if (!anyNonExQbInGroup) // only ex blocks
             {
                 var exQbHrsList = ex.Select(x => x.JustNoHrs).ToList();
 
                 if (logOn)
-                    logger.DebugFormat("all, only ex. justNo {0}", Log(exQbHrsList.SelectMany(d => d)));
+                    logger.DebugFormat("only ex. justNo {0}", Log(exQbHrsList.SelectMany(d => d)));
 
                 switch (qb.SearchScope)
                 {
@@ -298,29 +303,24 @@ namespace Diagnosis.ViewModels.Search
                                  where !q.IsExcluding
                                  select GetResult(session, q)).ToList();
 
-            switch (qb.SearchScope)
-            {
-                case SearchScope.HealthRecord: // группировка по holder не используется
-                    if (qb.All)
-                        return InOneHr(qbResultsList);
-                    else
-                        return AnyInOneHr(qbResultsList);
+            var table = new Dictionary<SearchScope,
+                Dictionary<QueryGroupOperator,
+                    Func<IList<IEnumerable<HealthRecord>>,
+                        Dictionary<IHrsHolder, IEnumerable<HealthRecord>>>>>();
+            table[SearchScope.HealthRecord] = new Dictionary<QueryGroupOperator, Func<IList<IEnumerable<HealthRecord>>, Dictionary<IHrsHolder, IEnumerable<HealthRecord>>>>();
+            table[SearchScope.Holder] = new Dictionary<QueryGroupOperator, Func<IList<IEnumerable<HealthRecord>>, Dictionary<IHrsHolder, IEnumerable<HealthRecord>>>>();
+            table[SearchScope.Patient] = new Dictionary<QueryGroupOperator, Func<IList<IEnumerable<HealthRecord>>, Dictionary<IHrsHolder, IEnumerable<HealthRecord>>>>();
 
-                case SearchScope.Holder:
-                    if (qb.All)
-                        return InOneHolder(qbResultsList);
-                    else
-                        return AnyInOneHolder(qbResultsList);
+            // группировка по holder не используется
+            table[SearchScope.HealthRecord][QueryGroupOperator.All] = InOneHr;
+            table[SearchScope.HealthRecord][QueryGroupOperator.Any] = AnyInOneHr;
 
-                case SearchScope.Patient:
-                    if (qb.All)
-                        return InOnePatient(qbResultsList);
-                    else
-                        return AnyInOnePatient(qbResultsList);
+            table[SearchScope.Holder][QueryGroupOperator.All] = InOneHolder;
+            table[SearchScope.Holder][QueryGroupOperator.Any] = AnyInOneHolder;
+            table[SearchScope.Patient][QueryGroupOperator.All] = InOnePatient;
+            table[SearchScope.Patient][QueryGroupOperator.Any] = AnyInOnePatient;
 
-                default:
-                    throw new NotImplementedException();
-            }
+            return table[qb.SearchScope][qb.GroupOperator](qbResultsList);
         }
 
         /// <summary>

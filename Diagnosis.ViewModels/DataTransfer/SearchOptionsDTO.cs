@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Search
         public List<HrCategoryDTO> Categories { get; set; }
 
         [DataMember]
-        public bool All { get; set; }
+        public QueryGroupOperator GroupOperator { get; set; }
 
         [DataMember]
         public int MinAny { get; set; }

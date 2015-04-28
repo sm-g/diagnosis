@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         public List<HrCategory> Categories { get; set; }
 
-        public bool All { get; set; }
+        public QueryGroupOperator GroupOperator { get; set; }
 
         public SearchScope SearchScope { get; set; }
 
@@ -115,8 +115,15 @@ namespace Diagnosis.ViewModels.Search
             //var cat = "разделы {0}".FormatStr(string.Join(", ", Categories));
             if (IsGroup)
             {
-                var child = string.Join(All ? " и " : " или ", Children);
-                return "({0} в {1})".FormatStr(child, SearchScope);
+                string s = string.Empty;
+                switch (GroupOperator)
+                {
+                    case QueryGroupOperator.All: s = " и "; break;
+                    case QueryGroupOperator.Any: s = " или "; break;
+                    case QueryGroupOperator.NotAny: s = " не или "; break;
+                }
+                var childs = string.Join(s, Children);
+                return "({0} в {1})".FormatStr(childs, SearchScope);
             }
             var sb = new StringBuilder();
 
@@ -164,6 +171,7 @@ namespace Diagnosis.ViewModels.Search
             }
             return sb.ToString().Trim('/');
         }
+
     }
 
 
