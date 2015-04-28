@@ -32,7 +32,7 @@ namespace Diagnosis.Data.Tests
         {
             var hrs = HealthRecordQuery.WithAllWordsInScope(session)(new Word[] { w[1] }, HealthRecordQueryAndScope.HealthRecord);
 
-            Assert.AreEqual(6, hrs.Count());        
+            Assert.AreEqual(6, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[1]));
             Assert.IsTrue(hrs.Contains(hr[2]));
         }
@@ -184,6 +184,25 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Contains(hr[71]));
             Assert.IsTrue(hrs.Contains(hr[31]));
             Assert.IsTrue(hrs.Contains(hr[30]));
+        }
+
+        [TestMethod]
+        public void WithoutAllWords()
+        {
+            var hrs = HealthRecordQuery.WithoutAllWords(session)(new Word[] { w[1], w[22] });
+
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
         }
 
         [TestMethod]

@@ -28,6 +28,42 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
+        /// <summary>
+        /// Возвращает записи со всеми из слов.
+        /// </summary>
+        public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithAllWords(ISession session)
+        {
+            return (words) =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    // with help of http://stackoverflow.com/questions/8425232/sql-select-all-rows-where-subset-exists
+                    // and http://stackoverflow.com/questions/448203/linq-to-sql-using-group-by-and-countdistinct
+                    // also http://sqlfiddle.com/#!2/327514/1 and http://johnreilly.me/2009/12/sql-contains-all-query/
+                    var wordsIds = words.Select(w => w.Id).ToList();
+
+                    var hriWithAnyWords = (from hr in session.Query<HealthRecord>()
+                                           join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                                           where hri.Word != null
+                                           join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                                           where wordsIds.Contains(w.Id)
+                                           select hri).ToList();
+
+                    // one query - nhib Query Source could not be identified.
+
+                    var hrIds = (from hri in hriWithAnyWords
+                                 group hri by hri.HealthRecord.Id into g
+                                 where g.Select(x => x.Word.Id).Count() == wordsIds.Count // те hr, где кол-во слов в hri == переданному
+                                 select g.Key).ToList();
+
+                    var qq = from hr in session.Query<HealthRecord>()
+                             where hrIds.Contains(hr.Id)
+                             select hr;
+                    return qq.ToList();
+                }
+            };
+        }
         /// <summary>
         /// Возвращает записи где нет ни одного из слов.
         /// </summary>
@@ -47,6 +83,25 @@ namespace Diagnosis.Data.Queries
             };
         }
 
+        /// <summary>
+        /// Возвращает записи кроме тех, где есть все слова.
+        /// </summary>
+        public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithoutAllWords(ISession session)
+        {
+            return (words) =>
+            {
+                throw new NotImplementedException();
+                using (var tr = session.BeginTransaction())
+                {
+                    var wordsIds = words.Select(w => w.Id).ToList();
+
+                    var hrs = from hr in session.Query<HealthRecord>()
+                              where !hr.HrItems.All(x => wordsIds.Contains(x.Word.Id))
+                              select hr;
+                    return hrs.Distinct().ToList();
+                }
+            };
+        }
         /// <summary>
         /// Возвращает записи с хотя бы N из слов (c повторами слов).
         /// </summary>
@@ -102,32 +157,6 @@ namespace Diagnosis.Data.Queries
         {
             return (words, scope) =>
             {
-                if (scope == HealthRecordQueryAndScope.HealthRecord)
-                {
-                    // with help of http://stackoverflow.com/questions/8425232/sql-select-all-rows-where-subset-exists
-                    // and http://stackoverflow.com/questions/448203/linq-to-sql-using-group-by-and-countdistinct
-                    // also http://sqlfiddle.com/#!2/327514/1 and http://johnreilly.me/2009/12/sql-contains-all-query/
-                    var wordsIds = words.Select(w => w.Id).ToList();
-
-                    var hriWithAnyWords = (from hr in session.Query<HealthRecord>()
-                                           join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
-                                           where hri.Word != null
-                                           join w in session.Query<Word>() on hri.Word.Id equals w.Id
-                                           where wordsIds.Contains(w.Id)
-                                           select hri).ToList();
-
-                    // one query - nhib Query Source could not be identified.
-
-                    var hrIds = (from hri in hriWithAnyWords
-                                 group hri by hri.HealthRecord.Id into g
-                                 where g.Select(x => x.Word.Id).Count() == wordsIds.Count // те hr, где кол-во слов в hri == переданному
-                                 select g.Key).ToList();
-
-                    var qq = from hr in session.Query<HealthRecord>()
-                             where hrIds.Contains(hr.Id)
-                             select hr;
-                    return qq.ToList();
-                }
                 var withAny = WithAnyWord(session)(words);
                 switch (scope)
                 {
@@ -206,6 +235,7 @@ namespace Diagnosis.Data.Queries
                 //    return wordsInHr.Distinct().ToList();
 
                 //}
+
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyWord(session)(any.Any() ? any : all);
