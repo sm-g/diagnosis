@@ -140,34 +140,32 @@ namespace Diagnosis.ViewModels.Search
             logger.DebugFormat("{0}", qb);
             if (qb.IsGroup)
             {
-                var anyNonExQbInGroup = qb.Children.Any(x => !x.IsExcluding);
-                var anyExQbInGroup = qb.Children.Any(x => x.IsExcluding);
+                var anyNormal = qb.Children.Any(x => !x.IsExcluding);
+                var anyExcluding = qb.Children.Any(x => x.IsExcluding);
 
                 var beforeExclude = new Dictionary<IHrsHolder, IEnumerable<HealthRecord>>();
 
-                if (anyNonExQbInGroup)
+                if (anyNormal)
                     beforeExclude = GetAllAnyHrs(session, qb);
                 else
                 {
                     // если в группе только исключающие блоки, в результате
                     // все записи, которые хотели найти (без слов, в категории)
+                    // beforeExclude как будто все записи
                 }
                 if (logOn)
                     logger.DebugFormat("beforeExclude {0}: {1}", beforeExclude.Values.Count(), Log(beforeExclude.SelectMany(d => d.Value)));
 
-                if (anyExQbInGroup)
+                if (anyExcluding)
                 {
-                    var hrs = ApplyExcluding(session, qb, anyNonExQbInGroup, beforeExclude);
+                    var hrs = ApplyExcluding(session, qb, anyNormal, beforeExclude);
                     if (logOn)
                         logger.DebugFormat("apply ex: {0}", Log(hrs));
                     return hrs;
                 }
-                else
+                else // в группе нет исключающих блоков
                 {
-                    // в группе нет исключающих блоков
-                    return from holderHrs in beforeExclude
-                           from hr in holderHrs.Value
-                           select hr;
+                    return beforeExclude.SelectMany(x => x.Value);
                 }
             }
             else
@@ -178,20 +176,24 @@ namespace Diagnosis.ViewModels.Search
 
         private static IEnumerable<HealthRecord> ApplyExcluding(ISession session,
             SearchOptions qb,
-            bool anyNonExQbInGroup,
+            bool anyNormal,
             Dictionary<IHrsHolder, IEnumerable<HealthRecord>> beforeExclude)
         {
             // исключающие блоки 
             // All убирают записи
             // "в списке записи со словом Х и ни одной со словом У"
-            Contract.Ensures(qb.GroupOperator != QueryGroupOperator.All || !anyNonExQbInGroup ||
+            Contract.Ensures(qb.GroupOperator != QueryGroupOperator.All || !anyNormal ||
                 Contract.Result<IEnumerable<HealthRecord>>().Count() <= beforeExclude.SelectMany(x => x.Value).Count());
             // Any добавляют
             // "в списке записи со словом Х или без слова У"
+            Contract.Ensures(qb.GroupOperator != QueryGroupOperator.Any || !anyNormal ||
+               Contract.Result<IEnumerable<HealthRecord>>().Count() >= beforeExclude.SelectMany(x => x.Value).Count());
             // NotAny убирают
             // в записях ни X ни У
+            Contract.Ensures(qb.GroupOperator != QueryGroupOperator.NotAny || !anyNormal ||
+               Contract.Result<IEnumerable<HealthRecord>>().Count() <= beforeExclude.SelectMany(x => x.Value).Count());
 
-            //если только исключающие
+            //если только исключающие, сначала получаем все записи без слов
 
             var ex = from q in qb.Children
                      where q.IsExcluding
@@ -218,7 +220,7 @@ namespace Diagnosis.ViewModels.Search
 
                 return beforeHrs.Union(justNo).Distinct();
             }
-            if (!anyNonExQbInGroup) // only ex blocks
+            if (!anyNormal) // only ex blocks
             {
                 var exQbHrsList = ex.Select(x => x.JustNoHrs).ToList();
 
@@ -238,11 +240,11 @@ namespace Diagnosis.ViewModels.Search
 
                     // только исключающие блоки вычитают из всех записей области, где есть по одной записи без слов
                     case SearchScope.Holder:
-                        beforeExclude = InOneHolder(exQbHrsList);
+                        beforeExclude = InHolder(exQbHrsList);
                         break;
 
                     case SearchScope.Patient:
-                        beforeExclude = InOnePatient(exQbHrsList);
+                        beforeExclude = InPatient(exQbHrsList);
                         break;
                 }
             }
@@ -262,6 +264,7 @@ namespace Diagnosis.ViewModels.Search
                                     hr.Words.Intersect(e.ExWords).Any()
                                    )
                            select hr;
+
 
                 case SearchScope.Holder:
                     // хоть одна запись, у которых совпадает атрибут и есть исключенные слова - весь список не проходит
@@ -290,7 +293,7 @@ namespace Diagnosis.ViewModels.Search
         }
 
         /// <summary>
-        /// Записи, полученные из результатов неисключающих блоков
+        /// Записи, полученные из результатов неисключающих блоков группы.
         /// </summary>
         private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrs(ISession session, SearchOptions qb)
         {
@@ -310,13 +313,14 @@ namespace Diagnosis.ViewModels.Search
             table[SearchScope.Patient] = new Dictionary<QueryGroupOperator, Func<IList<IEnumerable<HealthRecord>>, Dictionary<IHrsHolder, IEnumerable<HealthRecord>>>>();
 
             // группировка по holder не используется
-            table[SearchScope.HealthRecord][QueryGroupOperator.All] = InOneHr;
-            table[SearchScope.HealthRecord][QueryGroupOperator.Any] = AnyInOneHr;
+            table[SearchScope.HealthRecord][QueryGroupOperator.All] = InHr;
+            table[SearchScope.HealthRecord][QueryGroupOperator.Any] = AnyInHr;
 
-            table[SearchScope.Holder][QueryGroupOperator.All] = InOneHolder;
-            table[SearchScope.Holder][QueryGroupOperator.Any] = AnyInOneHolder;
-            table[SearchScope.Patient][QueryGroupOperator.All] = InOnePatient;
-            table[SearchScope.Patient][QueryGroupOperator.Any] = AnyInOnePatient;
+            // нужен словарь в ключом holder для исключения
+            table[SearchScope.Holder][QueryGroupOperator.All] = InHolder;
+            table[SearchScope.Holder][QueryGroupOperator.Any] = AnyInHolder;
+            table[SearchScope.Patient][QueryGroupOperator.All] = InPatient;
+            table[SearchScope.Patient][QueryGroupOperator.Any] = AnyInPatient;
 
             return table[qb.SearchScope][qb.GroupOperator](qbResultsList);
         }
@@ -330,7 +334,7 @@ namespace Diagnosis.ViewModels.Search
         /// И не должно быть ни одной исключающей записи.
         /// </summary>
         /// <returns>Все подходящие записи из подходящих областей.</returns>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolderScope(
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InHolderScope(
             IList<IEnumerable<HealthRecord>> results,
             Func<HealthRecord, IHrsHolder> getScope)
         {
@@ -372,7 +376,7 @@ namespace Diagnosis.ViewModels.Search
         /// Область попадет в результаты, если нашлась хотя бы одна запись из нее в любом блоке.
         /// То есть все записи проходят в результаты.
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolderScope(
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInHolderScope(
             IList<IEnumerable<HealthRecord>> results,
             Func<HealthRecord, IHrsHolder> getScope)
         {
@@ -388,10 +392,8 @@ namespace Diagnosis.ViewModels.Search
         ///
         /// В результатах пересечение записей каждого блока.
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHr(IList<IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InHr(IList<IEnumerable<HealthRecord>> results)
         {
-            Contract.Requires(results.Count > 0);
-
             return Intersect(results);
         }
 
@@ -400,7 +402,7 @@ namespace Diagnosis.ViewModels.Search
         ///
         /// В результатах все записи полученные из каждого блока.
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHr(IList<IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInHr(IList<IEnumerable<HealthRecord>> results)
         {
             return (from hrs in results
                     from hr in hrs
@@ -413,14 +415,14 @@ namespace Diagnosis.ViewModels.Search
         /// В каждом блоке должны найтись записи из пациента, тогда пациент попадает в результаты,
         /// где есть все найденные записи из него.
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOnePatient(IList<IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InPatient(IList<IEnumerable<HealthRecord>> results)
         {
-            return InOneHolderScope(results, (hr) => hr.GetPatient());
+            return InHolderScope(results, (hr) => hr.GetPatient());
         }
 
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InOneHolder(IList<IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> InHolder(IList<IEnumerable<HealthRecord>> results)
         {
-            return InOneHolderScope(results, (hr) => hr.Holder);
+            return InHolderScope(results, (hr) => hr.Holder);
         }
 
         /// <summary>
@@ -431,9 +433,9 @@ namespace Diagnosis.ViewModels.Search
         ///
         /// (или в списке нет записей-исключений)
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOneHolder(IList<IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInHolder(IList<IEnumerable<HealthRecord>> results)
         {
-            return AnyInOneHolderScope(results, (hr) => hr.Holder);
+            return AnyInHolderScope(results, (hr) => hr.Holder);
         }
 
         /// <summary>
@@ -441,9 +443,9 @@ namespace Diagnosis.ViewModels.Search
         ///
         /// Пациент попадет в результаты, если нашлась хотя бы одна запись из него в любом блоке.
         /// </summary>
-        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInOnePatient(IList<IEnumerable<HealthRecord>> results)
+        private static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> AnyInPatient(IList<IEnumerable<HealthRecord>> results)
         {
-            return AnyInOneHolderScope(results, (hr) => hr.GetPatient());
+            return AnyInHolderScope(results, (hr) => hr.GetPatient());
         }
 
         /// <summary>
