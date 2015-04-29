@@ -22,7 +22,6 @@ namespace Diagnosis.ViewModels.Screens
         private EventMessageHandlersManager msgManager;
 
         public const string ToolContentId = "Search";
-        private SearchOptions _options;
 
         public SearchViewModel()
         {
@@ -211,7 +210,7 @@ namespace Diagnosis.ViewModels.Screens
             var options = QueryBlocks[0].GetSearchOptions();
             if (UseOldMode)
             {
-                shrs = new HrSearcher().SearchOld(Session, RootQueryBlock.GetOldOptions());
+                shrs = HrSearcher.SearchOld(Session, RootQueryBlock.GetOldOptions());
             }
             else
             {

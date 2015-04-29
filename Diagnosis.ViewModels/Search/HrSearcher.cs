@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels.Search
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrSearcher));
         static bool logOn = false;
-        public IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
+        public static IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
         {
             Contract.Requires(options != null);
             Contract.Requires(session != null);
@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels.Search
             return hrs.ToList();
         }
 
-        public IEnumerable<HealthRecord> SearchJustNoWords(ISession session, SearchOptions options)
+        public static IEnumerable<HealthRecord> SearchJustNoWords(ISession session, SearchOptions options)
         {
             Contract.Requires(options != null);
             Contract.Requires(session != null);
@@ -94,7 +94,7 @@ namespace Diagnosis.ViewModels.Search
             return hrs.ToList();
         }
 
-        public IEnumerable<HealthRecord> SearchOld(ISession session, OldHrSearchOptions options)
+        public static IEnumerable<HealthRecord> SearchOld(ISession session, OldHrSearchOptions options)
         {
             Contract.Requires(options != null);
             Contract.Requires(session != null);
@@ -170,7 +170,7 @@ namespace Diagnosis.ViewModels.Search
             }
             else
             {
-                return new HrSearcher().Search(session, qb);
+                return HrSearcher.Search(session, qb);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Diagnosis.ViewModels.Search
             Contract.Ensures(qb.GroupOperator != QueryGroupOperator.NotAny || !anyNormal ||
                Contract.Result<IEnumerable<HealthRecord>>().Count() <= beforeExclude.SelectMany(x => x.Value).Count());
 
-            //если только исключающие, сначала получаем все записи без слов
+            //если только исключающие, сначала получаем все записи без слов c нужными атрибутами
 
             var ex = from q in qb.Children
                      where q.IsExcluding
@@ -202,7 +202,7 @@ namespace Diagnosis.ViewModels.Search
                          Qb = q,
                          ExWords = q.WordsNot,
                          Cats = q.Categories,
-                         JustNoHrs = new HrSearcher().SearchJustNoWords(session, q)
+                         JustNoHrs = HrSearcher.SearchJustNoWords(session, q)
                      };
 
             if (qb.GroupOperator == QueryGroupOperator.Any)
@@ -264,7 +264,6 @@ namespace Diagnosis.ViewModels.Search
                                     hr.Words.Intersect(e.ExWords).Any()
                                    )
                            select hr;
-
 
                 case SearchScope.Holder:
                     // хоть одна запись, у которых совпадает атрибут и есть исключенные слова - весь список не проходит

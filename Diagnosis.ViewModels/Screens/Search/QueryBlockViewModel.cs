@@ -24,7 +24,6 @@ namespace Diagnosis.ViewModels.Screens
         private SearchOptions _options;
         private IList<HrCategoryViewModel> _categories;
         private SearchScope _sscope;
-        private bool _all;
         private int _anyMin;
         private bool _group;
         private VisibleRelayCommand _removeQbCommand;
@@ -35,7 +34,6 @@ namespace Diagnosis.ViewModels.Screens
             this.session = session;
             this.executeSearch = executeSearch;
 
-            _all = true;
             _operator = QueryGroupOperator.All;
             _anyMin = 1;
 
