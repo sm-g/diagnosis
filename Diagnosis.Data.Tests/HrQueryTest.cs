@@ -191,6 +191,7 @@ namespace Diagnosis.Data.Tests
         {
             var hrs = HealthRecordQuery.WithoutAllWords(session)(new Word[] { w[1], w[22] });
 
+            Assert.AreEqual(12, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[1]));
             Assert.IsTrue(hrs.Contains(hr[2]));
             Assert.IsTrue(hrs.Contains(hr[20]));

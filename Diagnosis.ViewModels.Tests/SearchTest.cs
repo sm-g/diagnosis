@@ -829,6 +829,26 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[31], hr[40]));
         }
+        [TestMethod]
+        public void AllInHr_TwoExcludingOnly_WithCats()
+        {
+            // запись должна быть (2 категории без 1) и (1 или 2 категории без 22)
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+            .Scope(SearchScope.HealthRecord)
+            .All()
+            .AddChild(x => x
+                .SetNot(w[1])
+                .Check(cat[2]))
+            .AddChild(x => x
+                .SetNot(w[22])
+                .Check(cat[2], cat[1]))
+            .Search();
+
+            Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[31]));
+        }
 
         [TestMethod]
         public void AllInHr_WithCats0()
