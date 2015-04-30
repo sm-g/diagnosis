@@ -14,18 +14,18 @@
       <FileName>Search\Statistic.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Search.HrHolderSearchResultViewModel" Collapsed="true">
+  <Class Name="Diagnosis.ViewModels.Search.HolderSearchResultViewModel" Collapsed="true">
     <Position X="4.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACCAAJAAQEAAAAAAAAEAEADAAAAAAAAAAAAA=</HashCode>
-      <FileName>Search\HrHolderSearchResultViewModel.cs</FileName>
+      <FileName>Screens\Search\HolderSearchResultViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.Search.SearchResultViewModel" Collapsed="true">
     <Position X="4.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQAABAAAAAAgAAAAAAAAAAAABAAAAABAAAA=</HashCode>
-      <FileName>Search\SearchResultViewModel.cs</FileName>
+      <FileName>Screens\Search\SearchResultViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Statistic" />
@@ -34,18 +34,18 @@
       <Property Name="Patients" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Search.HrSearcher" Collapsed="true">
-    <Position X="7.5" Y="5.5" Width="1.5" />
+  <Class Name="Diagnosis.ViewModels.Search.HrSearcher">
+    <Position X="9" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACQAAAACgABEAACAAAgCAgABAEBAAAAgwgA=</HashCode>
+      <HashCode>AAAABAAAACAAAAACAAAAAAAAAAAAAAAAAABAAAAgAAA=</HashCode>
       <FileName>Search\HrSearcher.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.Search.OldHrSearchOptions" Collapsed="true">
-    <Position X="7.5" Y="4.5" Width="1.5" />
+    <Position X="7" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAIAEAAAA=</HashCode>
-      <FileName>Search\HrSearchOptions.cs</FileName>
+      <FileName>Search\SearchOptions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.Screens.SearchViewModel">
@@ -54,8 +54,8 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AQBAEgAAQSAIpAAAAgAABEQAAAAAAQCAAQAABAAgAAA=</HashCode>
-      <FileName>Screens\SearchViewModel.cs</FileName>
+      <HashCode>BQBAEgAAQCEIpAAAAgAABEQAAAAAAQCAAQACBAAgAAA=</HashCode>
+      <FileName>Screens\Search\SearchViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Result" />
@@ -68,22 +68,59 @@
     <Position X="11" Y="1.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EAAIAAAiASQA0gEGMAMIgFGHEEBAFAABAKQQiAFIACA=</HashCode>
-      <FileName>Screens\QueryBlockViewModel.cs</FileName>
+      <HashCode>FAAIAAAiASQA0gEGMAMIgNGWEEBEEAAhACQQiAFIASA=</HashCode>
+      <FileName>Screens\Search\QueryBlockViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="AutocompleteAll" />
+      <Property Name="Options" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.ViewModels.Autocomplete.AutocompleteViewModel" Collapsed="true">
     <Position X="14.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>JARARiIMFbCgxhHiRCGYIAWoGkCBAEA44RQSCxRGSCY=</HashCode>
+      <HashCode>LARARiIMFbCgxhHiRCGYYAWoGkCBAEA44RQSCxxGSCY=</HashCode>
       <FileName>Autocomplete\AutocompleteViewModel - ClipboardTarget.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.SearchOptions" Collapsed="true">
+    <Position X="14.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAAoAAAAAAAAAAgEAAAEAAEAAAAQEACAAQAAIQAIACA=</HashCode>
+      <FileName>Search\SearchOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.AndSearcher">
+    <Position X="2.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAIAAAAAAAAAAiAAAAAAAAAAAgAAAYAAAA=</HashCode>
+      <FileName>Search\AndSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Searcher">
+    <Position X="5.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAABAAAAAACgAEEAAgAAggAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Search\Searcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.OrSearcher">
+    <Position X="4.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAQAAAAAAAAAAgAAAAAAAAAAAAAAAJAAAk=</HashCode>
+      <FileName>Search\OrSearcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.NotOrSearcher">
+    <Position X="7" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Search\NotOrSearcher.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

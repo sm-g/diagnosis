@@ -282,6 +282,10 @@
     <Compile Include="Screens\Vocabularies\VocabularyEditorViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Screens\Vocabularies\VocabularyViewModel.cs" />
+    <Compile Include="Search\NotOrSearcher.cs" />
+    <Compile Include="Search\OrSearcher.cs" />
+    <Compile Include="Search\Searcher.cs" />
+    <Compile Include="Search\AndSearcher.cs" />
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Screens\Search\HolderSearchResultViewModel.cs" />

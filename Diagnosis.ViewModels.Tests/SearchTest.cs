@@ -953,6 +953,151 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[71]));
         }
 
+        [TestMethod]
+        public void NotAnyInHr()
+        {
+            // записи без 1 и без (22 или 31)
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.HealthRecord)
+                .NotAny()
+                .AddChild(x => x.SetAny(w[22], w[31]))
+                .AddChild(x => x.SetAll(w[1]))
+                .Search();
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[32]));
+            Assert.IsTrue(s.Contains(hr[71]));
+        }
+
+        [TestMethod]
+        public void NotAnyInHolder()
+        {
+            // все записи списков без 1,31,кат3
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .NotAny()
+                .AddChild(x => x.SetAny(w[22], w[31]))
+                .AddChild(x => x.Check(cat[3]))
+                .Search();
+
+            Assert.AreEqual(1, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[71]));
+        }
+
+        [TestMethod]
+        public void NotAnyInHolder_NotAnyHr()
+        {
+            // списки без 4 и с любым из (94, кат 1)
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .NotAny()
+                .AddChild(x => x
+                    .Scope(SearchScope.HealthRecord)
+                    .NotAny()
+                    .AddChild(y => y.SetAll(w[94]))
+                    .AddChild(y => y.Check(cat[1])))
+                .AddChild(x => x.SetAll(w[4]))
+                .Search();
+
+            Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[70])); // только 70 71
+            Assert.IsTrue(s.Contains(hr[71]));
+        }
+
+        [TestMethod]
+        public void NotAnyInHolder_NotAnyHr_Same()
+        {
+            // списки без 4 и с любым из (94, кат 1)
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .All()
+                .AddChild(x => x
+                    .Scope(SearchScope.HealthRecord)
+                    .Any()
+                    .AddChild(y => y.SetAll(w[94]))
+                    .AddChild(y => y.Check(cat[1])))
+                .AddChild(x => x.SetNot(w[4]))
+                .Search();
+
+            Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[20]));
+            Assert.IsTrue(s.Contains(hr[70]));
+            Assert.IsTrue(s.Contains(hr[71]));
+        }
+
+        [TestMethod]
+        public void NotAnyInHodler_AnyHr()
+        {
+            // списки где нет ни одной (записи с 22) или (с любым из (94, кат 1))
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .NotAny()
+                .AddChild(x => x
+                    .Scope(SearchScope.HealthRecord)
+                    .Any()
+                    .AddChild(y => y.SetAll(w[94]))
+                    .AddChild(y => y.Check(cat[1])))
+                .AddChild(x => x.SetAny(w[22]))
+                .Search();
+
+            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[1]));
+            Assert.IsTrue(s.Contains(hr[2]));
+        }
+
+        [TestMethod]
+        public void NotAnyInHodler_AnyHr2()
+        {
+            // списки где нет ни одной (записи с 1) или (с любым из (94, кат 1))
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .NotAny()
+                .AddChild(x => x
+                    .Scope(SearchScope.HealthRecord)
+                    .Any()
+                    .AddChild(y => y.SetAll(w[94]))
+                    .AddChild(y => y.Check(cat[1])))
+                .AddChild(x => x.SetAll(w[1]))
+                .Search();
+
+            Assert.AreEqual(3, s.Result.Statistic.HealthRecords.Count);
+            Assert.IsTrue(s.Contains(hr[40]));
+            Assert.IsTrue(s.Contains(hr[73]));
+            Assert.IsTrue(s.Contains(hr[74]));
+        }
+
+        [TestMethod]
+        public void NotAnyInHr_nested3()
+        {
+            // списки где нет ни одной (записи с 4 или 22) или (с любым из (94, кат 1))
+            Load<HrCategory>();
+
+            s.RootQueryBlock
+                .Scope(SearchScope.Holder)
+                .All()
+                .AddChild(x => x
+                    .Scope(SearchScope.HealthRecord)
+                    .All()
+                    .AddChild(y => y.SetNot(w[94]))
+                    .AddChild(y => y.Check(AllCats().Except(cat[1]).ToArray())))
+                .AddChild(x => x.SetNot(w[4], w[22]))
+                .Search();
+
+            Assert.AreEqual(0, s.Result.Statistic.HealthRecords.Count);
+        }
         #region AllAny_WithSingleChild_SameResults
 
         [TestMethod]
