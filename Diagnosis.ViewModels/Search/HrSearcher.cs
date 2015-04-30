@@ -40,7 +40,7 @@ namespace Diagnosis.ViewModels.Search
 
                 // фильтр по WordsAll и MeasuresAny
                 hrsWithM = hrsWithM.Where(x =>
-                   options.WordsAll.IsSubsetOf(x.Words) &&
+                   options.WordsAll.IsSubmultisetOf(x.Words) &&
                    options.MeasuresAny.Any(op => x.Measures.Any(m => op.ResultFor(m)))
                    );
 

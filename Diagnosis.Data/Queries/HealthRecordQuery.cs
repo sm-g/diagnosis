@@ -171,7 +171,7 @@ namespace Diagnosis.Data.Queries
 
                     default:
                     case HealthRecordQueryAndScope.HealthRecord:
-                        return withAny.Where(hr => words.IsSubsetOf(hr.Words)).ToList();
+                        return withAny.Where(hr => words.IsSubmultisetOf(hr.Words)).ToList();
                 }
             };
         }
@@ -182,7 +182,7 @@ namespace Diagnosis.Data.Queries
                     group hr by holderOf(hr) into g
                     where g.Key != null
                     let allWords = g.Key.GetAllWords()
-                    where words.IsSubsetOf(allWords)
+                    where words.IsSubmultisetOf(allWords)
                     select g).SelectMany(x => x).ToList();
         }
 
@@ -239,7 +239,7 @@ namespace Diagnosis.Data.Queries
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyWord(session)(any.Any() ? any : all);
-                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.Words));
+                    var withall = withAny.Where(hr => all.IsSubmultisetOf(hr.Words));
                     return withall.Where(hr => !hr.Words.Any(w => not.Contains(w)));
                 }
                 else
@@ -256,7 +256,7 @@ namespace Diagnosis.Data.Queries
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyWords(session)(any.Any() ? any : all, minAny);
-                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.Words));
+                    var withall = withAny.Where(hr => all.IsSubmultisetOf(hr.Words));
                     return withall.Where(hr => !hr.Words.Any(w => not.Contains(w)));
                 }
                 else

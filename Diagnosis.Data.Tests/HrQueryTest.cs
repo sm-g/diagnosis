@@ -298,6 +298,15 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Contains(hr[20]));
         }
 
+        [TestMethod]
+        public void WithAllOfWordsRepeat()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[22], w[22] }, new Word[] { }, new Word[] { });
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[70]));
+        }
+
         public void WithAnyWords()
         {
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { }, new Word[] { w[94], w[3] }, new Word[] { });

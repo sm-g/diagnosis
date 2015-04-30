@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-
 namespace Diagnosis.Common
 {
     public static class EnumerableExtensions
@@ -13,6 +12,26 @@ namespace Diagnosis.Common
             bool isSubset = !x.Except(y).Any();
             return isSubset;
         }
+
+        public static bool IsSubmultisetOf<T>(this IEnumerable<T> x, IEnumerable<T> y)
+        {
+            // as new Bag<T>(x).DifferenceWith(new Bag<T>(y));
+            var cnt = new Dictionary<T, int>();
+            foreach (T s in x)
+            {
+                if (cnt.ContainsKey(s))
+                    cnt[s]++;
+                else
+                    cnt.Add(s, 1);
+            }
+            foreach (T s in y)
+            {
+                if (cnt.ContainsKey(s))
+                    cnt[s]--;
+            }
+            return cnt.Values.All(c => c <= 0);
+        }
+
 
         public static void ForAll<T>(this IEnumerable<T> collection, Action<T> action)
         {

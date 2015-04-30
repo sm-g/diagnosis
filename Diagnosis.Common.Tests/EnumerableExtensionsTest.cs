@@ -93,5 +93,32 @@ namespace Diagnosis.Common.Tests
             list = new List<int> { 3, 2, 3, 4 };
             Assert.IsFalse(list.IsOrdered(x => x));
         }
+
+        [TestMethod]
+        public void Submultiset()
+        {
+            var list = new List<int> { 1, 2, 3, 4 };
+            var list2 = new List<int> { 1, 1 };
+
+            Assert.AreEqual(false, list2.IsSubmultisetOf(list));
+        }
+
+        [TestMethod]
+        public void Submultiset2()
+        {
+            var list = new List<int> { 1, 2, 3, 4 };
+            var list2 = new List<int> { };
+
+            Assert.AreEqual(true, list2.IsSubmultisetOf(list));
+        }
+
+        [TestMethod]
+        public void Submultiset3()
+        {
+            var list = new List<int> { 1, 1, 1, 4 };
+            var list2 = new List<int> { 1, 1, 1 };
+
+            Assert.AreEqual(true, list2.IsSubmultisetOf(list));
+        }
     }
 }
