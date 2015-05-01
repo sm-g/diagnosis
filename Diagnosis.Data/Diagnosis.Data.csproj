@@ -196,6 +196,7 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DTOs\ConfWordDTO.cs" />
     <Compile Include="DTOs\_ModelDtosMapper.cs" />
     <Compile Include="DTOs\HrCategoryDTO.cs" />
     <Compile Include="DTOs\MeasureOpDTO.cs" />

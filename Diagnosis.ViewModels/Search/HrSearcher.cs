@@ -12,6 +12,7 @@ namespace Diagnosis.ViewModels.Search
 {
     public class HrSearcher
     {
+        static ISession session;
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrSearcher));
         static bool logOn = false;
         public static IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
@@ -19,12 +20,11 @@ namespace Diagnosis.ViewModels.Search
             Contract.Requires(options != null);
             Contract.Requires(session != null);
 
-            var hrs = HealthRecordQuery.WithAllAnyNotWordsMinAny(session)(
-                options.WordsAll,
-                options.WordsAny,
-                options.WordsNot,
-                options.MinAny - options.MeasuresAny.Count()); // хотя бы 3 из w1,w2,m1,m2 - достаточно 1 слова
-
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(
+               options.CWordsAll,
+               options.CWordsAny,
+               options.CWordsNot,
+               options.MinAny - options.MeasuresAny.Count()); // хотя бы 3 из w1,w2,m1,m2 - достаточно 1 слова
             // измерения фильтруем отдельно - сложная логика
 
             if (options.MeasuresAny.Any())
@@ -34,26 +34,26 @@ namespace Diagnosis.ViewModels.Search
                 var hrsWithM = HealthRecordQuery.WithAllAnyNotWordsMinAny(session)(
                     Enumerable.Empty<Word>(),
                     options.MeasuresAny.Select(x => x.Word),
-                    options.WordsNot,
-                    options.MinAny - options.WordsAny.Count()
+                    options.CWordsNot.Select(x => x.HIO),
+                    options.MinAny - options.CWordsAny.Count()
                     );
 
                 // фильтр по WordsAll и MeasuresAny
                 hrsWithM = hrsWithM.Where(x =>
-                   options.WordsAll.IsSubmultisetOf(x.Words) &&
+                   options.CWordsAll.IsSubmultisetOf(x.GetCWords()) &&
                    options.MeasuresAny.Any(op => x.Measures.Any(m => op.ResultFor(m)))
                    );
 
-                if (options.WordsAll.Any() || options.WordsAny.Any())
+                if (options.CWordsAll.Any() || options.CWordsAny.Any())
                     hrs = hrs.Union(hrsWithM);
                 else // только измерения в all / any
                     hrs = hrsWithM;
 
-                if (options.MinAny > 1 && options.WordsAny.Any())
+                if (options.MinAny > 1 && options.CWordsAny.Any())
                 {
                     // проверяем, набрала ли запись общее кол-во элементов из Any
                     hrs = from hr in hrs
-                          let ws = hr.Words.Intersect(options.WordsAny).Count()
+                          let ws = hr.GetCWords().Intersect(options.CWordsAny).Count()
                           let ms = options.MeasuresAny.Where(op => hr.Measures.Any(m => op.ResultFor(m))).Count()
                           where ms + ws >= options.MinAny
                           select hr;
@@ -83,7 +83,7 @@ namespace Diagnosis.ViewModels.Search
             Contract.Requires(session != null);
 
             var hrs = HealthRecordQuery.WithoutAnyWord(session)(
-                options.WordsNot);
+                options.CWordsNot.Select(x => x.HIO));
 
             if (options.Categories.Any())
             {

@@ -361,9 +361,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             var options = new SearchOptions(IsRoot);
 
-            options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-            options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-            options.WordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+            options.CWordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => new Confindencable<Word>(x.HIO as Word, x.Confidence)).ToList();
+            options.CWordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => new Confindencable<Word>(x.HIO as Word, x.Confidence)).ToList();
+            options.CWordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => new Confindencable<Word>(x.HIO as Word, x.Confidence)).ToList();
 
             options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
             options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
@@ -488,9 +488,9 @@ namespace Diagnosis.ViewModels.Screens
             AnyMin = options.MinAny;
             SelectCategory(options.Categories.ToArray());
 
-            AutocompleteAll.ReplaceTagsWith(options.WordsAll.Union<IHrItemObject>(options.MeasuresAll));
-            AutocompleteAny.ReplaceTagsWith(options.WordsAny.Union<IHrItemObject>(options.MeasuresAny));
-            AutocompleteNot.ReplaceTagsWith(options.WordsNot);
+            AutocompleteAll.ReplaceTagsWith(options.CWordsAll.Union<object>(options.MeasuresAll));
+            AutocompleteAny.ReplaceTagsWith(options.CWordsAny.Union<object>(options.MeasuresAny));
+            AutocompleteNot.ReplaceTagsWith(options.CWordsNot);
 
             foreach (var opt in options.Children)
                 AddChildQb(opt);

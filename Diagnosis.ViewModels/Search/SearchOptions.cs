@@ -27,9 +27,9 @@ namespace Diagnosis.ViewModels.Search
         {
             Children = new ObservableCollection<SearchOptions>();
 
-            WordsAll = new List<Word>();
-            WordsAny = new List<Word>();
-            WordsNot = new List<Word>();
+            CWordsAll = new List<Confindencable<Word>>();
+            CWordsAny = new List<Confindencable<Word>>();
+            CWordsNot = new List<Confindencable<Word>>();
             MeasuresAny = new List<MeasureOp>();
             MeasuresAll = new List<MeasureOp>();
             Categories = new List<HrCategory>();
@@ -42,34 +42,14 @@ namespace Diagnosis.ViewModels.Search
 
         }
 
-        /// <summary>
-        /// Записи со всеми словами
-        /// </summary>
-        public List<Word> WordsAll { get; set; }
-
-        /// <summary>
-        /// И любым словом из
-        /// </summary>
-        public List<Word> WordsAny { get; set; }
-
-        /// <summary>
-        /// Хотя бы столько элементов из Any
-        /// </summary>
         public int MinAny { get; set; }
 
-        /// <summary>
-        /// B ни одного слова из.
-        /// </summary>
-        public List<Word> WordsNot { get; set; }
+        public List<Confindencable<Word>> CWordsAll { get; set; }
+        public List<Confindencable<Word>> CWordsAny { get; set; }
+        public List<Confindencable<Word>> CWordsNot { get; set; }
 
-        /// <summary>
-        /// Записи со всеми измерениями
-        /// </summary>
         public List<MeasureOp> MeasuresAll { get; set; }
 
-        /// <summary>
-        /// И любым из
-        /// </summary>
         public List<MeasureOp> MeasuresAny { get; set; }
 
         /// <summary>
@@ -92,9 +72,9 @@ namespace Diagnosis.ViewModels.Search
         {
             get
             {
-                return !IsGroup && !WordsAll.Any() &&
-                                   !WordsAny.Any() &&
-                                   WordsNot.Any();
+                return !IsGroup && !CWordsAll.Any() &&
+                                   !CWordsAny.Any() &&
+                                   CWordsNot.Any();
             }
         }
 
@@ -105,7 +85,6 @@ namespace Diagnosis.ViewModels.Search
             set { _part = value; }
         }
 
-        //        public List<ConfindenceHrItemObject> ChiosAll { get; set; }
 
         public override string ToString()
         {
@@ -128,8 +107,8 @@ namespace Diagnosis.ViewModels.Search
             var sb = new StringBuilder();
 
 
-            var alls = WordsAll.Union<IHrItemObject>(MeasuresAll).ToList();
-            var anys = WordsAny.Union<IHrItemObject>(MeasuresAny);
+            var alls = CWordsAll.Union<object>(MeasuresAll).ToList();
+            var anys = CWordsAny.Union<object>(MeasuresAny);
             if (anys.Count() <= MinAny)
                 alls.AddRange(anys); // повторы?
 
@@ -151,16 +130,16 @@ namespace Diagnosis.ViewModels.Search
                 sb.Append("/");
             }
 
-            if (WordsNot.Any())
+            if (CWordsNot.Any())
             {
-                if (WordsNot.Count() > 1)
+                if (CWordsNot.Count() > 1)
                 {
                     sb.AppendFormat("ни одного: ");
                 }
                 else
                     sb.AppendFormat("без ");
 
-                sb.Append(string.Join(", ", WordsNot));
+                sb.Append(string.Join(", ", CWordsNot));
                 sb.Append("/");
             }
             if (Categories.Any())

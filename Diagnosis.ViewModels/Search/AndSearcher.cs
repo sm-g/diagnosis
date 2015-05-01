@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels.Search
                      select new
                      {
                          Qb = q,
-                         ExWords = q.WordsNot,
+                         ExWords = q.CWordsNot.Select(x=>x.HIO),
                          Cats = q.Categories,
                          JustNoHrs = HrSearcher.SearchJustNoWords(session, q)
                      };
