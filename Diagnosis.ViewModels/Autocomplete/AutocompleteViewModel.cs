@@ -11,6 +11,7 @@ using System.Windows;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
+
     public partial class AutocompleteViewModel : ViewModelBase, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
@@ -34,11 +35,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         private VisibleRelayCommand toggleConfidence;
         private OptionsMode mode;
 
-        public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
+        public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<object> initItems)
             : this(recognizer,
                 allowTagConvertion: mode != OptionsMode.MeasureEditor,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
-                allowConfidenceToggle: mode == OptionsMode.HrEditor,
+                allowConfidenceToggle: mode != OptionsMode.MeasureEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
                 measureEditorWithCompare: mode == OptionsMode.Search,
                 initItems: initItems)
@@ -52,7 +53,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             bool allowConfidenceToggle,
             bool singleTag,
             bool measureEditorWithCompare,
-            IEnumerable<ConfindenceHrItemObject> initItems)
+            IEnumerable<object> initItems)
         {
             Contract.Requires(recognizer != null);
 
@@ -497,9 +498,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег.
         /// </summary>
-        /// <param name="сontent">Строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
         public TagViewModel CreateTag(object content = null)
         {
+            Contract.Requires(content == null || content is string || content is ConfindenceHrItemObject || content is IHrItemObject);
+
             TagViewModel tag;
             var itemObject = content as IHrItemObject;
             var chio = content as ConfindenceHrItemObject;
@@ -604,6 +606,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
         {
+            Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfindenceHrItemObject || tagOrContent is IHrItemObject);
+
             var tag = tagOrContent as TagViewModel;
             if (tag == null)
             {
@@ -654,7 +658,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             LastTag.IsTextBoxFocused = true;
         }
 
-        public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
+        public void ReplaceTagsWith(IEnumerable<object> items)
         {
             Contract.Requires(items != null);
 
