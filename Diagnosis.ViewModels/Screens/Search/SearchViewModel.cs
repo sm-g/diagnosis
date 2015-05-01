@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
@@ -36,7 +37,8 @@ namespace Diagnosis.ViewModels.Screens
                     SetOptions(History.CurrentOptions);
                 }
             };
-            Loader = new OptionsLoaderViewModel(Session, this);
+            var loader = new OptionsLoader(Session);
+            Loader = new OptionsLoaderViewModel(this, loader);
 
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
             AddRootQb();
