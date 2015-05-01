@@ -346,7 +346,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// Формат {[id] ToString()[,] ...}
         /// </summary>
-        public static string FlattenString(this IEnumerable<IDomainObject> mayBeEntities)
+        public static string FlattenString(this IEnumerable<object> mayBeEntities)
         {
             var str = mayBeEntities.Select(item =>
             {
@@ -367,7 +367,7 @@ namespace Diagnosis.Models
                     }
                     catch
                     {
-                        // Comment or Mesure
+                        // Comment or Measure
                     }
 
                     pre += " ";

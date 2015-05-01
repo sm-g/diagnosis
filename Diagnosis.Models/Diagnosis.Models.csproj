@@ -144,6 +144,7 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Entities\Admin.cs" />
+    <Compile Include="Entities\Chio.cs" />
     <Compile Include="Entities\DateOffset.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
