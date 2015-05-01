@@ -398,5 +398,84 @@ namespace Diagnosis.Data.Tests
         }
 
         #endregion WithAllAnyNotWordsMinAny
+
+        #region Confidence
+        [TestMethod]
+        public void WithAnyChio()
+        {
+            var hrs = HealthRecordQuery.WithAnyConfWord(session)(new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[1], Confidence.Absent) 
+            });
+
+
+            Assert.IsTrue(hrs.Count() == 1);
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+
+        [TestMethod]
+        public void WithAnyChios()
+        {
+            var hrs = HealthRecordQuery.WithAnyConfWords(session)(new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[1], Confidence.Absent),
+                new Confindencable<Word>( w[22], Confidence.Absent),
+                new Confindencable<Word>( w[22]),
+            }, 2);
+
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+        }
+
+        [TestMethod]
+        public void WithAllChios()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[1], Confidence.Absent),
+                new Confindencable<Word>( w[22]),
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            Enumerable.Empty<Confindencable<Word>>(),
+            1);
+
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+
+        [TestMethod]
+        public void WithAllNotChios()
+        {
+            // есть 3 и нет 1(absent)
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[3])
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[1], Confidence.Absent)
+            }, 1);
+
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+        }
+
+        [TestMethod]
+        public void WithAllNotChios2()
+        {
+            // есть 3 и нет 1 - вернет где 1(absent)
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[3])
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            new Confindencable<Word>[] { 
+                new Confindencable<Word>( w[1])
+            }, 1);
+
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+        #endregion
     }
 }
