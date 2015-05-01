@@ -53,10 +53,20 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
         }
+        [TestMethod]
+        public void AnyMeasureWordsNot()
+        {
+            var hrs = o
+                .SetAny(new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] })
+                .SetNot(w[22])
+                .Search(session);
 
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+        }
         [TestMethod]
         public void MeasureAndWordOrWords()
         {
@@ -66,8 +76,8 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
         }
 
         [TestMethod]
@@ -78,7 +88,7 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -89,7 +99,7 @@ namespace Diagnosis.ViewModels.Tests
                .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -101,7 +111,7 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -113,7 +123,7 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         #endregion Measure
@@ -134,7 +144,7 @@ namespace Diagnosis.ViewModels.Tests
                   .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
         }
 
         [TestMethod]
@@ -149,9 +159,9 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
         }
 
         [TestMethod]
@@ -170,11 +180,11 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[30]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
         }
 
         [TestMethod]
@@ -188,8 +198,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
         }
 
         [TestMethod]
@@ -206,12 +216,12 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(6, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[70]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[73]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[74]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
         }
 
         [TestMethod]
@@ -226,12 +236,12 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(6, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[21]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[30]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
         }
 
         [TestMethod]
@@ -244,8 +254,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
         }
 
         [TestMethod]
@@ -265,11 +275,11 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[21]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -287,8 +297,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -308,8 +318,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -324,8 +334,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71])); // только 71 если в списке
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[71])); // только 71 если в списке
         }
 
         [TestMethod]
@@ -343,13 +353,13 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(7, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[21]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71])); // и пустые
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[71])); // и пустые
         }
 
         [TestMethod]
@@ -365,8 +375,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
@@ -382,7 +392,7 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(
+            Assert.IsTrue(hrs.IsSuperSetOf(
                 hr[20],
                 hr[22],
                 hr[30],
@@ -403,7 +413,7 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20], hr[22]));
+            Assert.IsTrue(hrs.IsSuperSetOf(hr[20], hr[22]));
         }
 
         [TestMethod]
@@ -418,9 +428,9 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -455,16 +465,16 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(9, hrs.Count());
 
             // если все записи списка
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71])); // нет записей с 5 22
-            Assert.IsTrue(hrs.IsSuperSet(hr[21])); // 2_ - потому что есть запись c 3
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[71])); // нет записей с 5 22
+            Assert.IsTrue(hrs.Contains(hr[21])); // 2_ - потому что есть запись c 3
             // 21 - как (без 5 22)
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[30])); // c 31 и 5
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[30])); // c 31 и 5
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
         }
 
         [TestMethod]
@@ -479,10 +489,10 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(4, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[30]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -543,12 +553,12 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(6, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[72]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[73]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
         }
 
         [TestMethod]
@@ -570,12 +580,12 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(6, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[72]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[73]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
         }
 
         [TestMethod]
@@ -616,8 +626,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[30]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
         }
 
         [TestMethod]
@@ -714,7 +724,7 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[40], hr[22]));
+            Assert.IsTrue(hrs.IsSuperSetOf(hr[40], hr[22]));
         }
 
         [TestMethod]
@@ -731,7 +741,7 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
         }
 
         [TestMethod]
@@ -794,7 +804,7 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[31], hr[40]));
+            Assert.IsTrue(hrs.IsSuperSetOf(hr[31], hr[40]));
         }
 
         [TestMethod]
@@ -815,7 +825,7 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
         }
 
         [TestMethod]
@@ -829,9 +839,9 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
         }
 
         [TestMethod]
@@ -847,8 +857,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
         }
 
         [TestMethod]
@@ -865,9 +875,9 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(3, hrs.Count());
             // совпадает с AnyInHr_WithCats, смысл - здесь ищем список, показываем только подходящие записи
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
         }
 
         [TestMethod]
@@ -898,9 +908,9 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
         }
 
         [TestMethod]
@@ -915,10 +925,10 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(4, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[30]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -935,8 +945,8 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -953,7 +963,7 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -974,9 +984,9 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[70])); // только 70 71
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[70])); // только 70 71
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -997,9 +1007,9 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[20]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[70]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -1020,8 +1030,8 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
         }
 
         [TestMethod]
@@ -1042,9 +1052,9 @@ namespace Diagnosis.ViewModels.Tests
                 .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[40]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[73]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
         }
 
         [TestMethod]
@@ -1080,9 +1090,9 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(7, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[1]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[1]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
@@ -1095,8 +1105,8 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[2]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
         }
 
         [TestMethod]
@@ -1110,9 +1120,9 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[31]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[22]));
-            Assert.IsTrue(hrs.IsSuperSet(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
         }
 
         [TestMethod]
@@ -1130,7 +1140,7 @@ namespace Diagnosis.ViewModels.Tests
             .Search(session);
 
             Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSet(hr[31], hr[40]));
+            Assert.IsTrue(hrs.IsSuperSetOf(hr[31], hr[40]));
         }
 
         #endregion AllAny_WithSingleChild_SameResults
@@ -1214,7 +1224,7 @@ namespace Diagnosis.ViewModels.Tests
             return Searcher.GetResult(session, qb);
         }
 
-        public static bool IsSuperSet(this IEnumerable<HealthRecord> s, params HealthRecord[] hrs)
+        public static bool IsSuperSetOf(this IEnumerable<HealthRecord> s, params HealthRecord[] hrs)
         {
             return hrs.All(x => s.Contains(x));
         }
