@@ -219,6 +219,7 @@
     <Compile Include="AuthorityController.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
+    <Compile Include="Autocomplete\Extensions.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Autocomplete\SuggestionViewModel.cs" />
     <Compile Include="Controls\Interfaces.cs" />

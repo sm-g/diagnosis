@@ -361,9 +361,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             var options = new SearchOptions(IsRoot);
 
-            options.CWordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => new Confindencable<Word>(x.HIO as Word, x.Confidence)).ToList();
-            options.CWordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => new Confindencable<Word>(x.HIO as Word, x.Confidence)).ToList();
-            options.CWordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => new Confindencable<Word>(x.HIO as Word, x.Confidence)).ToList();
+            options.CWordsAll = AutocompleteAll.GetCWords().ToList();
+            options.CWordsAny = AutocompleteAny.GetCWords().ToList();
+            options.CWordsNot = AutocompleteNot.GetCWords().ToList();
 
             options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
             options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();

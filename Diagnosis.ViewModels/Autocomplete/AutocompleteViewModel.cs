@@ -686,25 +686,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             foreach (var tag in Tags)
             {
                 if (tag.BlankType != BlankType.None)
-                    result.Add(new ConfindenceHrItemObject(tag.Blank, tag.Confidence));
+                    result.Add(tag.ToChio());
                 else if (tag.State != State.Init)
                     logger.WarnFormat("{0} without entity blank, skip", tag);
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Возвращает сущности из завершенных тегов по порядку.
-        /// </summary>
-        public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
-        {
-            var completed = Tags.Where(t => t.State == State.Completed);
-
-            var hios = completed
-                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence))
-                 .ToList();
-            return hios;
         }
 
         /// <summary>
@@ -716,7 +703,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             var completed = SelectedTags.Where(t => t.State == State.Completed);
 
             var hios = completed
-                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence))
+                 .Select(t => t.ToChio())
                  .ToList();
             return hios;
         }
@@ -940,6 +927,8 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void CompleteTypings()
         {
+            Contract.Ensures(Tags.All(t => t.State != State.Typing));
+
             Tags.Where(t => t.State == State.Typing)
                 .ForEach(tag => CompleteOnLostFocus(tag));
         }
