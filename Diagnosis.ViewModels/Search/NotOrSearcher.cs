@@ -49,7 +49,5 @@ namespace Diagnosis.ViewModels.Search
                 .SelectMany(scope => scope.HealthRecords);
             return hrs.Distinct();
         }
-
-
     }
 }

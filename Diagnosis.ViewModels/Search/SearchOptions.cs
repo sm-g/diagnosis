@@ -1,25 +1,19 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
-using NHibernate;
-using Diagnosis.Data.Queries;
-using Diagnosis.Data.DTOs;
-using AutoMapper;
 
 namespace Diagnosis.ViewModels.Search
 {
-
     [Serializable]
-
     public class SearchOptions
     {
         [NonSerialized]
         private bool _isRoot;
+
         [NonSerialized]
         private bool _part;
 
@@ -36,10 +30,10 @@ namespace Diagnosis.ViewModels.Search
 
             _isRoot = isRoot;
         }
+
         public SearchOptions()
             : this(false)
         {
-
         }
 
         /// <summary>
@@ -84,10 +78,12 @@ namespace Diagnosis.ViewModels.Search
         public ObservableCollection<SearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
+
         /// <summary>
         /// Разрешает искать исключающий блок-корень.
         /// </summary>
         public bool IsRoot { get { return _isRoot; } }
+
         public bool IsExcluding
         {
             get
@@ -97,7 +93,6 @@ namespace Diagnosis.ViewModels.Search
                                    WordsNot.Any();
             }
         }
-
 
         public bool PartialLoaded
         {
@@ -126,7 +121,6 @@ namespace Diagnosis.ViewModels.Search
                 return "({0} в {1})".FormatStr(childs, SearchScope);
             }
             var sb = new StringBuilder();
-
 
             var alls = WordsAll.Union<IHrItemObject>(MeasuresAll).ToList();
             var anys = WordsAny.Union<IHrItemObject>(MeasuresAny);
@@ -171,9 +165,7 @@ namespace Diagnosis.ViewModels.Search
             }
             return sb.ToString().Trim('/');
         }
-
     }
-
 
     public class OldHrSearchOptions
     {

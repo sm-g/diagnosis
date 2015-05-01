@@ -13,7 +13,8 @@ namespace Diagnosis.ViewModels.Search
     public class HrSearcher
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrSearcher));
-        static bool logOn = false;
+        private static bool logOn = false;
+
         public static IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
         {
             Contract.Requires(options != null);
@@ -129,7 +130,5 @@ namespace Diagnosis.ViewModels.Search
 
             return hrs.ToList();
         }
-
-
     }
 }

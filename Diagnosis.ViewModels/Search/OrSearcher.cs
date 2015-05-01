@@ -5,17 +5,15 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-
 namespace Diagnosis.ViewModels.Search
 {
-
     internal class OrSearcher : Searcher
     {
         public OrSearcher(ISession session)
             : base(session)
         {
-
         }
+
         protected Dictionary<IHrsHolder, IEnumerable<HealthRecord>> GetAllAnyHrsInner(SearchOptions qb)
         {
             Contract.Requires(!qb.IsExcluding);
@@ -30,14 +28,11 @@ namespace Diagnosis.ViewModels.Search
                 case SearchScope.HealthRecord:
                     return AnyInHr(childrenResults);
 
-
                 case SearchScope.Holder:
                     return AnyInHolderScope(childrenResults, (hr) => hr.Holder);
 
-
                 case SearchScope.Patient:
                     return AnyInHolderScope(childrenResults, (hr) => hr.GetPatient());
-
 
                 default:
                     throw new NotImplementedException();
@@ -51,7 +46,6 @@ namespace Diagnosis.ViewModels.Search
             // если в группе только исключающие блоки, в результате
             // все записи, которые хотели найти (без слов, в категории)
             // beforeExclude как будто все записи
-
 
             // не нужен холдер
             var beforeHrs = beforeExclude.SelectMany(x => x.Value);
@@ -122,5 +116,4 @@ namespace Diagnosis.ViewModels.Search
             return AnyInHolderScope(results, (hr) => hr.GetPatient());
         }
     }
-
 }
