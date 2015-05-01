@@ -165,22 +165,22 @@ namespace Diagnosis.Models
                 { typeof(Doctor), () => 
                     {
                         var doc = entity as Doctor;
-                        return doc.Appointments.Count() == 0 && 
-                            doc.Courses.Count() == 0 && 
+                        return !doc.Appointments.Any() && 
+                            !doc.Courses.Any() && 
                             doc.HealthRecords.All(h => h.IsEmpty());;
                     } 
                 },
                 { typeof(Patient), () => 
                     {
                         var pat = entity as Patient;
-                        return pat.Courses.Count() == 0 && 
+                        return !pat.Courses.Any() && 
                             pat.HealthRecords.All(h => h.IsEmpty());
                     } 
                 },
                 { typeof(Course), () => 
                     {
                         var course = entity as Course;
-                        return course.Appointments.Count() == 0 && 
+                        return !course.Appointments.Any() && 
                             course.HealthRecords.All(h => h.IsEmpty());
                     } 
                 },
@@ -195,19 +195,19 @@ namespace Diagnosis.Models
                         var hr = entity as HealthRecord;
                         return hr.IsDeleted ||
                             hr.FromDate.IsEmpty && 
-                            hr.HrItems.Count() == 0;
+                            !hr.HrItems.Any();
                     }
                 },
                 { typeof(Word),() =>
                     {
                         var w = entity as Word;
-                        return w.HealthRecords.Count() == 0;
+                        return !w.HealthRecords.Any();
                     }
                 },
                 { typeof(Vocabulary),() =>
                     {
                         var w = entity as Vocabulary;
-                        return w.Words.Count() == 0;
+                        return !w.Words.Any();
                     }
                 },
             };

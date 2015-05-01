@@ -118,7 +118,7 @@ namespace Diagnosis.ViewModels.Screens
             this.Subscribe(Event.OpenHealthRecords, (e) =>
             {
                 var hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
-                if (hrs != null && hrs.Count() > 0)
+                if (hrs != null && hrs.Any())
                 {
                     OpenScreen(Screen.Card, hrs);
                 }

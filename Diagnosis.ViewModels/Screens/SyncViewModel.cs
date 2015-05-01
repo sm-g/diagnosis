@@ -128,7 +128,7 @@ namespace Diagnosis.ViewModels.Screens
                     var checker = new AfterSyncChecker(Session);
                     checker.Replaced += (s, e) =>
                     {
-                        if (e.list.Count() > 0)
+                        if (e.list.Any())
                             Log += string.Format("[{0:mm:ss:fff}] replaced {1} {2}\n", DateTime.Now, e.list.Count(), e.list.First().Actual.GetType().Name);
                     };
                     var scopesToDeprovision = checker.CheckReferenceEntitiesAfterDownload(syncer.AddedOnServerIdsPerType);

@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
             public override void Drop(IDropInfo dropInfo)
             {
                 var data = ExtractData(dropInfo.Data).Cast<object>();
-                if (data.Count() == 0)
+                if (!data.Any())
                     return;
 
                 logger.DebugFormat("drop to hr {0} {1}", data.Count(), data.First().GetType());

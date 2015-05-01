@@ -117,7 +117,7 @@ namespace Diagnosis.ViewModels.Screens
                 // которое оставлено для удобства после удаления детей
                 return (IsGroup && Children.All(x => x.AllEmpty))
                     ||
-                    (!IsGroup && SelectedCategories.Count() == 0
+                    (!IsGroup && !SelectedCategories.Any()
                     && AutocompleteAll.IsEmpty
                     && AutocompleteAny.IsEmpty
                     && AutocompleteNot.IsEmpty);

@@ -154,7 +154,7 @@ namespace Diagnosis.ViewModels.Search
             public GridValue(IEnumerable<Measure> measures)
             {
                 Contract.Requires(measures != null);
-                Contract.Requires(measures.Count() > 0);
+                Contract.Requires(measures.Any());
                 Measures = measures;
             }
 

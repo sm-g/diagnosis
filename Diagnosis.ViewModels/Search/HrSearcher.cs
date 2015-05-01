@@ -27,7 +27,7 @@ namespace Diagnosis.ViewModels.Search
 
             // измерения фильтруем отдельно - сложная логика
 
-            if (options.MeasuresAny.Count() > 0)
+            if (options.MeasuresAny.Any())
             {
                 // любое из измерений
                 // ищем со словами из измерений с учетом notwords
@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels.Search
                 else // только измерения в all / any
                     hrs = hrsWithM;
 
-                if (options.MinAny > 1 && options.WordsAny.Count() > 0)
+                if (options.MinAny > 1 && options.WordsAny.Any())
                 {
                     // проверяем, набрала ли запись общее кол-во элементов из Any
                     hrs = from hr in hrs
@@ -61,14 +61,14 @@ namespace Diagnosis.ViewModels.Search
             }
 
             // все измерения - просто фильтр
-            if (options.MeasuresAll.Count() > 0)
+            if (options.MeasuresAll.Any())
             {
                 // одно измерение повторно используется для сравнения
                 hrs = hrs.Where(x =>
                    options.MeasuresAll.All(op => x.Measures.Any(m => op.ResultFor(m))));
             }
 
-            if (options.Categories.Count() > 0)
+            if (options.Categories.Any())
             {
                 hrs = hrs.Where(hr =>
                     options.Categories.Any(cat => cat.Equals(hr.Category)));
@@ -85,7 +85,7 @@ namespace Diagnosis.ViewModels.Search
             var hrs = HealthRecordQuery.WithoutAnyWord(session)(
                 options.WordsNot);
 
-            if (options.Categories.Count() > 0)
+            if (options.Categories.Any())
             {
                 hrs = hrs.Where(hr =>
                     options.Categories.Any(cat => cat.Equals(hr.Category)));
@@ -101,7 +101,7 @@ namespace Diagnosis.ViewModels.Search
 
             IEnumerable<HealthRecord> hrs;
 
-            if (options.WordsAll.Count() > 0)
+            if (options.WordsAll.Any())
                 if (options.AllWords)
                 {
                     hrs = HealthRecordQuery.WithAllWordsInScope(session)(options.WordsAll, options.QueryScope);
@@ -115,13 +115,13 @@ namespace Diagnosis.ViewModels.Search
                 hrs = session.Query<HealthRecord>();
             }
 
-            if (options.MeasuresAll.Count() > 0)
+            if (options.MeasuresAll.Any())
             {
                 hrs = hrs.Where(x =>
                    options.MeasuresAll.All(op => x.Measures.Any(m => op.ResultFor(m))));
             }
 
-            if (options.Categories.Count() > 0)
+            if (options.Categories.Any())
             {
                 hrs = hrs.Where(hr =>
                     options.Categories.Any(cat => cat.Equals(hr.Category)));

@@ -40,7 +40,7 @@ namespace Diagnosis.Data.Tests
         {
             // есть спец. для 2 словаря
             var voc2 = sSession.Get<Vocabulary>(IntToGuid<Vocabulary>(2));
-            Assert.IsTrue(voc2.Specialities.Count() > 0);
+            Assert.IsTrue(voc2.Specialities.Any());
         }
 
         [TestMethod]

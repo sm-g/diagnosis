@@ -62,7 +62,7 @@ namespace Diagnosis.ViewModels.Screens
                         hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
                     }
                     catch { }
-                    if (hrs != null && hrs.Count() > 0)
+                    if (hrs != null && hrs.Any())
                     {
                         RecieveHealthRecords(hrs);
                     }
@@ -73,7 +73,7 @@ namespace Diagnosis.ViewModels.Screens
                             hios = e.GetValue<IEnumerable<IHrItemObject>>(MessageKeys.HrItemObjects);
                         }
                         catch { }
-                        if (hios != null && hios.Count() > 0)
+                        if (hios != null && hios.Any())
                         {
                             RecieveHrItemObjects(hios);
                         }

@@ -338,7 +338,7 @@ namespace Diagnosis.ViewModels.Tests
 
             card = new CardViewModel(true);
             // слово в словарях, но недоступно врачу
-            Assert.IsTrue(w[6].Vocabularies.Count() > 0);
+            Assert.IsTrue(w[6].Vocabularies.Any());
             Assert.IsTrue(!d2.Words.Contains(w[6]));
 
             card.Open(a[1]);

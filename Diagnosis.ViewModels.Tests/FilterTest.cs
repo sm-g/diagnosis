@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Tests
             var res1 = filter.Results;
 
             Assert.IsTrue(filter.AutoFiltered);
-            Assert.IsTrue(res1.Count() > 0);
+            Assert.IsTrue(res1.Any());
         }
     }
 }

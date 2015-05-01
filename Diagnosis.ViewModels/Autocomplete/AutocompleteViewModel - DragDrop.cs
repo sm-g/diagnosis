@@ -80,7 +80,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             public bool CanStartDrag(IDragInfo dragInfo)
             {
                 var tags = dragInfo.SourceItems.Cast<TagViewModel>().Where(t => !(t.State == State.Init && t.IsLast));
-                return tags.Count() > 0;
+                return tags.Any();
             }
 
             public void DragCancelled()
@@ -120,7 +120,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             public override void Drop(IDropInfo dropInfo)
             {
                 var data = ExtractData(dropInfo.Data).Cast<object>();
-                if (data.Count() == 0)
+                if (!data.Any())
                     return;
 
                 logger.DebugFormat("ddrop {0} {1}", data.Count(), data.First().GetType());

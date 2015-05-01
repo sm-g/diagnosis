@@ -139,16 +139,16 @@ namespace Diagnosis.Data.Sync
         private IEnumerable<Word> RemoveFromVoc(Vocabulary voc, IList<Word> toRemove)
         {
             Contract.Ensures(voc.Words.Intersect(toRemove).Count() == 0);
-            Contract.Ensures(Contract.Result<IEnumerable<Word>>().All(x => x.Vocabularies.Count() > 0));
+            Contract.Ensures(Contract.Result<IEnumerable<Word>>().All(x => x.Vocabularies.Any()));
 
             var toDelete = new List<Word>();
             foreach (var word in toRemove)
             {
                 voc.RemoveWord(word);
-                if (word.HealthRecords.Count() == 0)
+                if (!word.HealthRecords.Any())
                 {
                     // убрать слово, если не используется и не в словарях
-                    if (word.Vocabularies.Count() == 0) // ?или только в пользовательских словарях
+                    if (!word.Vocabularies.Any()) // ?или только в пользовательских словарях
                     {
                         word.OnDelete();
                         toDelete.Add(word);

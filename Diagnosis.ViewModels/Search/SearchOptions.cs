@@ -92,8 +92,8 @@ namespace Diagnosis.ViewModels.Search
         {
             get
             {
-                return !IsGroup && WordsAll.Count() == 0 &&
-                                   WordsAny.Count() == 0 &&
+                return !IsGroup && !WordsAll.Any() &&
+                                   !WordsAny.Any() &&
                                    WordsNot.Any();
             }
         }
@@ -133,7 +133,7 @@ namespace Diagnosis.ViewModels.Search
             if (anys.Count() <= MinAny)
                 alls.AddRange(anys); // повторы?
 
-            if (alls.Count() > 0)
+            if (alls.Any())
             {
                 if (alls.Count() > 1)
                 {
@@ -151,7 +151,7 @@ namespace Diagnosis.ViewModels.Search
                 sb.Append("/");
             }
 
-            if (WordsNot.Count() > 0)
+            if (WordsNot.Any())
             {
                 if (WordsNot.Count() > 1)
                 {
@@ -163,7 +163,7 @@ namespace Diagnosis.ViewModels.Search
                 sb.Append(string.Join(", ", WordsNot));
                 sb.Append("/");
             }
-            if (Categories.Count() > 0)
+            if (Categories.Any())
             {
                 sb.AppendFormat("разделы: ");
                 sb.Append(string.Join(", ", Categories));

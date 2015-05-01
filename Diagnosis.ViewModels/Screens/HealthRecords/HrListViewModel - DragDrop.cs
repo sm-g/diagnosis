@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels.Screens
 
             public bool CanStartDrag(IDragInfo dragInfo)
             {
-                return dragInfo.SourceItems.Cast<ShortHealthRecordViewModel>().Count() > 0;
+                return dragInfo.SourceItems.Cast<ShortHealthRecordViewModel>().Any();
             }
 
             public void DragCancelled()
@@ -87,7 +87,7 @@ namespace Diagnosis.ViewModels.Screens
             public override void DragOver(IDropInfo dropInfo)
             {
                 var data = ExtractData(dropInfo.Data).Cast<object>();
-                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null || data.Count() == 0)
+                if (dropInfo.DragInfo == null || dropInfo.DragInfo.SourceCollection == null || !data.Any())
                 {
                     dropInfo.Effects = DragDropEffects.None;
                 }

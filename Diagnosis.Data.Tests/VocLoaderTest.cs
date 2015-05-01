@@ -343,7 +343,7 @@ namespace Diagnosis.Data.Tests
             l.LoadOrUpdateVocs(voc[2]);
             // снова есть слово 3, слово по 5 шаблону не создается повторно
             wordTitles = GetWordTitles();
-            Assert.IsTrue(voc[2].Words.Where(x => x.Title == wTemp[3].Title).Count() > 0);
+            Assert.IsTrue(voc[2].Words.Where(x => x.Title == wTemp[3].Title).Any());
             Assert.AreEqual(1, wordTitles.Count(x => x == wTemp[5].Title));
 
             // используем слово 4
@@ -353,7 +353,7 @@ namespace Diagnosis.Data.Tests
             hr.SetItems(new[] { word4 });
             session.SaveOrUpdate(hr);
 
-            Assert.IsTrue(word4.HealthRecords.Count() > 0);
+            Assert.IsTrue(word4.HealthRecords.Any());
 
             // менем шаблон 4, добавляем шаблон 5
             wTemp[4].Title = "poiuy";
