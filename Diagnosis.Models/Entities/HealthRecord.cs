@@ -259,7 +259,7 @@ namespace Diagnosis.Models
         {
             Contract.Requires(items != null);
 
-            SetItems(GetOrderedCHIOs().Concat(items).ToList());
+            SetItems(this.GetOrderedCHIOs().Concat(items).ToList());
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Diagnosis.Models
         {
             Contract.Requires(items != null);
 
-            SetItems(GetOrderedCHIOs()
+            SetItems(this.GetOrderedCHIOs()
                 .Concat(items.Select(x => new ConfindenceHrItemObject(x, Confidence.Present))).ToList());
         }
 
@@ -300,7 +300,7 @@ namespace Diagnosis.Models
             Contract.Ensures(HrItems.Select(x => x.Word).Where(x => x != null).All(x => x.HealthRecords.Contains(this))); // word2hr relation
 
             var hrItems = HrItems.ToList();
-            var wasChios = hrItems.Select(x => x.CHIO).ToList();
+            var wasChios = hrItems.Select(x => x.GetConfindenceHrItemObject()).ToList();
 
             logger.DebugFormat("set HrItems. Chios was: {0}, will: {1}", wasChios.FlattenString(), willChios.FlattenString());
 
@@ -374,20 +374,6 @@ namespace Diagnosis.Models
             {
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
-        }
-
-        public virtual IEnumerable<IHrItemObject> GetOrderedEntities()
-        {
-            return from item in HrItems
-                   orderby item.Ord
-                   select item.Entity;
-        }
-
-        public virtual IEnumerable<ConfindenceHrItemObject> GetOrderedCHIOs()
-        {
-            return from item in HrItems
-                   orderby item.Ord
-                   select item.CHIO;
         }
 
         public override string ToString()

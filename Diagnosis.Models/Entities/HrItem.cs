@@ -117,14 +117,6 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual ConfindenceHrItemObject CHIO
-        {
-            get
-            {
-                return new ConfindenceHrItemObject(Entity, Confidence);
-            }
-        }
-
         public virtual int Ord { get; set; }
 
         public override string ToString()

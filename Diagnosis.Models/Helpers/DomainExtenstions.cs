@@ -29,6 +29,47 @@ namespace Diagnosis.Models
         {
             return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);
         }
+        [Pure]
+        public static IEnumerable<IHrItemObject> GetOrderedEntities(this HealthRecord hr)
+        {
+            return from item in hr.HrItems
+                   orderby item.Ord
+                   select item.Entity;
+        }
+        [Pure]
+        public static IEnumerable<ConfindenceHrItemObject> GetOrderedCHIOs(this HealthRecord hr)
+        {
+            return from item in hr.HrItems
+                   orderby item.Ord
+                   select item.GetConfindenceHrItemObject();
+        }
+        [Pure]
+        public static IEnumerable<ConfindenceHrItemObject> GetCHIOs(this HealthRecord hr)
+        {
+            return hr.HrItems.Select(x => x.GetConfindenceHrItemObject());
+        }
+        [Pure]
+        public static IEnumerable<Confindencable<Word>> GetCWords(this HealthRecord hr)
+        {
+            return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable());
+        }
+    }
+
+    public static class IHrItemObjectExtensions
+    {
+        public static ConfindenceHrItemObject AsConfindenceHrItemObject(this IHrItemObject hio)
+        {
+            return new ConfindenceHrItemObject(hio);
+        }
+        public static Confindencable<T> AsConfidencable<T>(this T hio) where T : Word
+        {
+            return new Confindencable<T>(hio);
+        }
+
+        public static ConfindenceHrItemObject GetConfindenceHrItemObject(this HrItem hi)
+        {
+            return new ConfindenceHrItemObject(hi.Entity, hi.Confidence);
+        }
     }
 
     public static class IHrsHolderExtensions
