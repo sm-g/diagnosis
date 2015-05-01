@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Screens
 {
     public class HolderSearchResultViewModel : HierarchicalBase<HolderSearchResultViewModel>
     {

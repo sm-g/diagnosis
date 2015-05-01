@@ -9,7 +9,7 @@ using System.Linq;
 namespace Diagnosis.ViewModels.Search
 {
 
-    internal class OrSearcher : Diagnosis.ViewModels.Searcher
+    internal class OrSearcher : Searcher
     {
         public OrSearcher(ISession session)
             : base(session)

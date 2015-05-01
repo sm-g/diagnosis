@@ -28,7 +28,7 @@ namespace Diagnosis.ViewModels.Screens
             ContentId = ToolContentId;
 
             ControlsVisible = true;
-            History = new SearchHistory();
+            History = new SearchHistoryViewModel();
             History.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CurrentOptions")
@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
                     SetOptions(History.CurrentOptions);
                 }
             };
-            Loader = new OptionsLoader(Session, this);
+            Loader = new OptionsLoaderViewModel(Session, this);
 
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
             AddRootQb();
@@ -175,9 +175,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public SearchHistory History { get; set; }
+        public SearchHistoryViewModel History { get; set; }
 
-        public OptionsLoader Loader { get; set; }
+        public OptionsLoaderViewModel Loader { get; set; }
 
         private QueryBlockViewModel AddRootQb(SearchOptions opttions = null)
         {

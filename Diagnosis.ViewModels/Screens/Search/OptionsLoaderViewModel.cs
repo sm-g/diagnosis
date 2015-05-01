@@ -3,14 +3,15 @@ using Diagnosis.Common;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
+using Diagnosis.ViewModels.Search;
 using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Screens
 {
-    public class OptionsLoader : ViewModelBase
+    public class OptionsLoaderViewModel : ViewModelBase
     {
         private string _buffer;
         private bool _part;
@@ -18,12 +19,12 @@ namespace Diagnosis.ViewModels.Search
         private SearchViewModel searchVm;
         private ISession session;
 
-        static OptionsLoader()
+        static OptionsLoaderViewModel()
         {
             Mapper.CreateMap(typeof(SearchOptions), typeof(SearchOptionsDTO));
         }
 
-        public OptionsLoader(ISession session, SearchViewModel s)
+        public OptionsLoaderViewModel(ISession session, SearchViewModel s)
         {
             this.searchVm = s;
             this.session = session;

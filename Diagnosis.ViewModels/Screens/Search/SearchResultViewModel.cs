@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Diagnosis.ViewModels.Search;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Screens
 {
     public class SearchResultViewModel : ViewModelBase
     {

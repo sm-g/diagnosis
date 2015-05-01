@@ -1,18 +1,18 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.ViewModels.Screens;
+using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Screens
 {
-    public class SearchHistory : ViewModelBase
+    public class SearchHistoryViewModel : ViewModelBase
     {
         private SearchOptions _currentOptions;
         private int currnetPos;
 
-        public SearchHistory()
+        public SearchHistoryViewModel()
         {
             History = new ObservableCollection<SearchOptions>();
         }

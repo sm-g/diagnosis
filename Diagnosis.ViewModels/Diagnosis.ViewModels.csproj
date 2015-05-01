@@ -289,8 +289,8 @@
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Screens\Search\HolderSearchResultViewModel.cs" />
-    <Compile Include="Screens\Search\OptionsLoader.cs" />
-    <Compile Include="Screens\Search\SearchHistory.cs" />
+    <Compile Include="Screens\Search\OptionsLoaderViewModel.cs" />
+    <Compile Include="Screens\Search\SearchHistoryViewModel.cs" />
     <Compile Include="DataTransfer\SearchOptionsDTO.cs" />
     <Compile Include="Screens\Search\SearchResultViewModel.cs" />
     <Compile Include="Search\Statistic.cs" />

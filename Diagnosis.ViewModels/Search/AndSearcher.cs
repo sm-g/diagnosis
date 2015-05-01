@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Search
 {
-    internal class AndSearcher : Diagnosis.ViewModels.Searcher
+    internal class AndSearcher : Searcher
     {
         public AndSearcher(ISession session)
             : base(session)
