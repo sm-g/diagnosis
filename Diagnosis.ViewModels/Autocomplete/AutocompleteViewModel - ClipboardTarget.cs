@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void Copy()
         {
-            var hios = GetCHIOsOfSelectedCompleted();
+            var hios = GetCHIOsOfSelectedCompleted().ToList();
             var data = new TagData(hios);
 
             var strings = string.Join(", ", hios);

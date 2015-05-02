@@ -680,16 +680,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Requires(Tags.All(t => t.State != State.Typing));
 
-            var result = new List<ConfindenceHrItemObject>();
-            foreach (var tag in Tags)
-            {
-                if (tag.BlankType != BlankType.None)
-                    result.Add(new ConfindenceHrItemObject(tag.Blank, tag.Confidence));
-                else if (tag.State != State.Init)
-                    logger.WarnFormat("{0} without entity blank, skip", tag);
-            }
+            Tags.Where(x => x.BlankType == BlankType.None && x.State != State.Init)
+                 .ForAll((x) => logger.WarnFormat("{0} without entity blank, skip", x));
 
-            return result;
+            return Tags
+                .Where(x => x.BlankType != BlankType.None)
+                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
 
         /// <summary>
@@ -697,26 +693,20 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
         {
-            var completed = Tags.Where(t => t.State == State.Completed);
-
-            var hios = completed
-                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence))
-                 .ToList();
-            return hios;
+            return Tags
+                .Where(t => t.State == State.Completed)
+                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
 
         /// <summary>
         /// Возвращает сущности из выделенных завершенных тегов по порядку.
         /// </summary>
         /// <returns></returns>
-        private List<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
+        private IEnumerable<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
         {
-            var completed = SelectedTags.Where(t => t.State == State.Completed);
-
-            var hios = completed
-                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence))
-                 .ToList();
-            return hios;
+            return SelectedTags
+                .Where(t => t.State == State.Completed)
+                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
 
         private Signalizations Validator(TagViewModel tag)
