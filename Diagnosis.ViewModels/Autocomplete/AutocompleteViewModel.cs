@@ -8,19 +8,19 @@ using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
-
-    public partial class AutocompleteViewModel : ViewModelBase, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
+    public partial class AutocompleteViewModel : ViewModelBase, ITagParentAutocomplete, IHrEditorAutocomplete, IQbAutocompleteViewModel, IViewAutocompleteViewModel, ITagsTrackableAutocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly SuggestionsMaker recognizer;
         private readonly bool allowSendToSearch;
-        private readonly bool allowTagConvertion;
         private readonly bool allowConfidenceToggle;
         private readonly bool singleTag;
         private readonly bool measureEditorWithCompare;
+        private readonly IEnumerable<BlankType> convertTo;
 
         private TagViewModel _selTag;
         private bool _popupOpened;
@@ -37,28 +37,33 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<object> initItems)
             : this(recognizer,
-                allowTagConvertion: mode != OptionsMode.MeasureEditor,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
                 allowConfidenceToggle: mode != OptionsMode.MeasureEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
                 measureEditorWithCompare: mode == OptionsMode.Search,
-                initItems: initItems)
+                initItems: initItems ?? Enumerable.Empty<ConfindenceHrItemObject>(),
+                convertTo: mode == OptionsMode.HrEditor ? new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure } :
+                            mode == OptionsMode.Search ? new[] { BlankType.Word, BlankType.Measure } :
+                            Enumerable.Empty<BlankType>()
+            )
         {
             this.mode = mode;
         }
 
-        public AutocompleteViewModel(SuggestionsMaker recognizer,
-            bool allowTagConvertion,
+        private AutocompleteViewModel(SuggestionsMaker recognizer,
             bool allowSendToSearch,
             bool allowConfidenceToggle,
             bool singleTag,
             bool measureEditorWithCompare,
-            IEnumerable<object> initItems)
+            IEnumerable<ConfindenceHrItemObject> initItems,
+            IEnumerable<BlankType> convertTo)
         {
             Contract.Requires(recognizer != null);
+            Contract.Requires(initItems != null);
+            Contract.Requires(convertTo != null);
 
             this.recognizer = recognizer;
-            this.allowTagConvertion = allowTagConvertion;
+            this.convertTo = convertTo;
             this.allowSendToSearch = allowSendToSearch;
             this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
@@ -88,13 +93,11 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             AddTag(isLast: true);
 
-            if (initItems != null)
+            foreach (var item in initItems)
             {
-                foreach (var item in initItems)
-                {
-                    AddTag(item);
-                }
+                AddTag(item);
             }
+
             Suggestions = new ObservableCollection<SuggestionViewModel>();
 
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
@@ -249,21 +252,17 @@ namespace Diagnosis.ViewModels.Autocomplete
                         switch (SelectedTag.BlankType)
                         {
                             case BlankType.Measure:
-                                var vm = new MeasureEditorViewModel(SelectedTag.Blank as Measure, measureEditorWithCompare);
-                                vm.OnDialogResult(() =>
+                                OpenMeasureEditor(SelectedTag.Blank as Measure, null, (m) =>
                                 {
-                                    CompleteCommon(SelectedTag, vm.Measure, false);
+                                    CompleteCommon(SelectedTag, m, false);
                                 });
-                                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                                 break;
 
                             case BlankType.Icd:
-                                var vm0 = new IcdSelectorViewModel(SelectedTag.Blank as IcdDisease);
-                                vm0.OnDialogResult(() =>
+                                OpenIcdSelector(SelectedTag.Blank as IcdDisease, null, (i) =>
                                 {
-                                    CompleteCommon(SelectedTag, vm0.SelectedIcd, false);
+                                    CompleteCommon(SelectedTag, i, false);
                                 });
-                                this.Send(Event.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                                 break;
 
                             default:
@@ -454,6 +453,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+
         /// <summary>
         /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
         /// </summary>
@@ -480,9 +480,14 @@ namespace Diagnosis.ViewModels.Autocomplete
             get { return allowSendToSearch; }
         }
 
+        public bool WithConvertTo(BlankType type)
+        {
+            return convertTo.Contains(type);
+        }
+
         public bool WithConvert
         {
-            get { return allowTagConvertion; }
+            get { return convertTo.Any(); }
         }
 
         public bool WithConfidence
@@ -582,21 +587,17 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             if (type == BlankType.Measure)
             {
-                var vm = new MeasureEditorViewModel(measureEditorWithCompare);
-                vm.OnDialogResult(() =>
+                OpenMeasureEditor(null, null, (m) =>
                 {
-                    AddTag(vm.Measure, index);
+                    AddTag(m, index);
                 });
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             }
             else if (type == BlankType.Icd)
             {
-                var vm = new IcdSelectorViewModel();
-                vm.OnDialogResult(() =>
+                OpenIcdSelector(null, null, (i) =>
                 {
-                    AddTag(vm.SelectedIcd, index);
+                    AddTag(i, index);
                 });
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             }
         }
 
@@ -640,7 +641,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Добавляет пустой тег рядом с другим.
         /// </summary>
-        public void AddAndEditTag(TagViewModel from, bool left)
+        public void AddTagNearAndEdit(TagViewModel from, bool left)
         {
             var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
             StartEdit(tag);
@@ -724,6 +725,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
             Contract.Requires(suggestion is SuggestionViewModel || suggestion is IHrItemObject || suggestion == null);
+            Contract.Ensures(tag.State == State.Completed);
 
             var hio = suggestion as IHrItemObject;
             var vm = suggestion as SuggestionViewModel;
@@ -766,7 +768,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             ConvertBlank(tag, e.type, onConverted);
         }
-        public void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
+
+        private void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
         {
             Contract.Requires(tag != null);
 
@@ -819,7 +822,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             else
                 queryOrMeasureWord = tag.Query;
 
-
             switch (toType)
             {
                 case BlankType.Comment:
@@ -835,51 +837,44 @@ namespace Diagnosis.ViewModels.Autocomplete
                     break;
 
                 case BlankType.Measure: // слово
-                    MeasureEditorViewModel meVm;
-                    if (queryOrMeasureWord.IsNullOrEmpty())
+                    Word w = null;
+                    if (!queryOrMeasureWord.IsNullOrEmpty())
+                        w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
+                    OpenMeasureEditor(null, w, (m) =>
                     {
-                        meVm = new MeasureEditorViewModel(measureEditorWithCompare);
-                    }
-                    else
-                    {
-                        var w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
-                        meVm = new MeasureEditorViewModel(w, measureEditorWithCompare);
-                    }
-                    meVm.OnDialogResult((res) =>
-                    {
-                        if (res)
-                        {
-                            tag.Blank = meVm.Measure;
-                            onConverted();
-                        }
-                    });
-                    uiTaskFactory.StartNew(() =>
-                    {
-                        this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
+                        tag.Blank = m;
+                        onConverted();
                     });
                     break;
 
                 case BlankType.Icd: // слово/коммент в поисковый запрос
-                    IcdSelectorViewModel isVm;
-                    if (queryOrMeasureWord.IsNullOrEmpty())
-                        isVm = new IcdSelectorViewModel();
-                    else
-                        isVm = new IcdSelectorViewModel(queryOrMeasureWord);
-
-                    isVm.OnDialogResult((res) =>
+                    OpenIcdSelector(null, queryOrMeasureWord, (i) =>
                     {
-                        if (res)
-                        {
-                            tag.Blank = isVm.SelectedIcd;
-                            onConverted();
-                        }
-                    });
-                    uiTaskFactory.StartNew(() =>
-                    {
-                        this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
+                        tag.Blank = i;
+                        onConverted();
                     });
                     break;
             }
+        }
+
+        private void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)
+        {
+            var vm = new MeasureEditorViewModel(m, w, measureEditorWithCompare);
+            vm.OnDialogResult(() => onOk(vm.Measure));
+            uiTaskFactory.StartNew(() =>
+            {
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+        }
+
+        private void OpenIcdSelector(IcdDisease i, string q, Action<IcdDisease> onOk)
+        {
+            var vm = new IcdSelectorViewModel(i, q);
+            vm.OnDialogResult(() => onOk(vm.SelectedIcd));
+            uiTaskFactory.StartNew(() =>
+            {
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
         }
 
         internal void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
@@ -918,6 +913,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void CompleteOnLostFocus(TagViewModel tag)
         {
+            Contract.Requires(tag != null);
+            Contract.Requires(Tags.Contains(tag));
+
             if (tag.State == State.Typing)
             {
                 logger.Debug("CompleteOnLostFocus");
@@ -1076,19 +1074,39 @@ namespace Diagnosis.ViewModels.Autocomplete
             return text;
         }
 
-        System.Windows.Input.ICommand IAutocompleteViewModel.EditCommand
+        ICommand ITagParentAutocomplete.EditCommand
         {
             get { return EditCommand; }
         }
 
-        System.Windows.Input.ICommand IAutocompleteViewModel.SendToSearchCommand
+        ICommand ITagParentAutocomplete.SendToSearchCommand
         {
             get { return SendToSearchCommand; }
         }
 
-        System.Windows.Input.ICommand IAutocompleteViewModel.ToggleConfidenceCommand
+        ICommand ITagParentAutocomplete.ToggleConfidenceCommand
         {
             get { return ToggleConfidenceCommand; }
+        }
+
+        ICommand IHrEditorAutocomplete.DeleteCommand
+        {
+            get { return DeleteCommand; }
+        }
+
+        ICommand IHrEditorAutocomplete.SendToSearchCommand
+        {
+            get { return SendToSearchCommand; }
+        }
+
+        ICommand IHrEditorAutocomplete.ToggleSuggestionModeCommand
+        {
+            get { return ToggleSuggestionModeCommand; }
+        }
+
+        INotifyCollectionChanged IQbAutocompleteViewModel.Tags
+        {
+            get { return Tags; }
         }
     }
 }

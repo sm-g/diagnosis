@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -246,7 +247,7 @@ namespace Diagnosis.ViewModels.Tests
             var w = new Word("11");
 
             card.HrList.AddHealthRecordCommand.Execute(null);
-            card.HrEditor.Autocomplete.AddTag(w);
+            (card.HrEditor.Autocomplete as AutocompleteViewModel).AddTag(w);
             card.HrEditor.CloseCommand.Execute(null);
 
             Assert.IsTrue(!w.IsTransient);

@@ -103,11 +103,11 @@ namespace Diagnosis.ViewModels.Screens
         public ObservableCollection<MenuItem> GroupOperatorMenuItems { get; private set; }
         public ObservableCollection<MenuItem> SearchScopeMenuItems { get; private set; }
 
-        public AutocompleteViewModel AutocompleteAll { get; set; }
+        public IQbAutocompleteViewModel AutocompleteAll { get; set; }
 
-        public AutocompleteViewModel AutocompleteAny { get; set; }
+        public IQbAutocompleteViewModel AutocompleteAny { get; set; }
 
-        public AutocompleteViewModel AutocompleteNot { get; set; }
+        public IQbAutocompleteViewModel AutocompleteNot { get; set; }
 
         public bool AllEmpty
         {

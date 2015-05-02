@@ -30,8 +30,7 @@
                  dd:DragDrop.IsDropTarget="{Binding DataContext.IsDropTargetEnabled, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
                  dd:DragDrop.DropHandler="{Binding DataContext.DropHandler, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
                  Text="{Binding Query, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
-                 Focusable="{Binding Focusable}"
-                 IsReadOnly="{Binding IsDeleteOnly}">
+                 Focusable="{Binding Focusable}">
             <TextBox.Style>
                 <Style TargetType="TextBox"
                        BasedOn="{StaticResource {x:Type TextBox}}">

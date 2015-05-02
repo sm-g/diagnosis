@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Search
 {
+    /// <summary>
+    /// NotAny x = All excluding x
+    /// </summary>
     internal class NotOrSearcher : OrSearcher
     {
         public NotOrSearcher(ISession session)
@@ -17,7 +20,7 @@ namespace Diagnosis.ViewModels.Search
         protected override IEnumerable<HealthRecord> GetResultForGroup(SearchOptions qb)
         {
             var or = base.GetResultForGroup(qb);
-            var allHrs = allHrsCache ?? (allHrsCache = HealthRecordQuery.All(session)());
+            var allHrs = allHrsCache ?? (allHrsCache = HealthRecordQuery.All(session)()); // минимизировать блоки Nor/выбор всех записей
             switch (qb.SearchScope)
             {
                 case SearchScope.HealthRecord:
@@ -49,7 +52,5 @@ namespace Diagnosis.ViewModels.Search
                 .SelectMany(scope => scope.HealthRecords);
             return hrs.Distinct();
         }
-
-
     }
 }

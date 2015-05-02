@@ -10,6 +10,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// Управляет удалением (видимостью) и изменением порядка записей в списке.
+    /// </summary>
     public class HealthRecordManager : DisposableBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecordManager));

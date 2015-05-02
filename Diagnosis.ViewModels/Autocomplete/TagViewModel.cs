@@ -65,7 +65,7 @@ namespace Diagnosis.ViewModels.Autocomplete
     public class TagViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
-        private readonly IAutocompleteViewModel autocomplete;
+        private readonly ITagParentAutocomplete autocomplete;
         private IHrItemObject _blank;
         private bool _focused;
         private string _query;
@@ -86,42 +86,38 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает пустой тег.
         /// </summary>
-        public TagViewModel(IAutocompleteViewModel parent)
+        public TagViewModel(ITagParentAutocomplete parent)
         {
             Contract.Requires(parent != null);
             Contract.Ensures(State == State.Init);
 
             this.autocomplete = parent;
-            Reset();
+
             IsDraggable = !autocomplete.SingleTag;
+            Reset();
         }
 
         /// <summary>
         /// Создает тег с запросом.
         /// </summary>
-        public TagViewModel(IAutocompleteViewModel parent, string query)
+        public TagViewModel(ITagParentAutocomplete parent, string query)
+            : this(parent)
         {
-            Contract.Requires(parent != null);
             Contract.Ensures(State == State.Typing);
 
-            this.autocomplete = parent;
             Query = query;
-            IsDraggable = !autocomplete.SingleTag;
         }
 
         /// <summary>
-        /// Создает тег с сущностями.
+        /// Создает тег с сущностью.
         /// </summary>
-        public TagViewModel(IAutocompleteViewModel parent, IHrItemObject item)
+        public TagViewModel(ITagParentAutocomplete parent, IHrItemObject item)
+            : this(parent)
         {
-            Contract.Requires(parent != null);
             Contract.Requires(item != null);
             Contract.Ensures(State == State.Completed);
 
-            this.autocomplete = parent;
-
             Blank = item;
-            IsDraggable = !autocomplete.SingleTag;
         }
 
         public event EventHandler Deleted;
@@ -143,7 +139,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_query != value)
                 {
                     // logger.DebugFormat("query = {0}", value);
-                    Contract.Assume(!IsDeleteOnly);
 
                     State = State.Typing;
 
@@ -298,7 +293,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     OnConverting(t);
                     OnPropertyChanged(() => BlankType);
                 },
-                (t) => autocomplete.WithConvert && t != BlankType && !IsDeleteOnly)
+                (t) => autocomplete.WithConvertTo(t) && t != BlankType)
                 {
                     IsVisible = autocomplete.WithConvert
                 });
@@ -326,7 +321,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return addLeft ?? (addLeft = new VisibleRelayCommand(() =>
                 {
-                    autocomplete.AddAndEditTag(this, true);
+                    autocomplete.AddTagNearAndEdit(this, true);
                 }, () => !autocomplete.SingleTag)
                 {
                     IsVisible = !autocomplete.SingleTag
@@ -340,30 +335,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return addRight ?? (addRight = new VisibleRelayCommand(() =>
                 {
-                    autocomplete.AddAndEditTag(this, false);
+                    autocomplete.AddTagNearAndEdit(this, false);
                 }, () => !IsLast && !autocomplete.SingleTag)
                 {
                     IsVisible = !autocomplete.SingleTag // все равно показываем пункт меню, если иногда можно
                 });
-            }
-        }
-
-        /// <summary>
-        /// Тег не редактируется, можно только удалить.
-        /// </summary>
-        public bool IsDeleteOnly
-        {
-            get
-            {
-                return _isDeleteOnly;
-            }
-            private set
-            {
-                if (_isDeleteOnly != value)
-                {
-                    _isDeleteOnly = value;
-                    OnPropertyChanged("IsDeleteOnly");
-                }
             }
         }
 

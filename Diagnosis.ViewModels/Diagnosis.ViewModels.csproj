@@ -227,6 +227,7 @@
     <Compile Include="DataTransfer\DragDropHelper.cs" />
     <Compile Include="DataTransfer\DragDropInterfaces.cs" />
     <Compile Include="DataTransfer\HrData.cs" />
+    <Compile Include="DataTransfer\OptionsLoader.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Formatters\DateOffsetFormatter.cs" />
@@ -290,8 +291,8 @@
     <Compile Include="Search\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Screens\Search\HolderSearchResultViewModel.cs" />
-    <Compile Include="Screens\Search\OptionsLoader.cs" />
-    <Compile Include="Screens\Search\SearchHistory.cs" />
+    <Compile Include="Screens\Search\OptionsLoaderViewModel.cs" />
+    <Compile Include="Screens\Search\SearchHistoryViewModel.cs" />
     <Compile Include="DataTransfer\SearchOptionsDTO.cs" />
     <Compile Include="Screens\Search\SearchResultViewModel.cs" />
     <Compile Include="Search\Statistic.cs" />
@@ -349,10 +350,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Autocomplete\IAutocomplete.dgml" />
     <None Include="Framework\CodeMap1.dgml" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
-    <None Include="Autocomplete\CodeMap1.dgml">
+    <None Include="Autocomplete\Auto-SugMaker-Tag.dgml">
       <SubType>Designer</SubType>
     </None>
     <None Include="Screens\Card\CodeMap1.dgml" />

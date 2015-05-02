@@ -23,64 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             // диалоги
 
-            this.Subscribe(Event.OpenSettings, (e) =>
-            {
-                IDialogViewModel vm;
-                var user = e.GetValue<IUser>(MessageKeys.User);
-                if (user is Doctor)
-                    vm = new SettingsViewModel(user as Doctor);
-                else
-                    vm = new AdminSettingsViewModel(user as Admin);
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
-
-            this.Subscribe(Event.EditDoctor, (e) =>
-            {
-                var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
-                IDialogViewModel vm;
-                if (doc != null)
-                    vm = new DoctorEditorViewModel(doc);
-                else
-                    vm = new DoctorEditorViewModel();
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
-
-            this.Subscribe(Event.EditPatient, (e) =>
-            {
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                IDialogViewModel vm;
-                if (pat != null)
-                    vm = new PatientEditorViewModel(pat);
-                else
-                    vm = new PatientEditorViewModel();
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
-
-            this.Subscribe(Event.EditWord, (e) =>
-            {
-                var w = e.GetValue<Word>(MessageKeys.Word);
-                IDialogViewModel vm = new WordEditorViewModel(w);
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
-
-            this.Subscribe(Event.EditHolder, (e) =>
-            {
-                IDialogViewModel vm;
-                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-                if (holder is Appointment)
-                {
-                    vm = new AppointmentEditorViewModel(holder as Appointment);
-                }
-                else if (holder is Course)
-                {
-                    vm = new CourseEditorViewModel(holder as Course);
-                }
-                else // holder is Patient
-                {
-                    vm = new PatientEditorViewModel(holder as Patient);
-                }
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
+            SubscribeForSendOpenDialog();
 
             // экраны
 
@@ -95,61 +38,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 OpenScreen(Screen.Login);
             };
-            // карточка
 
-            this.Subscribe(Event.OpenPatient, (e) =>
-            {
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                OpenScreen(Screen.Card, pat);
-            });
-
-            this.Subscribe(Event.OpenCourse, (e) =>
-            {
-                var course = e.GetValue<Course>(MessageKeys.Course);
-                OpenScreen(Screen.Card, course);
-            });
-
-            this.Subscribe(Event.OpenAppointment, (e) =>
-            {
-                var app = e.GetValue<Appointment>(MessageKeys.Appointment);
-                OpenScreen(Screen.Card, app);
-            });
-
-            this.Subscribe(Event.OpenHealthRecords, (e) =>
-            {
-                var hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
-                if (hrs != null && hrs.Any())
-                {
-                    OpenScreen(Screen.Card, hrs);
-                }
-            });
-
-            this.Subscribe(Event.EditHealthRecord, (e) =>
-            {
-                // открываем экран карточки, открываем запись
-                // переходим в редактор или переключаем видимость редактора
-                var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
-                var goToEditor = e.GetValue<bool>(MessageKeys.Boolean);
-
-                if (goToEditor)
-                    logger.DebugFormat("goto editor for {0}", this);
-                else
-                    logger.DebugFormat("toggle editor for {0}", this);
-
-                OpenScreen(Screen.Card, hr);
-
-                var card = (CurrentView as CardViewModel);
-                if (goToEditor)
-                    card.FocusHrEditor(hr);
-                else
-                    card.ToogleHrEditor();
-            });
-
-            this.Subscribe(Event.OpenHolder, (e) =>
-            {
-                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-                OpenScreen(Screen.Card, holder);
-            });
+            SubscribeForOpenInCard();
 
             // closing screen
 
@@ -269,6 +159,125 @@ namespace Diagnosis.ViewModels.Screens
                 if (screen == Screen.Card)
                     (CurrentView as CardViewModel).Open(parameter);
             }
+        }
+
+        private void SubscribeForOpenInCard()
+        {
+            this.Subscribe(Event.OpenPatient, (e) =>
+            {
+                var pat = e.GetValue<Patient>(MessageKeys.Patient);
+                OpenScreen(Screen.Card, pat);
+            });
+
+            this.Subscribe(Event.OpenCourse, (e) =>
+            {
+                var course = e.GetValue<Course>(MessageKeys.Course);
+                OpenScreen(Screen.Card, course);
+            });
+
+            this.Subscribe(Event.OpenAppointment, (e) =>
+            {
+                var app = e.GetValue<Appointment>(MessageKeys.Appointment);
+                OpenScreen(Screen.Card, app);
+            });
+
+            this.Subscribe(Event.OpenHolder, (e) =>
+            {
+                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                OpenScreen(Screen.Card, holder);
+            });
+
+            this.Subscribe(Event.OpenHealthRecords, (e) =>
+            {
+                var hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
+                if (hrs != null && hrs.Any())
+                {
+                    OpenScreen(Screen.Card, hrs);
+                }
+            });
+
+            this.Subscribe(Event.EditHealthRecord, (e) =>
+            {
+                // открываем экран карточки, открываем запись
+                // переходим в редактор или переключаем видимость редактора
+                var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
+                var goToEditor = e.GetValue<bool>(MessageKeys.Boolean);
+
+                if (goToEditor)
+                    logger.DebugFormat("goto editor for {0}", this);
+                else
+                    logger.DebugFormat("toggle editor for {0}", this);
+
+                OpenScreen(Screen.Card, hr);
+
+                var card = (CurrentView as CardViewModel);
+                if (goToEditor)
+                    card.FocusHrEditor(hr);
+                else
+                    card.ToogleHrEditor();
+            });
+        }
+
+        private void SubscribeForSendOpenDialog()
+        {
+            this.Subscribe(Event.OpenSettings, (e) =>
+            {
+                IDialogViewModel vm;
+                var user = e.GetValue<IUser>(MessageKeys.User);
+                if (user is Doctor)
+                    vm = new SettingsViewModel(user as Doctor);
+                else
+                    vm = new AdminSettingsViewModel(user as Admin);
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Event.EditDoctor, (e) =>
+            {
+                var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
+                IDialogViewModel vm;
+                if (doc != null)
+                    vm = new DoctorEditorViewModel(doc);
+                else
+                    vm = new DoctorEditorViewModel();
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Event.EditPatient, (e) =>
+            {
+                var pat = e.GetValue<Patient>(MessageKeys.Patient);
+                IDialogViewModel vm;
+                if (pat != null)
+                    vm = new PatientEditorViewModel(pat);
+                else
+                    vm = new PatientEditorViewModel();
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Event.EditWord, (e) =>
+            {
+                var w = e.GetValue<Word>(MessageKeys.Word);
+                IDialogViewModel vm = new WordEditorViewModel(w);
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+
+            this.Subscribe(Event.EditHolder, (e) =>
+            {
+                IDialogViewModel vm;
+                var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                if (holder is Appointment)
+                {
+                    vm = new AppointmentEditorViewModel(holder as Appointment);
+                }
+                else if (holder is Course)
+                {
+                    vm = new CourseEditorViewModel(holder as Course);
+                }
+                else // holder is Patient
+                {
+                    vm = new PatientEditorViewModel(holder as Patient);
+                }
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
         }
     }
 }

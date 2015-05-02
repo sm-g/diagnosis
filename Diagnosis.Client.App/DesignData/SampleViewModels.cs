@@ -31,7 +31,7 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleTagViewModel : TagViewModel
     {
         public SampleTagViewModel()
-            : base(new Mock<IAutocompleteViewModel>().Object)
+            : base(new Mock<ITagParentAutocomplete>().Object)
         {
             Blank = Mocks.word;
             IsDraggable = true;

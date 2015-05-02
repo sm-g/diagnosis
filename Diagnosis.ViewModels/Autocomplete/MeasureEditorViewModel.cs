@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
         }
 
-        private MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
+        public MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
         {
             this.withCompare = withCompare;
 
@@ -67,7 +67,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             WithHelpButton = false;
         }
 
-        public AutocompleteViewModel Autocomplete { get; private set; }
+        public ITagsTrackableAutocomplete Autocomplete { get; private set; }
 
         public bool WithCompare { get { return withCompare; } }
 

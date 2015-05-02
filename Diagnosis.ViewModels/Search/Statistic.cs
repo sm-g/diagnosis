@@ -9,7 +9,6 @@ namespace Diagnosis.ViewModels.Search
 {
     public class Statistic
     {
-
         public Statistic(IEnumerable<HealthRecord> hrs)
         {
             HealthRecords = hrs
@@ -142,10 +141,12 @@ namespace Diagnosis.ViewModels.Search
                 yield return false;
             }
         }
+
         private IEnumerable<HrItem> ItemsWithWord(Word w, HealthRecord hr)
         {
             return hr.HrItems.Where(x => x.Word == w);
         }
+
         /// <summary>
         /// Значение в ячейке таблицы — true/false/несколько измерений.
         /// </summary>

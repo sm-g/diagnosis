@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels.Tests
         private Word word3;
         private HealthRecord hr2;
 
-        private new AutocompleteViewModel a { get { return e.Autocomplete; } }
+        private new AutocompleteViewModel a { get { return e.Autocomplete as AutocompleteViewModel; } }
 
         [TestInitialize]
         public void HrEditorTestInit()
@@ -330,7 +330,7 @@ namespace Diagnosis.ViewModels.Tests
             using (var card = new CardViewModel(hr))
             {
                 card.HrList.AddHealthRecordCommand.Execute(null);
-                card.HrEditor.Autocomplete.AddTag(wForD1Only);
+                (card.HrEditor.Autocomplete as AutocompleteViewModel).AddTag(wForD1Only);
 
                 Assert.IsTrue(!d2.Words.Contains(wForD1Only));
 

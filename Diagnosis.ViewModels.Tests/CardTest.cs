@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -359,14 +360,15 @@ namespace Diagnosis.ViewModels.Tests
             var w = new Word("1");
             card.Open(a[1]);
             card.HrList.AddHealthRecordCommand.Execute(null);
-            card.HrEditor.Autocomplete.AddTag(w);
-            card.HrEditor.Autocomplete.SelectedTag = card.HrEditor.Autocomplete.Tags[0];
-            card.HrEditor.Autocomplete.Cut();
+            var auto = card.HrEditor.Autocomplete as AutocompleteViewModel;
+            auto.AddTag(w);
+            auto.SelectedTag = auto.Tags[0];
+            auto.Cut();
             card.HrEditor.Unload();
             //  вставляем
             card.HrList.AddHealthRecordCommand.Execute(null);
-            card.HrEditor.Autocomplete.Paste();
-            var replaced = card.HrEditor.Autocomplete.Tags[0].Blank as Word;
+            auto.Paste();
+            var replaced = auto.Tags[0].Blank as Word;
 
             // сохраняем запись - добавляется в словарь
             card.HrEditor.Unload();

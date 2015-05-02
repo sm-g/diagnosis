@@ -241,7 +241,7 @@ namespace Diagnosis.ViewModels.Tests
 
             var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session);
             hre.Load(session.Get<HealthRecord>(IntToGuid<HealthRecord>(1)));
-            var a = hre.Autocomplete;
+            var a = hre.Autocomplete as AutocompleteViewModel;
 
             a.StartEdit(a.Tags.First());
             a.SelectedTag.Query = "123";
