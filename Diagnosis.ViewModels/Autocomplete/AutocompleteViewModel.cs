@@ -8,10 +8,11 @@ using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
-    public partial class AutocompleteViewModel : ViewModelBase, Diagnosis.ViewModels.Autocomplete.IAutocompleteViewModel
+    public partial class AutocompleteViewModel : ViewModelBase, ITagParentAutocomplete, IHrEditorAutocomplete, IQbAutocompleteViewModel, IViewAutocompleteViewModel, ITagsTrackableAutocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly SuggestionsMaker recognizer;
@@ -46,7 +47,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.mode = mode;
         }
 
-        public AutocompleteViewModel(SuggestionsMaker recognizer,
+        private AutocompleteViewModel(SuggestionsMaker recognizer,
             bool allowTagConvertion,
             bool allowSendToSearch,
             bool allowConfidenceToggle,
@@ -636,7 +637,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Добавляет пустой тег рядом с другим.
         /// </summary>
-        public void AddAndEditTag(TagViewModel from, bool left)
+        public void AddTagNearAndEdit(TagViewModel from, bool left)
         {
             var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
             StartEdit(tag);
@@ -733,6 +734,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
         {
             Contract.Requires(suggestion is SuggestionViewModel || suggestion is IHrItemObject || suggestion == null);
+            Contract.Ensures(tag.State == State.Completed);
 
             var hio = suggestion as IHrItemObject;
             var vm = suggestion as SuggestionViewModel;
@@ -775,7 +777,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             ConvertBlank(tag, e.type, onConverted);
         }
-        public void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
+        private void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
         {
             Contract.Requires(tag != null);
 
@@ -927,6 +929,9 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void CompleteOnLostFocus(TagViewModel tag)
         {
+            Contract.Requires(tag != null);
+            Contract.Requires(Tags.Contains(tag));
+
             if (tag.State == State.Typing)
             {
                 logger.Debug("CompleteOnLostFocus");
@@ -1083,19 +1088,42 @@ namespace Diagnosis.ViewModels.Autocomplete
             return text;
         }
 
-        System.Windows.Input.ICommand IAutocompleteViewModel.EditCommand
+        ICommand ITagParentAutocomplete.EditCommand
         {
             get { return EditCommand; }
         }
 
-        System.Windows.Input.ICommand IAutocompleteViewModel.SendToSearchCommand
+        ICommand ITagParentAutocomplete.SendToSearchCommand
         {
             get { return SendToSearchCommand; }
         }
 
-        System.Windows.Input.ICommand IAutocompleteViewModel.ToggleConfidenceCommand
+        ICommand ITagParentAutocomplete.ToggleConfidenceCommand
         {
             get { return ToggleConfidenceCommand; }
+        }
+
+        ICommand IHrEditorAutocomplete.DeleteCommand
+        {
+            get { return DeleteCommand; }
+
+        }
+
+        ICommand IHrEditorAutocomplete.SendToSearchCommand
+        {
+            get { return SendToSearchCommand; }
+
+        }
+
+        ICommand IHrEditorAutocomplete.ToggleSuggestionModeCommand
+        {
+            get { return ToggleSuggestionModeCommand; }
+
+        }
+
+        INotifyCollectionChanged IQbAutocompleteViewModel.Tags
+        {
+            get { return Tags; }
         }
     }
 }

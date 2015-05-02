@@ -67,7 +67,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             WithHelpButton = false;
         }
 
-        public AutocompleteViewModel Autocomplete { get; private set; }
+        public ITagsTrackableAutocomplete Autocomplete { get; private set; }
 
         public bool WithCompare { get { return withCompare; } }
 

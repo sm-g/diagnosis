@@ -349,10 +349,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Autocomplete\IAutocomplete.dgml" />
     <None Include="Framework\CodeMap1.dgml" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
-    <None Include="Autocomplete\CodeMap1.dgml">
+    <None Include="Autocomplete\Auto-SugMaker-Tag.dgml">
       <SubType>Designer</SubType>
     </None>
     <None Include="Screens\Card\CodeMap1.dgml" />

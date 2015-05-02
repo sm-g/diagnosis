@@ -11,9 +11,9 @@ namespace Diagnosis.Client.App.Controls.Search
 {
     public partial class Autocomplete : UserControl
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
+        private static readonly ILog logger = LogManager.GetLogger(typeof(Autocomplete));
 
-        private AutocompleteViewModel Vm { get { return DataContext as AutocompleteViewModel; } }
+        private IViewAutocompleteViewModel Vm { get { return DataContext as IViewAutocompleteViewModel; } }
 
         public Autocomplete()
         {
@@ -113,7 +113,7 @@ namespace Diagnosis.Client.App.Controls.Search
             if (outs)
             {
                 if (Vm != null && Vm.EditingTag != null)
-                    Vm.CompleteOnLostFocus(Vm.EditingTag); // также в HrEditor.CloseCurrentHr()
+                    Vm.CompleteOnLostFocus(Vm.EditingTag);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -50,7 +51,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void NotUsedWords()
         {
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[6]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(true, s.NothingFound);
@@ -60,7 +61,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void TwoPatients()
         {
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[22]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(2, s.Result.Patients.Count);
@@ -70,8 +71,8 @@ namespace Diagnosis.ViewModels.Tests
         public void WordsInApp()
         {
             s.UseOldMode = true;
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[4]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[1]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[4]);
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Appointment;
             s.SearchCommand.Execute(null);
 
@@ -86,7 +87,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void WordsFromHrsInStat()
         {
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[5]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(3, s.Result.Statistic.Words.Count); // 10 - все слова пациента
@@ -96,7 +97,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void WordsWithMeasureInStat()
         {
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[1]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[1]);
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, s.Result.Statistic.WordsWithMeasure.Count);
@@ -107,8 +108,8 @@ namespace Diagnosis.ViewModels.Tests
         public void FoundHrs()
         {
             s.UseOldMode = true;
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[4]);
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[4]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[22]);
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
@@ -122,8 +123,8 @@ namespace Diagnosis.ViewModels.Tests
         public void AppOrder()
         {
             s.UseOldMode = true;
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[4]);
-            s.RootQueryBlock.AutocompleteAll.AddTag(w[22]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[4]);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[22]);
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 

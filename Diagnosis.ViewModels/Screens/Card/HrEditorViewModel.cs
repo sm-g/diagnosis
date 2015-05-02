@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -18,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
 
-        private AutocompleteViewModel _autocomplete;
+        private IHrEditorAutocomplete _autocomplete;
         private HealthRecordViewModel _hr;
         private ISession session;
         private Doctor doctor;
@@ -148,17 +149,17 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public RelayCommand DeleteItemsCommand
+        public ICommand DeleteItemsCommand
         {
             get { return Autocomplete != null ? Autocomplete.DeleteCommand : null; }
         }
 
-        public VisibleRelayCommand<TagViewModel> SendToSearchCommand
+        public ICommand SendToSearchCommand
         {
             get { return Autocomplete != null ? Autocomplete.SendToSearchCommand : null; }
         }
 
-        public RelayCommand ToggleSuggestionModeCommand
+        public ICommand ToggleSuggestionModeCommand
         {
             get { return Autocomplete != null ? Autocomplete.ToggleSuggestionModeCommand : null; }
         }
@@ -250,7 +251,7 @@ namespace Diagnosis.ViewModels.Screens
 
         #region AutoComplete
 
-        public AutocompleteViewModel Autocomplete
+        public IHrEditorAutocomplete Autocomplete
         {
             get { return _autocomplete; }
             private set

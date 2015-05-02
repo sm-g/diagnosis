@@ -1,28 +1,73 @@
-﻿using GongSolutions.Wpf.DragDrop;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
+using GongSolutions.Wpf.DragDrop;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
-    public interface IAutocompleteViewModel
+    public interface IViewAutocompleteViewModel
     {
-        TagViewModel SelectedTag { get; set; }
+        bool CanCompleteOnLostFocus { get; set; }
+        TagViewModel EditingTag { get; set; }
+        bool InDragDrop { get; }
+        TagViewModel LastTag { get; }
+        bool ShowAltSuggestion { get; set; }
+        bool InDispose { get; }
 
+        void CompleteOnLostFocus(TagViewModel tag);
+        void StartEdit(TagViewModel tag);
+        void StartEdit();
+    }
+
+    public interface ITagParentAutocomplete
+    {
         bool SingleTag { get; }
-
         bool WithConvert { get; }
-
         bool WithSendToSearch { get; }
         bool WithConfidence { get; }
-        
-        ICommand EditCommand { get; }
 
+        ICommand EditCommand { get; }
         ICommand SendToSearchCommand { get; }
         ICommand ToggleConfidenceCommand { get; }
 
 
-        void AddAndEditTag(TagViewModel tag, bool up);
+        void AddTagNearAndEdit(TagViewModel tag, bool up);
         void OnDrop(DragEventArgs e);
+    }
+
+    public interface IHrEditorAutocomplete : ITagsTrackableAutocomplete, IClipboardTarget, IDisposable
+    {
+        ICommand DeleteCommand { get; }
+
+        ICommand SendToSearchCommand { get; }
+
+        ICommand ToggleSuggestionModeCommand { get; }
+
+        bool AddQueryToSuggestions { get; set; }
+
+        IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted();
+        void CompleteTypings();
+        void StartEdit();
+    }
+    public interface IQbAutocompleteViewModel : ITagsTrackableAutocomplete, IDisposable, INotifyPropertyChanged
+    {
+        INotifyCollectionChanged Tags { get; }
+        bool IsEmpty { get; }
+        void ReplaceTagsWith(IEnumerable<IHrItemObject> items);
+    }
+    public interface ITagsTrackableAutocomplete
+    {
+        event EventHandler EntitiesChanged;
+        event EventHandler<TagEventArgs> TagCompleted;
+        event EventHandler<BoolEventArgs> InputEnded;
+        event EventHandler ConfidencesChanged;
+
+        IEnumerable<ConfindenceHrItemObject> GetCHIOs();
     }
 }
