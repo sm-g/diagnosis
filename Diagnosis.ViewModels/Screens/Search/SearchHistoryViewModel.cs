@@ -3,18 +3,20 @@ using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class SearchHistoryViewModel : ViewModelBase
     {
-        private SearchOptions _currentOptions;
-        private int currnetPos;
 
-        public SearchHistoryViewModel()
+        History<SearchOptions> history;
+
+        public SearchHistoryViewModel(History<SearchOptions> history)
         {
-            History = new ObservableCollection<SearchOptions>();
+            Contract.Requires(history != null);
+            this.history = history;
         }
 
         public RelayCommand NextOptionsCommand
@@ -23,9 +25,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    currnetPos++;
+                    history.MoveForward();
                     OnPropertyChanged(() => CurrentOptions);
-                }, () => currnetPos < History.Count - 1);
+                }, () => !history.CurrentIsLast);
             }
         }
 
@@ -35,35 +37,17 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    currnetPos--;
+                    history.MoveBack();
                     OnPropertyChanged(() => CurrentOptions);
-                }, () => currnetPos > 0);
+                }, () => !history.CurrentIsFirst);
             }
         }
-
-        ObservableCollection<SearchOptions> History { get; set; }
-
         public SearchOptions CurrentOptions
         {
             get
             {
-                return History[currnetPos];
+                return history.CurrentState;
             }
-        }
-
-        public void Memorize(SearchOptions opt)
-        {
-            var ind = History.IndexOf(opt);
-            if (ind >= 0)
-            {
-                currnetPos = ind;
-            }
-            else
-            {
-                History.Add(opt);
-                currnetPos = History.Count - 1;
-            }
-            OnPropertyChanged(() => CurrentOptions);
         }
     }
 }
