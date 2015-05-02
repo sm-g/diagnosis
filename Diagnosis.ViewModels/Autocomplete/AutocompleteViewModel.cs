@@ -108,6 +108,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
+        /// True если Control+Enter
         /// </summary>
         public event EventHandler<BoolEventArgs> InputEnded;
 
@@ -121,7 +122,15 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public event EventHandler EntitiesChanged;
 
+        /// <summary>
+        /// Возникает, когда меняется уверенность у завершенных тегов.
+        /// </summary>
         public event EventHandler ConfidencesChanged;
+
+        /// <summary>
+        /// Возникает, когда меняется набор сущностей или уверенность.
+        /// </summary>
+        public event EventHandler CHiosChanged;
 
         public enum OptionsMode
         {
@@ -1000,11 +1009,21 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 h(this, EventArgs.Empty);
             }
+            OnChiosChanged();
         }
 
         protected virtual void OnConfidencesChanged()
         {
             var h = ConfidencesChanged;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+            OnChiosChanged();
+        }
+        protected virtual void OnChiosChanged()
+        {
+            var h = CHiosChanged;
             if (h != null)
             {
                 h(this, EventArgs.Empty);

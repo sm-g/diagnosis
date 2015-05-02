@@ -52,7 +52,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         bool AddQueryToSuggestions { get; set; }
 
-        IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted();
         void CompleteTypings();
         void StartEdit();
         void AddFromEditor(BlankType type, int index = -1);
@@ -70,7 +69,9 @@ namespace Diagnosis.ViewModels.Autocomplete
         event EventHandler<TagEventArgs> TagCompleted;
         event EventHandler<BoolEventArgs> InputEnded;
         event EventHandler ConfidencesChanged;
+        event EventHandler CHiosChanged;
 
         IEnumerable<ConfindenceHrItemObject> GetCHIOs();
+        IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted();
     }
 }

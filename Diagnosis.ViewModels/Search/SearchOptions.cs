@@ -165,6 +165,27 @@ namespace Diagnosis.ViewModels.Search
             }
             return sb.ToString().Trim('/');
         }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as SearchOptions;
+            if (other == null) return false;
+
+            return GroupOperator == other.GroupOperator &&
+                SearchScope == other.SearchScope &&
+                MinAny == other.MinAny &&
+                WordsAll.ScrambledEquals(other.WordsAll) &&
+                WordsAny.ScrambledEquals(other.WordsAny) &&
+                WordsNot.ScrambledEquals(other.WordsNot) &&
+                MeasuresAll.ScrambledEquals(other.MeasuresAll) &&
+                MeasuresAny.ScrambledEquals(other.MeasuresAny) &&
+                Categories.ScrambledEquals(other.Categories) &&
+                Children.ScrambledEquals(other.Children);
+        }
+        public override int GetHashCode()
+        {
+            return 0; //TODO
+        }
     }
 
     public class OldHrSearchOptions
