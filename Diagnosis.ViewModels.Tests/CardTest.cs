@@ -367,6 +367,8 @@ namespace Diagnosis.ViewModels.Tests
             card.HrEditor.Unload();
             //  вставляем
             card.HrList.AddHealthRecordCommand.Execute(null);
+
+            auto = card.HrEditor.Autocomplete as AutocompleteViewModel;
             auto.Paste();
             var replaced = auto.Tags[0].Blank as Word;
 
