@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Search
 {
+    /// <summary>
+    /// для записей All excluding x =  NotAny x
+    /// </summary>
     internal class AndSearcher : Searcher
     {
         public AndSearcher(ISession session)
@@ -58,6 +61,7 @@ namespace Diagnosis.ViewModels.Search
                 case SearchScope.HealthRecord:
                     return Intersect(childrenResults);
 
+                // все записи в списка идут выше? если (nor (all, any))
                 case SearchScope.Holder:
                     return InHolderScope(childrenResults, hr => hr.Holder);
 
