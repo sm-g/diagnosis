@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
         }
 
-        private MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
+        public MeasureEditorViewModel(Measure measure, Word w, bool withCompare)
         {
             this.withCompare = withCompare;
 

@@ -54,6 +54,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted();
         void CompleteTypings();
         void StartEdit();
+        void AddFromEditor(BlankType type, int index = -1);
     }
     public interface IQbAutocompleteViewModel : ITagsTrackableAutocomplete, IDisposable, INotifyPropertyChanged
     {

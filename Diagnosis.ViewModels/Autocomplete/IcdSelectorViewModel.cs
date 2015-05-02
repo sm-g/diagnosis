@@ -25,7 +25,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool inFiltered;
         private bool _icdTopLevelOnly;
 
-        private IcdSelectorViewModel(IcdDisease initial = null, string query = null)
+        public IcdSelectorViewModel(IcdDisease initial = null, string query = null)
         {
             doctor = AuthorityController.CurrentDoctor;
 
@@ -53,7 +53,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Create, edit
         /// </summary>
         /// <param name="initial"></param>
-        public IcdSelectorViewModel(IcdDisease initial = null)
+        public IcdSelectorViewModel(IcdDisease initial)
             : this(initial, null)
         {
         }

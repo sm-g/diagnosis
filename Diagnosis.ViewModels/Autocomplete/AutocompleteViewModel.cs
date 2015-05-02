@@ -249,21 +249,17 @@ namespace Diagnosis.ViewModels.Autocomplete
                         switch (SelectedTag.BlankType)
                         {
                             case BlankType.Measure:
-                                var vm = new MeasureEditorViewModel(SelectedTag.Blank as Measure, measureEditorWithCompare);
-                                vm.OnDialogResult(() =>
+                                OpenMeasureEditor(SelectedTag.Blank as Measure, null, (m) =>
                                 {
-                                    CompleteCommon(SelectedTag, vm.Measure, false);
+                                    CompleteCommon(SelectedTag, m, false);
                                 });
-                                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
                                 break;
 
                             case BlankType.Icd:
-                                var vm0 = new IcdSelectorViewModel(SelectedTag.Blank as IcdDisease);
-                                vm0.OnDialogResult(() =>
+                                OpenIcdSelector(SelectedTag.Blank as IcdDisease, null, (i) =>
                                 {
-                                    CompleteCommon(SelectedTag, vm0.SelectedIcd, false);
+                                    CompleteCommon(SelectedTag, i, false);
                                 });
-                                this.Send(Event.OpenDialog, vm0.AsParams(MessageKeys.Dialog));
                                 break;
 
                             default:
@@ -454,6 +450,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+
         /// <summary>
         /// Добавлять запрос как новое слово в список предположений, если нет соответствующего слова.
         /// </summary>
@@ -581,21 +578,17 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             if (type == BlankType.Measure)
             {
-                var vm = new MeasureEditorViewModel(measureEditorWithCompare);
-                vm.OnDialogResult(() =>
+                OpenMeasureEditor(null, null, (m) =>
                 {
-                    AddTag(vm.Measure, index);
+                    AddTag(m, index);
                 });
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             }
             else if (type == BlankType.Icd)
             {
-                var vm = new IcdSelectorViewModel();
-                vm.OnDialogResult(() =>
+                OpenIcdSelector(null, null, (i) =>
                 {
-                    AddTag(vm.SelectedIcd, index);
+                    AddTag(i, index);
                 });
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             }
         }
 
@@ -777,6 +770,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
             ConvertBlank(tag, e.type, onConverted);
         }
+
         private void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
         {
             Contract.Requires(tag != null);
@@ -830,7 +824,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             else
                 queryOrMeasureWord = tag.Query;
 
-
             switch (toType)
             {
                 case BlankType.Comment:
@@ -846,51 +839,44 @@ namespace Diagnosis.ViewModels.Autocomplete
                     break;
 
                 case BlankType.Measure: // слово
-                    MeasureEditorViewModel meVm;
-                    if (queryOrMeasureWord.IsNullOrEmpty())
+                    Word w = null;
+                    if (!queryOrMeasureWord.IsNullOrEmpty())
+                        w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
+                    OpenMeasureEditor(null, w, (m) =>
                     {
-                        meVm = new MeasureEditorViewModel(measureEditorWithCompare);
-                    }
-                    else
-                    {
-                        var w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
-                        meVm = new MeasureEditorViewModel(w, measureEditorWithCompare);
-                    }
-                    meVm.OnDialogResult((res) =>
-                    {
-                        if (res)
-                        {
-                            tag.Blank = meVm.Measure;
-                            onConverted();
-                        }
-                    });
-                    uiTaskFactory.StartNew(() =>
-                    {
-                        this.Send(Event.OpenDialog, meVm.AsParams(MessageKeys.Dialog));
+                        tag.Blank = m;
+                        onConverted();
                     });
                     break;
 
                 case BlankType.Icd: // слово/коммент в поисковый запрос
-                    IcdSelectorViewModel isVm;
-                    if (queryOrMeasureWord.IsNullOrEmpty())
-                        isVm = new IcdSelectorViewModel();
-                    else
-                        isVm = new IcdSelectorViewModel(queryOrMeasureWord);
-
-                    isVm.OnDialogResult((res) =>
+                    OpenIcdSelector(null, queryOrMeasureWord, (i) =>
                     {
-                        if (res)
-                        {
-                            tag.Blank = isVm.SelectedIcd;
-                            onConverted();
-                        }
-                    });
-                    uiTaskFactory.StartNew(() =>
-                    {
-                        this.Send(Event.OpenDialog, isVm.AsParams(MessageKeys.Dialog));
+                        tag.Blank = i;
+                        onConverted();
                     });
                     break;
             }
+        }
+
+        private void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)
+        {
+            var vm = new MeasureEditorViewModel(m, w, measureEditorWithCompare);
+            vm.OnDialogResult(() => onOk(vm.Measure));
+            uiTaskFactory.StartNew(() =>
+            {
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+        }
+
+        private void OpenIcdSelector(IcdDisease i, string q, Action<IcdDisease> onOk)
+        {
+            var vm = new IcdSelectorViewModel(i, q);
+            vm.OnDialogResult(() => onOk(vm.SelectedIcd));
+            uiTaskFactory.StartNew(() =>
+            {
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
         }
 
         internal void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
@@ -1106,19 +1092,16 @@ namespace Diagnosis.ViewModels.Autocomplete
         ICommand IHrEditorAutocomplete.DeleteCommand
         {
             get { return DeleteCommand; }
-
         }
 
         ICommand IHrEditorAutocomplete.SendToSearchCommand
         {
             get { return SendToSearchCommand; }
-
         }
 
         ICommand IHrEditorAutocomplete.ToggleSuggestionModeCommand
         {
             get { return ToggleSuggestionModeCommand; }
-
         }
 
         INotifyCollectionChanged IQbAutocompleteViewModel.Tags
