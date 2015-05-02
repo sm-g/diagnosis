@@ -139,7 +139,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_query != value)
                 {
                     // logger.DebugFormat("query = {0}", value);
-                    Contract.Assume(!IsDeleteOnly);
 
                     State = State.Typing;
 
@@ -294,7 +293,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     OnConverting(t);
                     OnPropertyChanged(() => BlankType);
                 },
-                (t) => autocomplete.WithConvert && t != BlankType && !IsDeleteOnly)
+                (t) => autocomplete.WithConvert && t != BlankType)
                 {
                     IsVisible = autocomplete.WithConvert
                 });
@@ -341,25 +340,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 {
                     IsVisible = !autocomplete.SingleTag // все равно показываем пункт меню, если иногда можно
                 });
-            }
-        }
-
-        /// <summary>
-        /// Тег не редактируется, можно только удалить.
-        /// </summary>
-        public bool IsDeleteOnly
-        {
-            get
-            {
-                return _isDeleteOnly;
-            }
-            private set
-            {
-                if (_isDeleteOnly != value)
-                {
-                    _isDeleteOnly = value;
-                    OnPropertyChanged("IsDeleteOnly");
-                }
             }
         }
 
