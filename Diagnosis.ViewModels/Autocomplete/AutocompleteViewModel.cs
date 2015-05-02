@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 allowConfidenceToggle: mode != OptionsMode.MeasureEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
                 measureEditorWithCompare: mode == OptionsMode.Search,
-                initItems: initItems ?? Enumerable.Empty<ConfindenceHrItemObject>(),
+                initItems: initItems ?? Enumerable.Empty<object>(),
                 convertTo: mode == OptionsMode.HrEditor ? new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure } :
                             mode == OptionsMode.Search ? new[] { BlankType.Word, BlankType.Measure } :
                             Enumerable.Empty<BlankType>()
@@ -55,7 +55,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             bool allowConfidenceToggle,
             bool singleTag,
             bool measureEditorWithCompare,
-            IEnumerable<ConfindenceHrItemObject> initItems,
+            IEnumerable<object> initItems,
             IEnumerable<BlankType> convertTo)
         {
             Contract.Requires(recognizer != null);
@@ -343,7 +343,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         entities = t.Blank.ToEnumerable();
                     else
                         entities = GetCHIOsOfSelectedCompleted().Select(x => x.HIO);
-                    this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
+                    this.Send(Event.SendToSearch, entities.ToList().AsParams(MessageKeys.HrItemObjects));
                 }, (t) => WithSendToSearch)
                 {
                     IsVisible = WithSendToSearch
@@ -693,6 +693,18 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
 
             return result;
+        }
+        /// <summary>
+        /// Возвращает сущности из завершенных тегов по порядку.
+        /// </summary>
+        public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
+        {
+            var completed = Tags.Where(t => t.State == State.Completed);
+
+            var hios = completed
+                 .Select(t => t.ToChio())
+                 .ToList();
+            return hios;
         }
 
         /// <summary>

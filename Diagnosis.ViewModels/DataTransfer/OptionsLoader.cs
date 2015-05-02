@@ -7,17 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
 namespace Diagnosis.ViewModels.DataTransfer
 {
     public class OptionsLoader
     {
         private ISession session;
+
         public OptionsLoader(ISession session)
         {
             this.session = session;
         }
+
         /// <summary>
         /// Делает опции с реальными сущностями.
         /// </summary>
@@ -30,14 +31,23 @@ namespace Diagnosis.ViewModels.DataTransfer
             result.SearchScope = dto.SearchScope;
             result.MinAny = dto.MinAny;
 
-            var words = WordQuery.ByTitles(session)(dto.WordsAll.Select(x => x.Title));
-            result.WordsAll = new List<Word>(words);
+            var allWordsTitles = dto.CWordsAll.Union(dto.CWordsAny).Union(dto.CWordsNot).Select(x => x.Title);
+            var words = WordQuery.ByTitles(session)(allWordsTitles);
 
-            words = WordQuery.ByTitles(session)(dto.WordsAny.Select(x => x.Title));
-            result.WordsAny = new List<Word>(words);
+            result.CWordsAll = new List<Confindencable<Word>>(from cw in dto.CWordsAll
+                                                              let w = words.FirstOrDefault(w => w.Title == cw.Title)
+                                                              where w != null
+                                                              select new Confindencable<Word>(w, cw.Confidence));
 
-            words = WordQuery.ByTitles(session)(dto.WordsNot.Select(x => x.Title));
-            result.WordsNot = new List<Word>(words);
+            result.CWordsAny = new List<Confindencable<Word>>(from cw in dto.CWordsAny
+                                                              let w = words.FirstOrDefault(w => w.Title == cw.Title)
+                                                              where w != null
+                                                              select new Confindencable<Word>(w, cw.Confidence));
+
+            result.CWordsNot = new List<Confindencable<Word>>(from cw in dto.CWordsNot
+                                                              let w = words.FirstOrDefault(w => w.Title == cw.Title)
+                                                              where w != null
+                                                              select new Confindencable<Word>(w, cw.Confidence));
 
             var mWordTitles = from w in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
@@ -76,9 +86,10 @@ namespace Diagnosis.ViewModels.DataTransfer
                 result.Children.Add(child);
             });
 
-            if (result.WordsAll.Count != dto.WordsAll.Count ||
-                result.WordsAny.Count != dto.WordsAny.Count ||
-                result.WordsNot.Count != dto.WordsNot.Count ||
+            if (
+                 result.CWordsAll.Count != dto.CWordsAll.Count ||
+                 result.CWordsAny.Count != dto.CWordsAny.Count ||
+                 result.CWordsNot.Count != dto.CWordsNot.Count ||
                 result.MeasuresAll.Count != dto.MeasuresAll.Count ||
                 result.MeasuresAny.Count != dto.MeasuresAny.Count ||
                 result.Categories.Count != dto.Categories.Count
@@ -90,18 +101,18 @@ namespace Diagnosis.ViewModels.DataTransfer
 
             return result;
         }
-
     }
+
     public static class Ex
     {
         public static int GetAllChildrenCount(this SearchOptions o)
         {
             return o.Children.Aggregate(o.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
+
         public static int GetAllChildrenCount(this SearchOptionsDTO dto)
         {
             return dto.Children.Aggregate(dto.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
-
     }
 }
