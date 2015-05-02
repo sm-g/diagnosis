@@ -130,6 +130,8 @@
                                         Value="0,1,0,0" />
                                 <Setter Property="BorderBrush"
                                         Value="{StaticResource AccentColorBrush2}" />
+                                <Setter Property="Focusable"
+                                        Value="{Binding AnyPopupOpen, Converter={StaticResource NegateBoolean}}" />
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <ItemsControl.ItemTemplate>

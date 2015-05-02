@@ -29,6 +29,8 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
 
+        private QueryGroupOperator _operator;
+
         public QueryBlockViewModel(ISession session, Action executeSearch, SearchOptions options = null)
         {
             this.session = session;
@@ -121,6 +123,16 @@ namespace Diagnosis.ViewModels.Screens
                     && AutocompleteAll.IsEmpty
                     && AutocompleteAny.IsEmpty
                     && AutocompleteNot.IsEmpty);
+            }
+        }
+
+        public bool AnyPopupOpen
+        {
+            get
+            {
+                return AutocompleteAll.IsPopupOpen ||
+                    AutocompleteAny.IsPopupOpen ||
+                    AutocompleteNot.IsPopupOpen;
             }
         }
 
@@ -286,8 +298,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        private QueryGroupOperator _operator;
         /// <summary>
         /// Применить блоки к области поиска и выбрать записи, которые удовлетворяют всем/любому/не любому.
         /// </summary>
@@ -356,6 +366,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(executeSearch);
             }
         }
+
 
         public SearchOptions MakeOptions()
         {
@@ -533,13 +544,18 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Autocomplete_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsEmpty")
+            switch (e.PropertyName)
             {
-                OnPropertyChanged(() => AllEmpty);
-                RefreshDescription();
+                case "IsEmpty":
+
+                    OnPropertyChanged(() => AllEmpty);
+                    RefreshDescription();
+                    break;
+                case "IsPopupOpen":
+                    OnPropertyChanged(() => AnyPopupOpen);
+                    break;
             }
         }
-
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
