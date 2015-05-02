@@ -28,9 +28,9 @@ namespace Diagnosis.ViewModels.Autocomplete
     public interface ITagParentAutocomplete
     {
         bool SingleTag { get; }
-        bool WithConvert { get; }
         bool WithSendToSearch { get; }
         bool WithConfidence { get; }
+        bool WithConvert { get; }
 
         ICommand EditCommand { get; }
         ICommand SendToSearchCommand { get; }
@@ -38,6 +38,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
 
         void AddTagNearAndEdit(TagViewModel tag, bool up);
+        bool WithConvertTo(BlankType type);
         void OnDrop(DragEventArgs e);
     }
 

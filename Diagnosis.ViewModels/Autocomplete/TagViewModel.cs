@@ -293,7 +293,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     OnConverting(t);
                     OnPropertyChanged(() => BlankType);
                 },
-                (t) => autocomplete.WithConvert && t != BlankType)
+                (t) => autocomplete.WithConvertTo(t) && t != BlankType)
                 {
                     IsVisible = autocomplete.WithConvert
                 });

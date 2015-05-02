@@ -17,10 +17,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly SuggestionsMaker recognizer;
         private readonly bool allowSendToSearch;
-        private readonly bool allowTagConvertion;
         private readonly bool allowConfidenceToggle;
         private readonly bool singleTag;
         private readonly bool measureEditorWithCompare;
+        private readonly IEnumerable<BlankType> convertTo;
 
         private TagViewModel _selTag;
         private bool _popupOpened;
@@ -37,28 +37,33 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
             : this(recognizer,
-                allowTagConvertion: mode != OptionsMode.MeasureEditor,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
                 allowConfidenceToggle: mode == OptionsMode.HrEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
                 measureEditorWithCompare: mode == OptionsMode.Search,
-                initItems: initItems)
+                initItems: initItems ?? Enumerable.Empty<ConfindenceHrItemObject>(),
+                convertTo: mode == OptionsMode.HrEditor ? new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure } :
+                            mode == OptionsMode.Search ? new[] { BlankType.Word, BlankType.Measure } :
+                            Enumerable.Empty<BlankType>()
+            )
         {
             this.mode = mode;
         }
 
         private AutocompleteViewModel(SuggestionsMaker recognizer,
-            bool allowTagConvertion,
             bool allowSendToSearch,
             bool allowConfidenceToggle,
             bool singleTag,
             bool measureEditorWithCompare,
-            IEnumerable<ConfindenceHrItemObject> initItems)
+            IEnumerable<ConfindenceHrItemObject> initItems,
+            IEnumerable<BlankType> convertTo)
         {
             Contract.Requires(recognizer != null);
+            Contract.Requires(initItems != null);
+            Contract.Requires(convertTo != null);
 
             this.recognizer = recognizer;
-            this.allowTagConvertion = allowTagConvertion;
+            this.convertTo = convertTo;
             this.allowSendToSearch = allowSendToSearch;
             this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
@@ -88,13 +93,11 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             AddTag(isLast: true);
 
-            if (initItems != null)
+            foreach (var item in initItems)
             {
-                foreach (var item in initItems)
-                {
-                    AddTag(item);
-                }
+                AddTag(item);
             }
+
             Suggestions = new ObservableCollection<SuggestionViewModel>();
 
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
@@ -477,9 +480,14 @@ namespace Diagnosis.ViewModels.Autocomplete
             get { return allowSendToSearch; }
         }
 
+        public bool WithConvertTo(BlankType type)
+        {
+            return convertTo.Contains(type);
+        }
+
         public bool WithConvert
         {
-            get { return allowTagConvertion; }
+            get { return convertTo.Any(); }
         }
 
         public bool WithConfidence
