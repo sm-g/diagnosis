@@ -263,6 +263,9 @@
     <Compile Include="Behaviors\AvalonDockLayoutSerializer.cs" />
     <Compile Include="Behaviors\IsActive.cs" />
     <Compile Include="Behaviors\ListBoxSelector.cs" />
+    <Compile Include="Controls\CardParts\DateOffsetEditor.xaml.cs">
+      <DependentUpon>DateOffsetEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CardParts\Header.xaml.cs">
       <DependentUpon>Header.xaml</DependentUpon>
     </Compile>
@@ -399,6 +402,10 @@
     <Compile Include="Windows\Shell\MenuBar.xaml.cs">
       <DependentUpon>MenuBar.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\CardParts\DateOffsetEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\CardParts\Header.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
