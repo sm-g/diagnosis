@@ -300,7 +300,7 @@ namespace Diagnosis.Data.Queries
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyConfWords(session)(any.Any() ? any : all, minAny);
-                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.GetCWords()));
+                    var withall = withAny.Where(hr => all.IsSubmultisetOf(hr.GetCWords()));
                     return withall.Where(hr => !hr.GetCWords().Any(w => not.Contains(w)));
                 }
                 else
