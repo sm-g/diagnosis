@@ -60,7 +60,6 @@ namespace Diagnosis.ViewModels
             }
 
             From = new DatePickerViewModel(from);
-
         }
 
         public enum ShowAs
@@ -256,17 +255,25 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return CanShowAsAge && Year.HasValue
-                    ? Year.Value - patient.BirthYear.Value
+                return CanShowAsAge && from.Year.HasValue
+                    ? DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, from.GetSortingDate())
                     : (int?)null;
             }
             set
             {
-                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
+                Contract.Ensures(patient.BirthYear == null ||
+                    value == DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, from.GetSortingDate()));
+
+                if (patient.BirthYear == null)
+                    return;
 
                 // установка возраста меняет только год
-                Year = patient.BirthYear.Value + value;
+                if (value.HasValue)
+                    from.Year = DateHelper.GetYearForAge(value.Value, patient.BirthYear.Value, patient.BirthMonth, patient.BirthDay, from.GetSortingDate());
+                else
+                    from.Year = null;
 
+                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
                 OnPropertyChanged(() => AtAge);
             }
         }
@@ -275,17 +282,24 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                return CanShowAsAge && ToYear.HasValue
-                    ? ToYear.Value - patient.BirthYear.Value
+                return CanShowAsAge && to.Year.HasValue
+                    ? DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, to.GetSortingDate())
                     : (int?)null;
             }
             set
             {
+                Contract.Ensures(patient.BirthYear == null ||
+                    value == DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, to.GetSortingDate()));
+
+                if (patient.BirthYear == null)
+                    return;
+
+                if (value.HasValue)
+                    to.Year = DateHelper.GetYearForAge(value.Value, patient.BirthYear.Value, patient.BirthMonth, patient.BirthDay, to.GetSortingDate());
+                else
+                    to.Year = null;
+
                 FirstSet = DateOffsetViewModel.ShowAs.AtAge;
-
-                // установка возраста меняет только год
-                ToYear = patient.BirthYear.Value + value;
-
                 OnPropertyChanged(() => ToAtAge);
             }
         }
@@ -387,6 +401,7 @@ namespace Diagnosis.ViewModels
             }
             return res;
         }
+
         private static void OnHrRemoved(HealthRecord item)
         {
             DateOffsetViewModel res;
@@ -397,14 +412,10 @@ namespace Diagnosis.ViewModels
             }
         }
 
-
-
         private static void FillFixedSide(DateOffset d, DateTime dt, DateUnit value)
         {
             d.FillDateDownTo(dt, value);
         }
-
-
 
         private void RoundOffsetUnitByDate()
         {
@@ -454,6 +465,7 @@ namespace Diagnosis.ViewModels
                 case "Offset":
                     OnPropertyChanged(() => Offset);
                     break;
+
                 case "Unit":
                     OnPropertyChanged(() => Unit);
                     break;
@@ -465,10 +477,12 @@ namespace Diagnosis.ViewModels
                     if (SetToWithFrom)
                         to.Day = from.Day;
                     break;
+
                 case "Month":
                     if (SetToWithFrom)
                         to.Month = from.Month;
                     break;
+
                 case "Year":
                     if (SetToWithFrom)
                         to.Year = from.Year;
@@ -484,11 +498,6 @@ namespace Diagnosis.ViewModels
 
         private void Common_date_PropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Year")
-            {
-                OnPropertyChanged(() => AtAge);
-                OnPropertyChanged(() => ToAtAge);
-            }
             switch (e.PropertyName)
             {
                 case "Day":
@@ -505,9 +514,14 @@ namespace Diagnosis.ViewModels
 
                     OnPropertyChanged(() => PartialDateString);
                     OnPropertyChanged(() => AtAgeString);
+                    OnPropertyChanged(() => AtAge);
+                    OnPropertyChanged(() => ToAtAge);
 
-                    //OnPropertyChanged("Offset");
-                    //OnPropertyChanged("Unit");
+                    if (IsClosedInterval)
+                    {
+                        OnPropertyChanged(() => Offset);
+                        OnPropertyChanged(() => Unit);
+                    }
                     break;
             }
 
@@ -556,38 +570,20 @@ namespace Diagnosis.ViewModels
 
             public int? Year
             {
-                get
-                {
-                    return d.Year;
-                }
-                set
-                {
-                    d.Year = value;
-                }
+                get { return d.Year; }
+                set { d.Year = value; }
             }
 
             public int? Month
             {
-                get
-                {
-                    return d.Month;
-                }
-                set
-                {
-                    d.Month = value;
-                }
+                get { return d.Month; }
+                set { d.Month = value; }
             }
 
             public int? Day
             {
-                get
-                {
-                    return d.Day;
-                }
-                set
-                {
-                    d.Day = value;
-                }
+                get { return d.Day; }
+                set { d.Day = value; }
             }
 
             protected override void Dispose(bool disposing)

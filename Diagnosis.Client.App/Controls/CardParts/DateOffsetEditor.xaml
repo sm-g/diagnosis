@@ -6,6 +6,7 @@
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
              mc:Ignorable="d"
+             Name="doEditor"
              d:DataContext="{d:DesignInstance design:SampleHealthRecordViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="600">
     <StackPanel Grid.IsSharedSizeScope="True">
@@ -97,7 +98,7 @@
                        Margin="0 0 0 0"
                        Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
                        Grid.Column="2" />
-            <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=hr}"
+            <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=doEditor}"
                                       DataContext="{Binding EventDate.To}"
                                       Year="{Binding Year, Mode=TwoWay}"
                                       Month="{Binding Month, Mode=TwoWay}"
