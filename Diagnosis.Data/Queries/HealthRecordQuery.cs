@@ -130,7 +130,7 @@ namespace Diagnosis.Data.Queries
                                           where wordsIds.Contains(w.Id)
                                           select hri).ToList();
 
-                    var hrs = from hri in hriWithAnyWord.Where(x => cwords.Any(p => x.Confidence == p.Confidence && x.Word == p.HIO))
+                    var hrs = from hri in hriWithAnyWord.Where(x => cwords.Any(p => x.Confidence == p.Confidence && x.Word == p.HIO)) // hri где есть любой cword
                               group hri by hri.HealthRecord into g
                               where g.Count() >= mincount
                               select g.Key;
@@ -193,21 +193,37 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
-
+        /// <summary>
+        /// Возвращает записи где нет ни одного из слов учитывая уверенность.
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
         public static Func<IEnumerable<Confindencable<Word>>, IEnumerable<HealthRecord>> WithoutAnyConfWord(ISession session)
         {
             return (cwords) =>
             {
-                throw new NotImplementedException();
-                //using (var tr = session.BeginTransaction())
-                //{
-                //    var wordsIds = words.Select(w => w.Id).ToList();
+                using (var tr = session.BeginTransaction())
+                {
+                    // записи без слов + со словами, но без этой уверенности
+                    var wordsIds = cwords.Select(w => w.HIO.Id).ToList();
 
-                //    var hrs = from hr in session.Query<HealthRecord>()
-                //              where !hr.HrItems.Any(x => wordsIds.Contains(x.Word.Id)) // все элементы записи без слова
-                //              select hr;
-                //    return hrs.Distinct().ToList();
-                //}
+                    var noWordshrs = (from hr in session.Query<HealthRecord>()
+                                      where !hr.HrItems.Any(x => wordsIds.Contains(x.Word.Id))
+                                      select hr).ToList();
+
+                    var hrWithAnyWord = (from hr in session.Query<HealthRecord>()
+                                         where hr.HrItems.Any(x => wordsIds.Contains(x.Word.Id))
+                                         select hr).ToList();
+
+                    var otherConfHrs = from hr in hrWithAnyWord
+                                       from hri in hr.HrItems
+                                       where !cwords.Any(p => hri.Confidence == p.Confidence && hri.Word == p.HIO)
+                                       group hri by hri.HealthRecord into g
+                                       where g.Count() == g.Key.HrItems.Count() // только записи где все hri прошли
+                                       select g.Key;
+
+                    return noWordshrs.Union(otherConfHrs).Distinct().ToList();
+                }
             };
         }
         /// <summary>
@@ -305,7 +321,7 @@ namespace Diagnosis.Data.Queries
                 }
                 else
                 {
-                    return WithoutAnyWord(session)(not.Select(x => x.HIO));
+                    return WithoutAnyConfWord(session)(not);
                 }
             };
         }
