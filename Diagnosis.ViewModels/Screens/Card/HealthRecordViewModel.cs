@@ -167,14 +167,14 @@ namespace Diagnosis.ViewModels.Screens
                             healthRecord.ToDate.Clear();
 
                         // bind after
-                        EventDate.To = new DateOffsetViewModel.DatePickerViewModel(EventDate);
-                        EventDate.OpenedInEditor = true;
+                        EventDate.To = new DateOffsetViewModel.DatePickerViewModel(healthRecord.ToDate);
+                        EventDate.OpenedInIntervalEditor = true;
                     }
                     else
                     {
                         lastToDate = new DateOffset(healthRecord.ToDate);
                         EventDate.To = null; // unbind ComboboxDatePicker DataContext;
-                        EventDate.OpenedInEditor = false;
+                        EventDate.OpenedInIntervalEditor = false;
 
                         healthRecord.ToDate.FillDateFrom(healthRecord.FromDate);
                     }

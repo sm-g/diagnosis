@@ -16,14 +16,15 @@ namespace Diagnosis.ViewModels
 
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(DateOffsetViewModel));
         private readonly DateOffset from;
-        private readonly DateOffset to;
+        internal readonly DateOffset to;
         private readonly HealthRecord hr;
+        private readonly Patient patient;
         private DateUnit _roundUnit;
         private ShowAs? _firstSet;
         private int? _roundOffset;
-        private Patient patient;
         private DatePickerViewModel _toDpVm;
         private bool _inEdit;
+        private DatePickerViewModel _fromDpVm;
 
         static DateOffsetViewModel()
         {
@@ -51,12 +52,15 @@ namespace Diagnosis.ViewModels
 
             Relative = from.RelativeTo(to);
 
-            if (Year != null) // есть дата у записи
+            if (from.Year != null) // есть дата у записи
             {
                 this._firstSet = ShowAs.Date; // не новая запись — не меняем showas при вводе
 
                 RoundOffsetUnitByDate();
             }
+
+            From = new DatePickerViewModel(from);
+
         }
 
         public enum ShowAs
@@ -72,9 +76,12 @@ namespace Diagnosis.ViewModels
 
         public bool IsPoint { get { return hr.IsPoint; } }
 
-        public bool SetToWithFrom { get { return !OpenedInEditor && hr.IsPoint; } }
+        /// <summary>
+        /// Для события-точки обе даты меняем вместе при закрытом редакторе интервала.
+        /// </summary>
+        private bool SetToWithFrom { get { return !OpenedInIntervalEditor && hr.IsPoint; } }
 
-        public bool OpenedInEditor
+        public bool OpenedInIntervalEditor
         {
             get
             {
@@ -85,7 +92,7 @@ namespace Diagnosis.ViewModels
                 if (_inEdit != value)
                 {
                     _inEdit = value;
-                    OnPropertyChanged(() => OpenedInEditor);
+                    OnPropertyChanged(() => OpenedInIntervalEditor);
                 }
             }
         }
@@ -149,69 +156,31 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        public int? Year
+        public DatePickerViewModel From
         {
             get
             {
-                return from.Year;
+                return _fromDpVm;
             }
             set
             {
-                if (from.Year != value)
+                if (_fromDpVm != value)
                 {
-                    FirstSet = ShowAs.Date;
-                    if (SetToWithFrom)
-                        to.Year = value;
-                    from.Year = value;
-                    OnPropertyChanged(() => Year);
+                    _fromDpVm = value;
+                    OnPropertyChanged(() => From);
                 }
             }
         }
 
-        public int? Month
-        {
-            get
-            {
-                return from.Month;
-            }
-            set
-            {
-                if (from.Month != value)
-                {
-                    FirstSet = ShowAs.Date;
-                    if (SetToWithFrom)
-                        to.Month = value;
-                    from.Month = value;
-                    OnPropertyChanged(() => Month);
-                }
-            }
-        }
-
-        public int? Day
-        {
-            get
-            {
-                return from.Day;
-            }
-            set
-            {
-                if (from.Day != value)
-                {
-                    FirstSet = ShowAs.Date;
-                    if (SetToWithFrom)
-                        to.Day = value;
-                    from.Day = value;
-                    OnPropertyChanged(() => Day);
-                }
-            }
-        }
         /// <summary>
-        /// To fix combobox binding set to null.
+        /// Null when interval editor is closed.
+        /// Set to null fixes combobox binding.
         /// </summary>
         public DatePickerViewModel To
         {
             get
             {
+                Contract.Ensures(Contract.Result<DatePickerViewModel>() != null || OpenedInIntervalEditor);
                 return _toDpVm;
             }
             set
@@ -220,58 +189,6 @@ namespace Diagnosis.ViewModels
                 {
                     _toDpVm = value;
                     OnPropertyChanged(() => To);
-                }
-            }
-        }
-
-        public int? ToYear
-        {
-            get
-            {
-                return to.Year;
-            }
-            set
-            {
-                if (to.Year != value)
-                {
-                    FirstSet = ShowAs.Date;
-                    to.Year = value;
-                    OnPropertyChanged(() => ToYear);
-                }
-            }
-        }
-
-        public int? ToMonth
-        {
-            get
-            {
-                return to.Month;
-            }
-            set
-            {
-                if (to.Month != value)
-                {
-                    FirstSet = ShowAs.Date;
-                    to.Month = value;
-                    OnPropertyChanged(() => ToMonth);
-                }
-            }
-        }
-
-        public int? ToDay
-        {
-            get
-            {
-                return to.Day;
-            }
-            set
-            {
-                if (to.Day != value)
-                {
-                    FirstSet = ShowAs.Date;
-                    to.Day = value;
-
-                    OnPropertyChanged(() => ToDay);
                 }
             }
         }
@@ -534,17 +451,28 @@ namespace Diagnosis.ViewModels
 
             switch (e.PropertyName)
             {
-                case "Day":
-                case "Month":
-                case "Year":
                 case "Offset":
+                    OnPropertyChanged(() => Offset);
+                    break;
                 case "Unit":
-                    OnPropertyChanged("Day",
-                                      "Month",
-                                      "Year",
-                                      "Offset",
-                                      "Unit",
-                                      "IsEmpty");
+                    OnPropertyChanged(() => Unit);
+                    break;
+            }
+
+            switch (e.PropertyName)
+            {
+                case "Day":
+                    if (SetToWithFrom)
+                        to.Day = from.Day;
+                    break;
+                case "Month":
+                    if (SetToWithFrom)
+                        to.Month = from.Month;
+                    break;
+                case "Year":
+                    if (SetToWithFrom)
+                        to.Year = from.Year;
+                    OnPropertyChanged(() => IsEmpty);
                     break;
             }
         }
@@ -552,15 +480,6 @@ namespace Diagnosis.ViewModels
         private void to_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Common_date_PropertyChanged(e);
-
-            switch (e.PropertyName)
-            {
-                case "Day":
-                case "Month":
-                case "Year":
-                    OnPropertyChanged("To" + e.PropertyName);
-                    break;
-            }
         }
 
         private void Common_date_PropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
@@ -575,19 +494,20 @@ namespace Diagnosis.ViewModels
                 case "Day":
                 case "Month":
                 case "Year":
+                    FirstSet = ShowAs.Date;
                     Relative = from.RelativeTo(to);
 
                     RoundOffsetUnitByDate();
-                    OnPropertyChanged("IsClosedInterval");
-                    OnPropertyChanged("IsOpenedInterval");
+                    OnPropertyChanged(() => IsClosedInterval);
+                    OnPropertyChanged(() => IsOpenedInterval);
 
-                    OnPropertyChanged("OffsetFrom");
+                    OnPropertyChanged(() => OffsetFrom);
 
-                    OnPropertyChanged("PartialDateString");
-                    OnPropertyChanged("AtAgeString");
+                    OnPropertyChanged(() => PartialDateString);
+                    OnPropertyChanged(() => AtAgeString);
 
-                    OnPropertyChanged("Offset");
-                    OnPropertyChanged("Unit");
+                    //OnPropertyChanged("Offset");
+                    //OnPropertyChanged("Unit");
                     break;
             }
 
@@ -626,23 +546,23 @@ namespace Diagnosis.ViewModels
 
         public class DatePickerViewModel : ViewModelBase
         {
-            private DateOffsetViewModel dovm;
+            private DateOffset d;
 
-            public DatePickerViewModel(DateOffsetViewModel d)
+            public DatePickerViewModel(DateOffset d)
             {
-                dovm = d;
-                d.to.PropertyChanged += to_PropertyChanged;
+                this.d = d;
+                d.PropertyChanged += d_PropertyChanged;
             }
 
             public int? Year
             {
                 get
                 {
-                    return dovm.ToYear;
+                    return d.Year;
                 }
                 set
                 {
-                    dovm.ToYear = value;
+                    d.Year = value;
                 }
             }
 
@@ -650,11 +570,11 @@ namespace Diagnosis.ViewModels
             {
                 get
                 {
-                    return dovm.ToMonth;
+                    return d.Month;
                 }
                 set
                 {
-                    dovm.ToMonth = value;
+                    d.Month = value;
                 }
             }
 
@@ -662,11 +582,11 @@ namespace Diagnosis.ViewModels
             {
                 get
                 {
-                    return dovm.ToDay;
+                    return d.Day;
                 }
                 set
                 {
-                    dovm.ToDay = value;
+                    d.Day = value;
                 }
             }
 
@@ -676,7 +596,7 @@ namespace Diagnosis.ViewModels
                 {
                     if (disposing)
                     {
-                        dovm.to.PropertyChanged -= to_PropertyChanged;
+                        d.PropertyChanged -= d_PropertyChanged;
                     }
                 }
                 finally
@@ -685,7 +605,7 @@ namespace Diagnosis.ViewModels
                 }
             }
 
-            private void to_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            private void d_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
             {
                 switch (e.PropertyName)
                 {
