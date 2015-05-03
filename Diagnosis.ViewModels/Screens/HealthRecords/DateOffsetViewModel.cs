@@ -288,9 +288,9 @@ namespace Diagnosis.ViewModels
                 {
                     _roundUnit = value;
                     if (IsClosedInterval)
-                        RoundedOffset = RoundOffsetFor(Relative, value);
+                        RoundedOffset = Relative.RoundOffsetFor(value);
                     else
-                        RoundedOffset = RoundOffsetFor(from, value);
+                        RoundedOffset = from.RoundOffsetFor(value);
                     OnPropertyChanged(() => RoundedUnit);
                 }
             }
@@ -480,116 +480,22 @@ namespace Diagnosis.ViewModels
             }
         }
 
-        /// <summary>
-        /// Округляет смещение.
-        /// При укрупнении единицы смещение считается для полной даты с 1 вместо отсутствующих значений.
-        /// </summary>
-        private static int? RoundOffsetFor(DateOffset d, DateUnit unit)
-        {
-            if (!d.Year.HasValue)
-            {
-                return null;
-            }
-            int? RoundedOffset;
-            switch (unit)
-            {
-                case DateUnit.Day:
-                    RoundedOffset = (d.Now - d.GetSortingDate()).Days;
-                    break;
 
-                case DateUnit.Week:
-                    RoundedOffset = (d.Now - d.GetSortingDate()).Days / 7;
-                    break;
-
-                case DateUnit.Month:
-                    if (d.Month.HasValue)
-                    {
-                        RoundedOffset = DateHelper.GetTotalMonthsBetween(d.Now, d.Year.Value, d.Month.Value);
-                    }
-                    else
-                    {
-                        RoundedOffset = DateHelper.GetTotalMonthsBetween(d.Now, d.Year.Value, 1);
-                    }
-                    break;
-
-                case DateUnit.Year:
-                    RoundedOffset = d.Now.Year - d.Year.Value;
-                    break;
-
-                default:
-                    throw new NotImplementedException();
-            }
-            return RoundedOffset;
-        }
 
         private static void FillFixedSide(DateOffset d, DateTime dt, DateUnit value)
         {
             d.FillDateDownTo(dt, value);
         }
 
-        /// <summary>
-        /// Установка даты меняет единицу измерения и смещение на наиболее подходящие.
-        /// </summary>
-        private static DateOffset RoundOffsetUnitByDate(DateOffset d, DateTime described)
-        {
-            Contract.Requires(d.Year != null);
 
-            int? offset = null;
-            DateUnit unit = 0;
-
-            Action setRoundedOffsetUnitMonthOrYear = () =>
-            {
-                var months = DateHelper.GetTotalMonthsBetween(described, d.Year.Value, d.Month.Value);
-                if (months < 12) // меньше года - месяцы
-                {
-                    offset = months;
-                    unit = DateUnit.Month;
-                }
-                else
-                {
-                    offset = described.Year - d.Year.Value;
-                    unit = DateUnit.Year;
-                }
-            };
-
-            if (d.Month == null) // _ _ y (или d _ y без автообрезания)
-            {
-                offset = described.Year - d.Year.Value;
-                unit = DateUnit.Year;
-            }
-            else if (d.Day == null) // _ m y
-            {
-                setRoundedOffsetUnitMonthOrYear();
-            }
-            else // d m y
-            {
-                var days = (described - (DateTime)d).Days;
-                if (days < 7) // меньше недели - дни
-                {
-                    offset = days;
-                    unit = DateUnit.Day;
-                }
-                else if (days < 4 * 7) // меньше месяца - недели
-                {
-                    offset = days / 7;
-                    unit = DateUnit.Week;
-                }
-                else
-                {
-                    setRoundedOffsetUnitMonthOrYear();
-                }
-            }
-
-            return new DateOffset(offset, unit, () => d.Now);
-        }
 
         private void RoundOffsetUnitByDate()
         {
             DateOffset rounding = null;
             if (IsClosedInterval && !Relative.IsEmpty)
-                rounding = RoundOffsetUnitByDate(Relative, hr.DescribedAt);
+                rounding = Relative.RoundOffsetUnitByDate(hr.DescribedAt);
             else if (from.Year != null)
-                rounding = RoundOffsetUnitByDate(from, hr.DescribedAt);
+                rounding = from.RoundOffsetUnitByDate(hr.DescribedAt);
 
             if (rounding != null)
             {
@@ -686,9 +592,9 @@ namespace Diagnosis.ViewModels
             }
 
             if (IsClosedInterval)
-                RoundedOffset = RoundOffsetFor(Relative, RoundedUnit);
+                RoundedOffset = Relative.RoundOffsetFor(RoundedUnit);
             else
-                RoundedOffset = RoundOffsetFor(from, RoundedUnit);
+                RoundedOffset = from.RoundOffsetFor(RoundedUnit);
 
             logger.DebugFormat("changed {2}\nfrom {0}\nto {1}", hr.FromDate, hr.ToDate, e.PropertyName);
         }
