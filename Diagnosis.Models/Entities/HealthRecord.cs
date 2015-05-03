@@ -231,14 +231,9 @@ namespace Diagnosis.Models
         /// Не использовать для сравнения записей по содержимому.
         /// Используем GetOrderedEntities()
         /// </summary>
-        public virtual ISet<HrItem> HrItems
+        public virtual IEnumerable<HrItem> HrItems
         {
             get { return hrItems; }
-            protected internal set
-            {
-                hrItems = value;
-                OnPropertyChanged("HrItems");
-            }
         }
 
         public virtual IEnumerable<Measure> Measures
@@ -293,10 +288,10 @@ namespace Diagnosis.Models
         public virtual void SetItems(IList<ConfindenceHrItemObject> willChios)
         {
             Contract.Requires(willChios != null);
-            Contract.Ensures(HrItems.Count == willChios.Count);
+            Contract.Ensures(HrItems.Count() == willChios.Count);
             Contract.Ensures(HrItems.Select(x => x.Entity)
                 .ScrambledEquals(willChios.Select(x => x.HIO))); // same HIOs
-            Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count); // Order is unique
+            Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count()); // Order is unique
             Contract.Ensures(HrItems.Select(x => x.Word).Where(x => x != null).All(x => x.HealthRecords.Contains(this))); // word2hr relation
 
             var hrItems = HrItems.ToList();

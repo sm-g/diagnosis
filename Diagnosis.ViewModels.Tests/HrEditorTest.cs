@@ -278,7 +278,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             Assert.IsFalse(hr.Words.Contains(word3));
 
-            var countBefore = hr.HrItems.Count;
+            var countBefore = hr.HrItems.Count();
 
             e.Load(hr);
             a.SelectedTag = a.Tags.Last();
@@ -287,7 +287,7 @@ namespace Diagnosis.ViewModels.Tests
 
             e.Unload();
 
-            Assert.IsTrue(hr.HrItems.Count == countBefore + 1);
+            Assert.IsTrue(hr.HrItems.Count() == countBefore + 1);
 
             var addedItem = hr.HrItems.Where(i => (Word)i.Entity == word3).Single();
             Assert.IsTrue(addedItem.Ord == countBefore);
@@ -308,7 +308,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void OrderAfterDeleteItem()
         {
-            Assert.IsTrue(hr.HrItems.Count > 1);
+            Assert.IsTrue(hr.HrItems.Count() > 1);
             var second = hr.HrItems.ElementAt(1);
             Assert.IsTrue(second.Ord == 1);
 

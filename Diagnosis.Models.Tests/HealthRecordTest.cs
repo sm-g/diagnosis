@@ -31,7 +31,7 @@ namespace Diagnosis.Models.Tests
         [TestMethod]
         public void DataConditions()
         {
-            Assert.IsTrue(hr1.HrItems.Count == 0);
+            Assert.IsTrue(hr1.HrItems.Count()== 0);
         }
 
         [TestMethod]
