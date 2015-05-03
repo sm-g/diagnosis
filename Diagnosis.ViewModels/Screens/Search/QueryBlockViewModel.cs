@@ -140,7 +140,22 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        private bool _withConf;
+        public bool WithConfidence
+        {
+            get
+            {
+                return _withConf;
+            }
+            set
+            {
+                if (_withConf != value)
+                {
+                    _withConf = value;
+                    OnPropertyChanged(() => WithConfidence);
+                }
+            }
+        }
         /// <summary>
         /// Опции поиска.
         /// </summary>
@@ -370,6 +385,7 @@ namespace Diagnosis.ViewModels.Screens
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.MinAny = AnyMin;
+            options.WithConf = WithConfidence;
             options.GroupOperator = GroupOperator;
             options.SearchScope = SearchScope;
 
@@ -486,6 +502,7 @@ namespace Diagnosis.ViewModels.Screens
             GroupOperator = options.GroupOperator;
             SearchScope = options.SearchScope;
             AnyMin = options.MinAny;
+            WithConfidence = options.WithConf;
             SelectCategory(options.Categories.ToArray());
 
             AutocompleteAll.ReplaceTagsWith(options.CWordsAll.Union<object>(options.MeasuresAll));

@@ -36,6 +36,9 @@ namespace Diagnosis.ViewModels.Search
 
         [DataMember]
         public SearchScope SearchScope { get; set; }
+        [DataMember]
+        public bool WithConf { get; set; }
+
 
         [DataMember]
         public List<SearchOptionsDTO> Children { get; private set; }

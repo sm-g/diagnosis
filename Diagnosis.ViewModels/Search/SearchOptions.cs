@@ -41,6 +41,9 @@ namespace Diagnosis.ViewModels.Search
         public List<Confindencable<Word>> CWordsAll { get; set; }
         public List<Confindencable<Word>> CWordsAny { get; set; }
         public List<Confindencable<Word>> CWordsNot { get; set; }
+        public IEnumerable<Word> WordsAll { get { return CWordsAll.Select(x => x.HIO); } }
+        public IEnumerable<Word> WordsAny { get { return CWordsAny.Select(x => x.HIO); } }
+        public IEnumerable<Word> WordsNot { get { return CWordsNot.Select(x => x.HIO); } }
 
         public List<MeasureOp> MeasuresAll { get; set; }
 
@@ -58,6 +61,7 @@ namespace Diagnosis.ViewModels.Search
         public ObservableCollection<SearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
+        public bool WithConf { get; set; }
 
         /// <summary>
         /// Разрешает искать исключающий блок-корень.
@@ -141,6 +145,10 @@ namespace Diagnosis.ViewModels.Search
                 sb.AppendFormat("разделы: ");
                 sb.Append(string.Join(", ", Categories));
                 sb.Append("/");
+            }
+            if (WithConf)
+            {
+                sb.Append("с отрицанием");
             }
             return sb.ToString().Trim('/');
         }

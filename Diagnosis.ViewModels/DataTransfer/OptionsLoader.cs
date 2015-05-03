@@ -30,6 +30,7 @@ namespace Diagnosis.ViewModels.DataTransfer
             result.GroupOperator = dto.GroupOperator;
             result.SearchScope = dto.SearchScope;
             result.MinAny = dto.MinAny;
+            result.WithConf = dto.WithConf;
 
             var allWordsTitles = dto.CWordsAll.Union(dto.CWordsAny).Union(dto.CWordsNot).Select(x => x.Title);
             var words = WordQuery.ByTitles(session)(allWordsTitles);
