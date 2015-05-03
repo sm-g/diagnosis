@@ -51,6 +51,7 @@
                               ItemTemplate="{StaticResource EnumComboTemplate}" />
                     <!--<CheckBox IsChecked="{Binding All}"
                           Content="всё," />-->
+                    
                     <TextBlock Text=" в области "
                                VerticalAlignment="Center" />
                     <!--<diag:HyperlinkContextMenu Value="{Binding SearchScope}"
@@ -63,8 +64,7 @@
             <TextBlock Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                        VerticalAlignment="Center"
                        Text="Записи, где" />
-
-            <StackPanel Orientation="Horizontal"
+                <StackPanel Orientation="Horizontal"
                         Style="{StaticResource hidingTreeViewItemPanel}"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
@@ -105,6 +105,11 @@
                     </Rectangle>
                 </Button>
             </StackPanel>
+                <CheckBox IsChecked="{Binding WithConfidence}"
+                          Margin="5 0"
+                          DockPanel.Dock="Right"
+                          ToolTip="Строгий фильтр, учитывающий уверенность слов"
+                          Content="отрицания" />
         </DockPanel>
 
         <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}"
