@@ -51,7 +51,7 @@ namespace Diagnosis.Models
         [Pure]
         public static IEnumerable<Confindencable<Word>> GetCWords(this HealthRecord hr)
         {
-            return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable());
+            return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable(x.Confidence));
         }
     }
 
@@ -61,9 +61,9 @@ namespace Diagnosis.Models
         {
             return new ConfindenceHrItemObject(hio);
         }
-        public static Confindencable<T> AsConfidencable<T>(this T hio) where T : Word
+        public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
         {
-            return new Confindencable<T>(hio);
+            return new Confindencable<T>(hio, conf);
         }
 
         public static ConfindenceHrItemObject GetConfindenceHrItemObject(this HrItem hi)
