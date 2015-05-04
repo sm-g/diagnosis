@@ -144,7 +144,10 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Entities\Admin.cs" />
+    <Compile Include="Entities\CriteriaGroup.cs" />
+    <Compile Include="Entities\Criterion.cs" />
     <Compile Include="Entities\DateOffset.cs" />
+    <Compile Include="Entities\Estimator.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Entities\Comment.cs" />

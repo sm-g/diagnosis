@@ -29,6 +29,9 @@ namespace Diagnosis.Data
         public static string SpecialityVocabularies = "SpecialityVocabularies";
         public static string Passport = "Passport";
         public static string Setting = "Setting";
+        public static string Criterion = "Criterion";
+        public static string CriteriaGroup = "CriteriaGroup";
+        public static string Estimator = "Estimator";
 
         public static Dictionary<string, Type> tblToTypeMap = new Dictionary<string, Type> {
             { Doctor,            typeof(Doctor) },
@@ -56,6 +59,10 @@ namespace Diagnosis.Data
 
             { Passport,          typeof(Passport) },
             { Setting,           typeof(Setting) },
+
+            { Criterion,         typeof(Criterion) },
+            { CriteriaGroup,     typeof(CriteriaGroup) },
+            { Estimator,         typeof(Estimator) },
         };
 
         public static string GetTblByType(Type type)
@@ -93,6 +100,10 @@ namespace Diagnosis.Data
 
             public static string Passport = Names.Passport + "ID";
             public static string Setting = Names.Setting + "ID";
+
+            public static string Criterion = Names.Criterion + "ID";
+            public static string CriteriaGroup = Names.CriteriaGroup + "ID";
+            public static string Estimator = Names.Estimator + "ID";
         }
 
         public static class FK
@@ -113,7 +124,10 @@ namespace Diagnosis.Data
             public static string Word_HrCategory = string.Format("FK_{0}_{1}", Word, HrCategory);
             public static string Word_Word = string.Format("FK_{0}_{1}", Word, Word);
             public static string Setting_Doctor = string.Format("FK_{0}_{1}", Setting, Doctor);
+            public static string Criterion_CritGr = string.Format("FK_{0}_{1}", Criterion, CriteriaGroup);
+            public static string CrGr_Est =string.Format("FK_{0}_{1}", CriteriaGroup, Estimator);
         }
+
         public static class Col
         {
             public static string CourseStart = "StartDate";
@@ -142,7 +156,7 @@ namespace Diagnosis.Data
         }
     }
 
-    class Types
+    internal class Types
     {
         public class Numeric
         {

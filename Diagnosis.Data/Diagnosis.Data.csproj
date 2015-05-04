@@ -204,6 +204,9 @@
     <Compile Include="DTOs\WordDTO.cs" />
     <Compile Include="Mappings\AdminMap.cs" />
     <Compile Include="Mappings\UomFormatMap.cs" />
+    <Compile Include="Mappings\EstimatorMap.cs" />
+    <Compile Include="Mappings\CriteriaGroupMap.cs" />
+    <Compile Include="Mappings\CriterionMap.cs" />
     <Compile Include="Mappings\VocabularyWordsMap.cs" />
     <Compile Include="Mappings\SpecialityVocabulariesMap.cs" />
     <Compile Include="Mappings\VocabularyMap.cs" />
@@ -238,6 +241,7 @@
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Sync\VocLoader.cs" />
+    <Compile Include="Versions\Client\19 AddCriteria.cs" />
     <Compile Include="Versions\Client\18 AddUomFormat.cs" />
     <Compile Include="Versions\Client\17 AddHrToDateDescribedAt.cs" />
     <Compile Include="Versions\Client\09 AddHolderHrUpdatedAt.cs" />
