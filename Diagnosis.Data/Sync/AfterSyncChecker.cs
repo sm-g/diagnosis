@@ -68,8 +68,11 @@ namespace Diagnosis.Data.Sync
                         UpdateParents<Uom, HrItem>(replacing,
                             x => x.Measure != null ? x.Measure.Uom : null,
                             (x, value) => { if (x.Measure != null) x.Measure.Uom = value; });
-
+                        UpdateParents<Uom, UomFormat>(replacing,
+                            x => x.Uom,
+                            (x, value) => x.Uom = value);
                         scopesToDeprovision.AddRange(typeof(HrItem).GetScopes());
+                        scopesToDeprovision.AddRange(typeof(UomFormat).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -84,6 +87,12 @@ namespace Diagnosis.Data.Sync
 
                         scopesToDeprovision.AddRange(typeof(Uom).GetScopes());
                     }
+                    replaced = replacing.Keys;
+                }
+                else if (type == typeof(UomFormat))
+                {
+                    var replacing = GetReplaceEntities<UomFormat>(entities);
+                    // no parents
                     replaced = replacing.Keys;
                 }
                 else if (type == typeof(Speciality))

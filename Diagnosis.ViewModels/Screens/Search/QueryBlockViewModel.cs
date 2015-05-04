@@ -29,6 +29,8 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
 
+        private QueryGroupOperator _operator;
+
         public QueryBlockViewModel(ISession session, Action executeSearch, SearchOptions options = null)
         {
             this.session = session;
@@ -47,11 +49,14 @@ namespace Diagnosis.ViewModels.Screens
                 switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        Options.Children.Add((e.NewItems[0] as QueryBlockViewModel).Options);
+                        var qb = (e.NewItems[0] as QueryBlockViewModel);
+                        Options.Children.Add(qb.Options);
                         break;
 
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                        Options.Children.Remove((e.OldItems[0] as QueryBlockViewModel).Options);
+                        qb = (e.OldItems[0] as QueryBlockViewModel);
+                        Options.Children.Remove(qb.Options);
+                        RefreshDescription();
                         break;
 
                     default:
@@ -121,6 +126,16 @@ namespace Diagnosis.ViewModels.Screens
                     && AutocompleteAll.IsEmpty
                     && AutocompleteAny.IsEmpty
                     && AutocompleteNot.IsEmpty);
+            }
+        }
+
+        public bool AnyPopupOpen
+        {
+            get
+            {
+                return AutocompleteAll.IsPopupOpen ||
+                    AutocompleteAny.IsPopupOpen ||
+                    AutocompleteNot.IsPopupOpen;
             }
         }
 
@@ -248,6 +263,12 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        /// <summary>
+        /// Надо обновить опции для поиска.
+        /// Если опсиание видно, опции всегда свежие.
+        /// </summary>
+        public bool NeedRefresh { get { return !DescriptionVisible; } }
+
         #region Old
 
         public bool AllWords
@@ -301,8 +322,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        private QueryGroupOperator _operator;
         /// <summary>
         /// Применить блоки к области поиска и выбрать записи, которые удовлетворяют всем/любому/не любому.
         /// </summary>
@@ -372,6 +391,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+
         public SearchOptions MakeOptions()
         {
             var options = new SearchOptions(IsRoot);
@@ -399,6 +419,7 @@ namespace Diagnosis.ViewModels.Screens
                 // изменились
                 // обновляем ссылку в родительских опциях через родительский блок
                 // у родителей не видно опсиание, поэтому не надо менять опции, при поиске все равно обновляем
+                Contract.Assume(!Parent.DescriptionVisible);
                 Parent.Options.Children.Remove(_options);
                 Parent.Options.Children.Add(options);
             }
@@ -412,9 +433,12 @@ namespace Diagnosis.ViewModels.Screens
         /// <returns></returns>
         public SearchOptions GetSearchOptions()
         {
-            if (DescriptionVisible) // обновлять не надо
-                return Options;
-            return MakeOptions();
+            if (NeedRefresh)
+            {
+                return MakeOptions();
+            }
+            Contract.Assume(Options.DeepClone().Equals(MakeOptions()));
+            return Options;
         }
 
 
@@ -453,6 +477,9 @@ namespace Diagnosis.ViewModels.Screens
                 AutocompleteAll.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteAny.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteNot.InputEnded -= Autocomplete_InputEnded;
+                AutocompleteAll.CHiosChanged -= Autocomplete_CHiosChanged;
+                AutocompleteAny.CHiosChanged -= Autocomplete_CHiosChanged;
+                AutocompleteNot.CHiosChanged -= Autocomplete_CHiosChanged;
                 AutocompleteAll.Tags.CollectionChanged -= Tags_CollectionChanged;
                 AutocompleteAny.Tags.CollectionChanged -= Tags_CollectionChanged;
                 AutocompleteNot.Tags.CollectionChanged -= Tags_CollectionChanged;
@@ -489,6 +516,9 @@ namespace Diagnosis.ViewModels.Screens
             AutocompleteAll.InputEnded += Autocomplete_InputEnded;
             AutocompleteAny.InputEnded += Autocomplete_InputEnded;
             AutocompleteNot.InputEnded += Autocomplete_InputEnded;
+            AutocompleteAll.CHiosChanged += Autocomplete_CHiosChanged;
+            AutocompleteAny.CHiosChanged += Autocomplete_CHiosChanged;
+            AutocompleteNot.CHiosChanged += Autocomplete_CHiosChanged;
             AutocompleteAll.PropertyChanged += Autocomplete_PropertyChanged;
             AutocompleteAny.PropertyChanged += Autocomplete_PropertyChanged;
             AutocompleteNot.PropertyChanged += Autocomplete_PropertyChanged;
@@ -496,6 +526,8 @@ namespace Diagnosis.ViewModels.Screens
             AutocompleteAny.Tags.CollectionChanged += Tags_CollectionChanged;
             AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
         }
+
+
 
         private void FillFromOptions(SearchOptions options)
         {
@@ -512,7 +544,11 @@ namespace Diagnosis.ViewModels.Screens
             foreach (var opt in options.Children)
                 AddChildQb(opt);
         }
-
+        /// <summary>
+        /// Обновляем описание блока при каждом изменении запроса, если оно видно.
+        /// Изменения: AnyMin, QueryScope, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
+        /// Хотя при изменениях у детей описания не видно.
+        /// </summary>
         private void RefreshDescription()
         {
             if (DescriptionVisible)
@@ -529,12 +565,20 @@ namespace Diagnosis.ViewModels.Screens
             this.IsExpanded = true;
             return qb;
         }
+        void Autocomplete_CHiosChanged(object sender, EventArgs e)
+        {
+            RefreshDescription();
+        }
 
         private void qb_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "AllEmpty")
             {
                 OnPropertyChanged(() => AllEmpty);
+            }
+            else if (e.PropertyName == "Options")
+            {
+                RefreshDescription();
             }
         }
 
@@ -550,13 +594,18 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Autocomplete_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsEmpty")
+            switch (e.PropertyName)
             {
-                OnPropertyChanged(() => AllEmpty);
-                RefreshDescription();
+                case "IsEmpty":
+
+                    OnPropertyChanged(() => AllEmpty);
+                    RefreshDescription();
+                    break;
+                case "IsPopupOpen":
+                    OnPropertyChanged(() => AnyPopupOpen);
+                    break;
             }
         }
-
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()

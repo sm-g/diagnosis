@@ -114,24 +114,53 @@ namespace Diagnosis.Common
         /// <summary>
         /// Возвращает возраст к указанному моменту.
         /// </summary>
-        public static int? GetAge(int? year, int? month, int? day, DateTime now)
+        public static int? GetAge(int? birthYear, int? month, int? day, DateTime now)
         {
-            if (!year.HasValue)
-            {
+            if (!birthYear.HasValue)
                 return null;
-            }
 
-            int age = now.Year - year.Value;
-            try
-            {
-                if (new DateTime(year.Value, month.Value, day.Value) > now.AddYears(-age))
-                    age--;
-            }
-            catch
-            {
-                // корректируем возраст только если указана полная дата рождения
-            }
+            int age = now.Year - birthYear.Value;
+            if (new DateTime(birthYear.Value, month ?? 1, day ?? 1) > now.AddYears(-age))
+                age--;
+
             return age;
+        }
+
+        /// <summary>
+        /// Возвращает год рождения для указанного возраста к моменту.
+        /// </summary>
+        public static int GetBirthYearByAge(int age, int? birthMonth, int? day, DateTime now)
+        {
+            int year = now.Year - age;
+            if (birthMonth.HasValue && day.HasValue)
+            {
+                DateHelper.CheckAndCorrectDate((int?)year, ref birthMonth, ref day);
+                if (new DateTime(year, birthMonth.Value, day.Value) > now.Date.AddYears(-age))
+                    year--;
+            }
+            return year;
+        }
+
+        /// <summary>
+        /// Возвращает момент когда наступит возраст по дате рождения.
+        /// </summary>
+        public static DateTime GetDateForAge(int age, int birthYear, int? month, int? day)
+        {
+            int year = birthYear + age;
+
+            return new DateTime(year, month ?? 1, day ?? 1);
+        }
+
+        /// <summary>
+        /// Возвращает год, который должен быть у момента, чтобы в этот момент был указанный возраст.
+        /// </summary>
+        public static int GetYearForAge(int age, int birthYear, int? month, int? day, DateTime now)
+        {
+            var year = birthYear + age;
+            var newAge = DateHelper.GetAge(birthYear, month, day, new DateTime(year, now.Month, now.Day));
+            if (newAge < age)
+                year++;
+            return year;
         }
 
         /// <summary>

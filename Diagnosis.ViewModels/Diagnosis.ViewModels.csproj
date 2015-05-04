@@ -240,6 +240,7 @@
     <Compile Include="Framework\Services\FileDialogService.cs" />
     <Compile Include="Framework\IDialogViewModel.cs" />
     <Compile Include="Framework\Services\FileType.cs" />
+    <Compile Include="Screens\Card\DateEditorViewModel.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - ClipboardTarget.cs" />

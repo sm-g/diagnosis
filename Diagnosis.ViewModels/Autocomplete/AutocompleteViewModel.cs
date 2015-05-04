@@ -108,6 +108,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         /// <summary>
         /// Возникает, когда работа с автокомплитом окончена. (Enter второй раз.)
+        /// True если Control+Enter
         /// </summary>
         public event EventHandler<BoolEventArgs> InputEnded;
 
@@ -121,7 +122,15 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public event EventHandler EntitiesChanged;
 
+        /// <summary>
+        /// Возникает, когда меняется уверенность у завершенных тегов.
+        /// </summary>
         public event EventHandler ConfidencesChanged;
+
+        /// <summary>
+        /// Возникает, когда меняется набор сущностей или уверенность.
+        /// </summary>
+        public event EventHandler CHiosChanged;
 
         public enum OptionsMode
         {
@@ -683,42 +692,32 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Requires(Tags.All(t => t.State != State.Typing));
 
-            var result = new List<ConfindenceHrItemObject>();
-            foreach (var tag in Tags)
-            {
-                if (tag.BlankType != BlankType.None)
-                    result.Add(tag.ToChio());
-                else if (tag.State != State.Init)
-                    logger.WarnFormat("{0} without entity blank, skip", tag);
-            }
+            Tags.Where(x => x.BlankType == BlankType.None && x.State != State.Init)
+                 .ForAll((x) => logger.WarnFormat("{0} without entity blank, skip", x));
 
-            return result;
+            return Tags
+                .Where(x => x.BlankType != BlankType.None)
+                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
         /// <summary>
         /// Возвращает сущности из завершенных тегов по порядку.
         /// </summary>
         public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
         {
-            var completed = Tags.Where(t => t.State == State.Completed);
-
-            var hios = completed
-                 .Select(t => t.ToChio())
-                 .ToList();
-            return hios;
+            return Tags
+                .Where(t => t.State == State.Completed)
+                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
 
         /// <summary>
         /// Возвращает сущности из выделенных завершенных тегов по порядку.
         /// </summary>
         /// <returns></returns>
-        private List<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
+        private IEnumerable<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
         {
-            var completed = SelectedTags.Where(t => t.State == State.Completed);
-
-            var hios = completed
-                 .Select(t => t.ToChio())
-                 .ToList();
-            return hios;
+            return SelectedTags
+                .Where(t => t.State == State.Completed)
+                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
 
         private Signalizations Validator(TagViewModel tag)
@@ -764,7 +763,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (measure != null && e.type != BlankType.Comment)
                 {
                     // отдельный комментарий из числа измерения
-                    var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                    var comment = new Comment(measure.FormattedValueUom);
                     AddTag(comment, Tags.IndexOf(tag) + 1);
                 }
 
@@ -926,7 +925,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         public void CompleteOnLostFocus(TagViewModel tag)
         {
             Contract.Requires(tag != null);
-            Contract.Requires(Tags.Contains(tag));
+
+            // при завершении пустого тега он удаляется, теряется фокус и автокомплит пытается завершить тег еще раз
+            if (!Tags.Contains(tag))
+                return;
 
             if (tag.State == State.Typing)
             {
@@ -1014,11 +1016,21 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 h(this, EventArgs.Empty);
             }
+            OnChiosChanged();
         }
 
         protected virtual void OnConfidencesChanged()
         {
             var h = ConfidencesChanged;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+            OnChiosChanged();
+        }
+        protected virtual void OnChiosChanged()
+        {
+            var h = CHiosChanged;
             if (h != null)
             {
                 h(this, EventArgs.Empty);

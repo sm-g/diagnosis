@@ -81,12 +81,26 @@ namespace Diagnosis.Client.App.DesignData
             {
                 return new HealthRecordViewModel(Mocks.hr)
                 {
-                    IsDateEditorExpanded = true
                 };
             }
         }
     }
-
+    public class SampleHealthRecordViewModel : HealthRecordViewModel
+    {
+        public SampleHealthRecordViewModel()
+            : base(Mocks.hr)
+        {
+           
+        }
+    }
+    public class SampleDateEditorViewModel : DateEditorViewModel
+    {
+        public SampleDateEditorViewModel()
+            : base(Mocks.hr)
+        {
+            IsDateEditorExpanded = true;
+        }
+    }
     public class SampleCardViewModel : CardViewModel
     {
         public SampleCardViewModel()

@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool _controlsVisible;
         private SearchResultViewModel _res;
         private bool _mode;
-
+        History<SearchOptions> hist;
         private EventMessageHandlersManager msgManager;
 
         public const string ToolContentId = "Search";
@@ -28,18 +28,19 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            ControlsVisible = true;
-            History = new SearchHistoryViewModel();
-            History.PropertyChanged += (s, e) =>
+            hist = new History<SearchOptions>();
+            var loader = new OptionsLoader(Session);
+
+            hist.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == "CurrentOptions")
+                if (e.PropertyName == "CurrentState")
                 {
-                    SetOptions(History.CurrentOptions);
+                    SetOptions(hist.CurrentState);
                 }
             };
-            var loader = new OptionsLoader(Session);
-            Loader = new OptionsLoaderViewModel(this, loader);
 
+            Loader = new OptionsLoaderViewModel(this, loader);
+            History = new SearchHistoryViewModel(hist);
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
             AddRootQb();
             QueryBlocks.CollectionChanged += (s, e) =>
@@ -48,7 +49,6 @@ namespace Diagnosis.ViewModels.Screens
             };
 
 #if DEBUG
-            //QueryBlocks[0].AddChildQbCommand.Execute(null);
             //QueryBlocks[0].AddChildQbCommand.Execute(null);
             //QueryBlocks[0].AddChildQbCommand.Execute(null);
             //QueryBlocks[0].SearchScope = SearchScope.Holder;
@@ -89,6 +89,8 @@ namespace Diagnosis.ViewModels.Screens
 #if !DEBUG
             UseOldMode = true;
 #endif
+            ControlsVisible = true;
+
         }
 
         public bool AllEmpty
@@ -220,7 +222,7 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             Result = new SearchResultViewModel(shrs, options);
-            History.Memorize(options);
+            hist.Memorize(options);
 #if !DEBUG            
             ControlsVisible = false;
 #endif

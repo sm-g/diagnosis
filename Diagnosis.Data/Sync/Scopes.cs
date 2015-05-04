@@ -54,6 +54,7 @@ namespace Diagnosis.Data.Sync
                 Names.HrCategory,
                 Names.UomType,
                 Names.Uom,
+                Names.UomFormat,
                 Names.Speciality,
                 Names.SpecialityIcdBlocks,
             };

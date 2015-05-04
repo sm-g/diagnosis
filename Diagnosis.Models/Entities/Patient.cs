@@ -175,14 +175,7 @@ namespace Diagnosis.Models
                 if (value.HasValue)
                 {
                     // установка возраста меняет только год рождения
-                    int year = DateTime.Today.Year - value.Value;
-                    if (BirthMonth.HasValue && BirthDay.HasValue)
-                    {
-                        DateHelper.CheckAndCorrectDate((int?)year, ref _month, ref _day);
-                        if (new DateTime(year, BirthMonth.Value, BirthDay.Value) > DateTime.Today.AddYears(-value.Value))
-                            year--;
-                    }
-                    BirthYear = year;
+                    BirthYear = DateHelper.GetBirthYearByAge(value.Value, BirthMonth, BirthDay, DateTime.Today);
                 }
                 else
                 {

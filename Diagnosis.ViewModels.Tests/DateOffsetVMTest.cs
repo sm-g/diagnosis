@@ -13,11 +13,14 @@ namespace Diagnosis.ViewModels.Tests
     {
         DateOffsetViewModel vm;
         HealthRecord h;
+        HealthRecord emptyH;
+
 
         [TestInitialize]
         public void Init()
         {
             h = session.Load<HealthRecord>(IntToGuid<HealthRecord>(1));
+            emptyH = session.Load<HealthRecord>(IntToGuid<HealthRecord>(71));
             vm = DateOffsetViewModel.FromHr(h);
         }
         [TestCleanup]
@@ -34,17 +37,17 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(11, h.FromDate.Month);
             Assert.AreEqual(null, h.FromDate.Day);
             Assert.AreEqual(new DateTime(2014, 11, 19), h.FromDate.Now);
-
+            Assert.IsTrue(emptyH.GetPatient().BirthYear != null);
 
         }
         [TestMethod]
         public void CreateFromHr()
         {
-            Assert.AreEqual(h.FromDate.Day, vm.Day);
+            Assert.AreEqual(h.FromDate.Day, vm.From.Day);
             Assert.AreEqual(h.FromDate.Unit, vm.Unit);
             Assert.AreEqual(h.FromDate.Offset, vm.Offset);
             Assert.IsTrue(!vm.IsClosedInterval);
-
+            Assert.AreEqual(DateOffsetViewModel.ShowAs.Date, vm.FirstSet);
         }
         [TestMethod]
         public void SetRoundedUnitBig()
@@ -68,16 +71,17 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SetToYear()
         {
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
             Assert.AreEqual(true, vm.IsClosedInterval);
             Assert.AreEqual(2014, h.ToDate.Year);
             Assert.AreEqual(null, h.ToDate.Month);
             Assert.AreEqual(null, h.ToDate.Day);
+
         }
         [TestMethod]
         public void SetToMonth()
         {
-            vm.ToMonth = 5;
+            vm.to.Month = 5;
             Assert.AreEqual(h.DescribedAt.Year, h.ToDate.Year); // год момента
             Assert.AreEqual(5, h.ToDate.Month);
             Assert.AreEqual(null, h.ToDate.Day);
@@ -97,22 +101,22 @@ namespace Diagnosis.ViewModels.Tests
         public void ClosedIntervalOffsetIsDifference()
         {
             // юнит тоже меняем
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
             Assert.AreEqual(1, vm.Offset);
             Assert.AreEqual(DateUnit.Year, vm.Unit);
         }
         [TestMethod]
         public void ClosedIntervalOffsetIsDifference2()
         {
-            vm.ToYear = 2014;
-            vm.ToMonth = 3;
+            vm.to.Year = 2014;
+            vm.to.Month = 3;
             Assert.AreEqual(4, vm.Offset);
             Assert.AreEqual(DateUnit.Month, vm.Unit);
         }
         [TestMethod]
         public void ClosedIntervalOffsetFromIsFixedSide()
         {
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
             Assert.AreEqual(h.ToDate.GetSortingDate(), vm.OffsetFrom);
         }
 
@@ -131,25 +135,25 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void ClosedIntervalOffsetChangeNonFixedSide()
         {
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
             vm.Offset = 5;
 
-            Assert.AreEqual(2009, vm.Year);
+            Assert.AreEqual(2009, vm.From.Year);
         }
         [TestMethod]
         public void ClosedIntervalUnitChangeNonFixedSide()
         {
-            vm.ToYear = 2015;
+            vm.to.Year = 2015;
             vm.Unit = DateUnit.Day;
             // (2015-2013) days from 2015.1.1
 
             Assert.AreEqual(2, vm.Offset);
-            Assert.AreEqual(2014, vm.Year);
-            Assert.AreEqual(12, vm.Month);
-            Assert.AreEqual(30, vm.Day);
-            Assert.AreEqual(2015, vm.ToYear);
-            Assert.AreEqual(1, vm.ToMonth);
-            Assert.AreEqual(1, vm.ToDay);
+            Assert.AreEqual(2014, vm.From.Year);
+            Assert.AreEqual(12, vm.From.Month);
+            Assert.AreEqual(30, vm.From.Day);
+            Assert.AreEqual(2015, vm.to.Year);
+            Assert.AreEqual(1, vm.to.Month);
+            Assert.AreEqual(1, vm.to.Day);
         }
         [TestMethod]
         public void RemoveToDateRecoverFromUnitOffset()
@@ -157,8 +161,8 @@ namespace Diagnosis.ViewModels.Tests
             var oldUnit = vm.Unit;
             var oldOffset = vm.Offset;
 
-            vm.ToYear = 2014;
-            vm.ToYear = null;
+            vm.to.Year = 2014;
+            vm.to.Year = null;
 
             Assert.AreEqual(oldUnit, vm.Unit);
             Assert.AreEqual(oldOffset, vm.Offset);
@@ -167,7 +171,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void NowIsShared()
         {
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
 
             Assert.AreEqual(h.DescribedAt, h.FromDate.Now);
             Assert.AreEqual(h.DescribedAt, h.ToDate.Now);
@@ -182,11 +186,11 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void UnitIsShared()
         {
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
 
             vm.Unit = DateUnit.Month;
             Assert.AreEqual(h.FromDate.Unit, h.ToDate.Unit);
-            vm.Day = 1;
+            vm.From.Day = 1;
             Assert.AreEqual(DateUnit.Day, h.FromDate.Unit);
             Assert.AreEqual(DateUnit.Month, h.ToDate.Unit);
 
@@ -195,7 +199,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void IntervalUnitChangeNonFixedSide()
         {
-            vm.ToYear = 2014;
+            vm.to.Year = 2014;
             var offset = vm.Offset;
             vm.Unit = DateUnit.Day;
 
@@ -206,8 +210,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void IntervalUnitChangeNonFixedSide2()
         {
-            vm.ToYear = 2014;
-            vm.ToMonth = 3;
+            vm.to.Year = 2014;
+            vm.to.Month = 3;
 
             var offset = vm.Offset; // 4 мес
             vm.Unit = DateUnit.Year;
@@ -224,10 +228,52 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void ClosedIntervalClearNonFixed_FixedNotEmpty()
         {
-            vm.ToYear = 2014;
-            vm.Year = null;
+            vm.to.Year = 2014;
+            vm.From.Year = null;
 
             Assert.AreEqual(false, vm.ToIsEmpty);
+        }
+
+        [TestMethod]
+        public void EmptySetMonth()
+        {
+            var vm = DateOffsetViewModel.FromHr(emptyH);
+            vm.From.Month = 5;
+
+            Assert.AreEqual(DateOffsetViewModel.ShowAs.Date, vm.FirstSet);
+        }
+
+        [TestMethod]
+        public void EmptySetToMonth()
+        {
+            var vm = DateOffsetViewModel.FromHr(emptyH);
+            vm.to.Month = 5;
+
+            Assert.AreEqual(DateOffsetViewModel.ShowAs.Date, vm.FirstSet);
+        }
+        [TestMethod]
+        public void EmptySetUnit()
+        {
+            var vm = DateOffsetViewModel.FromHr(emptyH);
+            vm.Unit = DateUnit.Month;
+
+            Assert.AreEqual(null, vm.FirstSet);
+        }
+        [TestMethod]
+        public void EmptySetOffset()
+        {
+            var vm = DateOffsetViewModel.FromHr(emptyH);
+            vm.Offset = 5;
+
+            Assert.AreEqual(DateOffsetViewModel.ShowAs.Offset, vm.FirstSet);
+        }
+        [TestMethod]
+        public void EmptySetAge()
+        {
+            var vm = DateOffsetViewModel.FromHr(emptyH);
+            vm.AtAge = 5;
+
+            Assert.AreEqual(DateOffsetViewModel.ShowAs.AtAge, vm.FirstSet);
         }
     }
 }
