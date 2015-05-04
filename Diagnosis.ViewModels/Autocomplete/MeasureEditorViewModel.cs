@@ -166,7 +166,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool ValidateValue(string str)
         {
             double d;
-            return double.TryParse(str, out d) || TryParseByFormat(str, out d);
+            return TryParseByFormat(str, out d);
         }
 
         protected override void OnOk()
@@ -207,8 +207,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 d = Uom.ParseString(s);
                 return !double.IsNaN(d);
             }
-            d = 0;
-            return false;
+            return double.TryParse(s, out d);
         }
 
         private void SetupMeasure(Measure measure, Word w)
