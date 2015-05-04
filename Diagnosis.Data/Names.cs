@@ -21,6 +21,7 @@ namespace Diagnosis.Data
         public static string Speciality = "Speciality";
         public static string Uom = "Uom";
         public static string UomType = "UomType";
+        public static string UomFormat = "UomFormat";
         public static string IcdChapter = "IcdChapter";
         public static string IcdBlock = "IcdBlock";
         public static string IcdDisease = "IcdDisease";
@@ -41,11 +42,12 @@ namespace Diagnosis.Data
             { Word,              typeof(Word) },
             { WordTemplate,      typeof(WordTemplate) },
             { Vocabulary,        typeof(Vocabulary) },
-         // { VocabularyWordTbl,    typeof() },
+            { VocabularyWords,   typeof(VocabularyWords) },
             { Speciality,        typeof(Speciality) },
             { SpecialityVocabularies,        typeof(SpecialityVocabularies) },
             { Uom,               typeof(Uom) },
             { UomType,           typeof(UomType) },
+            { UomFormat,         typeof(UomFormat) },
 
             { IcdChapter,        typeof(IcdChapter) },
             { IcdBlock,          typeof(IcdBlock) },
@@ -81,6 +83,7 @@ namespace Diagnosis.Data
             public static string Speciality = Names.Speciality + "ID";
             public static string Uom = Names.Uom + "ID";
             public static string UomType = Names.UomType + "ID";
+            public static string UomFormat = Names.UomFormat + "ID";
 
             public static string IcdChapter = "ChapterID"; //
             public static string IcdBlock = Names.IcdBlock + "ID";
@@ -102,6 +105,7 @@ namespace Diagnosis.Data
             public static string VocWord_Word = string.Format("FK_{0}_{1}", VocabularyWords, Word);
             public static string VocWord_Voc = string.Format("FK_{0}_{1}", VocabularyWords, Vocabulary);
             public static string Uom_UomType = string.Format("FK_{0}_{1}", Uom, UomType);
+            public static string UomFormat_Uom = string.Format("FK_{0}_{1}", UomFormat, Uom);
             public static string HrItem_Uom = string.Format("FK_{0}_{1}", HrItem, Uom);
             public static string Hr_HrCategory = string.Format("FK_Hr_HrCategory"); //
             public static string Doctor_Speciality = string.Format("FK_{0}_{1}", Doctor, Speciality);
@@ -141,6 +145,7 @@ namespace Diagnosis.Data
         public class Numeric
         {
             public const short Scale = 6;
+            public const short ShortScale = 3;
             public const short Precision = 18;
 
         }

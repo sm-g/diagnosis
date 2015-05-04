@@ -16,7 +16,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         private List<Uom> _uoms;
         private string _val;
         private MeasureOperator _op;
-        private bool isValueValid;
         private bool _withAndValue;
         private string _andval;
 
@@ -24,8 +23,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Edit
         /// </summary>
         /// <param name="measure"></param>
-        public MeasureEditorViewModel(Measure measure, bool c)
-            : this(measure, null, c)
+        public MeasureEditorViewModel(Measure measure, bool withCompare)
+            : this(measure, null, withCompare)
         {
         }
 
@@ -33,16 +32,16 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Convert
         /// </summary>
         /// <param name="word"></param>
-        public MeasureEditorViewModel(Word word, bool c)
-            : this(null, word, c)
+        public MeasureEditorViewModel(Word word, bool withCompare)
+            : this(null, word, withCompare)
         {
         }
 
         /// <summary>
         /// Create
         /// </summary>
-        public MeasureEditorViewModel(bool c)
-            : this(null, null, c)
+        public MeasureEditorViewModel(bool withCompare)
+            : this(null, null, withCompare)
         {
         }
 
@@ -125,7 +124,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         public Uom Uom
         {
             get { return Measure.Uom; }
-            set { Measure.Uom = value; }
+            set
+            {
+                Measure.Uom = value;
+                // валидация
+                OnPropertyChanged(() => Value);
+                OnPropertyChanged(() => AndValue);
+            }
         }
 
         public Measure Measure { get; private set; }
@@ -138,7 +143,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get
             {
-                return Word != null && Measure != null && isValueValid;
+                return Word != null && Measure != null && ValidateValue(Value) && (!WithAndValue || ValidateValue(AndValue));
             }
         }
 
@@ -146,11 +151,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get
             {
-                double d;
+                bool isValueValid = true;
                 if (columnName == "Value")
-                    isValueValid = double.TryParse(Value, out d);
+                    isValueValid = ValidateValue(Value);
                 if (columnName == "AndValue" && WithAndValue)
-                    isValueValid = double.TryParse(AndValue, out d);
+                    isValueValid = ValidateValue(AndValue);
 
                 if (!isValueValid)
                     return "Из этого не получается число.";
@@ -158,18 +163,28 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
+        private bool ValidateValue(string str)
+        {
+            double d;
+            return double.TryParse(str, out d) || TryParseByFormat(str, out d);
+        }
+
         protected override void OnOk()
         {
+            double d;
+            // пробуем заменить строку на число по формату, например 'I'->1
+            if (!TryParseByFormat(Value, out d))
+                throw new InvalidOperationException("Cannot save, Value is invalid.");
+            Measure.Value = d;
+
             if (WithCompare)
             {
                 var op = Measure as MeasureOp;
                 op.Operator = Operator;
-                op.RightValue = double.Parse(AndValue);
-                op.Value = double.Parse(Value); // corrects RightBetweenValue
-            }
-            else
-            {
-                Measure.Value = double.Parse(Value);
+
+                if (!TryParseByFormat(AndValue, out d))
+                    throw new InvalidOperationException("Cannot save, AndValue is invalid.");
+                op.RightValue = d;
             }
         }
 
@@ -183,6 +198,17 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
             }
             base.Dispose(disposing);
+        }
+
+        private bool TryParseByFormat(string s, out double d)
+        {
+            if (Uom != null)
+            {
+                d = Uom.ParseString(s);
+                return !double.IsNaN(d);
+            }
+            d = 0;
+            return false;
         }
 
         private void SetupMeasure(Measure measure, Word w)
@@ -203,8 +229,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                     : new Measure(measure.Value, measure.Uom);
                 Measure.Word = w ?? measure.Word; // новое слово или бывшее с измерением
             }
-            Value = Measure.Value.ToString();
-            AndValue = asOp == null ? Value : asOp.RightValue.ToString();
+            Value = Measure.FormattedValue;
+            AndValue = asOp == null ? Value : asOp.FormattedRightValue;
         }
 
         private void CreateAutocomplete()

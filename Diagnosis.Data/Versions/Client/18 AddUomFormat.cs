@@ -1,0 +1,43 @@
+﻿using Diagnosis.Common;
+using FluentMigrator;
+using System;
+using System.Linq;
+
+namespace Diagnosis.Data.Versions.Client
+{
+    [Migration(201505041200)]
+    public class AddUomFormat : SyncronizedMigration
+    {
+        // описание формата для преобразования значения измерения
+
+        public AddUomFormat()
+            : base(Constants.SqlCeProvider)
+        {
+        }
+
+        public override string[] UpTables
+        {
+            get
+            {
+                return new[] { Names.UomFormat };
+            }
+        }
+
+        public override void Up()
+        {
+            Execute.Sql((@"CREATE TABLE {0} (
+                Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,
+                {1} uniqueidentifier NOT NULL,
+                Str nvarchar(50) NOT NULL,
+                MeasureValue numeric(18,3) NOT NULL,
+                CONSTRAINT {2} FOREIGN KEY ({1}) REFERENCES {3} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION )")
+                .FormatStr(Names.UomFormat, Names.Id.Uom, Names.FK.UomFormat_Uom, Names.Uom));
+
+        }
+
+        public override void Down()
+        {
+
+        }
+    }
+}

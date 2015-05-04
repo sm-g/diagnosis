@@ -34,6 +34,20 @@ namespace Diagnosis.Data.Mappings
                 m.Column(Names.Id.UomType);
                 m.NotNullable(true);
             });
+            Set(x => x.Formats, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Uom);
+                });
+                s.Lazy(CollectionLazy.NoLazy);
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
         }
     }
 }

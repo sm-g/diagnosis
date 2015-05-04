@@ -1,9 +1,11 @@
 ﻿using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Diagnosis.Models
 {
@@ -12,6 +14,10 @@ namespace Diagnosis.Models
     public class Uom : ValidatableEntity<Guid>, IDomainObject
     {
         public static Uom Null = new Uom("—", 1, new UomType("", int.MinValue));  // для измерения без единицы
+
+        // [NonSerialized]
+        private ISet<UomFormat> formats = new HashSet<UomFormat>();
+
         private string _description;
         private string _abbr;
         private double _factor;
@@ -77,7 +83,33 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual IEnumerable<UomFormat> Formats { get { return formats; } }
+
         public virtual bool IsBase { get { return Factor == 0; } }
+
+        public virtual string FormatValue(double value)
+        {
+            var f = Formats.Where(x => x.MeasureValue.Equals(value)).FirstOrDefault();
+            if (f != null)
+                return f.String;
+            return value.ToString();
+        }
+
+        /// <summary>
+        /// Nan, если не получилось.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public virtual double ParseString(string str)
+        {
+            var f = Formats.Where(x => x.String.Equals(str, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (f != null)
+                return f.MeasureValue;
+            double d;
+            if (double.TryParse(str, out d))
+                return d;
+            return double.NaN;
+        }
 
         public override string ToString()
         {
@@ -88,7 +120,10 @@ namespace Diagnosis.Models
         {
             return new UomValidator().Validate(this);
         }
-
-
+        //[OnDeserialized]
+        //private void OnDeserializedMethod(StreamingContext context)
+        //{
+        //    formats = new HashSet<UomFormat>();
+        //}
     }
 }

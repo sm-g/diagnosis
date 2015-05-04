@@ -83,6 +83,7 @@
     <Compile Include="DateOffsetFormatterTest.cs" />
     <Compile Include="DateOffsetVMTest.cs" />
     <Compile Include="FilterTest.cs" />
+    <Compile Include="MeasureEditorTest.cs" />
     <Compile Include="HrEditorTest.cs" />
     <Compile Include="HrListTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

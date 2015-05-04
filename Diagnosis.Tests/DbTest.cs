@@ -26,6 +26,7 @@ namespace Diagnosis.Tests
         protected Dictionary<int, HrCategory> cat = new Dictionary<int, HrCategory>();
         protected Dictionary<int, Uom> uom = new Dictionary<int, Uom>();
         protected Dictionary<int, UomType> uomType = new Dictionary<int, UomType>();
+        protected Dictionary<int, UomFormat> uomFormat = new Dictionary<int, UomFormat>();
         protected Dictionary<int, Vocabulary> voc = new Dictionary<int, Vocabulary>();
         protected Dictionary<int, WordTemplate> wTemp = new Dictionary<int, WordTemplate>();
         protected Dictionary<int, Speciality> spec = new Dictionary<int, Speciality>();
@@ -42,6 +43,7 @@ namespace Diagnosis.Tests
             { typeof(HrCategory),   new[] { 1, 2, 3, 4, 5, 6 } },
             { typeof(Uom),          new[] { 1, 2, 3, 4, 5, 6, 7 } },
             { typeof(UomType),      new[] { 1, 2 } },
+            { typeof(UomFormat),    new[] { 1, 2 } },
             { typeof(Vocabulary),   new[] { 1, 2 } },
             { typeof(WordTemplate), new[] { 1, 2, 3, 4, 5, 6, 7 } },
             { typeof(Speciality),   new[] { 1 } },
@@ -65,6 +67,7 @@ namespace Diagnosis.Tests
             { typeof(WordTemplate),          "00000{0:000}-1300-0000-0000-000000000{0:000}" },
             { typeof(VocabularyWords),       "00000{0:000}-1400-0000-0000-000000000{0:000}" },
             { typeof(SpecialityVocabularies),"00000{0:000}-1500-0000-0000-000000000{0:000}" },
+            { typeof(UomFormat),             "00000{0:000}-1600-0000-0000-000000000{0:000}" },
         };
 
         static DbTest()
@@ -85,6 +88,7 @@ namespace Diagnosis.Tests
                 { typeof(HrCategory),   () => ids[typeof(T)].ForAll((id) => cat[id] = session.Get<HrCategory>       (IntToGuid<HrCategory>(id))) },
                 { typeof(Uom),          () => ids[typeof(T)].ForAll((id) => uom[id] = session.Get<Uom>              (IntToGuid<Uom>(id))) },
                 { typeof(UomType),      () => ids[typeof(T)].ForAll((id) => uomType[id] = session.Get<UomType>      (IntToGuid<UomType>(id))) },
+                { typeof(UomFormat),    () => ids[typeof(T)].ForAll((id) => uomFormat[id] = session.Get<UomFormat>  (IntToGuid<UomFormat>(id))) },
                 { typeof(Vocabulary),   () => ids[typeof(T)].ForAll((id) => voc[id] = session.Get<Vocabulary>       (IntToGuid<Vocabulary>(id))) },
                 { typeof(WordTemplate), () => ids[typeof(T)].ForAll((id) => wTemp[id] = session.Get<WordTemplate>   (IntToGuid<WordTemplate>(id))) },
                 { typeof(Speciality),   () => ids[typeof(T)].ForAll((id) => spec[id] = session.Get<Speciality>      (IntToGuid<Speciality>(id))) },

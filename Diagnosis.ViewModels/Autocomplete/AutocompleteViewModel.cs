@@ -761,7 +761,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (measure != null && e.type != BlankType.Comment)
                 {
                     // отдельный комментарий из числа измерения
-                    var comment = new Comment(string.Format("{0} {1}", measure.Value, measure.Uom).Trim());
+                    var comment = new Comment(measure.FormattedValueUom);
                     AddTag(comment, Tags.IndexOf(tag) + 1);
                 }
 

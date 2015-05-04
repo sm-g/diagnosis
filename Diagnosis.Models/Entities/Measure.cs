@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using System;
-using System.Diagnostics.Contracts;
 
 using System.Linq;
 
@@ -63,6 +62,28 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual string FormattedValue
+        {
+            get
+            {
+                if (Uom == null)
+                    return Value.ToString();
+
+                return Uom.FormatValue(Value);
+            }
+        }
+
+        /// <summary>
+        /// Форматированное значение с единицей.
+        /// </summary>
+        public virtual string FormattedValueUom
+        {
+            get
+            {
+                return FormattedValue + (Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
+            }
+        }
+
         public static bool operator ==(Measure x, Measure y)
         {
             return Object.Equals(x, y);
@@ -75,7 +96,7 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            return string.Format("{0} {1}{2}", Word, Value, Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
+            return string.Format("{0} {1}", Word, FormattedValueUom);
         }
 
         public virtual int CompareTo(IHrItemObject hio)
@@ -248,6 +269,17 @@ namespace Diagnosis.Models
             }
         }
 
+        public virtual string FormattedRightValue
+        {
+            get
+            {
+                if (Uom == null)
+                    return RightValue.ToString();
+
+                return Uom.FormatValue(RightValue);
+            }
+        }
+
         /// <summary>
         /// m Operator this
         /// </summary>
@@ -304,11 +336,11 @@ namespace Diagnosis.Models
             string opValue;
 
             if (Operator.IsBinary())
-                opValue = string.Format("{0}{1}{2}", Value, Operator.ToStr(), RightValue);
+                opValue = string.Format("{0}{1}{2}", FormattedValue, Operator.ToStr(), FormattedRightValue);
             else
-                opValue = string.Format("{0} {1}", Operator.ToStr(), Value);
+                opValue = string.Format("{0} {1}", Operator.ToStr(), FormattedValue);
 
-            return string.Format("{0}\u00A0{1} {2}", Word, opValue,
+            return string.Format("{0}\u00A0{1}{2}", Word, opValue,
                 Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
         }
 
