@@ -28,10 +28,10 @@ namespace Diagnosis.Data.Versions.Client
             Execute.Sql((@"CREATE TABLE {0} (
                 Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,
                 {1} uniqueidentifier NOT NULL,
-                Str nvarchar(50) NOT NULL,
-                MeasureValue numeric(18,3) NOT NULL,
-                CONSTRAINT {2} FOREIGN KEY ({1}) REFERENCES {3} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION )")
-                .FormatStr(Names.UomFormat, Names.Id.Uom, Names.FK.UomFormat_Uom, Names.Uom));
+                {2} nvarchar(50) NOT NULL,
+                {3} numeric(18,3) NOT NULL,
+                CONSTRAINT {4} FOREIGN KEY ({1}) REFERENCES {5} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION )")
+                .FormatStr(Names.UomFormat, Names.Id.Uom, Names.Col.UomFStr, Names.Col.UomFValue, Names.FK.UomFormat_Uom, Names.Uom));
 
         }
 

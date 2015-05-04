@@ -129,6 +129,8 @@ namespace Diagnosis.Data
             public static string HrToYear = "ToYear";
             public static string HrDescribedAt = "DescribedAt";
             public static string CreatedAt = "CreatedAt";
+            public static string UomFValue = "MeasureValue";
+            public static string UomFStr = "String";
         }
 
         public static class Unique
