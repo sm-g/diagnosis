@@ -237,6 +237,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetMonth()
         {
+            DateOffsetViewModel.ClearDict();
             var vm = DateOffsetViewModel.FromHr(emptyH);
             vm.From.Month = 5;
 
@@ -246,6 +247,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetToMonth()
         {
+            DateOffsetViewModel.ClearDict();
             var vm = DateOffsetViewModel.FromHr(emptyH);
             vm.to.Month = 5;
 
@@ -254,14 +256,17 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetUnit()
         {
+            DateOffsetViewModel.ClearDict();
             var vm = DateOffsetViewModel.FromHr(emptyH);
             vm.Unit = DateUnit.Month;
 
+            Assert.IsTrue(vm.IsEmpty);        
             Assert.AreEqual(null, vm.FirstSet);
         }
         [TestMethod]
         public void EmptySetOffset()
         {
+            DateOffsetViewModel.ClearDict();
             var vm = DateOffsetViewModel.FromHr(emptyH);
             vm.Offset = 5;
 
@@ -270,6 +275,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetAge()
         {
+            DateOffsetViewModel.ClearDict();
             var vm = DateOffsetViewModel.FromHr(emptyH);
             vm.AtAge = 5;
 
