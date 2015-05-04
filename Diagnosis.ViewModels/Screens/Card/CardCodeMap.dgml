@@ -1,95 +1,104 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph DataVirtualized="True" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(@1 @2 Type=HrViewer)" Category="CodeSchema_Class" Bounds="548.443333333333,110,109.453333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="HrViewer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HrViewer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Managers/HrViewer.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
-    <Node Id="@10" Category="CodeSchema_Class" Bounds="862.983333333333,54.9999999999999,164.373333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HrEditorViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HrEditorViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HrEditorViewModel.cs&quot; StartLineNumber=16 StartCharacterOffset=4 EndLineNumber=16 EndCharacterOffset=4)" />
-    <Node Id="@11" Category="CodeSchema_Class" Bounds="530.781666666666,54.9999999999999,150.776666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HrListViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HrListViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/HealthRecordds/HrListViewModel.cs&quot; StartLineNumber=17 StartCharacterOffset=4 EndLineNumber=17 EndCharacterOffset=4)" />
-    <Node Id="@12" Category="CodeSchema_Class" Bounds="296.896666666666,55,172.546666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="NavigatorViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="NavigatorViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Navigator.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
-    <Node Id="@13" Category="CodeSchema_Class" Bounds="352.323333333333,110,133.693333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="PatientViewer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="PatientViewer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Managers/PatientViewer.cs&quot; StartLineNumber=21 StartCharacterOffset=4 EndLineNumber=21 EndCharacterOffset=4)" />
-    <Node Id="@14" Category="CodeSchema_Class" Bounds="806.803333333333,165,220.733333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="ShortHealthRecordViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ShortHealthRecordViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/HealthRecordds/ShortHealthRecordViewModel.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
-    <Node Id="@3" Category="CodeSchema_Class" Bounds="152.661666666666,110,169.016666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="CardItemViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="CardItemViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/CardItemViewModel.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
-    <Node Id="@4" Category="CodeSchema_Class" Bounds="427.598333333333,0,145.143333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="CardViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="CardViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/CardViewModel.cs&quot; StartLineNumber=14 StartCharacterOffset=4 EndLineNumber=14 EndCharacterOffset=4)" />
-    <Node Id="@5" Category="CodeSchema_Class" Bounds="969.556666666666,220,177.226666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="DateOffsetViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DateOffsetViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/DateOffsetViewModel.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
-    <Node Id="@6" Category="CodeSchema_Class" Bounds="76.7766666666664,55,158.786666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HeaderViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HeaderViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HeaderViewModel.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
-    <Node Id="@7" Category="CodeSchema_Class" Bounds="688.055,110,180.23,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HealthRecordManager" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HealthRecordManager" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Managers/HealthRecordManager.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
-    <Node Id="@8" Category="CodeSchema_Class" Bounds="962.02,110,192.3,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HealthRecordViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HealthRecordViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HealthRecordViewModel.cs&quot; StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" />
-    <Node Id="@9" Category="CodeSchema_Class" Bounds="0,165,156.34,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HolderViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HolderViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HolderViewModel.cs&quot; StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" />
+    <Node Id="(@1 @2 Type=HrViewer)" Category="CodeSchema_Class" Bounds="274.273333333333,110,109.453333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="HrViewer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HrViewer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Managers/HrViewer.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
+    <Node Id="@10" Category="CodeSchema_Class" Bounds="368.83,165,156.34,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HolderViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HolderViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HolderViewModel.cs&quot; StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" />
+    <Node Id="@11" Category="CodeSchema_Class" Bounds="948.813333333334,55,164.373333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HrEditorViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HrEditorViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HrEditorViewModel.cs&quot; StartLineNumber=16 StartCharacterOffset=4 EndLineNumber=16 EndCharacterOffset=4)" />
+    <Node Id="@12" Category="CodeSchema_Class" Bounds="186.611666666666,55,150.776666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HrListViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HrListViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/HealthRecordds/HrListViewModel.cs&quot; StartLineNumber=17 StartCharacterOffset=4 EndLineNumber=17 EndCharacterOffset=4)" />
+    <Node Id="@13" Category="CodeSchema_Class" Bounds="636.726666666666,55,172.546666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="NavigatorViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="NavigatorViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Navigator.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="@14" Category="CodeSchema_Class" Bounds="721.153333333333,110,133.693333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="PatientViewer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="PatientViewer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Managers/PatientViewer.cs&quot; StartLineNumber=21 StartCharacterOffset=4 EndLineNumber=21 EndCharacterOffset=4)" />
+    <Node Id="@15" Category="CodeSchema_Class" Bounds="117.633333333333,165,220.733333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="ShortHealthRecordViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ShortHealthRecordViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/HealthRecordds/ShortHealthRecordViewModel.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
+    <Node Id="@3" Category="CodeSchema_Class" Bounds="521.491666666666,110,169.016666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="CardItemViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="CardItemViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/CardItemViewModel.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
+    <Node Id="@4" Category="CodeSchema_Class" Bounds="767.428333333333,0,145.143333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="CardViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="CardViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/CardViewModel.cs&quot; StartLineNumber=14 StartCharacterOffset=4 EndLineNumber=14 EndCharacterOffset=4)" />
+    <Node Id="@5" Category="CodeSchema_Class" Bounds="1043.72833333333,165,176.543333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="DateEditorViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DateEditorViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/DateEditorViewModel.cs&quot; StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" />
+    <Node Id="@6" Category="CodeSchema_Class" Bounds="924.386666666667,220,177.226666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="DateOffsetViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DateOffsetViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/DateOffsetViewModel.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="@7" Category="CodeSchema_Class" Bounds="367.606666666666,55.0000000000001,158.786666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HeaderViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HeaderViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HeaderViewModel.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
+    <Node Id="@8" Category="CodeSchema_Class" Bounds="31.885,110,180.23,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HealthRecordManager" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HealthRecordManager" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/Managers/HealthRecordManager.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="@9" Category="CodeSchema_Class" Bounds="916.85,110,192.3,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HealthRecordViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HealthRecordViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Card/HealthRecordViewModel.cs&quot; StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" />
   </Nodes>
   <Links>
-    <Link Source="@10" Target="@8" Category="References" Bounds="970.851806640625,80,53.5440673828125,26.0612411499023" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="20">
+    <Link Source="@11" Target="@9" Category="References" Bounds="1019.89025878906,80,7.018798828125,21.4464263916016" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="20">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@11" Target="(@1 @2 Type=HrViewer)" Category="References" Bounds="604.341979980469,80,1.14617919921875,21.0133590698242" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@12" Target="(@1 @2 Type=HrViewer)" Category="References" Bounds="277.227264404297,80,29.589111328125,24.2895584106445" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@11" Target="@14" Category="References" Bounds="681.075012207031,77.1446762084961,229.204711914063,79.3017501831055" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="179">
+    <Link Source="@12" Target="@10" Category="References" Bounds="301.024475097656,80,134.1767578125,77.2208709716797" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="6">
+      <Category Ref="CodeSchema_Calls" />
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
+    <Link Source="@12" Target="@15" Category="References" Bounds="233.777145385742,80,23.9046783447266,76.3171234130859" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="179">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@11" Target="@7" Category="References" Bounds="645.260925292969,80,85.2457885742188,27.2588272094727" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="16">
+    <Link Source="@12" Target="@8" Category="References" Bounds="162.194946289063,80,67.9868774414063,26.7091293334961" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="16">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@11" Target="@9" Category="References" Bounds="165.312637329102,80,421.85905456543,90.689453125" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="6">
-      <Category Ref="CodeSchema_Calls" />
-      <Category Ref="CodeSchema_ReturnTypeLink" />
-    </Link>
-    <Link Source="@12" Target="@13" Category="References" Bounds="391.351806640625,80,14.7074279785156,22.4696884155273" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="35">
+    <Link Source="@13" Target="@14" Category="References" Bounds="737.772705078125,80,28.5841064453125,24.1865234375" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="35">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
     </Link>
-    <Link Source="@12" Target="@3" Category="References" Bounds="278.774017333984,80,71.2141723632813,26.8272476196289" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="46">
+    <Link Source="@13" Target="@3" Category="References" Bounds="640.73583984375,80,55.6732788085938,26.1711807250977" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="46">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@14" Target="@5" Category="References" Bounds="949.215454101563,190,68.5244140625,26.7293701171875" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="11">
+    <Link Source="@15" Target="@6" Category="References" Bounds="334.798980712891,189.790451049805,580.603179931641,36.9799652099609" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="11">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@3" Target="@3" Category="References" Bounds="109.161666870117,116.442710876465,43.5,11.8658065795898" Weight="1" />
-    <Link Source="@3" Target="@9" Category="References" Bounds="122.811874389648,135,78.2217559814453,27.0578460693359" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@3" Target="@10" Category="References" Bounds="491.641876220703,135,78.2217712402344,27.0578460693359" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@4" Target="@10" Category="References" Bounds="572.528869628906,21.4432277679443,282.233459472656,34.8827953338623" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="22">
+    <Link Source="@3" Target="@3" Category="References" Bounds="477.991668701172,116.442710876465,43.4999694824219,11.8658065795898" Weight="1" />
+    <Link Source="@4" Target="@10" Category="CodeSchema_Calls" Bounds="534.142639160156,25,351.857360839844,145.689453125" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@4" Target="@11" Category="References" Bounds="883.409118652344,25,95.533203125,27.5095748901367" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="22">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@4" Target="@11" Category="References" Bounds="524.260925292969,25,49.8295288085938,25.8549461364746" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="36">
+    <Link Source="@4" Target="@12" Category="References" Bounds="344.438995361328,18.3348827362061,422.989349365234,36.6751384735107" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="36">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@4" Target="@12" Category="References" Bounds="417.905853271484,25,55.6732482910156,26.1711807250977" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="12">
+    <Link Source="@4" Target="@13" Category="References" Bounds="757.73583984375,25,55.6732788085938,26.1711807250977" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="12">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@4" Target="@13" Category="References" Bounds="445.024841308594,25,55.1451721191406,79.9442367553711" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="14">
+    <Link Source="@4" Target="@14" Category="References" Bounds="806.001281738281,25,33.9987182617188,78.4601821899414" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="14">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@4" Target="@14" Category="References" Bounds="570.523193359375,24.1548957824707,354.514038085938,132.123226165771" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="17">
+    <Link Source="@4" Target="@15" Category="References" Bounds="1,16.9556083679199,766.428344726563,146.445911407471" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="17">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
     </Link>
-    <Link Source="@4" Target="@3" Category="References" Bounds="247.958587646484,24.5427436828613,182.550842285156,77.4961357116699" IsSourceVirtualized="True" Weight="1" />
-    <Link Source="@4" Target="@6" Category="References" Bounds="241.218505859375,23.8195018768311,188.153167724609,30.0826244354248" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="7">
+    <Link Source="@4" Target="@3" Category="References" Bounds="606,24.5427436828613,164.339416503906,76.4572563171387" IsSourceVirtualized="True" Weight="1" />
+    <Link Source="@4" Target="@7" Category="References" Bounds="533.952453613281,22.5578460693359,234.1796875,32.7732353210449" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="7">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@4" Target="@8" Category="CodeSchema_FieldRead" Bounds="572.741638183594,16.7691593170166,485.428405761719,84.2308406829834" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@4" Target="@9" Category="CodeSchema_Calls" Bounds="46.1699981689453,17.9302959442139,381.428329467773,139.290575027466" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@6" Target="@9" Category="References" Bounds="78.1699981689453,80,60.2727355957031,76" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@4" Target="@9" Category="CodeSchema_FieldRead" Bounds="857.727294921875,25,125.892944335938,80.4906768798828" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@5" Target="@6" Category="References" Bounds="1048.21508789063,190,56.739501953125,26.22412109375" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="15">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@7" Target="@14" Category="References" Bounds="809.760925292969,135,67.449462890625,26.6886444091797" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="113">
+    <Link Source="@7" Target="@10" Category="References" Bounds="447,80,0,76" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+      <Category Ref="CodeSchema_Calls" />
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
+    <Link Source="@8" Target="@15" Category="References" Bounds="146.090911865234,135,49.8295288085938,25.8549499511719" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="113">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_FieldRead" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@8" Target="@5" Category="References" Bounds="1058.17004394531,135,0,76" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="12">
+    <Link Source="@9" Target="@5" Category="References" Bounds="1040.04541015625,135,56.739501953125,26.22412109375" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+      <Category Ref="CodeSchema_Calls" />
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
+    <Link Source="@9" Target="@6" Category="References" Bounds="1013,135,0,76" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="12">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
@@ -145,16 +154,17 @@
     <Alias n="2" Id="Namespace=Diagnosis.ViewModels.Screens" />
     <Alias n="3" Id="(@1 @2 Type=CardItemViewModel)" />
     <Alias n="4" Id="(@1 @2 Type=CardViewModel)" />
-    <Alias n="5" Id="(@1 Namespace=Diagnosis.ViewModels Type=DateOffsetViewModel)" />
-    <Alias n="6" Id="(@1 @2 Type=HeaderViewModel)" />
-    <Alias n="7" Id="(@1 @2 Type=HealthRecordManager)" />
-    <Alias n="8" Id="(@1 @2 Type=HealthRecordViewModel)" />
-    <Alias n="9" Id="(@1 @2 Type=HolderViewModel)" />
-    <Alias n="10" Id="(@1 @2 Type=HrEditorViewModel)" />
-    <Alias n="11" Id="(@1 @2 Type=HrListViewModel)" />
-    <Alias n="12" Id="(@1 @2 Type=NavigatorViewModel)" />
-    <Alias n="13" Id="(@1 @2 Type=PatientViewer)" />
-    <Alias n="14" Id="(@1 @2 Type=ShortHealthRecordViewModel)" />
+    <Alias n="5" Id="(@1 @2 Type=DateEditorViewModel)" />
+    <Alias n="6" Id="(@1 Namespace=Diagnosis.ViewModels Type=DateOffsetViewModel)" />
+    <Alias n="7" Id="(@1 @2 Type=HeaderViewModel)" />
+    <Alias n="8" Id="(@1 @2 Type=HealthRecordManager)" />
+    <Alias n="9" Id="(@1 @2 Type=HealthRecordViewModel)" />
+    <Alias n="10" Id="(@1 @2 Type=HolderViewModel)" />
+    <Alias n="11" Id="(@1 @2 Type=HrEditorViewModel)" />
+    <Alias n="12" Id="(@1 @2 Type=HrListViewModel)" />
+    <Alias n="13" Id="(@1 @2 Type=NavigatorViewModel)" />
+    <Alias n="14" Id="(@1 @2 Type=PatientViewer)" />
+    <Alias n="15" Id="(@1 @2 Type=ShortHealthRecordViewModel)" />
   </IdentifierAliases>
   <Styles>
     <Style TargetType="Node" GroupLabel="Results" ValueLabel="True">
@@ -313,6 +323,7 @@
     </Style>
   </Styles>
   <Paths>
+    <Path Id="2206a771-0a27-41f2-81e2-d131d95c6862.OutputPath" Value="C:\Users\smg\Documents\Visual Studio 2012\Projects\Diagnosis\Diagnosis.ViewModels\bin\Debug\Diagnosis.ViewModels.dll" />
     <Path Id="2206a771-0a27-41f2-81e2-d131d95c6862.OutputPathUri" Value="file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/bin/Debug/Diagnosis.ViewModels.dll" />
   </Paths>
 </DirectedGraph>
