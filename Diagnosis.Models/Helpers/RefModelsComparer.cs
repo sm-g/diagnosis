@@ -17,6 +17,12 @@ namespace Diagnosis.Models
             if (y == typeof(UomType) && x == typeof(Uom))
                 return -1;
 
+            // Uom > UomFormat
+            if (x == typeof(Uom) && y == typeof(UomFormat))
+                return 1;
+            if (y == typeof(Uom) && x == typeof(UomFormat))
+                return -1;
+
             // Speciality > SpecialityIcdBlocks
             if (x == typeof(Speciality) && y == typeof(SpecialityIcdBlocks))
                 return 1;

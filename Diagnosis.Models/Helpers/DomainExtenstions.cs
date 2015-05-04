@@ -234,6 +234,10 @@ namespace Diagnosis.Models
                 { typeof(UomType), (y) => 
                     (x as UomType).Title == (y as UomType).Title
                 },
+                { typeof(UomFormat), (y) => 
+                    (x as UomFormat).String == (y as UomFormat).String &&
+                    (x as UomFormat).MeasureValue== (y as UomFormat).MeasureValue
+                },
                 { typeof(HrCategory), (y) => 
                     (x as HrCategory).Title == (y as HrCategory).Title
                 },
@@ -286,6 +290,14 @@ namespace Diagnosis.Models
                          var a = x as UomType;
                         var b = y as UomType;
                         return a.Title == b.Title;
+                    } 
+                },
+                { typeof(UomFormat), () => 
+                    {
+                        var a = x as UomFormat;
+                        var b = y as UomFormat;
+                        return a.String == b.String &&
+                               a.MeasureValue == b.MeasureValue;
                     } 
                 },
                 { typeof(HrCategory), () => 

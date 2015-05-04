@@ -32,7 +32,7 @@ namespace Diagnosis.Models
         public virtual Uom Uom
         {
             get { return _uom; }
-            protected set
+            set
             {
                 SetProperty(ref _uom, value, () => Uom);
             }
