@@ -75,11 +75,6 @@ namespace Diagnosis.ViewModels
 
         public bool IsPoint { get { return hr.IsPoint; } }
 
-        /// <summary>
-        /// Для события-точки обе даты меняем вместе при закрытом редакторе интервала.
-        /// </summary>
-        private bool SetToWithFrom { get { return !OpenedInIntervalEditor && hr.IsPoint; } }
-
         public bool OpenedInIntervalEditor
         {
             get
@@ -91,6 +86,11 @@ namespace Diagnosis.ViewModels
                 if (_inEdit != value)
                 {
                     _inEdit = value;
+                    if (value)
+                        To = new DateOffsetViewModel.DatePickerViewModel(hr.ToDate);
+                    else
+                        To = null; // unbind ComboboxDatePicker DataContext;
+
                     OnPropertyChanged(() => OpenedInIntervalEditor);
                 }
             }
@@ -113,8 +113,6 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
-                    if (SetToWithFrom)
-                        to.Offset = value;
                     from.Offset = value;
                 }
 
@@ -146,8 +144,6 @@ namespace Diagnosis.ViewModels
                 }
                 else
                 {
-                    if (SetToWithFrom)
-                        to.Unit = value;
                     from.Unit = value;
                 }
 
@@ -179,7 +175,7 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                Contract.Ensures(Contract.Result<DatePickerViewModel>() != null || OpenedInIntervalEditor);
+                Contract.Ensures(Contract.Result<DatePickerViewModel>() != null || !OpenedInIntervalEditor);
                 return _toDpVm;
             }
             set
@@ -469,23 +465,8 @@ namespace Diagnosis.ViewModels
                 case "Unit":
                     OnPropertyChanged(() => Unit);
                     break;
-            }
-
-            switch (e.PropertyName)
-            {
-                case "Day":
-                    if (SetToWithFrom)
-                        to.Day = from.Day;
-                    break;
-
-                case "Month":
-                    if (SetToWithFrom)
-                        to.Month = from.Month;
-                    break;
 
                 case "Year":
-                    if (SetToWithFrom)
-                        to.Year = from.Year;
                     OnPropertyChanged(() => IsEmpty);
                     break;
             }

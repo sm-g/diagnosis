@@ -5,199 +5,297 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:forms="clr-namespace:Diagnosis.Client.App.Controls.FormParts"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              Name="doEditor"
-             d:DataContext="{d:DesignInstance design:SampleHealthRecordViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="300" d:DesignWidth="600">
-    <StackPanel Grid.IsSharedSizeScope="True">
-        <StackPanel.Resources>
-            <Style TargetType="Grid">
-                <Setter Property="Margin"
-                        Value="{StaticResource FormLineMargin}" />
-            </Style>
-        </StackPanel.Resources>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"
-                                  MinWidth="110"
-                                  SharedSizeGroup="label" />
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="gr2" />
-                <ColumnDefinition Width="20" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+             d:DataContext="{d:DesignInstance design:SampleDateEditorViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
+             d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="1"
-                        Background="Transparent"
-                        Visibility="{Binding DateSuggestions.Count, Converter={StaticResource MoreThanToVisibility}}"
-                        Name="hoverSource">
-                <ToggleButton x:Name="Btn"
-                              HorizontalAlignment="Left"
-                              IsHitTestVisible="{Binding ElementName=Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource NegateBoolean}}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Вставить " />
-                        <Path Data="{StaticResource RightTriangle}"
-                              Stretch="Uniform"
-                              Width="10"
-                              Height="10"
-                              Fill="Black" />
-                    </StackPanel>
-                </ToggleButton>
+        <StackPanel Grid.Row="0"
+                    diag:HelpProvider.Topic="hrdate"
+                    Orientation="Horizontal"
+                    ToolTip="Как показывать дату в списке записей?"
+                    Visibility="{Binding EventDate.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}">
+            <Label Content="Это было" />
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                <RadioButton IsChecked="{Binding ShowAsDate}"
+                             Margin="0 0 10 0"
+                             Content="{Binding EventDate.PartialDateString}" />
+                <RadioButton IsChecked="{Binding ShowAsOffset}"
+                             Margin="0 0 10 0">
+                    <TextBlock>
+                                    <TextBlock Text="уже"
+                                               Visibility="{Binding EventDate.IsOpenedInterval, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <Run Text="{Binding EventDate.RoundedOffset, Mode=OneWay}" />
+                                    <Hyperlink Command="{Binding EventDate.SpinUnitCommand}">
+                                        <Run>
+                                            <Run.Text>
+                                                <MultiBinding Mode="OneWay"
+                                                              Converter="{StaticResource UnitForOffsetToUnitLabel}">
+                                                    <Binding Path="EventDate.RoundedUnit" />
+                                                    <Binding Path="EventDate.RoundedOffset" />
+                                                </MultiBinding>
+                                            </Run.Text>
+                                        </Run>
+                                    </Hyperlink>
+                                    <TextBlock Text="назад"
+                                               Visibility="{Binding EventDate.IsPoint, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </TextBlock>
+                </RadioButton>
+                <RadioButton IsChecked="{Binding ShowAsAge}"
+                             IsEnabled="{Binding EventDate.CanShowAsAge}"
+                             Visibility="{Binding EventDate.CanShowAsAge, Converter={StaticResource BooleanToVisibilityConverter}}"
+                             Content="{Binding EventDate.AtAgeString}" />
+            </StackPanel>
+        </StackPanel>
+        <Expander x:Name="dateEditor"
+                  Grid.Row="1"
+                  diag:HelpProvider.Topic="hrdate"
+                  BorderBrush="{x:Null}"
+                  ExpandDirection="Down"
+                  FlowDirection="RightToLeft"
+                  Cursor="Hand"
+                  IsExpanded="{Binding IsDateEditorExpanded}">
+            <Expander.Header>
+                <StackPanel HorizontalAlignment="Right"
+                            Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}},Path=ActualWidth}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
 
-                <Popup IsOpen="{Binding IsChecked, ElementName=Btn}"
-                       x:Name="Popup"
-                       Placement="Right"
-                       PlacementTarget="{Binding ElementName=Btn}"
-                       PopupAnimation="Scroll"
-                       AllowsTransparency="True"
-                       StaysOpen="False">
-                    <Border BorderBrush="{StaticResource AccentColorBrush3}"
-                            BorderThickness="2"
-                            CornerRadius="10"
-                            Padding="3"
-                            Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
-                        <ItemsControl ItemsSource="{Binding DateSuggestions}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock>
+                        <Label x:Name="header"
+                               Grid.Column="1">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="Content"
+                                            Value="Изменить дату" />
+                                    <Setter Property="FontSize"
+                                            Value="{DynamicResource LabelFontSize}" />
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EventDate.IsEmpty}"
+                                                     Value="True">
+                                            <Setter Property="Content"
+                                                    Value="Добавить дату" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsExpanded,RelativeSource={RelativeSource AncestorType=Expander}}"
+                                                     Value="True">
+                                            <Setter Property="Content"
+                                                    Value="Скрыть редактор даты" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Separator Grid.Column="0"
+                                   Width="auto" />
+                    </Grid>
+                </StackPanel>
+            </Expander.Header>
+            <Grid FlowDirection="LeftToRight"
+                  Background="Transparent"
+                  Cursor="Arrow">
+                <StackPanel Grid.IsSharedSizeScope="True">
+                    <StackPanel.Resources>
+                        <Style TargetType="Grid">
+                            <Setter Property="Margin"
+                                    Value="{StaticResource FormLineMargin}" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"
+                                              MinWidth="110"
+                                              SharedSizeGroup="label" />
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="gr2" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="1"
+                                    Background="Transparent"
+                                    Visibility="{Binding DateSuggestions.Count, Converter={StaticResource MoreThanToVisibility}}"
+                                    Name="hoverSource">
+                            <ToggleButton x:Name="Btn"
+                                          HorizontalAlignment="Left"
+                                          IsHitTestVisible="{Binding ElementName=Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource NegateBoolean}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Вставить " />
+                                    <Path Data="{StaticResource RightTriangle}"
+                                          Stretch="Uniform"
+                                          Width="10"
+                                          Height="10"
+                                          Fill="Black" />
+                                </StackPanel>
+                            </ToggleButton>
+
+                            <Popup IsOpen="{Binding IsChecked, ElementName=Btn}"
+                                   x:Name="Popup"
+                                   Placement="Right"
+                                   PlacementTarget="{Binding ElementName=Btn}"
+                                   PopupAnimation="Scroll"
+                                   AllowsTransparency="True"
+                                   StaysOpen="False">
+                                <Border BorderBrush="{StaticResource AccentColorBrush3}"
+                                        BorderThickness="2"
+                                        CornerRadius="10"
+                                        Padding="3"
+                                        Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
+                                    <ItemsControl ItemsSource="{Binding DateSuggestions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
                                                                 <Hyperlink Command="{Binding SetDateCommand}">
                                                                     <Run Text="{Binding Mode=OneWay}" />
                                                                 </Hyperlink>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>
-                </Popup>
-            </StackPanel>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
+                            </Popup>
+                        </StackPanel>
 
-            <CheckBox IsChecked="{Binding IsIntervalEditorOpened}"
-                      Grid.Column="3"
-                      Content="Интервал" />
-        </Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="label" />
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="gr2" />
-                <ColumnDefinition Width="20" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Label Content="Дата" />
-            <forms:ComboBoxDatePicker DataContext="{Binding EventDate.From}"
-                                      Year="{Binding Year, Mode=TwoWay}"
-                                      Month="{Binding Month, Mode=TwoWay}"
-                                      Day="{Binding Day, Mode=TwoWay}"
-                                      MaxYearsOverToday="5"
-                                      WithPicker="True"
-                                      Grid.Column="1" />
-            <TextBlock Text="—"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Margin="0 0 0 0"
-                       Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
-                       Grid.Column="2" />
-            <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=doEditor}"
-                                      DataContext="{Binding EventDate.To}"
-                                      Year="{Binding Year, Mode=TwoWay}"
-                                      Month="{Binding Month, Mode=TwoWay}"
-                                      Day="{Binding Day, Mode=TwoWay}"
-                                      MaxYearsOverToday="5"
-                                      WithPicker="True"
-                                      Grid.Column="3" />
-        </Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="label" />
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="gr2" />
-                <ColumnDefinition Width="20" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Label>
-                <Label.Style>
-                    <Style TargetType="Label"
-                           BasedOn="{StaticResource {x:Type Label}}">
-                        <Setter Property="Content"
-                                Value="Давность" />
-                        <Style.Triggers>
-                            <DataTrigger    Binding="{Binding EventDate.IsClosedInterval}"
-                                            Value="True">
-                                <Setter Property="Content"
-                                        Value="Длительность" />
-                            </DataTrigger>
-                            <DataTrigger    Binding="{Binding EventDate.IsOpenedInterval}"
-                                            Value="True">
-                                <Setter Property="Content"
-                                        Value="Стаж" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Label.Style>
-            </Label>
-            <forms:DateOffsetPicker Grid.Column="1"
-                                    Grid.ColumnSpan="3"
-                                    DataContext="{Binding EventDate}" />
-        </Grid>
-        <Grid IsEnabled="{Binding EventDate.CanShowAsAge}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="label" />
-                <ColumnDefinition Width="auto"
-                                  SharedSizeGroup="gr2" />
-                <ColumnDefinition Width="20" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Label Content="Возраст" />
-            <TextBlock HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       FontSize="{StaticResource LabelFontSize}"
-                       Margin="0 0 3 10">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Text"
-                                Value="c" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding EventDate.IsPoint}"
-                                         Value="True">
-                                <Setter Property="Text"
-                                        Value="в" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
-            <DockPanel Grid.Column="1">
-                <TextBox Text="{Binding EventDate.AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
-                         Width="50"
-                         HorizontalContentAlignment="Right">
-                </TextBox>
+                        <CheckBox IsChecked="{Binding IsIntervalEditorOpened}"
+                                  Grid.Column="3"
+                                  Content="Интервал" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="label" />
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="gr2" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Дата" />
+                        <forms:ComboBoxDatePicker DataContext="{Binding EventDate.From}"
+                                                  Year="{Binding Year, Mode=TwoWay}"
+                                                  Month="{Binding Month, Mode=TwoWay}"
+                                                  Day="{Binding Day, Mode=TwoWay}"
+                                                  MaxYearsOverToday="5"
+                                                  WithPicker="True"
+                                                  Grid.Column="1" />
+                        <TextBlock Text="—"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Margin="0 0 0 0"
+                                   Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   Grid.Column="2" />
+                        <forms:ComboBoxDatePicker Visibility="{Binding DataContext.IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter},ElementName=doEditor}"
+                                                  DataContext="{Binding EventDate.To}"
+                                                  Year="{Binding Year, Mode=TwoWay}"
+                                                  Month="{Binding Month, Mode=TwoWay}"
+                                                  Day="{Binding Day, Mode=TwoWay}"
+                                                  MaxYearsOverToday="5"
+                                                  WithPicker="True"
+                                                  Grid.Column="3" />
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="label" />
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="gr2" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label>
+                            <Label.Style>
+                                <Style TargetType="Label"
+                                       BasedOn="{StaticResource {x:Type Label}}">
+                                    <Setter Property="Content"
+                                            Value="Давность" />
+                                    <Style.Triggers>
+                                        <DataTrigger    Binding="{Binding EventDate.IsClosedInterval}"
+                                                        Value="True">
+                                            <Setter Property="Content"
+                                                    Value="Длительность" />
+                                        </DataTrigger>
+                                        <DataTrigger    Binding="{Binding EventDate.IsOpenedInterval}"
+                                                        Value="True">
+                                            <Setter Property="Content"
+                                                    Value="Стаж" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <forms:DateOffsetPicker Grid.Column="1"
+                                                Grid.ColumnSpan="3"
+                                                DataContext="{Binding EventDate}" />
+                    </Grid>
+                    <Grid IsEnabled="{Binding EventDate.CanShowAsAge}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="label" />
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="gr2" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Возраст" />
+                        <TextBlock HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   FontSize="{StaticResource LabelFontSize}"
+                                   Margin="0 0 3 10">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text"
+                                            Value="c" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EventDate.IsPoint}"
+                                                     Value="True">
+                                            <Setter Property="Text"
+                                                    Value="в" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <DockPanel Grid.Column="1">
+                            <TextBox Text="{Binding EventDate.AtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                     Width="50"
+                                     HorizontalContentAlignment="Right">
+                            </TextBox>
 
-                <TextBlock Text="{Binding EventDate.AtAge, Converter={StaticResource AgeToLabel}}"
-                           Margin="3,0,0,0"
-                           FontSize="{StaticResource LabelFontSize}"
-                           VerticalAlignment="Center"></TextBlock>
-            </DockPanel>
-            <TextBlock Text="до"
-                       Margin="0 0 3 10"
-                       FontSize="{StaticResource LabelFontSize}"
-                       VerticalAlignment="Center"
-                       Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
-                       Grid.Column="2" />
-            <DockPanel Grid.Column="3"
-                       Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBox Text="{Binding EventDate.ToAtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
-                         Width="50"
-                         HorizontalContentAlignment="Right">
-                </TextBox>
+                            <TextBlock Text="{Binding EventDate.AtAge, Converter={StaticResource AgeToLabel}}"
+                                       Margin="3,0,0,0"
+                                       FontSize="{StaticResource LabelFontSize}"
+                                       VerticalAlignment="Center"></TextBlock>
+                        </DockPanel>
+                        <TextBlock Text="до"
+                                   Margin="0 0 3 10"
+                                   FontSize="{StaticResource LabelFontSize}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   Grid.Column="2" />
+                        <DockPanel Grid.Column="3"
+                                   Visibility="{Binding IsIntervalEditorOpened,Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBox Text="{Binding EventDate.ToAtAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                     Width="50"
+                                     HorizontalContentAlignment="Right">
+                            </TextBox>
 
-                <TextBlock Text="{Binding EventDate.ToAtAge, Converter={StaticResource AgeToLabel}}"
-                           Margin="3,0,0,0"
-                           FontSize="{StaticResource LabelFontSize}"
-                           VerticalAlignment="Center" />
-            </DockPanel>
-        </Grid>
-    </StackPanel>
+                            <TextBlock Text="{Binding EventDate.ToAtAge, Converter={StaticResource AgeToLabel}}"
+                                       Margin="3,0,0,0"
+                                       FontSize="{StaticResource LabelFontSize}"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Expander>
+    </Grid>
 </UserControl>

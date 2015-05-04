@@ -81,7 +81,6 @@ namespace Diagnosis.Client.App.DesignData
             {
                 return new HealthRecordViewModel(Mocks.hr)
                 {
-                    IsDateEditorExpanded = true
                 };
             }
         }
@@ -89,6 +88,14 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleHealthRecordViewModel : HealthRecordViewModel
     {
         public SampleHealthRecordViewModel()
+            : base(Mocks.hr)
+        {
+           
+        }
+    }
+    public class SampleDateEditorViewModel : DateEditorViewModel
+    {
+        public SampleDateEditorViewModel()
             : base(Mocks.hr)
         {
             IsDateEditorExpanded = true;
