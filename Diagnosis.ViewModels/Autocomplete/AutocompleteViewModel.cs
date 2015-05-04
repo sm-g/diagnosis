@@ -923,7 +923,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         public void CompleteOnLostFocus(TagViewModel tag)
         {
             Contract.Requires(tag != null);
-            Contract.Requires(Tags.Contains(tag));
+
+            // при завершении пустого тега он удаляется, теряется фокус и автокомплит пытается завершить тег еще раз
+            if (!Tags.Contains(tag))
+                return;
 
             if (tag.State == State.Typing)
             {
