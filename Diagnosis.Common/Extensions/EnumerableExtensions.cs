@@ -168,7 +168,6 @@ namespace Diagnosis.Common
                 throw new ArgumentNullException("items");
             if (matchFilling == null)
                 throw new ArgumentNullException("matchFilling");
-            Contract.EndContractBlock();
 
             using (var iter = items.GetEnumerator())
             {
@@ -299,6 +298,22 @@ namespace Diagnosis.Common
         public static IEnumerable<T> DistinctBy<T, TIdentity>(this IEnumerable<T> source, Func<T, TIdentity> identitySelector)
         {
             return source.Distinct(Compare.By(identitySelector));
+        }
+        /// <summary>
+        /// Мода. Только классы, для value надо тоже вернуть null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static T Mode<T>(this IEnumerable<T> source) where T : class
+        {
+            if (!source.Any())
+                return default(T);
+
+            return source.GroupBy(v => v)
+                .OrderByDescending(g => g.Count())
+                .First()
+                .Key;
         }
     }
 

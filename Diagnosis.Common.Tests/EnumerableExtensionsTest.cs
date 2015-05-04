@@ -120,5 +120,21 @@ namespace Diagnosis.Common.Tests
 
             Assert.AreEqual(true, list2.IsSubmultisetOf(list));
         }
+
+        [TestMethod]
+        public void Mode()
+        {
+            var list = new List<string> { "1", "1", "2" };
+            Assert.AreEqual("1", list.Mode());
+
+        }
+
+        [TestMethod]
+        public void Mode()
+        {
+            var list = new List<string> { "1", "2" };
+            Assert.AreEqual("1", list.Mode());
+
+        }
     }
 }

@@ -113,6 +113,7 @@ namespace Diagnosis.Data
             public static string Word_HrCategory = string.Format("FK_{0}_{1}", Word, HrCategory);
             public static string Word_Word = string.Format("FK_{0}_{1}", Word, Word);
             public static string Setting_Doctor = string.Format("FK_{0}_{1}", Setting, Doctor);
+            public static string Word_Uom = string.Format("FK_{0}_{1}", Word, Uom);
         }
         public static class Col
         {

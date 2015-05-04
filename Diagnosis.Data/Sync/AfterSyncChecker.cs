@@ -71,8 +71,12 @@ namespace Diagnosis.Data.Sync
                         UpdateParents<Uom, UomFormat>(replacing,
                             x => x.Uom,
                             (x, value) => x.Uom = value);
+                        UpdateParents<Uom, Word>(replacing,
+                            x => x.Uom,
+                            (x, value) => x.Uom = value);
                         scopesToDeprovision.AddRange(typeof(HrItem).GetScopes());
                         scopesToDeprovision.AddRange(typeof(UomFormat).GetScopes());
+                        scopesToDeprovision.AddRange(typeof(Word).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }

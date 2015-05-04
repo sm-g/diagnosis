@@ -25,9 +25,11 @@ namespace Diagnosis.Models
         private Word _parent;
 
         private string _title;
+        private Uom _uom;
 
         [NonSerialized]
         private Many2ManyHelper<Models.VocabularyWords, Vocabulary> vwHelper;
+
 
         public Word(string title)
         {
@@ -54,6 +56,19 @@ namespace Diagnosis.Models
         {
             get { return _parent; }
             set { SetProperty(ref _parent, value, () => Parent); }
+        }
+        /// <summary>
+        /// Cамая частая единица на клиенте с этим словом.
+        /// </summary>
+        public virtual Uom Uom
+        {
+            get { return _uom; }
+            set
+            {
+                if (value == _uom) return;
+                if (value == Uom.Null) value = null;
+                _uom = value;
+            }
         }
 
         public virtual IEnumerable<Vocabulary> Vocabularies
