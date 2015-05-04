@@ -229,6 +229,7 @@ namespace Diagnosis.Models
             var @switch2 = new Dictionary<Type, Expression<Func<T, bool>>> {
                 { typeof(Uom), (y) => 
                     (x as Uom).Abbr == (y as Uom).Abbr &&
+                    (x as Uom).Description == (y as Uom).Description &&
                     (x as Uom).Type.Title == (y as Uom).Type.Title                   
                 },
                 { typeof(UomType), (y) => 
@@ -282,6 +283,7 @@ namespace Diagnosis.Models
                         var a = x as Uom;
                         var b = y as Uom;
                         return a.Abbr == b.Abbr &&
+                               a.Description == b.Description &&
                                a.Type == b.Type;
                     }
                 },
