@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// Команды редактирования держателя.
+    /// </summary>
     public class HolderViewModel : ViewModelBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HolderViewModel));
