@@ -130,7 +130,7 @@ namespace Diagnosis.Common.Tests
         }
 
         [TestMethod]
-        public void Mode()
+        public void Mode2()
         {
             var list = new List<string> { "1", "2" };
             Assert.AreEqual("1", list.Mode());
