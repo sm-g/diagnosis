@@ -19,8 +19,6 @@ namespace Diagnosis.ViewModels.Screens
             DateEditor = new DateEditorViewModel(hr);
         }
 
-        #region Model
-
         public HrCategory Category
         {
             get
@@ -32,8 +30,6 @@ namespace Diagnosis.ViewModels.Screens
                 healthRecord.Category = value;
             }
         }
-
-        #endregion Model
 
         public DateEditorViewModel DateEditor { get; private set; }
 

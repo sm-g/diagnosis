@@ -167,6 +167,17 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
+        public void DateEditorSavesOpenedState()
+        {
+            l.SelectHealthRecord(hr[20]);
+            card.ToogleHrEditor();
+            card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded = true;
+
+            l.MoveHrSelectionCommand.Execute(true);
+            Assert.AreEqual(true, card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded);
+        }
+
+        [TestMethod]
         public void MoveEmptyHrSelection()
         {
             Assert.AreEqual(null, l.SelectedHealthRecord);
@@ -586,13 +597,14 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AlwaysSortByOrd()
         {
-            l.Sorting = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Category;
             l.Grouping = HrViewColumn.None;
 
             var ordSortD = new SortDescription(HrViewColumn.Ord.ToSortingProperty(), ListSortDirection.Ascending);
 
             Assert.IsTrue(l.view.SortDescriptions.Contains(ordSortD));
         }
+
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
             var hr = l.holder.AddHealthRecord(d1);

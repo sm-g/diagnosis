@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels.Screens
         private DateOffsetViewModel _doVm;
 
         private DateOffset lastToDate;
-        private bool _isExpanded;
+        private static bool _isExpanded;
 
         public DateEditorViewModel(HealthRecord hr)
         {
