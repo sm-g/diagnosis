@@ -5,6 +5,7 @@ using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Tests
@@ -13,6 +14,8 @@ namespace Diagnosis.ViewModels.Tests
     public class HrListTest : ViewModelTest
     {
         private CardViewModel card;
+
+        public HrListViewModel l { get { return card.HrList; } }
 
         [TestInitialize]
         public void Init()
@@ -52,136 +55,136 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SelectHr()
         {
-            card.HrList.SelectHealthRecord(hr[20]);
+            l.SelectHealthRecord(hr[20]);
 
-            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);
         }
 
         [TestMethod]
         public void SelectNotInList()
         {
-            card.HrList.SelectHealthRecord(hr[1]);
+            l.SelectHealthRecord(hr[1]);
 
-            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
-            Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(null, l.SelectedHealthRecord);
+            Assert.AreEqual(0, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void DeselectHr()
         {
-            card.HrList.SelectHealthRecord(hr[20]);
-            card.HrList.SelectedHealthRecord = null;
+            l.SelectHealthRecord(hr[20]);
+            l.SelectedHealthRecord = null;
 
-            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+            Assert.AreEqual(null, l.SelectedHealthRecord);
         }
 
         [TestMethod]
         public void DeselectWhenManySelected()
         {
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.SelectedHealthRecord = null;
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.SelectedHealthRecord = null;
 
-            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
-            Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(null, l.SelectedHealthRecord);
+            Assert.AreEqual(0, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void SelectManySelectedLast()
         {
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
 
-            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[21], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void SelectOneThenMany()
         {
-            card.HrList.SelectHealthRecord(hr[22]);
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.SelectHealthRecord(hr[22]);
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
 
-            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[21], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void SelectManyThenOne()
         {
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.SelectHealthRecord(hr[21]);
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.SelectHealthRecord(hr[21]);
 
-            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[21], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void SelectManyThenChangeSelected()
         {
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.SelectHealthRecord(hr[20], true);
-            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.SelectHealthRecord(hr[20], true);
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void AddToSelected()
         {
-            card.HrList.SelectHealthRecord(hr[20], true);
-            card.HrList.SelectHealthRecord(hr[21], true);
+            l.SelectHealthRecord(hr[20], true);
+            l.SelectHealthRecord(hr[21], true);
 
-            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[21], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(2, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void AddToSelectedNotInList()
         {
-            card.HrList.SelectHealthRecord(hr[20], true);
-            card.HrList.SelectHealthRecord(hr[1], true);
+            l.SelectHealthRecord(hr[20], true);
+            l.SelectHealthRecord(hr[1], true);
 
-            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void SelectOneByOne()
         {
-            card.HrList.SelectHealthRecord(hr[20]);
-            card.HrList.SelectHealthRecord(hr[21]);
+            l.SelectHealthRecord(hr[20]);
+            l.SelectHealthRecord(hr[21]);
 
-            Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[21], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void MoveHrSelection()
         {
-            card.HrList.SelectHealthRecord(hr[20]);
-            card.HrList.MoveHrSelectionCommand.Execute(true);
+            l.SelectHealthRecord(hr[20]);
+            l.MoveHrSelectionCommand.Execute(true);
 
-            Assert.AreNotEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreNotEqual(hr[20], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void MoveEmptyHrSelection()
         {
-            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
+            Assert.AreEqual(null, l.SelectedHealthRecord);
 
-            card.HrList.MoveHrSelectionCommand.Execute(true);
+            l.MoveHrSelectionCommand.Execute(true);
 
-            Assert.AreNotEqual(null, card.HrList.SelectedHealthRecord);
+            Assert.AreNotEqual(null, l.SelectedHealthRecord);
         }
 
         [TestMethod]
         public void MoveHrSelectionMany()
         {
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.Grouping = HrViewColumn.None;
-            card.HrList.MoveHrSelectionCommand.Execute(true); // up to 20
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.Grouping = HrViewColumn.None;
+            l.MoveHrSelectionCommand.Execute(true); // up to 20
 
-            Assert.AreEqual(hr[20], card.HrList.SelectedHealthRecord.healthRecord);
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
@@ -192,8 +195,8 @@ namespace Diagnosis.ViewModels.Tests
             var hr0 = AddHrToCard(card);
             var hr1 = AddHrToCard(card);
             var hr2 = AddHrToCard(card);
-            card.HrList.Sorting = HrViewColumn.CreatedAt;
-            card.HrList.Grouping = HrViewColumn.Category;
+            l.Sorting = HrViewColumn.CreatedAt;
+            l.Grouping = HrViewColumn.Category;
 
             // 1 cat
             // 0
@@ -205,11 +208,11 @@ namespace Diagnosis.ViewModels.Tests
             hr1.Category = cat[2];
             hr2.Category = cat[1];
 
-            card.HrList.SelectHealthRecord(hr0);
-            card.HrList.MoveHrSelectionCommand.Execute(true); // up
+            l.SelectHealthRecord(hr0);
+            l.MoveHrSelectionCommand.Execute(true); // up
 
             // move selection to last in view
-            Assert.AreEqual(hr1, card.HrList.SelectedHealthRecord.healthRecord);
+            Assert.AreEqual(hr1, l.SelectedHealthRecord.healthRecord);
         }
 
         #endregion Selection
@@ -219,11 +222,11 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void CopyPasteHr()
         {
-            card.HrList.SelectHealthRecord(hr[20]);
-            card.HrList.Copy();
-            card.HrList.Paste();
+            l.SelectHealthRecord(hr[20]);
+            l.Copy();
+            l.Paste();
 
-            Assert.AreEqual(4, card.HrList.HealthRecords.Count);
+            Assert.AreEqual(4, l.HealthRecords.Count);
         }
 
         [TestMethod]
@@ -232,11 +235,11 @@ namespace Diagnosis.ViewModels.Tests
             Load<IcdDisease>();
             Open(a[3]);
 
-            card.HrList.SelectHealthRecord(hr[31]);
-            card.HrList.Copy();
-            card.HrList.Paste();
+            l.SelectHealthRecord(hr[31]);
+            l.Copy();
+            l.Paste();
 
-            var pastedHr = card.HrList.SelectedHealthRecord.healthRecord;
+            var pastedHr = l.SelectedHealthRecord.healthRecord;
             var pastedIcd = pastedHr.GetOrderedEntities().FirstOrDefault(x => x.Equals(icd[1])) as IcdDisease;
             Assert.IsTrue(pastedIcd != null);
             Assert.AreEqual(icd[1].IcdBlock, pastedIcd.IcdBlock);
@@ -247,14 +250,14 @@ namespace Diagnosis.ViewModels.Tests
         {
             var w = new Word("11");
 
-            card.HrList.AddHealthRecordCommand.Execute(null);
+            l.AddHealthRecordCommand.Execute(null);
             (card.HrEditor.Autocomplete as AutocompleteViewModel).AddTag(w);
             card.HrEditor.CloseCommand.Execute(null);
 
             Assert.IsTrue(!w.IsTransient);
             Assert.AreEqual(1, w.HealthRecords.Count());
 
-            card.HrList.Cut();
+            l.Cut();
 
             Assert.AreEqual(0, w.HealthRecords.Count());
 
@@ -266,9 +269,9 @@ namespace Diagnosis.ViewModels.Tests
                 tr.Commit();
             }
 
-            card.HrList.Paste();
+            l.Paste();
 
-            var newWord = card.HrList.SelectedHealthRecord.healthRecord.HrItems.Single().Word;
+            var newWord = l.SelectedHealthRecord.healthRecord.HrItems.Single().Word;
             // word recreated and saved with same title
             Assert.AreNotEqual(w, newWord);
             Assert.AreEqual(0, newWord.CompareTo(w));
@@ -278,38 +281,38 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void NoSelectedAfterCut()
         {
-            var count = card.HrList.HealthRecords.Count;
+            var count = l.HealthRecords.Count;
 
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.Cut();
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.Cut();
 
-            Assert.AreEqual(null, card.HrList.SelectedHealthRecord);
-            Assert.AreEqual(0, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(null, l.SelectedHealthRecord);
+            Assert.AreEqual(0, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void CutPasteHrs()
         {
-            var count = card.HrList.HealthRecords.Count;
+            var count = l.HealthRecords.Count;
 
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.Cut();
-            card.HrList.Paste();
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.Cut();
+            l.Paste();
 
-            Assert.AreEqual(count, card.HrList.HealthRecords.Count);
-            Assert.AreEqual(2, card.HrList.SelectedHealthRecords.Count());
+            Assert.AreEqual(count, l.HealthRecords.Count);
+            Assert.AreEqual(2, l.SelectedHealthRecords.Count());
         }
 
         [TestMethod]
         public void PastedHrEqual()
         {
-            var count = card.HrList.HealthRecords.Count;
+            var count = l.HealthRecords.Count;
 
-            card.HrList.SelectHealthRecord(hr[20]);
-            card.HrList.Cut();
-            card.HrList.Paste();
+            l.SelectHealthRecord(hr[20]);
+            l.Cut();
+            l.Paste();
 
-            var new20 = card.HrList.SelectedHealthRecords.First().healthRecord;
+            var new20 = l.SelectedHealthRecords.First().healthRecord;
 
             Assert.AreEqual(hr[20].Patient, new20.Patient);
             Assert.AreEqual(hr[20].Course, new20.Course);
@@ -360,14 +363,14 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(2, hr2.Ord);
             Assert.AreEqual(3, hr3.Ord);
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.None;
 
-            Assert.IsTrue(card.HrList.CanReorder);
-            var vms = card.HrList.HealthRecords[1].ToEnumerable();
-            Assert.IsTrue(card.HrList.CanDropTo(vms, null));
+            Assert.IsTrue(l.CanReorder);
+            var vms = l.HealthRecords[1].ToEnumerable();
+            Assert.IsTrue(l.CanDropTo(vms, null));
 
-            card.HrList.Reorder(vms, 0, null);
+            l.Reorder(vms, 0, null);
             // hrs -> b a c d
 
             card.SaveAllHrs();
@@ -395,11 +398,11 @@ namespace Diagnosis.ViewModels.Tests
 
             // hrs -> a b (c) d
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.None;
 
-            var vms = card.HrList.HealthRecords[1].ToEnumerable();
-            card.HrList.Reorder(vms, 3, null);
+            var vms = l.HealthRecords[1].ToEnumerable();
+            l.Reorder(vms, 3, null);
             // hrs -> a (c) d b
 
             card.SaveAllHrs();
@@ -411,10 +414,10 @@ namespace Diagnosis.ViewModels.Tests
 
             hr2.IsDeleted = false;
             // hrs -> a c d b
-            Assert.AreEqual(0, card.HrList.HealthRecords[0].Ord);
-            Assert.AreEqual(1, card.HrList.HealthRecords[1].Ord);
-            Assert.AreEqual(2, card.HrList.HealthRecords[2].Ord);
-            Assert.AreEqual(3, card.HrList.HealthRecords[3].Ord);
+            Assert.AreEqual(0, l.HealthRecords[0].Ord);
+            Assert.AreEqual(1, l.HealthRecords[1].Ord);
+            Assert.AreEqual(2, l.HealthRecords[2].Ord);
+            Assert.AreEqual(3, l.HealthRecords[3].Ord);
         }
 
         [TestMethod]
@@ -422,8 +425,8 @@ namespace Diagnosis.ViewModels.Tests
         {
             OpenEmptyCard();
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.Category;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.Category;
 
             var hr0 = AddHrToCard(card, "a");
             var hr1 = AddHrToCard(card, "b");
@@ -432,11 +435,11 @@ namespace Diagnosis.ViewModels.Tests
             hr1.Category = cat[2];
             hr2.Category = cat[2];
 
-            card.HrList.SelectHealthRecord(hr0);
+            l.SelectHealthRecord(hr0);
 
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false));
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(false));
 
-            card.HrList.MoveHrCommand.Execute(false); //down
+            l.MoveHrCommand.Execute(false); //down
             Assert.AreEqual(cat[2], hr0.Category);
         }
 
@@ -445,19 +448,19 @@ namespace Diagnosis.ViewModels.Tests
         {
             OpenEmptyCard();
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.None;
 
             var hr0 = AddHrToCard(card, "a");
             var hr1 = AddHrToCard(card, "b");
             var hr3 = AddHrToCard(card, "c");
 
-            card.HrList.SelectHealthRecord(hr0);
+            l.SelectHealthRecord(hr0);
 
-            card.HrList.MoveHrCommand.Execute(false); //down
-            card.HrList.MoveHrCommand.Execute(false); //down
+            l.MoveHrCommand.Execute(false); //down
+            l.MoveHrCommand.Execute(false); //down
 
-            var lastHr = card.HrList.view.Cast<ShortHealthRecordViewModel>().Last().healthRecord;
+            var lastHr = l.view.Cast<ShortHealthRecordViewModel>().Last().healthRecord;
 
             Assert.AreEqual(hr0, lastHr);
         }
@@ -467,21 +470,21 @@ namespace Diagnosis.ViewModels.Tests
         {
             OpenEmptyCard();
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.None;
 
             var hr0 = AddHrToCard(card, "a");
             var hr1 = AddHrToCard(card, "b");
 
-            card.HrList.SelectHealthRecord(hr0);
+            l.SelectHealthRecord(hr0);
 
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false)); // down
-            Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(false)); // down
+            Assert.IsFalse(l.MoveHrCommand.CanExecute(true)); // up
 
-            card.HrList.SelectHealthRecord(hr1);
+            l.SelectHealthRecord(hr1);
 
-            Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(false)); // down
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            Assert.IsFalse(l.MoveHrCommand.CanExecute(false)); // down
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(true)); // up
         }
 
         [TestMethod]
@@ -489,8 +492,8 @@ namespace Diagnosis.ViewModels.Tests
         {
             OpenEmptyCard();
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.CreatedAt;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.CreatedAt;
 
             var hr0 = AddHrToCard(card, "a");
             var hr1 = AddHrToCard(card, "b");
@@ -512,25 +515,25 @@ namespace Diagnosis.ViewModels.Tests
             // d
 
             // можно перемещать только в пределах группы
-            card.HrList.SelectHealthRecord(hr0);
+            l.SelectHealthRecord(hr0);
 
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false)); // down
-            Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(false)); // down
+            Assert.IsFalse(l.MoveHrCommand.CanExecute(true)); // up
 
-            card.HrList.SelectHealthRecord(hr1);
+            l.SelectHealthRecord(hr1);
 
-            Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(false)); // down
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            Assert.IsFalse(l.MoveHrCommand.CanExecute(false)); // down
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(true)); // up
 
-            card.HrList.SelectHealthRecord(hr2);
+            l.SelectHealthRecord(hr2);
 
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(false)); // down
-            Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(false)); // down
+            Assert.IsFalse(l.MoveHrCommand.CanExecute(true)); // up
 
-            card.HrList.SelectHealthRecord(hr3);
+            l.SelectHealthRecord(hr3);
 
-            Assert.IsFalse(card.HrList.MoveHrCommand.CanExecute(false)); // down
-            Assert.IsTrue(card.HrList.MoveHrCommand.CanExecute(true)); // up
+            Assert.IsFalse(l.MoveHrCommand.CanExecute(false)); // down
+            Assert.IsTrue(l.MoveHrCommand.CanExecute(true)); // up
         }
 
         [TestMethod]
@@ -538,8 +541,8 @@ namespace Diagnosis.ViewModels.Tests
         {
             OpenEmptyCard();
 
-            card.HrList.Sorting = HrViewColumn.Ord;
-            card.HrList.Grouping = HrViewColumn.CreatedAt;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.CreatedAt;
 
             var hr0 = AddHrToCard(card, "a");
             var hr1 = AddHrToCard(card, "b");
@@ -561,16 +564,38 @@ namespace Diagnosis.ViewModels.Tests
             // d
 
             // можно перемещать только в пределах группы
-            var group = card.HrList.GetGroupObject(card.HrList.HealthRecords[0]);
-            Assert.IsTrue(card.HrList.CanDropTo(card.HrList.HealthRecords.Take(2), group));
-            Assert.IsFalse(card.HrList.CanDropTo(card.HrList.HealthRecords.Skip(1).Take(2), group));
+            var group = l.GetGroupObject(l.HealthRecords[0]);
+            Assert.IsTrue(l.CanDropTo(l.HealthRecords.Take(2), group));
+            Assert.IsFalse(l.CanDropTo(l.HealthRecords.Skip(1).Take(2), group));
         }
 
         #endregion Movement
 
+        [TestMethod]
+        public void GroupingAddsSort()
+        {
+            l.Sorting = HrViewColumn.None;
+            l.Grouping = HrViewColumn.None;
+
+            l.Grouping = HrViewColumn.Category;
+            var sortD = new SortDescription(HrViewColumn.Category.ToSortingProperty(), ListSortDirection.Ascending);
+
+            Assert.IsTrue(l.view.SortDescriptions.Contains(sortD));
+        }
+
+        [TestMethod]
+        public void AlwaysSortByOrd()
+        {
+            l.Sorting = HrViewColumn.None;
+            l.Grouping = HrViewColumn.None;
+
+            var ordSortD = new SortDescription(HrViewColumn.Ord.ToSortingProperty(), ListSortDirection.Ascending);
+
+            Assert.IsTrue(l.view.SortDescriptions.Contains(ordSortD));
+        }
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
-            var hr = card.HrList.holder.AddHealthRecord(d1);
+            var hr = l.holder.AddHealthRecord(d1);
             if (comment != null)
                 hr.AddItems(new Comment(comment).ToEnumerable());
             return hr;

@@ -140,7 +140,7 @@
     <value>По разделу</value>
   </data>
   <data name="Sorting_Date" xml:space="preserve">
-    <value>По дате</value>
+    <value>По дате события</value>
   </data>
   <data name="Sorting_Ord" xml:space="preserve">
     <value>По порядку</value>
@@ -164,7 +164,7 @@
     <value>(нет)</value>
   </data>
   <data name="Sorting_CreatedAt" xml:space="preserve">
-    <value>По дате создания</value>
+    <value>По дате создания записи</value>
   </data>
   <data name="GroupBy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\images\groupby.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -234,5 +234,8 @@
   </data>
   <data name="Operator_Between" xml:space="preserve">
     <value>между</value>
+  </data>
+  <data name="Sorting_DescribedAt" xml:space="preserve">
+    <value>По дате описания события</value>
   </data>
 </root>

@@ -72,6 +72,7 @@ namespace Diagnosis.ViewModels.Screens
                HrViewColumn.Ord,
                HrViewColumn.Category,
                HrViewColumn.Date,
+               HrViewColumn.DescribedAt,
                HrViewColumn.CreatedAt,
             };
             Groupings = new List<HrViewColumn>() {
@@ -587,8 +588,8 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
+                Contract.Requires(Sortings.Contains(Sorting));
                 Contract.Ensures(Grouping == Contract.OldValue(Grouping));
-                Contract.Ensures(Sortings.Contains(Sorting));
                 if (_sort != value)
                 {
 #if DEBUG
@@ -635,8 +636,8 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
+                Contract.Requires(Groupings.Contains(Grouping));
                 Contract.Ensures(Sorting == Contract.OldValue(Sorting));
-                Contract.Ensures(Groupings.Contains(Grouping));
                 if (_group != value)
                 {
                     using (view.DeferRefresh())
@@ -779,6 +780,7 @@ namespace Diagnosis.ViewModels.Screens
                     break;
 
                 case HrViewColumn.CreatedAt:
+                // нет переноса в другую группу
                 default:
                     break;
             }
@@ -809,7 +811,10 @@ namespace Diagnosis.ViewModels.Screens
                     // дата записи всегда видна
                     break;
 
-                default: // Ord
+                case HrViewColumn.DescribedAt:
+                    break;
+
+                case HrViewColumn.Ord:
                     break;
             }
 

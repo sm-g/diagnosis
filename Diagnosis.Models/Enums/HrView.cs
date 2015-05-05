@@ -20,6 +20,9 @@ namespace Diagnosis.Models.Enums
         Date,
 
         [LocalizableDescription(@"Sorting_CreatedAt")]
-        CreatedAt
+        CreatedAt,
+
+        [LocalizableDescription(@"Sorting_DescribedAt")]
+        DescribedAt
     }
 }
