@@ -34,7 +34,6 @@ namespace Diagnosis.ViewModels.Tests
         {
             if (e != null)
                 e.Dispose();
-            // no need to recreate hreditor - create in ctor?
         }
 
         [TestMethod]

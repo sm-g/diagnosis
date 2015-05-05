@@ -35,9 +35,6 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void OnOk()
         {
-            if (!CanOk)
-                return;
-
             AuthorityController.ChangePassword(admin, Passwords.Password);
 
             new Saver(Session).Save(admin.Passport);
