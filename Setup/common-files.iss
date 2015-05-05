@@ -14,6 +14,8 @@ Source: "{#ClientBuildOutputFolder}\bin\EventAggregator.dll"; DestDir: "{app}\bi
 Source: "{#ClientBuildOutputFolder}\bin\FluentMigrator.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\Kent.Boogaart.Converters.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\Kent.Boogaart.HelperTrinity.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\bin\AutoMapper.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\bin\AutoMapper.Net4.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentMigrator.Runner.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentValidation.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentValidation.resources.dll"; DestDir: "{app}\bin"; Flags: sharedfile
