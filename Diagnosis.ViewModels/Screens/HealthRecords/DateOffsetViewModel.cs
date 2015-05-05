@@ -254,7 +254,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                Contract.Ensures(patient.BirthYear == null ||
+                Contract.Ensures(patient.BirthYear == null || value == null ||
                     value == DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, from.GetSortingDate()));
 
                 if (patient.BirthYear == null)
@@ -282,7 +282,7 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                Contract.Ensures(patient.BirthYear == null ||
+                Contract.Ensures(patient.BirthYear == null || value == null ||
                     value == DateHelper.GetAge(patient.BirthYear, patient.BirthMonth, patient.BirthDay, to.GetSortingDate()));
 
                 if (patient.BirthYear == null)
