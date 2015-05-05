@@ -10,28 +10,28 @@ namespace Diagnosis.Common
     /// </summary>
     public static class MessageKeys
     {
-        public const string Word = "word";
-        public const string Patient = "patient";
-        public const string Doctor = "doctor";
-        public const string User = "user";
-        public const string Diagnosis = "diagnosis";
-        public const string Course = "course";
-        public const string Appointment = "appointment";
-        public const string HealthRecord = "healthRecord";
-        public const string HealthRecords = "healthRecords";
-        public const string Category = "category";
-        public const string Boolean = "bool";
-        public const string Settings = "settings";
-        public const string UndoDoActions = "undooverlay";
-        public const string Type = "type";
-        public const string Holder = "holder";
-        public const string Dialog = "dialog";
-        public const string HrItemObjects = "entity";
-        public const string Window = "window";
-        public const string Uom = "uom";
-        public const string String = "string";
-        public const string Name = "name";
-        public const string Value = "value";
+        public static string Word = "word";
+        public static string Patient = "patient";
+        public static string Doctor = "doctor";
+        public static string User = "user";
+        public static string Diagnosis = "diagnosis";
+        public static string Course = "course";
+        public static string Appointment = "appointment";
+        public static string HealthRecord = "healthRecord";
+        public static string HealthRecords = "healthRecords";
+        public static string Category = "category";
+        public static string Boolean = "bool";
+        public static string Settings = "settings";
+        public static string UndoDoActions = "undooverlay";
+        public static string Type = "type";
+        public static string Holder = "holder";
+        public static string Dialog = "dialog";
+        public static string HrItemObjects = "entity";
+        public static string Window = "window";
+        public static string Uom = "uom";
+        public static string String = "string";
+        public static string Name = "name";
+        public static string Value = "value";
     }
 
     public enum Event

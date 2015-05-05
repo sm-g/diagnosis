@@ -104,6 +104,8 @@ namespace Diagnosis.ViewModels
             }
             set
             {
+                FirstSet = ShowAs.Offset;
+
                 if (IsClosedInterval)
                 {
                     var rel = Relative;
@@ -116,7 +118,6 @@ namespace Diagnosis.ViewModels
                     from.Offset = value;
                 }
 
-                FirstSet = ShowAs.Offset;
                 OnPropertyChanged(() => Offset);
             }
         }
@@ -129,18 +130,14 @@ namespace Diagnosis.ViewModels
             }
             set
             {
-                FirstSet = ShowAs.Offset;
                 if (IsClosedInterval)
                 {
                     var rel = Relative;
                     rel.Unit = value;
 
                     // но не cuts
-                    FillFixedSide(to, to.GetSortingDate(), value);
-
-                    from.Year = rel.Year;
-                    from.Month = rel.Month;
-                    from.Day = rel.Day;
+                    to.FillDateDownTo(to.GetSortingDate(), value);
+                    from.FillDateFrom(rel);
                 }
                 else
                 {
@@ -263,13 +260,14 @@ namespace Diagnosis.ViewModels
                 if (patient.BirthYear == null)
                     return;
 
+                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
+
                 // установка возраста меняет только год
                 if (value.HasValue)
                     from.Year = DateHelper.GetYearForAge(value.Value, patient.BirthYear.Value, patient.BirthMonth, patient.BirthDay, from.GetSortingDate());
                 else
                     from.Year = null;
 
-                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
                 OnPropertyChanged(() => AtAge);
             }
         }
@@ -290,12 +288,13 @@ namespace Diagnosis.ViewModels
                 if (patient.BirthYear == null)
                     return;
 
+                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
+
                 if (value.HasValue)
                     to.Year = DateHelper.GetYearForAge(value.Value, patient.BirthYear.Value, patient.BirthMonth, patient.BirthDay, to.GetSortingDate());
                 else
                     to.Year = null;
 
-                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
                 OnPropertyChanged(() => ToAtAge);
             }
         }
@@ -334,18 +333,6 @@ namespace Diagnosis.ViewModels
             get { return from.IsEmpty; }
         }
 
-        //public DateTime Now
-        //{
-        //    get { return IsClosedInterval ? Relative.Now : from.Now; }
-        //    set
-        //    {
-        //        //if (!IsClosedInterval)
-        //        {
-        //            from.Now = value;
-        //            to.Now = value;
-        //        }
-        //    }
-        //}
         public bool ToIsEmpty
         {
             get { return to.IsEmpty; }
@@ -363,7 +350,7 @@ namespace Diagnosis.ViewModels
         }
 
         /// <summary>
-        /// В какое поле был первый ввод (для новой записи).
+        /// В какое поле был первый ввод (для записи без даты, открытой в этой сессии).
         /// </summary>
         public ShowAs? FirstSet
         {
@@ -398,6 +385,12 @@ namespace Diagnosis.ViewModels
             return res;
         }
 
+        internal static void ClearDict()
+        {
+            dict.Values.ForEach(x => x.Dispose());
+            Contract.Assert(dict.Count == 0);
+        }
+
         private static void OnHrRemoved(HealthRecord item)
         {
             DateOffsetViewModel res;
@@ -406,11 +399,6 @@ namespace Diagnosis.ViewModels
                 dict.Remove(item);
                 res.Dispose();
             }
-        }
-
-        private static void FillFixedSide(DateOffset d, DateTime dt, DateUnit value)
-        {
-            d.FillDateDownTo(dt, value);
         }
 
         private void RoundOffsetUnitByDate()

@@ -45,6 +45,7 @@ namespace Diagnosis.Client.App
             inExit = true;
             this.Send(Event.Shutdown);
             Diagnosis.Client.App.Properties.Settings.Default.Save();
+            DbMaintenanceOnExit();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -191,6 +192,27 @@ namespace Diagnosis.Client.App
                 }
                 sw.Stop();
                 logger.DebugFormat("migration: {0}", sw.Elapsed);
+            }
+        }
+        private void DbMaintenanceOnExit()
+        {
+            if (NHibernateHelper.Default.InMemory)
+                return;
+
+            using (var s = NHibernateHelper.Default.GetSession())
+            using (var tr = s.BeginTransaction())
+            {
+
+                var q = (from hri in s.Query<HrItem>()
+                         where hri.Measure != null && hri.Measure.Uom != null && hri.Word != null
+                         group hri by hri.Word into g
+                         select new { Word = g.Key, Hris = g }).ToList();
+                q.ForEach(x =>
+                {
+                    x.Word.Uom = x.Hris.Select(i => i.Measure.Uom).Mode();
+                    s.SaveOrUpdate(x.Word);
+                });
+                tr.Commit();
             }
         }
 

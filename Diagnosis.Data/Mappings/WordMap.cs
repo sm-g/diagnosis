@@ -24,6 +24,12 @@ namespace Diagnosis.Data.Mappings
             {
                 m.Column(Names.Col.WordParent);
             });
+            // только на клиенте
+            ManyToOne(x => x.Uom, m =>
+            {
+                m.Column(Names.Id.Uom);
+                m.NotNullable(false);
+            });
 
             Set(x => x.Children, s =>
             {

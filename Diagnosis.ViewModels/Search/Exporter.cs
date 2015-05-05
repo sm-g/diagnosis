@@ -14,9 +14,9 @@ namespace Diagnosis.ViewModels.Search
     internal class Exporter
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Exporter));
-        private const string defName = "diagnosis export";
-        private const double hrIdColWidth = 13;
-        private const string uomHeader = "ед. изм.";
+        private static string defName = "diagnosis export";
+        private static double hrIdColWidth = 13;
+        private static string uomHeader = "ед. изм.";
 
         public void ExportToXlsx(Statistic stats)
         {

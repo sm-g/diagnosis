@@ -15,7 +15,6 @@ namespace Diagnosis.Models
     {
         public static Uom Null = new Uom("—", 1, new UomType("", int.MinValue));  // для измерения без единицы
 
-        // [NonSerialized]
         private ISet<UomFormat> formats = new HashSet<UomFormat>();
 
         private string _description;
@@ -120,10 +119,5 @@ namespace Diagnosis.Models
         {
             return new UomValidator().Validate(this);
         }
-        //[OnDeserialized]
-        //private void OnDeserializedMethod(StreamingContext context)
-        //{
-        //    formats = new HashSet<UomFormat>();
-        //}
     }
 }

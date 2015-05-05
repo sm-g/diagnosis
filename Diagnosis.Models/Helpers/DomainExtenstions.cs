@@ -270,6 +270,7 @@ namespace Diagnosis.Models
             var @switch2 = new Dictionary<Type, Expression<Func<T, bool>>> {
                 { typeof(Uom), (y) => 
                     (x as Uom).Abbr == (y as Uom).Abbr &&
+                    (x as Uom).Description == (y as Uom).Description &&
                     (x as Uom).Type.Title == (y as Uom).Type.Title                   
                 },
                 { typeof(UomType), (y) => 
@@ -277,7 +278,10 @@ namespace Diagnosis.Models
                 },
                 { typeof(UomFormat), (y) => 
                     (x as UomFormat).String == (y as UomFormat).String &&
-                    (x as UomFormat).MeasureValue== (y as UomFormat).MeasureValue
+                    (x as UomFormat).MeasureValue== (y as UomFormat).MeasureValue &&
+                    (x as UomFormat).Uom.Abbr == (y as UomFormat).Uom.Abbr &&
+                    (x as UomFormat).Uom.Description== (y as UomFormat).Uom.Description&&
+                    (x as UomFormat).Uom.Type.Title== (y as UomFormat).Uom.Type.Title
                 },
                 { typeof(HrCategory), (y) => 
                     (x as HrCategory).Title == (y as HrCategory).Title
@@ -323,6 +327,7 @@ namespace Diagnosis.Models
                         var a = x as Uom;
                         var b = y as Uom;
                         return a.Abbr == b.Abbr &&
+                               a.Description == b.Description &&
                                a.Type == b.Type;
                     }
                 },
@@ -338,7 +343,8 @@ namespace Diagnosis.Models
                         var a = x as UomFormat;
                         var b = y as UomFormat;
                         return a.String == b.String &&
-                               a.MeasureValue == b.MeasureValue;
+                               a.MeasureValue == b.MeasureValue &&
+                               a.Uom.EqualsByVal(b.Uom);
                     } 
                 },
                 { typeof(HrCategory), () => 

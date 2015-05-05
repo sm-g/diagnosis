@@ -344,13 +344,13 @@ namespace Diagnosis.ViewModels.Tests
         {
             e.Load(hr);
             var old = hr.ToDate;
-            Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
+            Assert.IsTrue(e.HealthRecord.DateEditor.IsIntervalEditorOpened);
 
             // скрыт редактор интервала - дата-точка, открыт - последний ввод
-            e.HealthRecord.IsIntervalEditorOpened = false;
+            e.HealthRecord.DateEditor.IsIntervalEditorOpened = false;
             Assert.AreEqual(hr.FromDate, hr.ToDate);
 
-            e.HealthRecord.IsIntervalEditorOpened = true;
+            e.HealthRecord.DateEditor.IsIntervalEditorOpened = true;
             Assert.AreEqual(old, hr.ToDate);
         }
 
@@ -358,12 +358,12 @@ namespace Diagnosis.ViewModels.Tests
         public void SetToDateSameAsFromDate()
         {
             e.Load(hr);
-            Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
+            Assert.IsTrue(e.HealthRecord.DateEditor.IsIntervalEditorOpened);
 
             hr.ToDate.FillDateFrom(hr.FromDate);
 
             // редактор интервала остается открыт
-            Assert.IsTrue(e.HealthRecord.IsIntervalEditorOpened);
+            Assert.IsTrue(e.HealthRecord.DateEditor.IsIntervalEditorOpened);
         }
     }
 }

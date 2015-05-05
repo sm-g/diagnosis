@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -114,6 +115,8 @@ namespace Diagnosis.Common
         /// <summary>
         /// Возвращает возраст к указанному моменту.
         /// </summary>
+
+        [Pure]
         public static int? GetAge(int? birthYear, int? month, int? day, DateTime now)
         {
             if (!birthYear.HasValue)
@@ -129,6 +132,7 @@ namespace Diagnosis.Common
         /// <summary>
         /// Возвращает год рождения для указанного возраста к моменту.
         /// </summary>
+        [Pure]
         public static int GetBirthYearByAge(int age, int? birthMonth, int? day, DateTime now)
         {
             int year = now.Year - age;
@@ -144,6 +148,7 @@ namespace Diagnosis.Common
         /// <summary>
         /// Возвращает момент когда наступит возраст по дате рождения.
         /// </summary>
+        [Pure]
         public static DateTime GetDateForAge(int age, int birthYear, int? month, int? day)
         {
             int year = birthYear + age;
@@ -154,6 +159,7 @@ namespace Diagnosis.Common
         /// <summary>
         /// Возвращает год, который должен быть у момента, чтобы в этот момент был указанный возраст.
         /// </summary>
+        [Pure]
         public static int GetYearForAge(int age, int birthYear, int? month, int? day, DateTime now)
         {
             var year = birthYear + age;

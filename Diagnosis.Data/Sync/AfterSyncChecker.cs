@@ -42,7 +42,7 @@ namespace Diagnosis.Data.Sync
             {
                 // uow start
 
-                IEnumerable<IEntity> replaced = null;
+                IEnumerable<IEntity> replaced = Enumerable.Empty<IEntity>();
                 var ids = addedIdsPerType[type];
                 var entities = ids.Select(id => session.Get(type, id)).ToList();
 
@@ -52,7 +52,7 @@ namespace Diagnosis.Data.Sync
                     var replacing = GetReplaceEntities<HrCategory>(entities);
                     if (replacing.Count > 0)
                     {
-                        UpdateParents<HrCategory, HealthRecord>(replacing,
+                        UpdateChildren<HrCategory, HealthRecord>(replacing,
                             x => x.Category,
                             (x, value) => x.Category = value);
 
@@ -65,14 +65,18 @@ namespace Diagnosis.Data.Sync
                     var replacing = GetReplaceEntities<Uom>(entities);
                     if (replacing.Count > 0)
                     {
-                        UpdateParents<Uom, HrItem>(replacing,
+                        UpdateChildren<Uom, HrItem>(replacing,
                             x => x.Measure != null ? x.Measure.Uom : null,
                             (x, value) => { if (x.Measure != null) x.Measure.Uom = value; });
-                        UpdateParents<Uom, UomFormat>(replacing,
+                        UpdateChildren<Uom, UomFormat>(replacing,
+                            x => x.Uom,
+                            (x, value) => x.Uom = value);
+                        UpdateChildren<Uom, Word>(replacing,
                             x => x.Uom,
                             (x, value) => x.Uom = value);
                         scopesToDeprovision.AddRange(typeof(HrItem).GetScopes());
                         scopesToDeprovision.AddRange(typeof(UomFormat).GetScopes());
+                        scopesToDeprovision.AddRange(typeof(Word).GetScopes());
                     }
                     replaced = replacing.Keys;
                 }
@@ -81,7 +85,7 @@ namespace Diagnosis.Data.Sync
                     var replacing = GetReplaceEntities<UomType>(entities);
                     if (replacing.Count > 0)
                     {
-                        UpdateParents<UomType, Uom>(replacing,
+                        UpdateChildren<UomType, Uom>(replacing,
                             x => x.Type,
                             (x, value) => x.Type = value);
 
@@ -92,7 +96,7 @@ namespace Diagnosis.Data.Sync
                 else if (type == typeof(UomFormat))
                 {
                     var replacing = GetReplaceEntities<UomFormat>(entities);
-                    // no parents
+                    // no child
                     replaced = replacing.Keys;
                 }
                 else if (type == typeof(Speciality))
@@ -100,13 +104,13 @@ namespace Diagnosis.Data.Sync
                     var replacing = GetReplaceEntities<Speciality>(entities);
                     if (replacing.Count > 0)
                     {
-                        UpdateParents<Speciality, Doctor>(replacing,
+                        UpdateChildren<Speciality, Doctor>(replacing,
                             x => x.Speciality,
                             (x, value) => x.Speciality = value);
-                        UpdateParents<Speciality, SpecialityIcdBlocks>(replacing,
+                        UpdateChildren<Speciality, SpecialityIcdBlocks>(replacing,
                             x => x.Speciality,
                             (x, value) => x.Speciality = value);
-                        UpdateParents<Speciality, SpecialityVocabularies>(replacing,
+                        UpdateChildren<Speciality, SpecialityVocabularies>(replacing,
                            x => x.Speciality,
                            (x, value) => x.Speciality = value);
 
@@ -121,10 +125,10 @@ namespace Diagnosis.Data.Sync
                     var replacing = GetReplaceEntities<Vocabulary>(entities);
                     if (replacing.Count > 0)
                     {
-                        UpdateParents<Vocabulary, VocabularyWords>(replacing,
+                        UpdateChildren<Vocabulary, VocabularyWords>(replacing,
                             x => x.Vocabulary,
                             (x, value) => x.Vocabulary = value);
-                        UpdateParents<Vocabulary, SpecialityVocabularies>(replacing,
+                        UpdateChildren<Vocabulary, SpecialityVocabularies>(replacing,
                            x => x.Vocabulary,
                            (x, value) => x.Vocabulary = value);
 
@@ -194,7 +198,7 @@ namespace Diagnosis.Data.Sync
         /// <param name="toReplace">Сущности для замены, значения { oldEntity, newEntity }</param>
         /// <param name="propertyGetter">Геттер свойства для обновления</param>
         /// <param name="propertySetter">Сеттер свойства для обновления</param>
-        private void UpdateParents<T, TUpdate>(Dictionary<T, T> toReplace, Func<TUpdate, T> propertyGetter, Action<TUpdate, T> propertySetter)
+        private void UpdateChildren<T, TUpdate>(Dictionary<T, T> toReplace, Func<TUpdate, T> propertyGetter, Action<TUpdate, T> propertySetter)
             where T : IEntity
             where TUpdate : IEntity
         {
@@ -216,9 +220,6 @@ namespace Diagnosis.Data.Sync
         /// <param name="replaced">Замененные сущности для удаления</param>
         private void CleanupReplaced(IEnumerable<IEntity> replaced)
         {
-            if (replaced == null)
-                return;
-
             var list = replaced.ToArray();
 
             new Saver(session).Delete(list);
