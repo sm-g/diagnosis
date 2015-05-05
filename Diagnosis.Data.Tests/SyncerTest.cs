@@ -86,7 +86,7 @@ namespace Diagnosis.Data.Tests
                 clSession.Save(p);
                 tr.Commit();
             }
-
+            s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
             await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder.ToEnumerable());
 
             Assert.AreEqual(clPatCount + 1, sSession.Query<Patient>().Count());
@@ -209,6 +209,8 @@ namespace Diagnosis.Data.Tests
             // загружаем новые шаблоны для установленных словарей
             var cWtCount = clSession.Query<WordTemplate>().Count();
             var installedVocs = sSession.Query<Vocabulary>();
+
+            s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
             await s.WithInstalledVocs(installedVocs)
                 .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
             new VocLoader(clSession).AfterSyncVocs(s.DeletedOnServerIdsPerType);
