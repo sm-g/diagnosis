@@ -30,6 +30,7 @@ namespace Diagnosis.ViewModels.Tests
             card = new CardViewModel(a[2], true);
         }
 
+        [TestCleanup]
         public void Clean()
         {
             if (card != null)
@@ -257,14 +258,19 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(0, w.HealthRecords.Count());
 
-            var wordList = new WordsListViewModel();
-            wordList.SelectWord(w);
-            wordList.DeleteCommand.Execute(null);
+            // delete word
+            w.OnDelete();
+            using (var tr = session.BeginTransaction())
+            {
+                session.Delete(w);
+                tr.Commit();
+            }
 
             card.HrList.Paste();
 
             var newWord = card.HrList.SelectedHealthRecord.healthRecord.HrItems.Single().Word;
             // word recreated and saved with same title
+            Assert.AreNotEqual(w, newWord);
             Assert.AreEqual(0, newWord.CompareTo(w));
             Assert.IsTrue(!newWord.IsTransient);
         }
@@ -347,7 +353,7 @@ namespace Diagnosis.ViewModels.Tests
             var hr3 = AddHrToCard(card, "d");
 
             // hrs -> a b c d
-            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+            card.SaveAllHrs();
 
             Assert.AreEqual(0, hr0.Ord);
             Assert.AreEqual(1, hr1.Ord);
@@ -364,7 +370,7 @@ namespace Diagnosis.ViewModels.Tests
             card.HrList.Reorder(vms, 0, null);
             // hrs -> b a c d
 
-            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+            card.SaveAllHrs();
 
             Assert.AreEqual(1, hr0.Ord);
             Assert.AreEqual(0, hr1.Ord);
@@ -383,7 +389,7 @@ namespace Diagnosis.ViewModels.Tests
             var hr3 = AddHrToCard(card, "d");
 
             // hrs -> a b c d
-            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+            card.SaveAllHrs();
 
             hr2.IsDeleted = true;
 
@@ -396,7 +402,7 @@ namespace Diagnosis.ViewModels.Tests
             card.HrList.Reorder(vms, 3, null);
             // hrs -> a (c) d b
 
-            card.SaveHealthRecords(card.HrList, new ListEventArgs<HealthRecord>(null));
+            card.SaveAllHrs();
 
             Assert.AreEqual(0, hr0.Ord);
             Assert.AreEqual(3, hr1.Ord);

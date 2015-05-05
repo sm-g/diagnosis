@@ -26,7 +26,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestCleanup]
         public void Clean()
         {
-            vm.Dispose();
+            if (vm != null)
+                vm.Dispose();
         }
 
         [TestMethod]
@@ -260,7 +261,7 @@ namespace Diagnosis.ViewModels.Tests
             var vm = DateOffsetViewModel.FromHr(emptyH);
             vm.Unit = DateUnit.Month;
 
-            Assert.IsTrue(vm.IsEmpty);        
+            Assert.IsTrue(vm.IsEmpty);
             Assert.AreEqual(null, vm.FirstSet);
         }
         [TestMethod]

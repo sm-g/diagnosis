@@ -33,7 +33,6 @@ namespace Diagnosis.ViewModels.Tests
         {
             if (card != null)
                 card.Dispose();
-            card = null;
         }
 
         #region Opening
@@ -330,6 +329,16 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         #endregion Saving
+
+        [TestMethod]
+        public void NavigatorFindVm()
+        {
+            card.Open(a[2]);
+            var cardVm = card.Navigator.FindItemVmOf(a[2]);
+
+            Assert.IsTrue(cardVm != null);
+            Assert.AreEqual(a[2], cardVm.Holder);
+        }
 
         [TestMethod]
         public void AddUsedHiddenWordToCustomVoc()
