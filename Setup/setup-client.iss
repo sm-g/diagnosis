@@ -30,16 +30,11 @@ Source: "{#ClientBuildOutputFolder}\Diagnosis.Client.App.exe.config"; DestDir: "
 #include "common-files.iss"
 
 ; client dlls
-Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.AvalonDock.dll"; DestDir: "{app}\bin"
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.AvalonDock.resources.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.AvalonDock.Themes.Metro.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.DataGrid.dll"; DestDir: "{app}\bin\"
-Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.Toolkit.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\EPPlus.dll"; DestDir: "{app}\bin"
-Source: "{#ClientBuildOutputFolder}\bin\MahApps.Metro.dll"; DestDir: "{app}\bin\"
-Source: "{#ClientBuildOutputFolder}\bin\System.Windows.Interactivity.dll"; DestDir: "{app}\bin\"
-Source: "{#ClientBuildOutputFolder}\bin\Microsoft.Data.ConnectionUI.Dialog.dll"; DestDir: "{app}\bin\"
-Source: "{#ClientBuildOutputFolder}\bin\Microsoft.Data.ConnectionUI.dll"; DestDir: "{app}\bin\"
+
 ; client help
 Source: "{#ClientBuildOutputFolder}\Help\Hotkeys.html"; DestDir: "{app}\Help\"
 Source: "{#ClientBuildOutputFolder}\Help\Index.html"; DestDir: "{app}\Help\"

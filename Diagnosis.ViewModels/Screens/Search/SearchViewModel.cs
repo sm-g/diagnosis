@@ -86,9 +86,6 @@ namespace Diagnosis.ViewModels.Screens
 
             );
 
-#if !DEBUG
-            UseOldMode = true;
-#endif
             ControlsVisible = true;
 
         }

@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels.Screens
     /// </summary>
     public class UndoOverlayViewModel : ViewModelBase
     {
-        private const string messageTemplate = "Удален{0} {1} {2}";  // удалены 5 записей
+        private static string messageTemplate = "Удален{0} {1} {2}";  // удалены 5 записей
         private readonly Action<UndoOverlayViewModel> onClose;
         private readonly List<Action> undos;
         private readonly List<Action> todos;

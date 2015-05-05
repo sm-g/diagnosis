@@ -357,8 +357,9 @@
     <None Include="Autocomplete\Auto-SugMaker-Tag.dgml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Screens\Card\CodeMap1.dgml" />
+    <None Include="Screens\Card\CardCodeMap.dgml" />
     <None Include="Screens\HealthRecords\CodeMap1.dgml" />
+    <None Include="Screens\Search\SearchCodeMap.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />

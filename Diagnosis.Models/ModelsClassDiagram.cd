@@ -92,9 +92,6 @@
       <HashCode>AACIYUigAABBCIQMAHEQBEcAAAAMgAAGGACgABAACAw=</HashCode>
       <FileName>Entities\Patient.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="Courses" />
-    </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.IcdBlock" Collapsed="true">
@@ -163,6 +160,7 @@
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Parent" />
+      <Property Name="Uom" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
@@ -202,7 +200,7 @@
   <Class Name="Diagnosis.Models.Uom" Collapsed="true">
     <Position X="6.75" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAABQEAAgEAREQBAAAAAAAAZAAAAgAQtABAAAAAA=</HashCode>
+      <HashCode>AAAAAABQAAAgEAREABAAAAAAAAZAAAAAAQMAAAAAAAA=</HashCode>
       <FileName>Entities\Uom.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -323,10 +321,12 @@
       <Path>
         <Point X="14.969" Y="7.441" />
         <Point X="14.969" Y="7.816" />
-        <Point X="13.99" Y="7.816" Type="JumpStart" />
-        <Point X="13.667" Y="7.816" Type="JumpEnd" />
-        <Point X="13.583" Y="7.816" Type="JumpStart" />
-        <Point X="13.417" Y="7.816" Type="JumpEnd" />
+        <Point X="14.044" Y="7.816" Type="JumpStart" />
+        <Point X="13.878" Y="7.816" Type="JumpEnd" />
+        <Point X="13.755" Y="7.816" Type="JumpStart" />
+        <Point X="13.589" Y="7.816" Type="JumpEnd" />
+        <Point X="13.513" Y="7.816" Type="JumpStart" />
+        <Point X="13.346" Y="7.816" Type="JumpEnd" />
         <Point X="12.562" Y="7.816" />
         <Point X="12.562" Y="8.75" />
       </Path>
@@ -336,8 +336,8 @@
       <FileName>Entities\VocabularyWords.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Vocabulary" />
       <Property Name="Word" />
+      <Property Name="Vocabulary" />
     </ShowAsAssociation>
   </Class>
   <Enum Name="Diagnosis.Models.HealthRecordUnit" Collapsed="true">

@@ -89,7 +89,16 @@ namespace Diagnosis.ViewModels.Autocomplete
         public Word Word
         {
             get { return Measure.Word; }
-            set { Measure.Word = value; }
+            set
+            {
+                Measure.Word = value;
+
+                // единица по слову
+                if (value != null && value.Uom != null && Uom == null)
+                    Uom = value.Uom;
+
+                OnPropertyChanged(() => Word);
+            }
         }
 
         public string Value
@@ -127,6 +136,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             set
             {
                 Measure.Uom = value;
+                OnPropertyChanged(() => Uom);
+
                 // валидация
                 OnPropertyChanged(() => Value);
                 OnPropertyChanged(() => AndValue);

@@ -30,14 +30,6 @@ namespace Diagnosis.Data.Sync
             var selectedSpecIds = vocsToLoad.SelectMany(x => x.Specialities.Select(y => y.Id));
             var selectedSpecVocIds = vocsToLoad.SelectMany(x => x.SpecialityVocabularies.Select(y => y.Id));
 
-            var IdsForSyncPerType = new Dictionary<Type, IEnumerable<object>>(){
-                       {typeof(Vocabulary),             selectedVocIds.Cast<object>()},
-                       {typeof(WordTemplate),           selectedWtIds.Cast<object>()},
-                       {typeof(Speciality),             selectedSpecIds.Cast<object>()},
-                       {typeof(SpecialityVocabularies), selectedSpecVocIds.Cast<object>()},
-                        // слова словаря не загружаются с сервера
-                    };
-
             using (var tr = remote.BeginTransaction())
             {
                 // повторно загружаем даже если не было изменений на сервере
@@ -50,7 +42,11 @@ namespace Diagnosis.Data.Sync
                 // специальность не удаляется при удалении словаря
                 tr.Commit();
             }
-            s.IdsForSyncPerType = IdsForSyncPerType;
+            s.IdsForSyncPerType.Add(typeof(Vocabulary), selectedVocIds.Cast<object>());
+            s.IdsForSyncPerType.Add(typeof(WordTemplate), selectedWtIds.Cast<object>());
+            s.IdsForSyncPerType.Add(typeof(Speciality), selectedSpecIds.Cast<object>());
+            s.IdsForSyncPerType.Add(typeof(SpecialityVocabularies), selectedSpecVocIds.Cast<object>());
+            // слова словаря не загружаются с сервера
 
             return s;
 
@@ -67,15 +63,13 @@ namespace Diagnosis.Data.Sync
         {
             var installedVocsIds = installedVocs.Select(x => x.Id).ToList().Cast<object>();
 
-            var filter = new Dictionary<Type, Func<DataRow, bool>>();
             foreach (var table in Scopes.GetVocOnlyTablesToDownload())
             {
                 if (table == Names.WordTemplate)
-                    filter.Add(Names.tblToTypeMap[table], (row) => !installedVocsIds.Contains(row[Names.Id.Vocabulary]));
+                    s.IgnoreAddingFilterPerType.Add(Names.tblToTypeMap[table], (row) => !installedVocsIds.Contains(row[Names.Id.Vocabulary]));
                 else
-                    filter.Add(Names.tblToTypeMap[table], (row) => true);
+                    s.IgnoreAddingFilterPerType.Add(Names.tblToTypeMap[table], (row) => true);
             }
-            s.IgnoreAddingFilterPerType = filter;
             return s;
         }
 
@@ -87,9 +81,7 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public static Syncer WithoutDoctors(this Syncer s)
         {
-            var filter = new Dictionary<Type, Func<DataRow, bool>>();
-            filter.Add(Names.tblToTypeMap[Names.Doctor], (row) => true);
-            s.IgnoreAddingFilterPerType = filter;
+            s.IgnoreAddingFilterPerType.Add(Names.tblToTypeMap[Names.Doctor], (row) => true);
 
             return s;
         }
@@ -101,12 +93,10 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public static Syncer WithoutCustomVocsInDoc(this Syncer s)
         {
-            var shaper = new Dictionary<Type, Action<DataRow>>();
-            shaper.Add(Names.tblToTypeMap[Names.Doctor], (row) =>
+            s.ShaperPerType.Add(Names.tblToTypeMap[Names.Doctor], (row) =>
             {
                 row[Names.Col.DoctorCustomVocabulary] = DBNull.Value;
             });
-            s.ShaperPerType = shaper;
 
             return s;
         }
