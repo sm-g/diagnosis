@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Models;
 using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Search;
 using System;
 using System.Linq;
+using System.Windows;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -13,13 +15,15 @@ namespace Diagnosis.ViewModels.Screens
         private string _buffer;
         private bool _part;
         private bool _showB;
-        private SearchViewModel searchVm;
+        private QueryEditorViewModel master;
         private OptionsLoader loader;
+        bool useBuffer;
+        private VisibleRelayCommand _openBufferCommand;
 
-
-        public OptionsLoaderViewModel(SearchViewModel s, OptionsLoader loader)
+        public OptionsLoaderViewModel(QueryEditorViewModel s, OptionsLoader loader, bool useBuffer = false)
         {
-            this.searchVm = s;
+            this.master = s;
+            this.useBuffer = useBuffer;
             this.loader = loader;
         }
 
@@ -31,16 +35,16 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     try
                     {
-                        var opt = loader.ReadOptions(Buffer);
-                        searchVm.SetOptions(opt);
-                        Buffer = "";
+                        string str = GetStringToLoad();
+                        var opt = loader.ReadOptions(str);
+                        master.SetOptions(opt);
                         PartialLoaded = opt.PartialLoaded;
-                        ShowBuffer = false;
                     }
                     catch (Exception)
                     {
+
                     }
-                }, () => ShowBuffer);
+                }, () => CanLoad());
             }
         }
 
@@ -50,31 +54,30 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    if (searchVm.RootQueryBlock != null)
+                    var options = master.GetOptions();
+                    string str;
+                    try
                     {
-                        var options = searchVm.RootQueryBlock.GetSearchOptions();
-                        try
-                        {
-                            Buffer = loader.WriteOptions(options);
-                        }
-                        catch (Exception ex)
-                        {
-                            Buffer = ex.ToString();
-                        }
-                        ShowBuffer = true;
+                        str = loader.WriteOptions(options);
                     }
-                });
+                    catch (Exception ex)
+                    {
+                        str = ex.ToString();
+                    }
+
+                    ShowSavedString(str);
+                }, () => !master.AllEmpty);
             }
         }
 
-        public RelayCommand OpenBufferCommand
+        public VisibleRelayCommand OpenBufferCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return _openBufferCommand ?? (_openBufferCommand = new VisibleRelayCommand(() =>
                 {
                     ShowBuffer = true;
-                });
+                }) { IsVisible = useBuffer });
             }
         }
 
@@ -123,6 +126,47 @@ namespace Diagnosis.ViewModels.Screens
                     _part = value;
                     OnPropertyChanged(() => PartialLoaded);
                 }
+            }
+        }
+
+        private bool CanLoad()
+        {
+            if (useBuffer)
+            {
+                return ShowBuffer;
+            }
+            return Clipboard.ContainsText();
+        }
+        private string GetStringToLoad()
+        {
+            string str = null;
+            if (useBuffer)
+            {
+                str = Buffer;
+                Buffer = "";
+                ShowBuffer = false;
+            }
+            else
+            {
+                var ido = Clipboard.GetDataObject();
+                if (ido.GetDataPresent(DataFormats.UnicodeText))
+                {
+                    str = (string)ido.GetData(DataFormats.UnicodeText);
+                }
+            }
+            return str;
+        }
+        private void ShowSavedString(string str)
+        {
+            if (useBuffer)
+            {
+                Buffer = str;
+                ShowBuffer = true;
+            }
+            else
+            {
+                var dataObj = new DataObject(System.Windows.DataFormats.UnicodeText, str);
+                Clipboard.SetDataObject(dataObj, true);
             }
         }
     }

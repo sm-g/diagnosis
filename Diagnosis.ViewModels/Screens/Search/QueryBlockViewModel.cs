@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(QueryBlockViewModel));
         private ISession session;
-        private Action executeSearch;
+        private Action onAutocompleteInputEnded;
 
         private bool _allWords;
         private HealthRecordQueryAndScope _scope;
@@ -31,10 +31,16 @@ namespace Diagnosis.ViewModels.Screens
 
         private QueryGroupOperator _operator;
 
-        public QueryBlockViewModel(ISession session, Action executeSearch, SearchOptions options = null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session">Для автокомплитов и категорий</param>
+        /// <param name="onAutocompleteInputEnded"></param>
+        /// <param name="options"></param>
+        public QueryBlockViewModel(ISession session, Action onAutocompleteInputEnded, SearchOptions options = null)
         {
             this.session = session;
-            this.executeSearch = executeSearch;
+            this.onAutocompleteInputEnded = onAutocompleteInputEnded;
 
             _operator = QueryGroupOperator.All;
             _anyMin = 1;
@@ -170,6 +176,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_withConf != value)
                 {
                     _withConf = value;
+                    RefreshDescription();
                     OnPropertyChanged(() => WithConfidence);
                 }
             }
@@ -386,15 +393,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ICommand SearchCommand
-        {
-            get
-            {
-                return new RelayCommand(executeSearch);
-            }
-        }
-
-
         public SearchOptions MakeOptions()
         {
             var options = new SearchOptions(IsRoot);
@@ -549,7 +547,7 @@ namespace Diagnosis.ViewModels.Screens
         }
         /// <summary>
         /// Обновляем описание блока при каждом изменении запроса, если оно видно.
-        /// Изменения: AnyMin, QueryScope, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
+        /// Изменения: AnyMin, QueryScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
         /// Хотя при изменениях у детей описания не видно.
         /// </summary>
         private void RefreshDescription()
@@ -560,7 +558,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private QueryBlockViewModel AddChildQb(SearchOptions options = null)
         {
-            var qb = new QueryBlockViewModel(session, executeSearch, options);
+            var qb = new QueryBlockViewModel(session, onAutocompleteInputEnded, options);
 
             qb.PropertyChanged += qb_PropertyChanged;
 
@@ -587,7 +585,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Autocomplete_InputEnded(object sender, BoolEventArgs e)
         {
-            executeSearch();
+            onAutocompleteInputEnded();
         }
 
         private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

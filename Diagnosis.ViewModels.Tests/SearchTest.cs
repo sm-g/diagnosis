@@ -36,15 +36,15 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void StateOnCreated()
         {
-            Assert.AreEqual(1, s.QueryBlocks.Count);
-            Assert.IsTrue(s.AllEmpty);
+            Assert.AreEqual(1, s.QueryEditor.QueryBlocks.Count);
+            Assert.IsTrue(s.QueryEditor.AllEmpty);
         }
 
         [TestMethod]
         public void CannotSearchWithoutOptions()
         {
-            s.QueryBlocks.Clear();
-            Assert.IsTrue(s.AllEmpty);
+            s.QueryEditor.QueryBlocks.Clear();
+            Assert.IsTrue(s.QueryEditor.AllEmpty);
             Assert.IsFalse(s.SearchCommand.CanExecute(null));
         }
 
@@ -194,12 +194,6 @@ namespace Diagnosis.ViewModels.Tests
         public static QueryBlockViewModel Check(this QueryBlockViewModel qb, params HrCategory[] cats)
         {
             qb.SelectCategory(cats);
-            return qb;
-        }
-
-        public static QueryBlockViewModel Search(this QueryBlockViewModel qb)
-        {
-            qb.SearchCommand.Execute(null);
             return qb;
         }
 

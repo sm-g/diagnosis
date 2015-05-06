@@ -51,23 +51,10 @@
         </Grid.RowDefinitions>
         <!--<TextBlock Style="{StaticResource ScreenTitle}"
                    Margin="5,0,0,0">Поиск</TextBlock>-->
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding History.PrevOptionsCommand}">Prev</Button>
-                <Button Command="{Binding History.NextOptionsCommand}">Next</Button>
-                <Button Command="{Binding Loader.OpenBufferCommand}">OpenBuffer</Button>
-                <Button Command="{Binding Loader.LoadOptionsCommand}">Load</Button>
-                <Button Command="{Binding Loader.SaveOptionsCommand}">Save</Button>
-            </StackPanel>
-            <CheckBox IsChecked="{Binding UseOldMode}"
-                      Content="Старый поиск" />
-            <TextBox Text="{Binding Loader.Buffer}"
-                     Height="50"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     AcceptsReturn="True"
-                     Visibility="{Binding Loader.ShowBuffer, Converter={con:BooleanToVisibilityConverter}}" />
-        </StackPanel>
 
+        <CheckBox IsChecked="{Binding UseOldMode}"
+                  Content="Старый поиск" />
+        
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
                   MaxHeight="{Binding ActualHeight, ElementName=search, Converter={con:ExpressionConverter {}{0} * 8/10}}"
@@ -113,45 +100,8 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <Grid>
-                    <TreeView ItemsSource="{Binding QueryBlocks}">
-                        <ItemsControl.Resources>
-                            <DataTemplate x:Key="old">
-                                <search:OldQueryBlock />
-                            </DataTemplate>
-                            <DataTemplate x:Key="new">
-                                <search:QueryBlock />
-                            </DataTemplate>
-                        </ItemsControl.Resources>
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="TreeViewItem"
-                                   BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                                <Setter Property="BorderThickness"
-                                        Value="0,1,0,0" />
-                                <Setter Property="BorderBrush"
-                                        Value="{StaticResource AccentColorBrush2}" />
-                                <Setter Property="Focusable"
-                                        Value="{Binding AnyPopupOpen, Converter={StaticResource NegateBoolean}}" />
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                <ContentControl x:Name="cc"
-                                                Content="{Binding}"
-                                                ContentTemplate="{DynamicResource new}" />
 
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding DataContext.UseOldMode,RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                 Value="True">
-                                        <Setter TargetName="cc"
-                                                Property="ContentTemplate"
-                                                Value="{DynamicResource old}" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-                            </HierarchicalDataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </TreeView>
-                </Grid>
+                <search:QueryEditor DataContext="{Binding QueryEditor}" />
                 <Button Command="{Binding SearchCommand}"
                         Margin="5"
                         HorizontalAlignment="Stretch"
