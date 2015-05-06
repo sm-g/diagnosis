@@ -9,12 +9,12 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    [DebuggerDisplay("doVm {Do}")]
-    public class DateOffsetViewModel : ViewModelBase
+    [DebuggerDisplay("edVm {Do}")]
+    public class EventDateViewModel : ViewModelBase
     {
-        private static readonly Dictionary<HealthRecord, DateOffsetViewModel> dict = new Dictionary<HealthRecord, DateOffsetViewModel>();
+        private static readonly Dictionary<HealthRecord, EventDateViewModel> dict = new Dictionary<HealthRecord, EventDateViewModel>();
 
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(DateOffsetViewModel));
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(EventDateViewModel));
         private readonly DateOffset from;
         internal readonly DateOffset to;
         private readonly HealthRecord hr;
@@ -26,9 +26,9 @@ namespace Diagnosis.ViewModels
         private bool _inEdit;
         private DatePickerViewModel _fromDpVm;
 
-        static DateOffsetViewModel()
+        static EventDateViewModel()
         {
-            typeof(DateOffsetViewModel).Subscribe(Event.DeleteHolder, (e) =>
+            typeof(EventDateViewModel).Subscribe(Event.DeleteHolder, (e) =>
             {
                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
                 holder.HealthRecordsChanged -= Holder_HealthRecordsChanged;
@@ -39,7 +39,7 @@ namespace Diagnosis.ViewModels
             });
         }
 
-        protected DateOffsetViewModel(HealthRecord hr)
+        protected EventDateViewModel(HealthRecord hr)
         {
             this.from = hr.FromDate;
             this.to = hr.ToDate;
@@ -87,7 +87,7 @@ namespace Diagnosis.ViewModels
                 {
                     _inEdit = value;
                     if (value)
-                        To = new DateOffsetViewModel.DatePickerViewModel(hr.ToDate);
+                        To = new EventDateViewModel.DatePickerViewModel(hr.ToDate);
                     else
                         To = null; // unbind ComboboxDatePicker DataContext;
 
@@ -260,7 +260,7 @@ namespace Diagnosis.ViewModels
                 if (patient.BirthYear == null)
                     return;
 
-                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
+                FirstSet = EventDateViewModel.ShowAs.AtAge;
 
                 // установка возраста меняет только год
                 if (value.HasValue)
@@ -288,7 +288,7 @@ namespace Diagnosis.ViewModels
                 if (patient.BirthYear == null)
                     return;
 
-                FirstSet = DateOffsetViewModel.ShowAs.AtAge;
+                FirstSet = EventDateViewModel.ShowAs.AtAge;
 
                 if (value.HasValue)
                     to.Year = DateHelper.GetYearForAge(value.Value, patient.BirthYear.Value, patient.BirthMonth, patient.BirthDay, to.GetSortingDate());
@@ -370,16 +370,16 @@ namespace Diagnosis.ViewModels
 
         private DateOffset Relative { get; set; }
 
-        public static DateOffsetViewModel FromHr(HealthRecord healthRecord)
+        public static EventDateViewModel FromHr(HealthRecord healthRecord)
         {
-            DateOffsetViewModel res;
+            EventDateViewModel res;
             if (!dict.TryGetValue(healthRecord, out res))
             {
                 // один раз подписываемся на удаление записи у держателя
                 if (!dict.Keys.Any(hr => hr.Holder == healthRecord.Holder))
                     healthRecord.Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
 
-                res = new DateOffsetViewModel(healthRecord);
+                res = new EventDateViewModel(healthRecord);
                 dict[healthRecord] = res;
             }
             return res;
@@ -393,7 +393,7 @@ namespace Diagnosis.ViewModels
 
         private static void OnHrRemoved(HealthRecord item)
         {
-            DateOffsetViewModel res;
+            EventDateViewModel res;
             if (dict.TryGetValue(item, out res))
             {
                 dict.Remove(item);

@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels.DataTransfer
 
             public HealthRecordUnit Unit { get; set; }
 
-            public List<ConfindenceHrItemObject> Chios { get; set; }
+            public List<ConfWithHio> Chios { get; set; }
         }
     }
 }

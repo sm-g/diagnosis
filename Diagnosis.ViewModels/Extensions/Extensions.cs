@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels
         /// </summary>
         /// <param name="hios"></param>
         /// <param name="session"></param>
-        public static void SyncAfterPaste(this IList<ConfindenceHrItemObject> hios, ISession session)
+        public static void SyncAfterPaste(this IList<ConfWithHio> hios, ISession session)
         {
             Func<Word, Word> syncWord = (word) =>
             {

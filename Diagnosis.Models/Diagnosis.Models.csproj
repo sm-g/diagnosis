@@ -143,8 +143,10 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Domain\MeasureOp.cs" />
     <Compile Include="Domain\SearchOptions.cs" />
     <Compile Include="Entities\Admin.cs" />
+    <Compile Include="Domain\Chio.cs" />
     <Compile Include="Domain\DateOffset.cs" />
     <Compile Include="Entities\CriteriaGroup.cs" />
     <Compile Include="Entities\Criterion.cs" />

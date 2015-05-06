@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels
         {
             logger.DebugFormat("{0} hios: {1}", action, hios.FlattenString());
         }
-        public static void LogHrItemObjects(this log4net.ILog logger, string action, IEnumerable<ConfindenceHrItemObject> chios)
+        public static void LogHrItemObjects(this log4net.ILog logger, string action, IEnumerable<ConfWithHio> chios)
         {
             logger.DebugFormat("{0} hios: {1}", action, chios.FlattenString());
         }

@@ -219,6 +219,7 @@
     <Compile Include="AuthorityController.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
     <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
+    <Compile Include="Autocomplete\Extensions.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Autocomplete\SuggestionViewModel.cs" />
     <Compile Include="Controls\Interfaces.cs" />
@@ -301,7 +302,7 @@
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
-    <Compile Include="Screens\HealthRecords\DateOffsetViewModel.cs" />
+    <Compile Include="Screens\HealthRecords\EventDateViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
     <Compile Include="Screens\Card\PatientViewer.cs" />

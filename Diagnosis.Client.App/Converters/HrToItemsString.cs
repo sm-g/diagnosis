@@ -14,7 +14,7 @@ namespace Diagnosis.Client.App.Converters
             var hr = value as HealthRecord;
             if (hr != null)
             {
-                return string.Join(" ", hr.GetOrderedEntities());
+                return string.Join(" ", hr.GetOrderedCHIOs());
             }
             return "";
         }

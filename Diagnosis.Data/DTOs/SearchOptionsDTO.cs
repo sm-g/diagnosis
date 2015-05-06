@@ -10,13 +10,13 @@ namespace Diagnosis.Data.DTOs
     public class SearchOptionsDTO
     {
         [DataMember]
-        public List<WordDTO> WordsAll { get; set; }
+        public List<ConfWordDTO> CWordsAll { get; set; }
 
         [DataMember]
-        public List<WordDTO> WordsAny { get; set; }
+        public List<ConfWordDTO> CWordsAny { get; set; }
 
         [DataMember]
-        public List<WordDTO> WordsNot { get; set; }
+        public List<ConfWordDTO> CWordsNot { get; set; }
 
         [DataMember]
         public List<MeasureOpDTO> MeasuresAny { get; set; }
@@ -35,6 +35,9 @@ namespace Diagnosis.Data.DTOs
 
         [DataMember]
         public SearchScope SearchScope { get; set; }
+        [DataMember]
+        public bool WithConf { get; set; }
+
 
         [DataMember]
         public List<SearchOptionsDTO> Children { get; private set; }

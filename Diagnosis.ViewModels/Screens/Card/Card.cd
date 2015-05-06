@@ -153,7 +153,7 @@
       <Property Name="TopCardItems" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Diagnosis.ViewModels.DateOffsetViewModel">
+  <Class Name="Diagnosis.ViewModels.EventDateViewModel">
     <Position X="7.5" Y="9.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
@@ -162,20 +162,20 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Enum Name="Diagnosis.ViewModels.DateOffsetViewModel.ShowAs" Collapsed="true">
+      <Enum Name="Diagnosis.ViewModels.EventDateViewModel.ShowAs" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Screens\HealthRecords\DateOffsetViewModel.cs</NewMemberFileName>
+          <NewMemberFileName>Screens\HealthRecords\EventDateViewModel.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
-      <Class Name="Diagnosis.ViewModels.DateOffsetViewModel.DatePickerViewModel" Collapsed="true">
+      <Class Name="Diagnosis.ViewModels.EventDateViewModel.DatePickerViewModel" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>Screens\HealthRecords\DateOffsetViewModel.cs</NewMemberFileName>
+          <NewMemberFileName>Screens\HealthRecords\EventDateViewModel.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
     </NestedTypes>
     <TypeIdentifier>
       <HashCode>AohOAAIAQWSAACOCMgBAAAgAgAIJwCQAAxcAAAAAiBA=</HashCode>
-      <FileName>Screens\HealthRecords\DateOffsetViewModel.cs</FileName>
+      <FileName>Screens\HealthRecords\EventDateViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Diagnosis.ViewModels.Screens.DateEditorViewModel">

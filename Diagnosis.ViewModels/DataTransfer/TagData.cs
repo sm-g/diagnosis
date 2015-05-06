@@ -12,11 +12,11 @@ namespace Diagnosis.ViewModels.DataTransfer
     {
         public static readonly DataFormat DataFormat = DataFormats.GetDataFormat("diagnosis.tag");
 
-        private IList<ConfindenceHrItemObject> itemobjects;
+        private IList<ConfWithHio> itemobjects;
 
-        public IList<ConfindenceHrItemObject> ItemObjects { get { return itemobjects; } }
+        public IList<ConfWithHio> ItemObjects { get { return itemobjects; } }
 
-        public TagData(IList<ConfindenceHrItemObject> itemobjects)
+        public TagData(IList<ConfWithHio> itemobjects)
         {
             this.itemobjects = itemobjects;
         }

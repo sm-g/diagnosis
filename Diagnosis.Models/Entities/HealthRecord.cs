@@ -231,14 +231,9 @@ namespace Diagnosis.Models
         /// Не использовать для сравнения записей по содержимому.
         /// Используем GetOrderedEntities()
         /// </summary>
-        public virtual ISet<HrItem> HrItems
+        public virtual IEnumerable<HrItem> HrItems
         {
             get { return hrItems; }
-            protected internal set
-            {
-                hrItems = value;
-                OnPropertyChanged("HrItems");
-            }
         }
 
         public virtual IEnumerable<Measure> Measures
@@ -255,11 +250,11 @@ namespace Diagnosis.Models
         /// Добавляет сущности к элементам записи.
         /// </summary>
         /// <param name="items"></param>
-        public virtual void AddItems(IEnumerable<ConfindenceHrItemObject> items)
+        public virtual void AddItems(IEnumerable<ConfWithHio> items)
         {
             Contract.Requires(items != null);
 
-            SetItems(GetOrderedCHIOs().Concat(items).ToList());
+            SetItems(this.GetOrderedCHIOs().Concat(items).ToList());
         }
 
         /// <summary>
@@ -270,8 +265,8 @@ namespace Diagnosis.Models
         {
             Contract.Requires(items != null);
 
-            SetItems(GetOrderedCHIOs()
-                .Concat(items.Select(x => new ConfindenceHrItemObject(x, Confidence.Present))).ToList());
+            SetItems(this.GetOrderedCHIOs()
+                .Concat(items.Select(x => new ConfWithHio(x, Confidence.Present))).ToList());
         }
 
         /// <summary>
@@ -283,24 +278,24 @@ namespace Diagnosis.Models
         {
             Contract.Requires(entitiesToBe != null);
 
-            SetItems(entitiesToBe.Select(x => new ConfindenceHrItemObject(x, Confidence.Present)).ToList());
+            SetItems(entitiesToBe.Select(x => new ConfWithHio(x, Confidence.Present)).ToList());
         }
 
         /// <summary>
         /// Устанавливает сущности элементов записи.
         /// Полученные элементы нумеруются по порядку.
         /// </summary>
-        public virtual void SetItems(IList<ConfindenceHrItemObject> willChios)
+        public virtual void SetItems(IList<ConfWithHio> willChios)
         {
             Contract.Requires(willChios != null);
-            Contract.Ensures(HrItems.Count == willChios.Count);
+            Contract.Ensures(HrItems.Count() == willChios.Count);
             Contract.Ensures(HrItems.Select(x => x.Entity)
                 .ScrambledEquals(willChios.Select(x => x.HIO))); // same HIOs
-            Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count); // Order is unique
+            Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count()); // Order is unique
             Contract.Ensures(HrItems.Select(x => x.Word).Where(x => x != null).All(x => x.HealthRecords.Contains(this))); // word2hr relation
 
             var hrItems = HrItems.ToList();
-            var wasChios = hrItems.Select(x => x.CHIO).ToList();
+            var wasChios = hrItems.Select(x => x.GetConfindenceHrItemObject()).ToList();
 
             logger.DebugFormat("set HrItems. Chios was: {0}, will: {1}", wasChios.FlattenString(), willChios.FlattenString());
 
@@ -309,8 +304,8 @@ namespace Diagnosis.Models
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
-            var willBag = new Bag<ConfindenceHrItemObject>(willChios);
-            var wasBag = new Bag<ConfindenceHrItemObject>(wasChios);
+            var willBag = new Bag<ConfWithHio>(willChios);
+            var wasBag = new Bag<ConfWithHio>(wasChios);
 
             // добалвяем все существующие, чьи сущности не надо убирать
             var toR = wasBag.Difference(willBag);
@@ -374,20 +369,6 @@ namespace Diagnosis.Models
             {
                 OnItemsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
-        }
-
-        public virtual IEnumerable<IHrItemObject> GetOrderedEntities()
-        {
-            return from item in HrItems
-                   orderby item.Ord
-                   select item.Entity;
-        }
-
-        public virtual IEnumerable<ConfindenceHrItemObject> GetOrderedCHIOs()
-        {
-            return from item in HrItems
-                   orderby item.Ord
-                   select item.CHIO;
         }
 
         public override string ToString()

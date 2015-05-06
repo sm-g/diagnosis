@@ -29,20 +29,6 @@
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Diagnosis.Models.Diagnosis">
-    <Position X="15" Y="11.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAEAEAEAAAgQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Diagnosis.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Parent" />
-    </ShowAsAssociation>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="Diagnosis.Models.Doctor" Collapsed="true">
     <Position X="13.25" Y="1" Width="1.5" />
     <Compartments>
@@ -62,12 +48,12 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.HealthRecord" Collapsed="true">
-    <Position X="6.5" Y="8.25" Width="1.5" />
+    <Position X="6.75" Y="7.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAFAQAqAEIAHAUHI6AAQEAAwBAAADQ0CBAQFQAhCAI=</HashCode>
+      <HashCode>AAAFAQAqAEIAHAUHIaAAAEAAwBAAADQ0CBAQFQAhCAI=</HashCode>
       <FileName>Entities\HealthRecord.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -77,6 +63,8 @@
       <Property Name="Doctor" />
       <Property Name="Category" />
       <Property Name="Unit" />
+      <Property Name="FromDate" />
+      <Property Name="ToDate" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="HrItems" />
@@ -159,7 +147,6 @@
       <FileName>Entities\Word.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Parent" />
       <Property Name="Uom" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
@@ -175,7 +162,7 @@
   <Class Name="Diagnosis.Models.HrItem" Collapsed="true">
     <Position X="9.25" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>kAUAAAAAAAAEAAAEAAwAgAAAAIACAAAgAABAAAAAIAA=</HashCode>
+      <HashCode>kAUAAAAAAAAEAAAEAAgAgAAAAIACAAAgAABAAAAAIAA=</HashCode>
       <FileName>Entities\HrItem.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -190,7 +177,7 @@
     <Position X="5.75" Y="10.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEgAAAAAAAAIAYEgAICAAAAAAIEAIAAAAAgUhAAAmA=</HashCode>
-      <FileName>Entities\Measure.cs</FileName>
+      <FileName>Domain\Measure.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Uom" />
@@ -298,8 +285,8 @@
   <Class Name="Diagnosis.Models.MeasureOp" Collapsed="true">
     <Position X="4.25" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAIAAgAAAAAAAAEAAAAgAAAAAAAAAAIAAAIAQAAIAA=</HashCode>
-      <FileName>Entities\Measure.cs</FileName>
+      <HashCode>AgAIAAgAAAAAAAAEgAAAgAAAAAAAAIAIAAAIAQAAIAA=</HashCode>
+      <FileName>Domain\Measure.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Operator" />
@@ -321,12 +308,12 @@
       <Path>
         <Point X="14.969" Y="7.441" />
         <Point X="14.969" Y="7.816" />
-        <Point X="14.044" Y="7.816" Type="JumpStart" />
-        <Point X="13.878" Y="7.816" Type="JumpEnd" />
-        <Point X="13.755" Y="7.816" Type="JumpStart" />
-        <Point X="13.589" Y="7.816" Type="JumpEnd" />
-        <Point X="13.513" Y="7.816" Type="JumpStart" />
-        <Point X="13.346" Y="7.816" Type="JumpEnd" />
+        <Point X="13.974" Y="7.816" Type="JumpStart" />
+        <Point X="13.807" Y="7.816" Type="JumpEnd" />
+        <Point X="13.742" Y="7.816" Type="JumpStart" />
+        <Point X="13.575" Y="7.816" Type="JumpEnd" />
+        <Point X="13.506" Y="7.816" Type="JumpStart" />
+        <Point X="13.34" Y="7.816" Type="JumpEnd" />
         <Point X="12.562" Y="7.816" />
         <Point X="12.562" Y="8.75" />
       </Path>
@@ -340,6 +327,51 @@
       <Property Name="Vocabulary" />
     </ShowAsAssociation>
   </Class>
+  <Class Name="Diagnosis.Models.ConfindenceWithHrItemObject" Collapsed="true">
+    <Position X="15.25" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQEgAAAACAAAIAAAIAAAAAAAAAAgAA=</HashCode>
+      <FileName>Domain\Chio.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Confidence" />
+      <Property Name="HIO" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.Confindencable&lt;T&gt;" Collapsed="true">
+    <Position X="15.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Domain\Chio.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.Models.DateOffset" Collapsed="true">
+    <Position X="4" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJAEBAAJAAgAA0GsAWAQgsAgDBACIAEAAAAAEBIhyI=</HashCode>
+      <FileName>Domain\DateOffset.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Unit" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.SearchOptions" Collapsed="true">
+    <Position X="19.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAAoAAAAAAAAAAgEgAAEAAEACAAQEICAAQKAIQAIAKA=</HashCode>
+      <FileName>Domain\SearchOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Diagnosis.Models.IHrItemObject" Collapsed="true">
+    <Position X="17.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Enum Name="Diagnosis.Models.HealthRecordUnit" Collapsed="true">
     <Position X="4.25" Y="8.25" Width="1.5" />
     <TypeIdentifier>
@@ -359,6 +391,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAEAAQQAAAAAAgAE=</HashCode>
       <FileName>Enums\MeasureOperator.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Diagnosis.Models.DateUnit" Collapsed="true">
+    <Position X="4" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAJAAAAAAAAAAAAAAAAAAAAAAEAAAAAIAAAAA=</HashCode>
+      <FileName>Domain\DateOffset.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />

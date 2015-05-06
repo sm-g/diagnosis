@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              VerticalAlignment="Bottom"
              d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance design:SampleDateOffsetViewModel, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance design:SampleEventDateViewModel, IsDesignTimeCreatable=True}"
              x:Name="root">
     <UserControl.Resources>
         <ObjectDataProvider x:Key="dataFromEnum"

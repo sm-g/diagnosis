@@ -137,7 +137,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     // new hr from tags
                     var newHR = master.holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-                    var items = tags.Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence)).ToList();
+                    var items = tags.Select(t => new ConfWithHio(t.Blank, t.Confidence)).ToList();
                     newHR.SetItems(items);
                 }
                 master.OnSaveNeeded();

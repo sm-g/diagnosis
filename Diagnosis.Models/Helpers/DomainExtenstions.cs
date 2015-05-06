@@ -29,6 +29,47 @@ namespace Diagnosis.Models
         {
             return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);
         }
+        [Pure]
+        public static IEnumerable<IHrItemObject> GetOrderedEntities(this HealthRecord hr)
+        {
+            return from item in hr.HrItems
+                   orderby item.Ord
+                   select item.Entity;
+        }
+        [Pure]
+        public static IEnumerable<ConfWithHio> GetOrderedCHIOs(this HealthRecord hr)
+        {
+            return from item in hr.HrItems
+                   orderby item.Ord
+                   select item.GetConfindenceHrItemObject();
+        }
+        [Pure]
+        public static IEnumerable<ConfWithHio> GetCHIOs(this HealthRecord hr)
+        {
+            return hr.HrItems.Select(x => x.GetConfindenceHrItemObject());
+        }
+        [Pure]
+        public static IEnumerable<Confindencable<Word>> GetCWords(this HealthRecord hr)
+        {
+            return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable(x.Confidence));
+        }
+    }
+
+    public static class IHrItemObjectExtensions
+    {
+        public static ConfWithHio AsConfindenceHrItemObject(this IHrItemObject hio)
+        {
+            return new ConfWithHio(hio);
+        }
+        public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
+        {
+            return new Confindencable<T>(hio, conf);
+        }
+
+        public static ConfWithHio GetConfindenceHrItemObject(this HrItem hi)
+        {
+            return new ConfWithHio(hi.Entity, hi.Confidence);
+        }
     }
 
     public static class IHrsHolderExtensions
@@ -364,14 +405,14 @@ namespace Diagnosis.Models
         /// <summary>
         /// Формат {[id] ToString()[,] ...}
         /// </summary>
-        public static string FlattenString(this IEnumerable<IDomainObject> mayBeEntities)
+        public static string FlattenString(this IEnumerable<object> mayBeEntities)
         {
             var str = mayBeEntities.Select(item =>
             {
                 var pre = "";
-                if (item is ConfindenceHrItemObject)
+                if (item is ConfWithHio)
                 {
-                    item = ((ConfindenceHrItemObject)item).HIO;
+                    item = ((ConfWithHio)item).HIO;
                 }
                 if (item is IHrItemObject)
                 {
@@ -385,7 +426,7 @@ namespace Diagnosis.Models
                     }
                     catch
                     {
-                        // Comment or Mesure
+                        // Comment or Measure
                     }
 
                     pre += " ";

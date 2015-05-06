@@ -108,9 +108,9 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
-    public class SampleDateOffsetViewModel : DateOffsetViewModel
+    public class SampleEventDateViewModel : EventDateViewModel
     {
-        public SampleDateOffsetViewModel()
+        public SampleEventDateViewModel()
             : base(Mocks.hr)
         {
         }

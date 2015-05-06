@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
             healthRecord.ItemsChanged += healthRecord_ItemsChanged;
 
             SyncCheckedAndSelected = true;
-            EventDate = DateOffsetViewModel.FromHr(healthRecord);
+            EventDate = EventDateViewModel.FromHr(healthRecord);
             EventDate.PropertyChanged += (s, e) =>
             {
                 OnPropertyChanged(() => EventDateString);
@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public DateOffsetViewModel EventDate
+        public EventDateViewModel EventDate
         {
             get;
             private set;

@@ -62,12 +62,12 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void CHIOs()
         {
-            var chio1 = new ConfindenceHrItemObject(w[1], Confidence.Present);
-            var chio2 = new ConfindenceHrItemObject(w[2], Confidence.Present);
-            var chio1comment = new ConfindenceHrItemObject(new Comment(w[1].Title), Confidence.Present);
+            var chio1 = new ConfWithHio(w[1], Confidence.Present);
+            var chio2 = new ConfWithHio(w[2], Confidence.Present);
+            var chio1comment = new ConfWithHio(new Comment(w[1].Title), Confidence.Present);
 
-            var bag1 = new OrderedBag<ConfindenceHrItemObject>(new[] { chio1, chio2 });
-            var bag2 = new OrderedBag<ConfindenceHrItemObject>(new[] { chio1comment, chio2 });
+            var bag1 = new OrderedBag<ConfWithHio>(new[] { chio1, chio2 });
+            var bag2 = new OrderedBag<ConfWithHio>(new[] { chio1comment, chio2 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
