@@ -418,9 +418,6 @@ namespace Diagnosis.ViewModels.Screens
                 Autocomplete.CompleteTypings();
 
                 var hr = HealthRecord.healthRecord;
-
-
-
                 HealthRecord.Dispose();
 
                 hr.PropertyChanged -= hr_PropertyChanged;

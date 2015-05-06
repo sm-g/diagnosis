@@ -18,8 +18,8 @@ namespace Diagnosis.ViewModels.Screens
         private static PatientViewer viewer; // static to hold history
         private HrListViewModel _hrList;
         private HeaderViewModel _header;
-        private HrEditorViewModel _hrEditor;
-        private NavigatorViewModel _navigator;
+        private readonly HrEditorViewModel _hrEditor;
+        private readonly NavigatorViewModel _navigator;
 
         private bool editorWasOpened;
         private Saver saver;
@@ -117,6 +117,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             );
         }
+
         /// <summary>
         /// Создает карту и тут же вызывает Open(entity).
         /// </summary>
@@ -234,7 +235,7 @@ namespace Diagnosis.ViewModels.Screens
         public void FocusHrEditor(HealthRecord hr, bool addToSelected = true)
         {
             Contract.Requires(hr != null);
-            Contract.Requires(hr.Holder == HrList.HolderVm.Holder);
+            Contract.Assume(hr.Holder == HrList.holder);
 
             //logger.DebugFormat("FocusHrEditor to {0}", hr);
             HrList.SelectHealthRecord(hr, addToSelected);
@@ -308,15 +309,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    if (_header != null)
-                        _header.Dispose();
-                    _hrEditor.Dispose();
+                    HrEditor.Dispose();
 
+                    CloseHeader();
                     CloseHrList();
 
                     viewer.CloseAll();
 
-                    _navigator.Dispose();
+                    Navigator.Dispose();
 
                     handlers.Dispose();
 
@@ -327,6 +327,46 @@ namespace Diagnosis.ViewModels.Screens
             {
                 base.Dispose(disposing);
             }
+        }
+
+        /// <summary>
+        /// Сохраняет записи в списке, все или переданные.
+        /// </summary>
+        private void SaveHealthRecords(object s, ListEventArgs<HealthRecord> e)
+        {
+            logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
+
+            if (e.list == null)
+            {
+                SaveAllHrs();
+            }
+            else
+            {
+                // вставка/дроп тегов в записи
+                // изменение видимости (IsDeleted)
+
+                saver.Save(e.list.ToArray());
+                if (!HrEditor.HasHealthRecord)
+                {
+                    HrList.IsFocused = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cохраняем все записи кроме открытой в редакторе
+        /// </summary>
+        internal void SaveAllHrs()
+        {
+            // новые записи — вставка/дроп записей/тегов на список
+            // смена порядка — дроп записей
+
+            Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
+
+            saver.Save(HrList.HealthRecords
+                .Select(vm => vm.healthRecord)
+                .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                .ToArray());
         }
 
         /// <summary>
@@ -382,41 +422,10 @@ namespace Diagnosis.ViewModels.Screens
 
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.SaveNeeded += SaveHealthRecords;
-                HrList.HealthRecords.CollectionChangedWrapper += HrList_HealthRecords_CollectionChanged;
 
                 // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
                 // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
                 holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
-            }
-        }
-
-        internal void SaveHealthRecords(object s, ListEventArgs<HealthRecord> e)
-        {
-            logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
-
-            if (e.list == null)
-            {
-                // новые записи — вставка/дроп записей/тегов на список
-                // смена порядка — дроп записей
-
-                Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
-
-                // сохраняем все записи кроме открытой в редакторе
-                saver.Save(HrList.HealthRecords
-                    .Select(vm => vm.healthRecord)
-                    .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
-                    .ToArray());
-            }
-            else
-            {
-                // вставка/дроп тегов в записи
-                // изменение видимости (IsDeleted)
-
-                saver.Save(e.list.ToArray());
-                if (!HrEditor.HasHealthRecord)
-                {
-                    HrList.IsFocused = true;
-                }
             }
         }
 
@@ -427,6 +436,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var holder = HrList.holder;
             HrList.Dispose();
+            HrList = null;
 
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
@@ -441,16 +451,23 @@ namespace Diagnosis.ViewModels.Screens
                 if (Header.Holder == holder)
                     return;
 
-                Header.Dispose();
+                CloseHeader();
             }
 
             if (holder != null)
-            {
                 Header = new HeaderViewModel(holder);
-            }
         }
 
-        private HealthRecord AddHr(IHrsHolder holder, bool fromCommand = false)
+        private void CloseHeader()
+        {
+            if (Header == null)
+                return;
+
+            Header.Dispose();
+            Header = null;
+        }
+
+        private HealthRecord AddHr(IHrsHolder holder, bool startEdit = false)
         {
             Contract.Requires(holder != null);
             Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
@@ -478,9 +495,8 @@ namespace Diagnosis.ViewModels.Screens
                 hr.DescribedAt = lastHrVM.healthRecord.DescribedAt;
             }
 
-            if (fromCommand)
+            if (startEdit)
             {
-                // редактируем добавленную командой запись
                 FocusHrEditor(hr, false);
             }
             return hr;
@@ -514,20 +530,9 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void HrList_HealthRecords_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move)
-            {
-                // порядок
-            }
-        }
-
         private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 // удаляем записи в бд
 

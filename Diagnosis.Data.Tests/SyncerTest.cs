@@ -7,6 +7,7 @@ using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using System.Linq;
@@ -46,15 +47,25 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public async Task SendFromServer()
         {
-            var sCatCount = sSession.Query<HrCategory>().Count();
+            var scopes = new[] { Scope.Icd, Scope.Reference };
+            var types = scopes.SelectMany(x => x.GetTypes());
 
-            await s.SendFrom(Side.Server, new[] { Scope.Icd, Scope.Reference });
+            var entitiesCount = new Dictionary<Type, int>();
+            object al = null;
+            foreach (var type in types)
+            {
+                entitiesCount[type] = sSession.QueryOver(type.Name, () => al).RowCount();
+            }
+
+            await s.SendFrom(Side.Server, scopes);
 
             // после загрузки проверяем справочные сущности на совпадение
             var checker = new AfterSyncChecker(clSession);
             checker.CheckReferenceEntitiesAfterDownload(s.AddedOnServerIdsPerType);
-
-            Assert.AreEqual(sCatCount, clSession.Query<HrCategory>().Count());
+            foreach (var type in types)
+            {
+                Assert.AreEqual(entitiesCount[type], clSession.QueryOver(type.Name, () => al).RowCount());
+            }
         }
 
         [TestMethod]
@@ -62,13 +73,22 @@ namespace Diagnosis.Data.Tests
         {
             InMemoryHelper.FillData(clCfg, clSession, false);
 
-            var clDocCount = clSession.Query<Doctor>().Count();
-            var clHrItemCount = clSession.Query<HrItem>().Count();
+            var scopes = Scopes.GetOrderedUploadScopes();
+            var types = scopes.SelectMany(x => x.GetTypes());
 
-            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client);
+            var entitiesCount = new Dictionary<Type, int>();
+            object al = null;
+            foreach (var type in types)
+            {
+                entitiesCount[type] = clSession.QueryOver(type.Name, () => al).RowCount();
+            }
 
-            Assert.AreEqual(clDocCount, sSession.Query<Doctor>().Count());
-            Assert.AreEqual(clHrItemCount, sSession.Query<HrItem>().Count());
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, scopes);
+
+            foreach (var type in types)
+            {
+                Assert.AreEqual(entitiesCount[type], sSession.QueryOver(type.Name, () => al).RowCount());
+            }
         }
 
         [TestMethod]
@@ -86,7 +106,7 @@ namespace Diagnosis.Data.Tests
                 clSession.Save(p);
                 tr.Commit();
             }
-
+            s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
             await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder.ToEnumerable());
 
             Assert.AreEqual(clPatCount + 1, sSession.Query<Patient>().Count());
@@ -209,6 +229,8 @@ namespace Diagnosis.Data.Tests
             // загружаем новые шаблоны для установленных словарей
             var cWtCount = clSession.Query<WordTemplate>().Count();
             var installedVocs = sSession.Query<Vocabulary>();
+
+            s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
             await s.WithInstalledVocs(installedVocs)
                 .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
             new VocLoader(clSession).AfterSyncVocs(s.DeletedOnServerIdsPerType);
@@ -259,7 +281,6 @@ namespace Diagnosis.Data.Tests
             var common = sCustoms.Intersect(clVocs);
 
             Assert.AreEqual(0, common.Count());
-
         }
 
         #endregion Vocs

@@ -38,17 +38,18 @@ namespace Diagnosis.Data.Queries
             };
         }
 
-        public static Func<string, string, Uom> ByAbbrAndTypeName(ISession session)
+        public static Func<string, string, string, Uom> ByAbbrDescrAndTypeName(ISession session)
         {
-            return (abbr, typename) =>
+            return (abbr, descr, typename) =>
             {
                 using (var tr = session.BeginTransaction())
                 {
-                    if (abbr.IsNullOrEmpty() || typename.IsNullOrEmpty())
+                    if (abbr.IsNullOrEmpty() || descr.IsNullOrEmpty() || typename.IsNullOrEmpty())
                         return null;
                     UomType type = null;
                     var q = session.QueryOver<Uom>()
                         .AndRestrictionOn(w => w.Abbr).IsInsensitiveLike(abbr, MatchMode.Exact)
+                        .AndRestrictionOn(w => w.Description).IsInsensitiveLike(descr, MatchMode.Exact)
                         .JoinAlias(x => x.Type, () => type)
                         .AndRestrictionOn(() => type.Title).IsInsensitiveLike(typename, MatchMode.Exact);
                     return q.SingleOrDefault();

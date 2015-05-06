@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data.DTOs;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
@@ -46,20 +47,20 @@ namespace Diagnosis.ViewModels.DataTransfer
                               select w.Title;
             var mWords = WordQuery.ByTitles(session)(mWordTitles);
 
-            var uomTitles = from u in dto.MeasuresAll
+            var uomSpecs = from u in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Uom)
-                            where u != null
-                            select new { Abbr = u.Abbr, TypeName = u.UomType.Title };
-            var uoms = uomTitles.Select(x => UomQuery.ByAbbrAndTypeName(session)(x.Abbr, x.TypeName));
+                           where u != null
+                           select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title };
+            var uoms = uomSpecs.Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName));
 
             var mAll = dto.MeasuresAll.Select(x =>
-                new MeasureOp(x.Operator, x.DbValue, uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
+                new MeasureOp(x.Operator, x.DbValue, x.Uom == null ? null : uoms.FirstOrDefault(u => Equal(u, x.Uom)))
                 {
                     Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
                 });
             var mAny = dto.MeasuresAny.Select(x =>
-                new MeasureOp(x.Operator, x.DbValue, uoms.FirstOrDefault(u => u.Abbr == x.Uom.Abbr))
+                new MeasureOp(x.Operator, x.DbValue, x.Uom == null ? null : uoms.FirstOrDefault(u => Equal(u, x.Uom)))
                 {
                     Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
                 });
@@ -90,7 +91,13 @@ namespace Diagnosis.ViewModels.DataTransfer
 
             return result;
         }
-
+        bool Equal(Uom u, UomDTO dto)
+        {
+            return u.Abbr == dto.Abbr &&
+                u.Description == dto.Description &&
+                (dto.Type == null && u.Type == null ||
+                u.Type.Title == dto.Type.Title);
+        }
     }
     public static class Ex
     {

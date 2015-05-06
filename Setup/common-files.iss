@@ -19,6 +19,7 @@ Source: "{#ClientBuildOutputFolder}\bin\AutoMapper.Net4.dll"; DestDir: "{app}\bi
 Source: "{#ClientBuildOutputFolder}\bin\FluentMigrator.Runner.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentValidation.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\FluentValidation.resources.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\ru\FluentValidation.resources.dll"; DestDir: "{app}\bin\ru"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\Iesi.Collections.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\log4net.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\NHibernate.dll"; DestDir: "{app}\bin"; Flags: sharedfile

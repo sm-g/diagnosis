@@ -102,6 +102,13 @@ namespace Diagnosis.ViewModels.Screens
                 return patient.IsTransient;
             }
         }
+        public override bool CanOk
+        {
+            get
+            {
+                return CanSave();
+            }
+        }
         /// <summary>
         /// Есть изменения или при создании пациента
         /// </summary>

@@ -62,7 +62,7 @@ namespace Diagnosis.Data.Tests
         public void UomQueryByAbbrAndType()
         {
             var u = session.Load<Uom>(IntToGuid<Uom>(1));
-            var res = UomQuery.ByAbbrAndTypeName(session)(u.Abbr, u.Type.Title);
+            var res = UomQuery.ByAbbrDescrAndTypeName(session)(u.Abbr, u.Description, u.Type.Title);
             Assert.AreEqual(u, res);
         }
 
