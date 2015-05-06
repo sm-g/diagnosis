@@ -12,9 +12,9 @@ namespace Diagnosis.Data.DTOs
         [DataMember]
         public string Abbr { get; set; }
         [DataMember]
-        public double Factor { get; set; }
+        public string Description { get; set; }
         [DataMember]
-        public UomTypeDTO UomType { get; set; }
+        public UomTypeDTO Type { get; set; }
 
     }
 }
