@@ -70,19 +70,17 @@ namespace Diagnosis.ViewModels.Search
         public void SetOptions(SearchOptions opt)
         {
             var root = QueryBlocks.FirstOrDefault();
-            if (root != null && opt == root.Options)
+            if (root != null && opt.Equals(root.Options))
                 return;
 
             SetRootOptions(opt);
         }
 
-        private QueryBlockViewModel SetRootOptions(SearchOptions opttions = null)
+        private QueryBlockViewModel SetRootOptions(SearchOptions options = null)
         {
             QueryBlocks.Clear();
 
-            var qb = new QueryBlockViewModel(Session,
-                onQbEnter,
-                opttions);
+            var qb = new QueryBlockViewModel(Session, onQbEnter, options);
             qb.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "AllEmpty")

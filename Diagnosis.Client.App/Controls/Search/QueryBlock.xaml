@@ -131,7 +131,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Visibility="{Binding WordsAny.Count, Converter={StaticResource MoreThanToVisibility}}">
-                        <TextBlock>хотя бы <Run Text="{Binding AnyMin, Mode=OneWay}" /> <Run Text="из: " /></TextBlock>
+                        <TextBlock>хотя бы <Run Text="{Binding MinAny, Mode=OneWay}" /> <Run Text="из: " /></TextBlock>
                         <diag:CommaList ItemsSource="{Binding WordsAny}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
@@ -158,8 +158,8 @@
                 <Label>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="И хотя бы " />
-                        <diag:HyperlinkContextMenu Value="{Binding AnyMin}" Width="20"
-                                                   MenuItemsSource="{Binding AnyMinMenuItems}" />
+                        <diag:HyperlinkContextMenu Value="{Binding MinAny}" Width="20"
+                                                   MenuItemsSource="{Binding MinAnyMenuItems}" />
                         <TextBlock Text=" из: " />
                     </StackPanel>
                 </Label>

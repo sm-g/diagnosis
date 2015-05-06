@@ -187,7 +187,7 @@ namespace Diagnosis.ViewModels.Tests
 
         public static QueryBlockViewModel MinAny(this QueryBlockViewModel qb, int min)
         {
-            qb.AnyMin = min;
+            qb.MinAny = min;
             return qb;
         }
 

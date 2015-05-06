@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         private SearchOptions _options;
         private IList<HrCategoryViewModel> _categories;
         private SearchScope _sscope;
-        private int _anyMin;
+        private int _minAny;
         private bool _group;
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
@@ -44,32 +44,12 @@ namespace Diagnosis.ViewModels.Screens
             this.onAutocompleteInputEnded = onAutocompleteInputEnded;
 
             _operator = QueryGroupOperator.All;
-            _anyMin = 1;
+            _minAny = 1;
 
             CreateAutocompletes(session);
+            CreateMenuItems();
 
-            Children.CollectionChanged += (s, e) =>
-            {
-                IsGroup = Children.Count > 0;
-                OnPropertyChanged(() => AllEmpty);
-
-                switch (e.Action)
-                {
-                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        var qb = (e.NewItems[0] as QueryBlockViewModel);
-                        Options.Children.Add(qb.Options);
-                        break;
-
-                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                        qb = (e.OldItems[0] as QueryBlockViewModel);
-                        Options.Children.Remove(qb.Options);
-                        RefreshDescription();
-                        break;
-
-                    default:
-                        break;
-                }
-            };
+            Children.CollectionChanged += Children_CollectionChanged;
 
             this.PropertyChanged += (s, e) =>
             {
@@ -81,25 +61,11 @@ namespace Diagnosis.ViewModels.Screens
                         RefreshDescription();
                         OnPropertyChanged(() => DescriptionVisible);
                         break;
+                    case "Options":
+                        if (!IsRoot)
+                            Parent.RefreshDescription();
+                        break;
                 }
-            };
-
-            AnyMinMenuItems = new ObservableCollection<MenuItem>()
-            {
-                new MenuItem("один", new RelayCommand(()=>AnyMin = 1)),
-                new MenuItem("два", new RelayCommand(()=>AnyMin = 2)),
-                new MenuItem("три", new RelayCommand(()=>AnyMin = 3)),
-            };
-            GroupOperatorMenuItems = new ObservableCollection<MenuItem>()
-            {
-                new MenuItem("всё", new RelayCommand(()=>GroupOperator=QueryGroupOperator.All)),
-                new MenuItem("любое", new RelayCommand(()=>GroupOperator=QueryGroupOperator.Any)),
-            };
-            SearchScopeMenuItems = new ObservableCollection<MenuItem>()
-            {
-                new MenuItem("запись", new RelayCommand(()=>SearchScope = Models.SearchScope.HealthRecord)),
-                new MenuItem("список", new RelayCommand(()=>SearchScope = Models.SearchScope.Holder)),
-                new MenuItem("пациент", new RelayCommand(()=>SearchScope = Models.SearchScope.Patient)),
             };
 
             if (options != null)
@@ -115,7 +81,7 @@ namespace Diagnosis.ViewModels.Screens
         {
         }
 
-        public ObservableCollection<MenuItem> AnyMinMenuItems { get; private set; }
+        public ObservableCollection<MenuItem> MinAnyMenuItems { get; private set; }
 
         public ObservableCollection<MenuItem> GroupOperatorMenuItems { get; private set; }
 
@@ -202,19 +168,19 @@ namespace Diagnosis.ViewModels.Screens
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
         }
 
-        public int AnyMin
+        public int MinAny
         {
             get
             {
-                return _anyMin;
+                return _minAny;
             }
             set
             {
-                if (_anyMin != value)
+                if (_minAny != value)
                 {
-                    _anyMin = value;
+                    _minAny = value;
                     RefreshDescription();
-                    OnPropertyChanged(() => AnyMin);
+                    OnPropertyChanged(() => MinAny);
                 }
             }
         }
@@ -410,7 +376,7 @@ namespace Diagnosis.ViewModels.Screens
             options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-            options.MinAny = AnyMin;
+            options.MinAny = MinAny;
             options.WithConf = WithConfidence;
             options.GroupOperator = GroupOperator;
             options.SearchScope = SearchScope;
@@ -476,6 +442,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
+                Children.CollectionChanged -= Children_CollectionChanged;
+
                 AutocompleteAll.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteAny.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteNot.InputEnded -= Autocomplete_InputEnded;
@@ -529,11 +497,56 @@ namespace Diagnosis.ViewModels.Screens
             AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
         }
 
+        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            IsGroup = Children.Count > 0;
+            OnPropertyChanged(() => AllEmpty);
+
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    var qb = (e.NewItems[0] as QueryBlockViewModel);
+                    Options.Children.Add(qb.Options);
+                    break;
+
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    qb = (e.OldItems[0] as QueryBlockViewModel);
+                    Options.Children.Remove(qb.Options);
+                    RefreshDescription();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void CreateMenuItems()
+        {
+            MinAnyMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("один", new RelayCommand(()=>MinAny = 1)),
+                new MenuItem("два", new RelayCommand(()=>MinAny = 2)),
+                new MenuItem("три", new RelayCommand(()=>MinAny = 3)),
+            };
+            GroupOperatorMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("всё", new RelayCommand(()=>GroupOperator=QueryGroupOperator.All)),
+                new MenuItem("любое", new RelayCommand(()=>GroupOperator=QueryGroupOperator.Any)),
+            };
+            SearchScopeMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("запись", new RelayCommand(()=>SearchScope = Models.SearchScope.HealthRecord)),
+                new MenuItem("список", new RelayCommand(()=>SearchScope = Models.SearchScope.Holder)),
+                new MenuItem("пациент", new RelayCommand(()=>SearchScope = Models.SearchScope.Patient)),
+            };
+        }
+
         private void FillFromOptions(SearchOptions options)
         {
+            // TODO automap
             GroupOperator = options.GroupOperator;
             SearchScope = options.SearchScope;
-            AnyMin = options.MinAny;
+            MinAny = options.MinAny;
             WithConfidence = options.WithConf;
             SelectCategory(options.Categories.ToArray());
 
@@ -547,7 +560,7 @@ namespace Diagnosis.ViewModels.Screens
 
         /// <summary>
         /// Обновляем описание блока при каждом изменении запроса, если оно видно.
-        /// Изменения: AnyMin, QueryScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
+        /// Изменения: MinAny, QueryScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
         /// Хотя при изменениях у детей описания не видно.
         /// </summary>
         private void RefreshDescription()
@@ -577,10 +590,6 @@ namespace Diagnosis.ViewModels.Screens
             if (e.PropertyName == "AllEmpty")
             {
                 OnPropertyChanged(() => AllEmpty);
-            }
-            else if (e.PropertyName == "Options")
-            {
-                RefreshDescription();
             }
         }
 

@@ -103,7 +103,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyMinTwoMeasureAndWord()
+        public void MinAnyTwoMeasureAndWord()
         {
             var hrs = o
                 .SetAny(w[22], new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] })
