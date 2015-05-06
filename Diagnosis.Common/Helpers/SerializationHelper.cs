@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -13,54 +14,69 @@ namespace Diagnosis.Common
     {
         public static string SerializeXml<T>(this T toSerialize)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+            var ser = new XmlSerializer(toSerialize.GetType());
 
             using (StringWriter textWriter = new StringWriter())
             {
-                xmlSerializer.Serialize(textWriter, toSerialize);
+                ser.Serialize(textWriter, toSerialize);
                 return textWriter.ToString();
             }
         }
 
-        public static string SerializeDC<T>(this T toSerialize)
+        public static string SerializeDCXml<T>(this T toSerialize)
         {
-            var ds = new DataContractSerializer(toSerialize.GetType());
+            var ser = new DataContractSerializer(toSerialize.GetType());
 
             using (var output = new StringWriter())
             using (var writer = new XmlTextWriter(output) { Formatting = Formatting.Indented })
             {
-                ds.WriteObject(writer, toSerialize);
+                ser.WriteObject(writer, toSerialize);
                 return output.GetStringBuilder().ToString();
             }
         }
 
-        public static T DeserializeDC<T>(this string xmlString)
+        public static string SerializeDCJson<T>(this T toSerialize)
         {
-            var ds = new DataContractSerializer(typeof(T));
+            var ser = new DataContractJsonSerializer(toSerialize.GetType());
+
+            using (var stream = new MemoryStream())
+            using (var reader = new StreamReader(stream))
+            {
+                ser.WriteObject(stream, toSerialize);
+                stream.Position = 0;
+                return reader.ReadToEnd();
+            }
+        }
+
+        public static T DeserializeDCJson<T>(this string jsonString)
+        {
+            var ser = new DataContractJsonSerializer(typeof(T));
+
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString ?? "")))
+            {
+                stream.Position = 0;
+                return (T)ser.ReadObject(stream);
+            }
+        }
+        public static T DeserializeDCXml<T>(this string xmlString)
+        {
+            var ser = new DataContractSerializer(typeof(T));
 
             using (var output = new StringReader(xmlString))
             using (var reader = new XmlTextReader(output))
             {
-                return (T)ds.ReadObject(reader);
+                return (T)ser.ReadObject(reader);
             }
         }
 
         public static T DeserializeXml<T>(this string xmlString)
         {
-            T objectOut = default(T);
-            Type outType = typeof(T);
-            using (StringReader read = new StringReader(xmlString))
+            var ser = new XmlSerializer(typeof(T));
+            using (var output = new StringReader(xmlString))
+            using (var reader = new XmlTextReader(output))
             {
-                XmlSerializer serializer = new XmlSerializer(outType);
-                using (XmlReader reader = new XmlTextReader(read))
-                {
-                    objectOut = (T)serializer.Deserialize(reader);
-                    reader.Close();
-                }
-
-                read.Close();
+                return (T)ser.Deserialize(reader);
             }
-            return objectOut;
         }
 
         public static T DeepClone<T>(this T source)
