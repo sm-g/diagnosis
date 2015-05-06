@@ -32,7 +32,7 @@ namespace Diagnosis.Data.Tests
             Load<HrCategory>();
 
             var opt = new SearchOptions();
-            opt.WordsAll.AddRange(new[] { w[1], w[2] });
+            opt.CWordsAll.AddRange(new[] { w[1].AsConfidencable(), w[2].AsConfidencable() });
             opt.Categories.Add(cat[1]);
             opt.SearchScope = SearchScope.Patient;
 
@@ -41,7 +41,17 @@ namespace Diagnosis.Data.Tests
 
             Assert.IsTrue(opt.Equals(read));
         }
+        [TestMethod]
+        public void WriteReadConfidenceEquals()
+        {
+            var opt = new SearchOptions();
+            opt.CWordsAll.AddRange(new[] { w[1].AsConfidencable(Confidence.Absent) });
 
+            var str = l.WriteOptions(opt);
+            var read = l.ReadOptions(str);
+
+            Assert.IsTrue(opt.Equals(read));
+        }
         [TestMethod]
         public void WriteReadWithMeasureEquals()
         {
@@ -75,7 +85,7 @@ namespace Diagnosis.Data.Tests
         public void PartialLoaded()
         {
             var opt = new SearchOptions();
-            opt.WordsAll.AddRange(new[] { w[1], w[2] });
+            opt.CWordsAll.AddRange(new[] { w[1].AsConfidencable(), w[2].AsConfidencable() });
 
             var str = l.WriteOptions(opt).Replace(w[1].Title, "qwe");
             var read = l.ReadOptions(str);
@@ -88,7 +98,7 @@ namespace Diagnosis.Data.Tests
         {
             var opt = new SearchOptions();
             var child = new SearchOptions();
-            child.WordsAll.AddRange(new[] { w[1], w[2] });
+            child.CWordsAll.AddRange(new[] { w[1].AsConfidencable(), w[2].AsConfidencable() });
             opt.Children.Add(child);
 
             var str = l.WriteOptions(opt).Replace(w[1].Title, "qwe");

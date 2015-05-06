@@ -162,9 +162,10 @@ namespace Diagnosis.Models
             return GroupOperator == other.GroupOperator &&
                 SearchScope == other.SearchScope &&
                 MinAny == other.MinAny &&
-                WordsAll.ScrambledEquals(other.WordsAll) &&
-                WordsAny.ScrambledEquals(other.WordsAny) &&
-                WordsNot.ScrambledEquals(other.WordsNot) &&
+                WithConf == other.WithConf &&
+                CWordsAll.ScrambledEquals(other.CWordsAll) &&
+                CWordsAny.ScrambledEquals(other.CWordsAny) &&
+                CWordsNot.ScrambledEquals(other.CWordsNot) &&
                 MeasuresAll.ScrambledEquals(other.MeasuresAll) &&
                 MeasuresAny.ScrambledEquals(other.MeasuresAny) &&
                 Categories.ScrambledEquals(other.Categories) &&
@@ -176,9 +177,9 @@ namespace Diagnosis.Models
             {
                 int hash = GroupOperator.GetHashCode();
                 hash = hash * 23 + SearchScope.GetHashCode();
-                hash = hash * 23 + WordsAll.Count;
-                hash = hash * 23 + WordsAny.Count;
-                hash = hash * 23 + WordsNot.Count;
+                hash = hash * 23 + CWordsAll.Count;
+                hash = hash * 23 + CWordsAny.Count;
+                hash = hash * 23 + CWordsNot.Count;
                 hash = hash * 23 + Children.Count;
                 return hash;
             }
