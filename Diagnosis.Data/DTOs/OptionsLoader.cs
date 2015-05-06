@@ -61,19 +61,20 @@ namespace Diagnosis.Data
                                                               select new Confindencable<Word>(w, cw.Confidence));
 
             // measures
-            var mWordTitles = from w in dto.MeasuresAll
+            var mWordTitles = (from w in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Word)
-                              where w != null
-                              select w.Title;
+                               where w != null
+                               select w.Title).Distinct().ToList();
 
             var mWords = WordQuery.ByTitles(session)(mWordTitles).ToList();
 
-            var uomSpecs = from u in dto.MeasuresAll
+            var uomSpecs = (from u in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Uom)
                            where u != null
-                           select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title };
+                           select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title })
+                           .Distinct().ToList();
             var uoms = uomSpecs
                 .Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName))
                 .Where(x => x != null)
