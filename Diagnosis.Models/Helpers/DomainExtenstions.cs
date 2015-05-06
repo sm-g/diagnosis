@@ -57,9 +57,9 @@ namespace Diagnosis.Models
 
     public static class IHrItemObjectExtensions
     {
-        public static ConfWithHio AsConfindenceHrItemObject(this IHrItemObject hio)
+        public static ConfWithHio AsConfWithHio(this IHrItemObject hio, Confidence conf = Confidence.Present)
         {
-            return new ConfWithHio(hio);
+            return new ConfWithHio(hio, conf);
         }
         public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
         {
