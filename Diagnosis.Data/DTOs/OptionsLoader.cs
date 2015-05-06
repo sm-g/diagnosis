@@ -41,6 +41,7 @@ namespace Diagnosis.Data
             result.SearchScope = dto.SearchScope;
             result.MinAny = dto.MinAny;
 
+            // words
             var words = WordQuery.ByTitles(session)(dto.WordsAll.Select(x => x.Title));
             result.WordsAll = new List<Word>(words);
 
@@ -50,6 +51,7 @@ namespace Diagnosis.Data
             words = WordQuery.ByTitles(session)(dto.WordsNot.Select(x => x.Title));
             result.WordsNot = new List<Word>(words);
 
+            // measures
             var mWordTitles = from w in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Word)
@@ -86,6 +88,7 @@ namespace Diagnosis.Data
             result.MeasuresAll = new List<MeasureOp>(mAll);
             result.MeasuresAny = new List<MeasureOp>(mAny);
 
+            // cats
             var cats = CategoryQuery.ByTitles(session)(dto.Categories.Select(x => x.Title));
             result.Categories = new List<HrCategory>(cats);
 
@@ -95,19 +98,16 @@ namespace Diagnosis.Data
                 result.Children.Add(child);
             });
 
-            if (result.WordsAll.Count != dto.WordsAll.Count ||
+            var smthMissed = result.WordsAll.Count != dto.WordsAll.Count ||
                 result.WordsAny.Count != dto.WordsAny.Count ||
                 result.WordsNot.Count != dto.WordsNot.Count ||
                 result.MeasuresAll.Count != dto.MeasuresAll.Count ||
                 result.MeasuresAny.Count != dto.MeasuresAny.Count ||
-                result.Categories.Count != dto.Categories.Count
-                )
-            {
-                // TODO add uom check
-                // чего-то нет на клиенте, запрос не такой, каким был сохранен
-                result.PartialLoaded = true;
-            }
+                result.Categories.Count != dto.Categories.Count ||
+                mWords.Count != mWordTitles.Count() ||
+                uoms.Count != uomSpecs.Count();
 
+            result.PartialLoaded = smthMissed || result.Children.Any(x => x.PartialLoaded);
             return result;
         }
     }

@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels.Screens
                         var opt = loader.ReadOptions(Buffer);
                         searchVm.SetOptions(opt);
                         Buffer = "";
-                        PartialLoaded = opt.PartialLoaded; // TODO по всем детям
+                        PartialLoaded = opt.PartialLoaded;
                         ShowBuffer = false;
                     }
                     catch (Exception)

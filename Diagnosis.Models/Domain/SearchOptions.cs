@@ -92,7 +92,9 @@ namespace Diagnosis.Models
                                    WordsNot.Any();
             }
         }
-
+        /// <summary>
+        /// Чего-то нет на клиенте, запрос не такой, каким был сохранен
+        /// </summary>
         public bool PartialLoaded
         {
             get { return _part; }

@@ -96,7 +96,10 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             if (options != null)
+            {
                 FillFromOptions(options);
+                Options.PartialLoaded = options.PartialLoaded; // TODO не делять опции снова
+            }
         }
 
         [Obsolete("For xaml only.")]
