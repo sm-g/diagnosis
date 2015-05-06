@@ -40,6 +40,7 @@ Name: "{commondesktop}\{#ServerAppName}"; Filename: "{app}\{#ServerAppExeName}";
 
 [Dirs]
 Name: "{app}\bin"
+Name: "{app}\bin\ru"
 
 ; [Components]
 ; Name: "serv"; Description: "{#ServerAppName}"; Types: server
