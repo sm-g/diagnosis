@@ -16,6 +16,7 @@ namespace Diagnosis.Data.DTOs
             Mapper.CreateMap(typeof(UomType), typeof(UomTypeDTO));
             Mapper.CreateMap(typeof(MeasureOp), typeof(MeasureOpDTO));
             Mapper.CreateMap(typeof(HrCategory), typeof(HrCategoryDTO));
+            Mapper.CreateMap(typeof(SearchOptions), typeof(SearchOptionsDTO));
         }
     }
 }

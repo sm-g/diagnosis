@@ -1,15 +1,14 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.Models
 {
     [Serializable]
-    public class SearchOptions
+    public class SearchOptions : IDomainObject
     {
         [NonSerialized]
         private bool _isRoot;
@@ -93,7 +92,9 @@ namespace Diagnosis.ViewModels.Search
                                    WordsNot.Any();
             }
         }
-
+        /// <summary>
+        /// Чего-то нет на клиенте, запрос не такой, каким был сохранен
+        /// </summary>
         public bool PartialLoaded
         {
             get { return _part; }
@@ -184,7 +185,16 @@ namespace Diagnosis.ViewModels.Search
         }
         public override int GetHashCode()
         {
-            return 0; //TODO
+            unchecked
+            {
+                int hash = GroupOperator.GetHashCode();
+                hash = hash * 23 + SearchScope.GetHashCode();
+                hash = hash * 23 + WordsAll.Count;
+                hash = hash * 23 + WordsAny.Count;
+                hash = hash * 23 + WordsNot.Count;
+                hash = hash * 23 + Children.Count;
+                return hash;
+            }
         }
     }
 
@@ -217,4 +227,6 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         public IEnumerable<HrCategory> Categories { get; set; }
     }
+
+
 }

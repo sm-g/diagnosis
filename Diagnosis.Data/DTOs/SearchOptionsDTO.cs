@@ -1,11 +1,10 @@
-﻿using Diagnosis.Data.DTOs;
-using Diagnosis.Models;
+﻿using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.Data.DTOs
 {
     [DataContract]
     public class SearchOptionsDTO

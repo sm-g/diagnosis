@@ -136,5 +136,20 @@ namespace Diagnosis.Common.Tests
             Assert.AreEqual("1", list.Mode());
 
         }
+
+        [TestMethod]
+        public void ScrambledEquals()
+        {
+            var list = new List<string> { "1", "2" };
+            var list2 = new List<string> { "2", "1" };
+            Assert.IsTrue(list.ScrambledEquals(list2));
+        }
+        [TestMethod]
+        public void ScrambledEquals2()
+        {
+            var list = new List<string> { "1", "2", "2" };
+            var list2 = new List<string> { "2", "1" };
+            Assert.IsTrue(!list.ScrambledEquals(list2));
+        }
     }
 }

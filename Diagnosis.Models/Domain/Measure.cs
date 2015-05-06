@@ -109,7 +109,7 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Сравнивает измерения учитывая единицу измерения (для OrderedBag).
+        /// Сравнивает измерения учитывая единицу измерения (для Bag).
         /// </summary>
         /// <param name="hio"></param>
         /// <returns></returns>
@@ -152,15 +152,11 @@ namespace Diagnosis.Models
         {
             var other = obj as Measure;
             if (other == null)
-            {
                 return false;
-            }
-            else
-            {
-                // не равны, даже если одно значение выражено разными единицами
-                // 1 л != 1000 мл
-                return this.Word == other.Word && this.Uom == other.Uom && this.DbValue == other.DbValue;
-            }
+
+            // не равны, даже если одно значение выражено разными единицами
+            // 1 л != 1000 мл
+            return this.Word == other.Word && this.Uom == other.Uom && this.DbValue == other.DbValue;
         }
 
         public override int GetHashCode()
@@ -342,6 +338,25 @@ namespace Diagnosis.Models
 
             return string.Format("{0}\u00A0{1}{2}", Word, opValue,
                 Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as MeasureOp;
+            if (other == null) return false;
+
+            return base.Equals(obj) && this.Operator == other.Operator && this.RightDbValue == other.RightDbValue;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = base.GetHashCode();
+                hash = hash * 23 + Operator.GetHashCode();
+                hash = hash * 23 + RightDbValue.GetHashCode();
+                return hash;
+            }
         }
 
         private void CorrectValues()
