@@ -35,6 +35,9 @@ namespace Diagnosis.Client.App.Controls.CardParts
 
         private void records_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (Vm == null) // list closed
+                return;
+
             // fix duplicates in SelectedItems http://stackoverflow.com/questions/27685460/wpf-listbox-extendedmode-move-selected-item-with-isselected-binding
             Vm.inRemoveDup = true;
             foreach (var item in e.AddedItems)
