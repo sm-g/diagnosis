@@ -231,7 +231,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 msgManager.Dispose();
                 QueryEditor.Dispose();
-                Result.Dispose();
+                if (Result != null)
+                    Result.Dispose();
             }
             base.Dispose(disposing);
         }
