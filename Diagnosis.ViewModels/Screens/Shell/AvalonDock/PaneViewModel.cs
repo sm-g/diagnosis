@@ -15,7 +15,9 @@ namespace Diagnosis.ViewModels.Screens
         private string _title = null;
         private Action<bool> OnIsAutoHiddenChanging;
 
-
+        /// <summary>
+        /// Заголовок панели
+        /// </summary>
         public string Title
         {
             get { return _title; }

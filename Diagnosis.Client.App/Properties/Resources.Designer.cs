@@ -391,7 +391,7 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to По дате создания.
+        ///   Looks up a localized string similar to По дате создания записи.
         /// </summary>
         public static string Sorting_CreatedAt {
             get {
@@ -400,11 +400,20 @@ namespace Diagnosis.Client.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to По дате.
+        ///   Looks up a localized string similar to По дате события.
         /// </summary>
         public static string Sorting_Date {
             get {
                 return ResourceManager.GetString("Sorting_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to По дате описания события.
+        /// </summary>
+        public static string Sorting_DescribedAt {
+            get {
+                return ResourceManager.GetString("Sorting_DescribedAt", resourceCulture);
             }
         }
         

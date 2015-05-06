@@ -85,6 +85,7 @@ namespace Diagnosis.ViewModels
             {
                 case HrViewColumn.Category:
                 case HrViewColumn.CreatedAt:
+                case HrViewColumn.DescribedAt:
                 case HrViewColumn.Ord:
                     return col.ToString();
 

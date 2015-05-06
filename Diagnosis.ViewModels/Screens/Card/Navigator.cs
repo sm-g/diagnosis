@@ -68,24 +68,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (Current == null)
                     return "";
-                string delim = " \\ ";
-                string result = NameFormatter.GetFullName(viewer.OpenedPatient) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedPatient.CreatedAt);
 
-                var holder = Current.Holder;
-
-                if (holder is Course)
-                {
-                    result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-                }
-                else if (holder is Appointment)
-                {
-                    result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-                    result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
-                }
-                return result;
+                return GetCurrentPathDescription(viewer, Current.Holder);
             }
         }
-
         /// <summary>
         /// Пациенты в корне дерева.
         /// </summary>
@@ -93,6 +79,23 @@ namespace Diagnosis.ViewModels.Screens
         {
             get;
             private set;
+        }
+
+        public static string GetCurrentPathDescription(PatientViewer viewer, IHrsHolder current)
+        {
+            string delim = " \\ ";
+            string result = NameFormatter.GetFullName(viewer.OpenedPatient) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedPatient.CreatedAt);
+
+            if (current is Course)
+            {
+                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
+            }
+            else if (current is Appointment)
+            {
+                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
+                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
+            }
+            return result;
         }
 
         public void NavigateTo(IHrsHolder holder)
@@ -171,7 +174,7 @@ namespace Diagnosis.ViewModels.Screens
             vm.Children.ForAll(x => HightlightLastOpenedFor(x));
         }
 
-        private CardItemViewModel FindItemVmOf(IHrsHolder holder)
+        internal CardItemViewModel FindItemVmOf(IHrsHolder holder)
         {
             holder = holder.Actual as IHrsHolder;
             CardItemViewModel vm;

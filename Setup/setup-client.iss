@@ -31,6 +31,7 @@ Source: "{#ClientBuildOutputFolder}\Diagnosis.Client.App.exe.config"; DestDir: "
 
 ; client dlls
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.AvalonDock.resources.dll"; DestDir: "{app}\bin\"
+Source: "{#ClientBuildOutputFolder}\ru\Xceed.Wpf.AvalonDock.resources.dll"; DestDir: "{app}\bin\ru\"
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.AvalonDock.Themes.Metro.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\Xceed.Wpf.DataGrid.dll"; DestDir: "{app}\bin\"
 Source: "{#ClientBuildOutputFolder}\bin\EPPlus.dll"; DestDir: "{app}\bin"
@@ -53,6 +54,7 @@ Filename: "{app}\{#ClientAppExeName}"; Flags: nowait postinstall skipifsilent un
 [Dirs]
 Name: "{app}\Help"
 Name: "{app}\bin"
+Name: "{app}\bin\ru"
 Name: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
 Name: "{localappdata}\{#ClientDbSubFolder}"; Flags: uninsneveruninstall
 

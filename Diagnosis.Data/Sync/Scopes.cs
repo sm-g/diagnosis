@@ -140,6 +140,11 @@ namespace Diagnosis.Data.Sync
             return scopeToTables.Where(x => x.Value.Contains(tbl)).Select(x => x.Key);
         }
 
+        public static IEnumerable<Type> GetTypes(this Scope scope)
+        {
+            return scopeToTables[scope].Select(x => Names.tblToTypeMap[x]);
+        }
+
         public static IList<Scope> GetOrderedScopes()
         {
             return new List<Scope>(Enum.GetValues(typeof(Scope)).Cast<Scope>().OrderScopes());

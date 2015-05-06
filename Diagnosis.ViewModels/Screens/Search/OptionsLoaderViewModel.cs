@@ -34,7 +34,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     try
                     {
-                        var dto = Buffer.DeserializeDC<SearchOptionsDTO>();
+                        var dto = Buffer.DeserializeDCJson<SearchOptionsDTO>();
                         var opt = loader.LoadFromDTO(dto);
                         searchVm.SetOptions(opt);
                         Buffer = "";
@@ -59,7 +59,7 @@ namespace Diagnosis.ViewModels.Screens
                         var dto = Mapper.Map<SearchOptionsDTO>(searchVm.RootQueryBlock.GetSearchOptions());
                         try
                         {
-                            Buffer = dto.SerializeDC();
+                            Buffer = dto.SerializeDCJson();
                         }
                         catch (Exception ex)
                         {
