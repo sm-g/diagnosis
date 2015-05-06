@@ -398,5 +398,132 @@ namespace Diagnosis.Data.Tests
         }
 
         #endregion WithAllAnyNotWordsMinAny
+
+        #region Confidence
+        [TestMethod]
+        public void WithAnyChio()
+        {
+            var hrs = HealthRecordQuery.WithAnyConfWord(session)(new Confindencable<Word>[] { 
+                w[1].AsConfidencable(Confidence.Absent),
+            });
+
+
+            Assert.IsTrue(hrs.Count() == 1);
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+
+        [TestMethod]
+        public void WithAnyChios()
+        {
+            var hrs = HealthRecordQuery.WithAnyConfWords(session)(new Confindencable<Word>[] { 
+                w[1].AsConfidencable(Confidence.Absent),
+                w[22].AsConfidencable(Confidence.Absent),
+                w[22].AsConfidencable()
+            }, 2);
+
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+        }
+
+        [TestMethod]
+        public void WithAnyOnlyAbsent()
+        {
+            var hrs = HealthRecordQuery.WithAnyConfWords(session)(new Confindencable<Word>[] { 
+                w[1].AsConfidencable(Confidence.Absent),
+                w[22].AsConfidencable(Confidence.Absent)
+            }, 1);
+
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+        }
+
+        [TestMethod]
+        public void WithAllChios()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+               w[1].AsConfidencable(Confidence.Absent),
+               w[22].AsConfidencable()
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            Enumerable.Empty<Confindencable<Word>>(),
+            1);
+
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+        [TestMethod]
+        public void WithAllOnlyAbsent()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+               w[1].AsConfidencable(Confidence.Absent)
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            Enumerable.Empty<Confindencable<Word>>(),
+            1);
+
+
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
+        [TestMethod]
+        public void WithAllNotChios()
+        {
+            // есть 3 и нет 1(absent)
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+               w[3].AsConfidencable()
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            new Confindencable<Word>[] { 
+               w[1].AsConfidencable(Confidence.Absent)
+            }, 1);
+
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+        }
+
+        [TestMethod]
+        public void WithAllNotChios2()
+        {
+            // есть 3 и нет 1 - вернет где 1(absent)
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(new Confindencable<Word>[] { 
+                w[3].AsConfidencable()
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            new Confindencable<Word>[] { 
+                w[1].AsConfidencable()
+            }, 1);
+
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+        }
+
+        [TestMethod]
+        public void WithoutAnyConfWord()
+        {
+            // есть 22, но нет 70
+            var hrs = HealthRecordQuery.WithoutAnyConfWord(session)(new Confindencable<Word>[] { 
+                w[1].AsConfidencable(), 
+                w[22].AsConfidencable(Confidence.Absent) });
+
+            Assert.AreEqual(8, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[32]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[71]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
+        }
+        #endregion
     }
 }

@@ -158,7 +158,22 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        private bool _withConf;
+        public bool WithConfidence
+        {
+            get
+            {
+                return _withConf;
+            }
+            set
+            {
+                if (_withConf != value)
+                {
+                    _withConf = value;
+                    OnPropertyChanged(() => WithConfidence);
+                }
+            }
+        }
         /// <summary>
         /// Опции поиска.
         /// </summary>
@@ -384,15 +399,16 @@ namespace Diagnosis.ViewModels.Screens
         {
             var options = new SearchOptions(IsRoot);
 
-            options.WordsAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-            options.WordsAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
-            options.WordsNot = AutocompleteNot.GetCHIOs().Where(x => x.HIO is Word).Select(x => x.HIO).Cast<Word>().ToList();
+            options.CWordsAll = AutocompleteAll.GetCWords().ToList();
+            options.CWordsAny = AutocompleteAny.GetCWords().ToList();
+            options.CWordsNot = AutocompleteNot.GetCWords().ToList();
 
             options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
             options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
 
             options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
             options.MinAny = AnyMin;
+            options.WithConf = WithConfidence;
             options.GroupOperator = GroupOperator;
             options.SearchScope = SearchScope;
 
@@ -521,11 +537,12 @@ namespace Diagnosis.ViewModels.Screens
             GroupOperator = options.GroupOperator;
             SearchScope = options.SearchScope;
             AnyMin = options.MinAny;
+            WithConfidence = options.WithConf;
             SelectCategory(options.Categories.ToArray());
 
-            AutocompleteAll.ReplaceTagsWith(options.WordsAll.Union<IHrItemObject>(options.MeasuresAll));
-            AutocompleteAny.ReplaceTagsWith(options.WordsAny.Union<IHrItemObject>(options.MeasuresAny));
-            AutocompleteNot.ReplaceTagsWith(options.WordsNot);
+            AutocompleteAll.ReplaceTagsWith(options.CWordsAll.Union<object>(options.MeasuresAll));
+            AutocompleteAny.ReplaceTagsWith(options.CWordsAny.Union<object>(options.MeasuresAny));
+            AutocompleteNot.ReplaceTagsWith(options.CWordsNot);
 
             foreach (var opt in options.Children)
                 AddChildQb(opt);

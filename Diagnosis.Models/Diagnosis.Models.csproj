@@ -145,6 +145,7 @@
     </Compile>
     <Compile Include="Domain\SearchOptions.cs" />
     <Compile Include="Entities\Admin.cs" />
+    <Compile Include="Entities\Chio.cs" />
     <Compile Include="Domain\DateOffset.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />

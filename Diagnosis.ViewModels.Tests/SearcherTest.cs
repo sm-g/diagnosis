@@ -1189,21 +1189,24 @@ namespace Diagnosis.ViewModels.Tests
 
         public static SearchOptions SetAll(this SearchOptions qb, params IHrItemObject[] all)
         {
-            qb.WordsAll = new List<Word>(all.OfType<Word>());
+            //  qb.WordsAll = new List<Word>(all.OfType<Word>());
+            qb.CWordsAll = new List<Confindencable<Word>>(all.OfType<Word>().Select(x => x.AsConfidencable()));
             qb.MeasuresAll = new List<MeasureOp>(all.OfType<MeasureOp>());
             return qb;
         }
 
         public static SearchOptions SetAny(this SearchOptions qb, params IHrItemObject[] any)
         {
-            qb.WordsAny = new List<Word>(any.OfType<Word>());
+            //qb.WordsAny = new List<Word>(any.OfType<Word>());
+            qb.CWordsAny = new List<Confindencable<Word>>(any.OfType<Word>().Select(x => x.AsConfidencable()));
             qb.MeasuresAny = new List<MeasureOp>(any.OfType<MeasureOp>());
             return qb;
         }
 
         public static SearchOptions SetNot(this SearchOptions qb, params IHrItemObject[] not)
         {
-            qb.WordsNot = new List<Word>(not.OfType<Word>());
+            //qb.WordsNot = new List<Word>(not.OfType<Word>());
+            qb.CWordsNot = new List<Confindencable<Word>>(not.OfType<Word>().Select(x => x.AsConfidencable()));
             return qb;
         }
 

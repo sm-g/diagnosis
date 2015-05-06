@@ -29,6 +29,47 @@ namespace Diagnosis.Models
         {
             return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);
         }
+        [Pure]
+        public static IEnumerable<IHrItemObject> GetOrderedEntities(this HealthRecord hr)
+        {
+            return from item in hr.HrItems
+                   orderby item.Ord
+                   select item.Entity;
+        }
+        [Pure]
+        public static IEnumerable<ConfindenceHrItemObject> GetOrderedCHIOs(this HealthRecord hr)
+        {
+            return from item in hr.HrItems
+                   orderby item.Ord
+                   select item.GetConfindenceHrItemObject();
+        }
+        [Pure]
+        public static IEnumerable<ConfindenceHrItemObject> GetCHIOs(this HealthRecord hr)
+        {
+            return hr.HrItems.Select(x => x.GetConfindenceHrItemObject());
+        }
+        [Pure]
+        public static IEnumerable<Confindencable<Word>> GetCWords(this HealthRecord hr)
+        {
+            return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable(x.Confidence));
+        }
+    }
+
+    public static class IHrItemObjectExtensions
+    {
+        public static ConfindenceHrItemObject AsConfindenceHrItemObject(this IHrItemObject hio)
+        {
+            return new ConfindenceHrItemObject(hio);
+        }
+        public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
+        {
+            return new Confindencable<T>(hio, conf);
+        }
+
+        public static ConfindenceHrItemObject GetConfindenceHrItemObject(this HrItem hi)
+        {
+            return new ConfindenceHrItemObject(hi.Entity, hi.Confidence);
+        }
     }
 
     public static class IHrsHolderExtensions
@@ -364,7 +405,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// Формат {[id] ToString()[,] ...}
         /// </summary>
-        public static string FlattenString(this IEnumerable<IDomainObject> mayBeEntities)
+        public static string FlattenString(this IEnumerable<object> mayBeEntities)
         {
             var str = mayBeEntities.Select(item =>
             {
@@ -385,7 +426,7 @@ namespace Diagnosis.Models
                     }
                     catch
                     {
-                        // Comment or Mesure
+                        // Comment or Measure
                     }
 
                     pre += " ";

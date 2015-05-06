@@ -31,7 +31,13 @@ namespace Diagnosis.ViewModels.Search
         {
             Contract.Requires(qb.IsRoot);
 
-            var hrs = Searcher.Create(session, qb).GetResultInner(qb);
+            IEnumerable<HealthRecord> hrs;
+
+            if (qb.IsGroup)
+                hrs = Searcher.Create(session, qb).GetResultForGroup(qb);
+            else
+                hrs = HrSearcher.Search(session, qb);
+
             allHrsCache = null; // следующий поиск снова выбирает все записи, если надо
             return hrs;
         }
@@ -89,7 +95,6 @@ namespace Diagnosis.ViewModels.Search
             if (qb.IsGroup)
             {
                 var searcher = Searcher.Create(session, qb);
-
                 return searcher.GetResultForGroup(qb);
             }
             else

@@ -117,14 +117,6 @@ namespace Diagnosis.Models
             }
         }
 
-        public virtual ConfindenceHrItemObject CHIO
-        {
-            get
-            {
-                return new ConfindenceHrItemObject(Entity, Confidence);
-            }
-        }
-
         public virtual int Ord { get; set; }
 
         public override string ToString()
@@ -133,73 +125,5 @@ namespace Diagnosis.Models
         }
     }
 
-    /// <summary>
-    /// Сущность элемента записи с уверенностью.
-    /// </summary>
-    [Serializable]
-    [DebuggerDisplay("CHIO {HIO}{HioType} {Confidence}")]
-    public class ConfindenceHrItemObject : IDomainObject, IComparable<ConfindenceHrItemObject>
-    {
-        public Confidence Confidence { get; set; }
 
-        public IHrItemObject HIO { get; set; }
-
-        public ConfindenceHrItemObject(IHrItemObject hio, Confidence conf)
-        {
-            Contract.Requires(hio != null);
-
-            Confidence = conf;
-            HIO = hio;
-        }
-
-        public int CompareTo(ConfindenceHrItemObject other)
-        {
-            // сравниваем строго, так что измерения с одним значением, 
-            // выраженным разными единицами, не равны
-            var res = StrictIHrItemObjectComparer.StrictCompare(this.HIO, other.HIO);
-            if (res != 0) return res;
-
-            return this.Confidence.CompareTo(other.Confidence);
-        }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as ConfindenceHrItemObject;
-            if (other == null)
-                return false;
-
-            return
-                this.Confidence.Equals(other.Confidence) &&
-                this.HIO.Equals(other.HIO);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return HIO.GetHashCode() * 37 + Confidence.GetHashCode();
-            }
-        }
-
-        public override string ToString()
-        {
-            string suf;
-            switch (Confidence)
-            {
-                case Confidence.Notsure:
-                    suf = " (не уверен)";
-                    break;
-                case Confidence.Absent:
-                    suf = " (нет)";
-                    break;
-                default:
-                case Confidence.Present:
-                    suf = "";
-                    break;
-            }
-            return string.Format("{0}{1}", HIO, suf);
-        }
-
-        private Type HioType { get { return HIO.GetType(); } }
-    }
 }

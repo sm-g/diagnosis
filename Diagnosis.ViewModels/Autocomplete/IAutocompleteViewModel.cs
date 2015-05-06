@@ -61,7 +61,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         INotifyCollectionChanged Tags { get; }
         bool IsEmpty { get; }
         bool IsPopupOpen { get; }
-        void ReplaceTagsWith(IEnumerable<IHrItemObject> items);
+        void ReplaceTagsWith(IEnumerable<object> items);
     }
     public interface ITagsTrackableAutocomplete
     {

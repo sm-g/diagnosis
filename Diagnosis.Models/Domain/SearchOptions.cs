@@ -20,9 +20,9 @@ namespace Diagnosis.Models
         {
             Children = new ObservableCollection<SearchOptions>();
 
-            WordsAll = new List<Word>();
-            WordsAny = new List<Word>();
-            WordsNot = new List<Word>();
+            CWordsAll = new List<Confindencable<Word>>();
+            CWordsAny = new List<Confindencable<Word>>();
+            CWordsNot = new List<Confindencable<Word>>();
             MeasuresAny = new List<MeasureOp>();
             MeasuresAll = new List<MeasureOp>();
             Categories = new List<HrCategory>();
@@ -35,34 +35,17 @@ namespace Diagnosis.Models
         {
         }
 
-        /// <summary>
-        /// Записи со всеми словами
-        /// </summary>
-        public List<Word> WordsAll { get; set; }
-
-        /// <summary>
-        /// И любым словом из
-        /// </summary>
-        public List<Word> WordsAny { get; set; }
-
-        /// <summary>
-        /// Хотя бы столько элементов из Any
-        /// </summary>
         public int MinAny { get; set; }
 
-        /// <summary>
-        /// B ни одного слова из.
-        /// </summary>
-        public List<Word> WordsNot { get; set; }
+        public List<Confindencable<Word>> CWordsAll { get; set; }
+        public List<Confindencable<Word>> CWordsAny { get; set; }
+        public List<Confindencable<Word>> CWordsNot { get; set; }
+        public IEnumerable<Word> WordsAll { get { return CWordsAll.Select(x => x.HIO); } }
+        public IEnumerable<Word> WordsAny { get { return CWordsAny.Select(x => x.HIO); } }
+        public IEnumerable<Word> WordsNot { get { return CWordsNot.Select(x => x.HIO); } }
 
-        /// <summary>
-        /// Записи со всеми измерениями
-        /// </summary>
         public List<MeasureOp> MeasuresAll { get; set; }
 
-        /// <summary>
-        /// И любым из
-        /// </summary>
         public List<MeasureOp> MeasuresAny { get; set; }
 
         /// <summary>
@@ -77,6 +60,7 @@ namespace Diagnosis.Models
         public ObservableCollection<SearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
+        public bool WithConf { get; set; }
 
         /// <summary>
         /// Разрешает искать исключающий блок-корень.
@@ -87,9 +71,9 @@ namespace Diagnosis.Models
         {
             get
             {
-                return !IsGroup && !WordsAll.Any() &&
-                                   !WordsAny.Any() &&
-                                   WordsNot.Any();
+                return !IsGroup && !CWordsAll.Any() &&
+                                   !CWordsAny.Any() &&
+                                   CWordsNot.Any();
             }
         }
         /// <summary>
@@ -101,7 +85,6 @@ namespace Diagnosis.Models
             set { _part = value; }
         }
 
-        //        public List<ConfindenceHrItemObject> ChiosAll { get; set; }
 
         public override string ToString()
         {
@@ -123,8 +106,8 @@ namespace Diagnosis.Models
             }
             var sb = new StringBuilder();
 
-            var alls = WordsAll.Union<IHrItemObject>(MeasuresAll).ToList();
-            var anys = WordsAny.Union<IHrItemObject>(MeasuresAny);
+            var alls = CWordsAll.Union<object>(MeasuresAll).ToList();
+            var anys = CWordsAny.Union<object>(MeasuresAny);
             if (anys.Count() <= MinAny)
                 alls.AddRange(anys); // повторы?
 
@@ -146,16 +129,16 @@ namespace Diagnosis.Models
                 sb.Append("/");
             }
 
-            if (WordsNot.Any())
+            if (CWordsNot.Any())
             {
-                if (WordsNot.Count() > 1)
+                if (CWordsNot.Count() > 1)
                 {
                     sb.AppendFormat("ни одного: ");
                 }
                 else
                     sb.AppendFormat("без ");
 
-                sb.Append(string.Join(", ", WordsNot));
+                sb.Append(string.Join(", ", CWordsNot));
                 sb.Append("/");
             }
             if (Categories.Any())
@@ -163,6 +146,10 @@ namespace Diagnosis.Models
                 sb.AppendFormat("разделы: ");
                 sb.Append(string.Join(", ", Categories));
                 sb.Append("/");
+            }
+            if (WithConf)
+            {
+                sb.Append("с отрицанием");
             }
             return sb.ToString().Trim('/');
         }

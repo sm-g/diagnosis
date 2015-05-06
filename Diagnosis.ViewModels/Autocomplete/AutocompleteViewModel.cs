@@ -35,13 +35,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         private VisibleRelayCommand toggleConfidence;
         private OptionsMode mode;
 
-        public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<ConfindenceHrItemObject> initItems)
+        public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<object> initItems)
             : this(recognizer,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
-                allowConfidenceToggle: mode == OptionsMode.HrEditor,
+                allowConfidenceToggle: mode != OptionsMode.MeasureEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
                 measureEditorWithCompare: mode == OptionsMode.Search,
-                initItems: initItems ?? Enumerable.Empty<ConfindenceHrItemObject>(),
+                initItems: initItems ?? Enumerable.Empty<object>(),
                 convertTo: mode == OptionsMode.HrEditor ? new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure } :
                             mode == OptionsMode.Search ? new[] { BlankType.Word, BlankType.Measure } :
                             Enumerable.Empty<BlankType>()
@@ -55,7 +55,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             bool allowConfidenceToggle,
             bool singleTag,
             bool measureEditorWithCompare,
-            IEnumerable<ConfindenceHrItemObject> initItems,
+            IEnumerable<object> initItems,
             IEnumerable<BlankType> convertTo)
         {
             Contract.Requires(recognizer != null);
@@ -352,7 +352,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         entities = t.Blank.ToEnumerable();
                     else
                         entities = GetCHIOsOfSelectedCompleted().Select(x => x.HIO);
-                    this.Send(Event.SendToSearch, entities.AsParams(MessageKeys.HrItemObjects));
+                    this.Send(Event.SendToSearch, entities.ToList().AsParams(MessageKeys.HrItemObjects));
                 }, (t) => WithSendToSearch)
                 {
                     IsVisible = WithSendToSearch
@@ -512,9 +512,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег.
         /// </summary>
-        /// <param name="сontent">Строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
         public TagViewModel CreateTag(object content = null)
         {
+            Contract.Requires(content == null || content is string || content is ConfindenceHrItemObject || content is IHrItemObject);
+
             TagViewModel tag;
             var itemObject = content as IHrItemObject;
             var chio = content as ConfindenceHrItemObject;
@@ -615,6 +616,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
         {
+            Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfindenceHrItemObject || tagOrContent is IHrItemObject);
+
             var tag = tagOrContent as TagViewModel;
             if (tag == null)
             {
@@ -665,7 +668,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             LastTag.IsTextBoxFocused = true;
         }
 
-        public void ReplaceTagsWith(IEnumerable<IHrItemObject> items)
+        public void ReplaceTagsWith(IEnumerable<object> items)
         {
             Contract.Requires(items != null);
 
@@ -696,7 +699,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 .Where(x => x.BlankType != BlankType.None)
                 .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
         }
-
         /// <summary>
         /// Возвращает сущности из завершенных тегов по порядку.
         /// </summary>
@@ -937,6 +939,8 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void CompleteTypings()
         {
+            Contract.Ensures(Tags.All(t => t.State != State.Typing));
+
             Tags.Where(t => t.State == State.Typing)
                 .ForEach(tag => CompleteOnLostFocus(tag));
         }

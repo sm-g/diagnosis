@@ -1,6 +1,7 @@
 ﻿using Diagnosis.ViewModels.DragDrop;
 using GongSolutions.Wpf.DragDrop;
 using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
 
@@ -161,18 +162,11 @@ namespace Diagnosis.ViewModels.Autocomplete
                     }
                     else
                     {
-                        // copy tags' HrItemObjects or query
-
+                        // copy tags' content
                         foreach (var tag in tags)
                         {
-                            if (tag.BlankType == BlankType.None)
-                            {
-                                master.AddTag(tag.Query, insertIndex).Validate(master.Validator);
-                            }
-                            else
-                            {
-                                master.AddTag(tag.Blank, insertIndex).Validate(master.Validator);
-                            }
+                            Contract.Assume(tag.State == State.Completed);
+                            master.AddTag(tag.ToChio(), insertIndex).Validate(master.Validator);
                         }
                     }
                     master.LastTag.IsSelected = false;
