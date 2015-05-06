@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels.Tests
     [TestClass]
     public class DateOffsetVMTest : ViewModelTest
     {
-        private DateOffsetViewModel vm;
+        private EventDateViewModel vm;
         private HealthRecord h;
         private HealthRecord emptyH;
 
@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             h = session.Load<HealthRecord>(IntToGuid<HealthRecord>(1));
             emptyH = session.Load<HealthRecord>(IntToGuid<HealthRecord>(71));
-            vm = DateOffsetViewModel.FromHr(h);
+            vm = EventDateViewModel.FromHr(h);
         }
 
         [TestCleanup]
@@ -47,7 +47,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(h.FromDate.Unit, vm.Unit);
             Assert.AreEqual(h.FromDate.Offset, vm.Offset);
             Assert.IsTrue(!vm.IsClosedInterval);
-            Assert.AreEqual(DateOffsetViewModel.ShowAs.Date, vm.FirstSet);
+            Assert.AreEqual(EventDateViewModel.ShowAs.Date, vm.FirstSet);
         }
 
         [TestMethod]
@@ -245,28 +245,28 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetMonth()
         {
-            DateOffsetViewModel.ClearDict();
-            var vm = DateOffsetViewModel.FromHr(emptyH);
+            EventDateViewModel.ClearDict();
+            var vm = EventDateViewModel.FromHr(emptyH);
             vm.From.Month = 5;
 
-            Assert.AreEqual(DateOffsetViewModel.ShowAs.Date, vm.FirstSet);
+            Assert.AreEqual(EventDateViewModel.ShowAs.Date, vm.FirstSet);
         }
 
         [TestMethod]
         public void EmptySetToMonth()
         {
-            DateOffsetViewModel.ClearDict();
-            var vm = DateOffsetViewModel.FromHr(emptyH);
+            EventDateViewModel.ClearDict();
+            var vm = EventDateViewModel.FromHr(emptyH);
             vm.to.Month = 5;
 
-            Assert.AreEqual(DateOffsetViewModel.ShowAs.Date, vm.FirstSet);
+            Assert.AreEqual(EventDateViewModel.ShowAs.Date, vm.FirstSet);
         }
 
         [TestMethod]
         public void EmptySetUnit()
         {
-            DateOffsetViewModel.ClearDict();
-            var vm = DateOffsetViewModel.FromHr(emptyH);
+            EventDateViewModel.ClearDict();
+            var vm = EventDateViewModel.FromHr(emptyH);
             vm.Unit = DateUnit.Month;
 
             Assert.IsTrue(vm.IsEmpty);
@@ -276,21 +276,21 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetOffset()
         {
-            DateOffsetViewModel.ClearDict();
-            var vm = DateOffsetViewModel.FromHr(emptyH);
+            EventDateViewModel.ClearDict();
+            var vm = EventDateViewModel.FromHr(emptyH);
             vm.Offset = 5;
 
-            Assert.AreEqual(DateOffsetViewModel.ShowAs.Offset, vm.FirstSet);
+            Assert.AreEqual(EventDateViewModel.ShowAs.Offset, vm.FirstSet);
         }
 
         [TestMethod]
         public void EmptySetAge()
         {
-            DateOffsetViewModel.ClearDict();
-            var vm = DateOffsetViewModel.FromHr(emptyH);
+            EventDateViewModel.ClearDict();
+            var vm = EventDateViewModel.FromHr(emptyH);
             vm.AtAge = 5;
 
-            Assert.AreEqual(DateOffsetViewModel.ShowAs.AtAge, vm.FirstSet);
+            Assert.AreEqual(EventDateViewModel.ShowAs.AtAge, vm.FirstSet);
         }
 
         [TestMethod]

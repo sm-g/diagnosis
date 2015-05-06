@@ -71,7 +71,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         event EventHandler ConfidencesChanged;
         event EventHandler CHiosChanged;
 
-        IEnumerable<ConfindenceHrItemObject> GetCHIOs();
-        IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted();
+        IEnumerable<ConfWithHio> GetCHIOs();
+        IEnumerable<ConfWithHio> GetCHIOsOfCompleted();
     }
 }

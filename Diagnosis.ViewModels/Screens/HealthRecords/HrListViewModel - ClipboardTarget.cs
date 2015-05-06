@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
         public bool inManualFocusSetting;
 
         private Action<HealthRecord, HrData.HrInfo> fillHr;
-        private Action<IList<ConfindenceHrItemObject>> syncHios;
+        private Action<IList<ConfWithHio>> syncHios;
 
         private string[] acceptFormats = new[] {
             HrData.DataFormat.Name,
@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Screens
                 From = new DateOffset(hr.FromDate),
                 To = new DateOffset(hr.ToDate),
                 Unit = hr.Unit,
-                Chios = new List<ConfindenceHrItemObject>(hr.GetOrderedCHIOs())
+                Chios = new List<ConfWithHio>(hr.GetOrderedCHIOs())
             }).ToList();
 
             var data = new HrData(hrInfos);

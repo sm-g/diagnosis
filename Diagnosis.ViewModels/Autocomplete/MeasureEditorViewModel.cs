@@ -252,7 +252,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     CanChangeAddQueryToSuggstions = false
                 },
                 AutocompleteViewModel.OptionsMode.MeasureEditor,
-                Word == null ? null : new[] { new ConfindenceHrItemObject(Word, Confidence.Present) })
+                Word == null ? null : new[] { new ConfWithHio(Word, Confidence.Present) })
             {
                 IsDragSourceEnabled = false,
                 IsDropTargetEnabled = false

@@ -55,7 +55,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool disposed;
         private VisibleRelayCommand<bool> _moveHr;
 
-        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<ConfindenceHrItemObject>> syncer)
+        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<ConfWithHio>> syncer)
         {
             Contract.Requires(holder != null);
             Contract.Requires(filler != null);

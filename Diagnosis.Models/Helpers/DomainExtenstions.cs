@@ -37,14 +37,14 @@ namespace Diagnosis.Models
                    select item.Entity;
         }
         [Pure]
-        public static IEnumerable<ConfindenceHrItemObject> GetOrderedCHIOs(this HealthRecord hr)
+        public static IEnumerable<ConfWithHio> GetOrderedCHIOs(this HealthRecord hr)
         {
             return from item in hr.HrItems
                    orderby item.Ord
                    select item.GetConfindenceHrItemObject();
         }
         [Pure]
-        public static IEnumerable<ConfindenceHrItemObject> GetCHIOs(this HealthRecord hr)
+        public static IEnumerable<ConfWithHio> GetCHIOs(this HealthRecord hr)
         {
             return hr.HrItems.Select(x => x.GetConfindenceHrItemObject());
         }
@@ -57,18 +57,18 @@ namespace Diagnosis.Models
 
     public static class IHrItemObjectExtensions
     {
-        public static ConfindenceHrItemObject AsConfindenceHrItemObject(this IHrItemObject hio)
+        public static ConfWithHio AsConfindenceHrItemObject(this IHrItemObject hio)
         {
-            return new ConfindenceHrItemObject(hio);
+            return new ConfWithHio(hio);
         }
         public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
         {
             return new Confindencable<T>(hio, conf);
         }
 
-        public static ConfindenceHrItemObject GetConfindenceHrItemObject(this HrItem hi)
+        public static ConfWithHio GetConfindenceHrItemObject(this HrItem hi)
         {
-            return new ConfindenceHrItemObject(hi.Entity, hi.Confidence);
+            return new ConfWithHio(hi.Entity, hi.Confidence);
         }
     }
 
@@ -410,9 +410,9 @@ namespace Diagnosis.Models
             var str = mayBeEntities.Select(item =>
             {
                 var pre = "";
-                if (item is ConfindenceHrItemObject)
+                if (item is ConfWithHio)
                 {
-                    item = ((ConfindenceHrItemObject)item).HIO;
+                    item = ((ConfWithHio)item).HIO;
                 }
                 if (item is IHrItemObject)
                 {

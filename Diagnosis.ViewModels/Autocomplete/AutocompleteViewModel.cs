@@ -514,11 +514,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public TagViewModel CreateTag(object content = null)
         {
-            Contract.Requires(content == null || content is string || content is ConfindenceHrItemObject || content is IHrItemObject);
+            Contract.Requires(content == null || content is string || content is ConfWithHio || content is IHrItemObject);
 
             TagViewModel tag;
             var itemObject = content as IHrItemObject;
-            var chio = content as ConfindenceHrItemObject;
+            var chio = content as ConfWithHio;
             var str = content as string;
 
             if (itemObject != null)
@@ -616,7 +616,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
         {
-            Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfindenceHrItemObject || tagOrContent is IHrItemObject);
+            Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfWithHio || tagOrContent is IHrItemObject);
 
             var tag = tagOrContent as TagViewModel;
             if (tag == null)
@@ -688,7 +688,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Возвращает сущности из тегов по порядку.
         /// Не должен вызываться, если есть редактируемый тег.
         /// </summary>
-        public IEnumerable<ConfindenceHrItemObject> GetCHIOs()
+        public IEnumerable<ConfWithHio> GetCHIOs()
         {
             Contract.Requires(Tags.All(t => t.State != State.Typing));
 
@@ -697,27 +697,27 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             return Tags
                 .Where(x => x.BlankType != BlankType.None)
-                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
+                .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
         /// <summary>
         /// Возвращает сущности из завершенных тегов по порядку.
         /// </summary>
-        public IEnumerable<ConfindenceHrItemObject> GetCHIOsOfCompleted()
+        public IEnumerable<ConfWithHio> GetCHIOsOfCompleted()
         {
             return Tags
                 .Where(t => t.State == State.Completed)
-                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
+                .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
 
         /// <summary>
         /// Возвращает сущности из выделенных завершенных тегов по порядку.
         /// </summary>
         /// <returns></returns>
-        private IEnumerable<ConfindenceHrItemObject> GetCHIOsOfSelectedCompleted()
+        private IEnumerable<ConfWithHio> GetCHIOsOfSelectedCompleted()
         {
             return SelectedTags
                 .Where(t => t.State == State.Completed)
-                .Select(t => new ConfindenceHrItemObject(t.Blank, t.Confidence));
+                .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
 
         private Signalizations Validator(TagViewModel tag)

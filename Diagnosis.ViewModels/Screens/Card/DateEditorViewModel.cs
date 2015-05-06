@@ -10,7 +10,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly HealthRecord healthRecord;
         private bool _interaval;
-        private DateOffsetViewModel _doVm;
+        private EventDateViewModel _doVm;
 
         private DateOffset lastToDate;
         private static bool _isExpanded;
@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
 
             healthRecord.PropertyChanged += healthRecord_PropertyChanged;
 
-            EventDate = DateOffsetViewModel.FromHr(healthRecord);
+            EventDate = EventDateViewModel.FromHr(healthRecord);
             EventDate.PropertyChanged += EventDateVm_PropertyChanged;
             DateSuggestions = new ObservableCollection<DateSuggestion>();
 
@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
             SetupDateSuggsetions();
         }
 
-        public DateOffsetViewModel EventDate
+        public EventDateViewModel EventDate
         {
             get
             {
@@ -219,15 +219,15 @@ namespace Diagnosis.ViewModels.Screens
                 switch (EventDate.FirstSet)
                 {
                     default:
-                    case DateOffsetViewModel.ShowAs.Date:
+                    case EventDateViewModel.ShowAs.Date:
                         ShowAsDate = true;
                         break;
 
-                    case DateOffsetViewModel.ShowAs.Offset:
+                    case EventDateViewModel.ShowAs.Offset:
                         ShowAsOffset = true;
                         break;
 
-                    case DateOffsetViewModel.ShowAs.AtAge:
+                    case EventDateViewModel.ShowAs.AtAge:
                         ShowAsAge = true;
                         break;
                 }

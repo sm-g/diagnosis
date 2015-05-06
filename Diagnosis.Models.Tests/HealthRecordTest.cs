@@ -158,7 +158,7 @@ namespace Diagnosis.Models.Tests
         public void AddItemsWithDefaultConfidence()
         {
             var chiosSequence = new IHrItemObject[] { w1, w2, com }
-                .Select(x => new ConfindenceHrItemObject(x, Confidence.Absent))
+                .Select(x => new ConfindenceWithHrItemObject(x, Confidence.Absent))
                 .ToList();
             var hiosToAdd = new IHrItemObject[] { w3, w2 };
 

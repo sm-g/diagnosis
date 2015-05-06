@@ -250,7 +250,7 @@ namespace Diagnosis.Models
         /// Добавляет сущности к элементам записи.
         /// </summary>
         /// <param name="items"></param>
-        public virtual void AddItems(IEnumerable<ConfindenceHrItemObject> items)
+        public virtual void AddItems(IEnumerable<ConfWithHio> items)
         {
             Contract.Requires(items != null);
 
@@ -266,7 +266,7 @@ namespace Diagnosis.Models
             Contract.Requires(items != null);
 
             SetItems(this.GetOrderedCHIOs()
-                .Concat(items.Select(x => new ConfindenceHrItemObject(x, Confidence.Present))).ToList());
+                .Concat(items.Select(x => new ConfWithHio(x, Confidence.Present))).ToList());
         }
 
         /// <summary>
@@ -278,14 +278,14 @@ namespace Diagnosis.Models
         {
             Contract.Requires(entitiesToBe != null);
 
-            SetItems(entitiesToBe.Select(x => new ConfindenceHrItemObject(x, Confidence.Present)).ToList());
+            SetItems(entitiesToBe.Select(x => new ConfWithHio(x, Confidence.Present)).ToList());
         }
 
         /// <summary>
         /// Устанавливает сущности элементов записи.
         /// Полученные элементы нумеруются по порядку.
         /// </summary>
-        public virtual void SetItems(IList<ConfindenceHrItemObject> willChios)
+        public virtual void SetItems(IList<ConfWithHio> willChios)
         {
             Contract.Requires(willChios != null);
             Contract.Ensures(HrItems.Count() == willChios.Count);
@@ -304,8 +304,8 @@ namespace Diagnosis.Models
             var itemsToRem = new List<HrItem>();
             var itemsToAdd = new List<HrItem>();
 
-            var willBag = new Bag<ConfindenceHrItemObject>(willChios);
-            var wasBag = new Bag<ConfindenceHrItemObject>(wasChios);
+            var willBag = new Bag<ConfWithHio>(willChios);
+            var wasBag = new Bag<ConfWithHio>(wasChios);
 
             // добалвяем все существующие, чьи сущности не надо убирать
             var toR = wasBag.Difference(willBag);

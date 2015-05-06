@@ -9,10 +9,10 @@ namespace Diagnosis.ViewModels.Autocomplete
 {
     public static class Extensions
     {
-        public static ConfindenceHrItemObject ToChio(this TagViewModel t)
+        public static ConfWithHio ToChio(this TagViewModel t)
         {
             Contract.Requires(t.BlankType != BlankType.None);
-            return new ConfindenceHrItemObject(t.Blank, t.Confidence);
+            return new ConfWithHio(t.Blank, t.Confidence);
         }
 
         public static IEnumerable<Confindencable<Word>> GetCWords(this ITagsTrackableAutocomplete a)

@@ -173,7 +173,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public void SyncAfterPaste(IList<ConfindenceHrItemObject> hios)
+        public void SyncAfterPaste(IList<ConfWithHio> hios)
         {
             hios.SyncAfterPaste(session);
         }

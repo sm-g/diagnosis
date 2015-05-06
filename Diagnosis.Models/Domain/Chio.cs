@@ -12,13 +12,13 @@ namespace Diagnosis.Models
     /// </summary>
     [Serializable]
     [DebuggerDisplay("CHIO {HIO}{HioType} {Confidence}")]
-    public class ConfindenceHrItemObject : IComparable<ConfindenceHrItemObject>
+    public class ConfWithHio : IDomainObject, IComparable<ConfWithHio>
     {
         public Confidence Confidence { get; set; }
 
         public IHrItemObject HIO { get; set; }
 
-        public ConfindenceHrItemObject(IHrItemObject hio, Confidence conf = Models.Confidence.Present)
+        public ConfWithHio(IHrItemObject hio, Confidence conf = Models.Confidence.Present)
         {
             Contract.Requires(hio != null);
 
@@ -26,7 +26,7 @@ namespace Diagnosis.Models
             HIO = hio;
         }
 
-        public int CompareTo(ConfindenceHrItemObject other)
+        public int CompareTo(ConfWithHio other)
         {
             // сравниваем строго, так что измерения с одним значением, 
             // выраженным разными единицами, не равны
@@ -38,7 +38,7 @@ namespace Diagnosis.Models
 
         public override bool Equals(object obj)
         {
-            var other = obj as ConfindenceHrItemObject;
+            var other = obj as ConfWithHio;
             if (other == null)
                 return false;
 
@@ -84,7 +84,7 @@ namespace Diagnosis.Models
 
     [Serializable]
     [DebuggerDisplay("CHIO {HIO}{HioType} {Confidence}")]
-    public class Confindencable<T> : ConfindenceHrItemObject where T : IHrItemObject
+    public class Confindencable<T> : ConfWithHio where T : IHrItemObject
     {
         public new T HIO { get; set; }
 
