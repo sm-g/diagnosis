@@ -55,24 +55,32 @@ namespace Diagnosis.Data
                                          .Select(x => x.Word)
                               where w != null
                               select w.Title;
-            var mWords = WordQuery.ByTitles(session)(mWordTitles);
+
+            var mWords = WordQuery.ByTitles(session)(mWordTitles).ToList();
 
             var uomSpecs = from u in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Uom)
                            where u != null
                            select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title };
-            var uoms = uomSpecs.Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName));
+            var uoms = uomSpecs
+                .Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName))
+                .Where(x => x != null)
+                .ToList();
 
             var mAll = dto.MeasuresAll.Select(x =>
-                new MeasureOp(x.Operator, x.DbValue, x.Uom == null ? null : uoms.FirstOrDefault(u => Equal(u, x.Uom)))
+                new MeasureOp(x.Operator, x.Value)
                 {
-                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
+                    Uom = x.Uom == null ? null : uoms.FirstOrDefault(u => x.Uom.Equals(u)),
+                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title),
+                    RightValue = x.RightValue
                 });
             var mAny = dto.MeasuresAny.Select(x =>
-                new MeasureOp(x.Operator, x.DbValue, x.Uom == null ? null : uoms.FirstOrDefault(u => Equal(u, x.Uom)))
+                new MeasureOp(x.Operator, x.Value)
                 {
-                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title)
+                    Uom = x.Uom == null ? null : uoms.FirstOrDefault(u => x.Uom.Equals(u)),
+                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title),
+                    RightValue = x.RightValue
                 });
 
             result.MeasuresAll = new List<MeasureOp>(mAll);
@@ -95,19 +103,12 @@ namespace Diagnosis.Data
                 result.Categories.Count != dto.Categories.Count
                 )
             {
+                // TODO add uom check
                 // чего-то нет на клиенте, запрос не такой, каким был сохранен
                 result.PartialLoaded = true;
             }
 
             return result;
-        }
-
-        private bool Equal(Uom u, UomDTO dto)
-        {
-            return u.Abbr == dto.Abbr &&
-                u.Description == dto.Description &&
-                (dto.Type == null && u.Type == null ||
-                u.Type.Title == dto.Type.Title);
         }
     }
 

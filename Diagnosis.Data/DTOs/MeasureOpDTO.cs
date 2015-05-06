@@ -11,7 +11,9 @@ namespace Diagnosis.Data.DTOs
     public class MeasureOpDTO
     {
         [DataMember]
-        public double DbValue { get; set; }
+        public double Value { get; set; }
+        [DataMember]
+        public double RightValue { get; set; }
         [DataMember]
         public UomDTO Uom { get; set; }
         [DataMember]

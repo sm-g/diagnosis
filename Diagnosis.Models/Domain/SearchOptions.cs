@@ -183,7 +183,16 @@ namespace Diagnosis.Models
         }
         public override int GetHashCode()
         {
-            return 0; //TODO
+            unchecked
+            {
+                int hash = GroupOperator.GetHashCode();
+                hash = hash * 23 + SearchScope.GetHashCode();
+                hash = hash * 23 + WordsAll.Count;
+                hash = hash * 23 + WordsAny.Count;
+                hash = hash * 23 + WordsNot.Count;
+                hash = hash * 23 + Children.Count;
+                return hash;
+            }
         }
     }
 
