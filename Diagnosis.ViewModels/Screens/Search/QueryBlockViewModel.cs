@@ -104,8 +104,9 @@ namespace Diagnosis.ViewModels.Screens
 
             if (options != null)
             {
+                _options = options;
                 FillFromOptions(options);
-                Options.PartialLoaded = options.PartialLoaded; // TODO не делять опции снова
+                Contract.Assume(options.PartialLoaded == _options.PartialLoaded);
             }
         }
 

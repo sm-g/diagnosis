@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -34,7 +35,9 @@ namespace Diagnosis.Models
             : this(false)
         {
         }
-
+        public QueryGroupOperator GroupOperator { get; set; }
+        public SearchScope SearchScope { get; set; }
+        public bool WithConf { get; set; }
         public int MinAny { get; set; }
 
         public List<Confindencable<Word>> CWordsAll { get; set; }
@@ -45,7 +48,6 @@ namespace Diagnosis.Models
         public IEnumerable<Word> WordsNot { get { return CWordsNot.Select(x => x.HIO); } }
 
         public List<MeasureOp> MeasuresAll { get; set; }
-
         public List<MeasureOp> MeasuresAny { get; set; }
 
         /// <summary>
@@ -53,14 +55,9 @@ namespace Diagnosis.Models
         /// </summary>
         public List<HrCategory> Categories { get; set; }
 
-        public QueryGroupOperator GroupOperator { get; set; }
-
-        public SearchScope SearchScope { get; set; }
-
         public ObservableCollection<SearchOptions> Children { get; private set; }
 
         public bool IsGroup { get { return Children.Count > 0; } }
-        public bool WithConf { get; set; }
 
         /// <summary>
         /// Разрешает искать исключающий блок-корень.
@@ -82,9 +79,14 @@ namespace Diagnosis.Models
         public bool PartialLoaded
         {
             get { return _part; }
-            set { _part = value; }
         }
 
+        public void SetPartialLoaded()
+        {
+            // только один раз после загрузки опций
+            Contract.Requires(!PartialLoaded);
+            _part = true;
+        }
 
         public override string ToString()
         {
@@ -163,13 +165,15 @@ namespace Diagnosis.Models
                 SearchScope == other.SearchScope &&
                 MinAny == other.MinAny &&
                 WithConf == other.WithConf &&
+                PartialLoaded == other.PartialLoaded &&
                 CWordsAll.ScrambledEquals(other.CWordsAll) &&
                 CWordsAny.ScrambledEquals(other.CWordsAny) &&
                 CWordsNot.ScrambledEquals(other.CWordsNot) &&
                 MeasuresAll.ScrambledEquals(other.MeasuresAll) &&
                 MeasuresAny.ScrambledEquals(other.MeasuresAny) &&
                 Categories.ScrambledEquals(other.Categories) &&
-                Children.ScrambledEquals(other.Children);
+                Children.ScrambledEquals(other.Children)
+                ;
         }
         public override int GetHashCode()
         {

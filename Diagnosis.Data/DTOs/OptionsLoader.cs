@@ -107,7 +107,7 @@ namespace Diagnosis.Data
                 result.Children.Add(child);
             });
 
-            var smthMissed = 
+            var smthMissed =
                  result.CWordsAll.Count != dto.CWordsAll.Count ||
                  result.CWordsAny.Count != dto.CWordsAny.Count ||
                  result.CWordsNot.Count != dto.CWordsNot.Count ||
@@ -117,7 +117,9 @@ namespace Diagnosis.Data
                 mWords.Count != mWordTitles.Count() ||
                 uoms.Count != uomSpecs.Count();
 
-            result.PartialLoaded = smthMissed || result.Children.Any(x => x.PartialLoaded);
+            if (smthMissed || result.Children.Any(x => x.PartialLoaded))
+                result.SetPartialLoaded();
+
             return result;
         }
     }
