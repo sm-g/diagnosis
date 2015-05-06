@@ -7,6 +7,7 @@ using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -17,10 +18,12 @@ namespace Diagnosis.ViewModels.Search
         private ISession Session;
         private Action onQbEnter;
         public QueryEditorViewModel() { }
-        public QueryEditorViewModel(ISession session, Action onQbEnter)
+        public QueryEditorViewModel(ISession session, Action onQbEnter = null)
         {
+            Contract.Requires(session != null);
+
             this.Session = session;
-            this.onQbEnter = onQbEnter;
+            this.onQbEnter = onQbEnter ?? (Action)(() => { });
 
             var loader = new JsonOptionsLoader(Session);
             var hist = new History<SearchOptions>();
@@ -78,6 +81,8 @@ namespace Diagnosis.ViewModels.Search
 
         private QueryBlockViewModel SetRootOptions(SearchOptions options = null)
         {
+            Contract.Ensures(options == null || options.PartialLoaded == Contract.Result<QueryBlockViewModel>().Options.PartialLoaded);
+
             QueryBlocks.Clear();
 
             var qb = new QueryBlockViewModel(Session, onQbEnter, options);
@@ -89,7 +94,7 @@ namespace Diagnosis.ViewModels.Search
                 }
             };
             QueryBlocks.Add(qb);
-            qb.IsExpanded = true;
+
             return qb;
         }
 

@@ -27,9 +27,8 @@ namespace Diagnosis.ViewModels.Screens
         private bool _group;
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
-
         private QueryGroupOperator _operator;
-
+        private bool inFilling;
         private bool _withConf;
 
         /// <summary>
@@ -40,6 +39,8 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="options"></param>
         public QueryBlockViewModel(ISession session, Action onAutocompleteInputEnded, SearchOptions options = null)
         {
+            Contract.Ensures(options == null || options.Equals(_options));
+
             this.session = session;
             this.onAutocompleteInputEnded = onAutocompleteInputEnded;
 
@@ -61,6 +62,7 @@ namespace Diagnosis.ViewModels.Screens
                         RefreshDescription();
                         OnPropertyChanged(() => DescriptionVisible);
                         break;
+
                     case "Options":
                         if (!IsRoot)
                             Parent.RefreshDescription();
@@ -72,7 +74,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 _options = options;
                 FillFromOptions(options);
-                Contract.Assume(options.PartialLoaded == _options.PartialLoaded);
             }
         }
 
@@ -237,6 +238,8 @@ namespace Diagnosis.ViewModels.Screens
             get { return _options ?? (_options = MakeOptions()); }
             private set
             {
+                if (inFilling) return;
+
                 _options = value;
                 logger.DebugFormat("options set: {0} \n{1}", this, value);
                 OnPropertyChanged("Options");
@@ -381,17 +384,22 @@ namespace Diagnosis.ViewModels.Screens
             options.GroupOperator = GroupOperator;
             options.SearchScope = SearchScope;
 
-            if (_options != null) // копируем детей
+            if (_options != null)
             {
-                _options.Children.ForAll(x =>
-                    options.Children.Add(x));
+                // надо обновить опции, если описание скрыто
+                Children.ForAll(qb =>
+                {
+                    qb.Options = qb.MakeOptions();
+                    options.Children.Add(qb.Options);
+                });
             }
             if (!IsRoot && _options != null)
             {
-                // изменились
+                // изменились опции
                 // обновляем ссылку в родительских опциях через родительский блок
-                // у родителей не видно опсиание, поэтому не надо менять опции, при поиске все равно обновляем
+                // у родителей не видно опсиание, поэтому не надо менять опции, иначе цикл
                 Contract.Assume(!Parent.DescriptionVisible);
+
                 Parent.Options.Children.Remove(_options);
                 Parent.Options.Children.Add(options);
             }
@@ -497,29 +505,6 @@ namespace Diagnosis.ViewModels.Screens
             AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
         }
 
-        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            IsGroup = Children.Count > 0;
-            OnPropertyChanged(() => AllEmpty);
-
-            switch (e.Action)
-            {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                    var qb = (e.NewItems[0] as QueryBlockViewModel);
-                    Options.Children.Add(qb.Options);
-                    break;
-
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                    qb = (e.OldItems[0] as QueryBlockViewModel);
-                    Options.Children.Remove(qb.Options);
-                    RefreshDescription();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         private void CreateMenuItems()
         {
             MinAnyMenuItems = new ObservableCollection<MenuItem>()
@@ -543,6 +528,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void FillFromOptions(SearchOptions options)
         {
+            inFilling = true;
             // TODO automap
             GroupOperator = options.GroupOperator;
             SearchScope = options.SearchScope;
@@ -556,6 +542,7 @@ namespace Diagnosis.ViewModels.Screens
 
             foreach (var opt in options.Children)
                 AddChildQb(opt);
+            inFilling = false;
         }
 
         /// <summary>
@@ -575,9 +562,34 @@ namespace Diagnosis.ViewModels.Screens
 
             qb.PropertyChanged += qb_PropertyChanged;
 
+            this.IsExpanded = true; // теперь описание скрыто
             Add(qb);
-            this.IsExpanded = true;
             return qb;
+        }
+
+        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            IsGroup = Children.Count > 0;
+            OnPropertyChanged(() => AllEmpty);
+
+            if (inFilling) return;
+
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    var qb = (e.NewItems[0] as QueryBlockViewModel);
+                    Options.Children.Add(qb.Options);
+                    break;
+
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    qb = (e.OldItems[0] as QueryBlockViewModel);
+                    Options.Children.Remove(qb.Options);
+                    RefreshDescription();
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         private void Autocomplete_CHiosChanged(object sender, EventArgs e)
