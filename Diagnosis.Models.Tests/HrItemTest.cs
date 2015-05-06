@@ -42,7 +42,7 @@ namespace Diagnosis.Models.Tests
             Assert.AreEqual(Confidence.Present, item.Confidence);
 
             var chio = new ConfindenceHrItemObject(w1, Confidence.Present);
-            Assert.AreEqual(chio, item.CHIO);
+            Assert.AreEqual(chio, item.GetConfindenceHrItemObject());
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Diagnosis.Models.Tests
         [TestMethod]
         public void DataConditions()
         {
-            Assert.IsTrue(hr1.HrItems.Count()== 0);
+            Assert.IsTrue(hr1.HrItems.Count() == 0);
         }
 
         [TestMethod]
@@ -59,7 +59,7 @@ namespace Diagnosis.Models.Tests
         {
             var hiosSequence = new IHrItemObject[] { w1, w2, com };
             hr1.SetItems(hiosSequence);
-            Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count);
+            Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count());
             Assert.IsTrue(hiosSequence.SequenceEqual(hr1.GetOrderedEntities()));
         }
 
@@ -68,7 +68,7 @@ namespace Diagnosis.Models.Tests
         {
             var hiosSequence = new IHrItemObject[] { w1, w1, com };
             hr1.SetItems(hiosSequence);
-            Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count);
+            Assert.AreEqual(hiosSequence.Count(), hr1.HrItems.Count());
             Assert.IsTrue(hiosSequence.SequenceEqual(hr1.GetOrderedEntities()));
         }
 
@@ -87,7 +87,7 @@ namespace Diagnosis.Models.Tests
             hr1.SetItems(hiosSequence2);
 
             Assert.IsTrue(reordered);
-            Assert.AreEqual(hiosSequence2.Count(), hr1.HrItems.Count);
+            Assert.AreEqual(hiosSequence2.Count(), hr1.HrItems.Count());
             Assert.IsTrue(hiosSequence2.SequenceEqual(hr1.GetOrderedEntities()));
         }
 
@@ -106,7 +106,7 @@ namespace Diagnosis.Models.Tests
             hr1.AddItems(hiosToAdd);
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(hiosSequence.Count() + hiosToAdd.Count(), hr1.HrItems.Count);
+            Assert.AreEqual(hiosSequence.Count() + hiosToAdd.Count(), hr1.HrItems.Count());
             Assert.IsTrue(hiosSequence.Concat(hiosToAdd).SequenceEqual(hr1.GetOrderedEntities()));
         }
 
@@ -138,7 +138,7 @@ namespace Diagnosis.Models.Tests
             hr1.SetItems(hiosSequence2);
 
             Assert.AreEqual(1, hr1.GetOrderedEntities().OfType<Comment>().Count());
-            Assert.AreEqual(1, hr1.GetOrderedEntities().OfType<Word>().Count());        
+            Assert.AreEqual(1, hr1.GetOrderedEntities().OfType<Word>().Count());
         }
 
         [TestMethod]
@@ -150,7 +150,7 @@ namespace Diagnosis.Models.Tests
             hr1.SetItems(hiosSequence);
             hr1.SetItems(hiosSequence2);
 
-            Assert.AreEqual(2, hr1.HrItems.Count);
+            Assert.AreEqual(2, hr1.HrItems.Count());
             Assert.IsTrue(hr1.GetOrderedEntities().Contains(w1));
         }
 
@@ -165,7 +165,7 @@ namespace Diagnosis.Models.Tests
             hr1.SetItems(chiosSequence);
             hr1.AddItems(hiosToAdd);
 
-            var chios = hr1.HrItems.Select(x => x.CHIO).ToList();
+            var chios = hr1.HrItems.Select(x => x.GetConfindenceHrItemObject()).ToList();
             Assert.AreEqual(hiosToAdd.Count(), chios.Count(x => x.Confidence == default(Confidence)));
         }
 
