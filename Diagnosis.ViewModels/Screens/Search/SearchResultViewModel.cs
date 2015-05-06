@@ -11,10 +11,10 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class SearchResultViewModel : ViewModelBase
     {
-        private SearchOptions _options;
+        private readonly SearchOptions _options;
         public SearchResultViewModel(IEnumerable<HealthRecord> hrs, SearchOptions options)
         {
-            Options = options;
+            _options = options;
 
             Patients = new ObservableCollection<HolderSearchResultViewModel>();
 
@@ -32,16 +32,11 @@ namespace Diagnosis.ViewModels.Screens
         public Statistic Statistic { get; private set; }
 
         /// <summary>
-        /// Опции последнго поиска.
+        /// Опции, которыми получен результат.
         /// </summary>
         public SearchOptions Options
         {
             get { return _options; }
-            private set
-            {
-                _options = value;
-                OnPropertyChanged("Options");
-            }
         }
         public RelayCommand ExportCommand
         {

@@ -146,7 +146,7 @@ namespace Diagnosis.ViewModels.Screens
         private void Search()
         {
             IEnumerable<HealthRecord> shrs;
-            var options = QueryEditor.QueryBlocks[0].GetSearchOptions();
+            var options = QueryEditor.GetOptions();
             if (UseOldMode)
             {
                 shrs = HrSearcher.SearchOld(Session, RootQueryBlock.GetOldOptions());
