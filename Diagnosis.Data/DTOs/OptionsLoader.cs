@@ -1,28 +1,38 @@
-﻿using Diagnosis.Common;
+﻿using AutoMapper;
+using Diagnosis.Common;
 using Diagnosis.Data.DTOs;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
 using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
-namespace Diagnosis.ViewModels.DataTransfer
+namespace Diagnosis.Data
 {
-    public class OptionsLoader
+    public abstract class OptionsLoader
     {
         private ISession session;
+
         public OptionsLoader(ISession session)
         {
             this.session = session;
         }
+
+        public abstract SearchOptions ReadOptions(string str);
+
+        public abstract string WriteOptions(SearchOptions options);
+
+        protected SearchOptionsDTO MapToDto(SearchOptions options)
+        {
+            return Mapper.Map<SearchOptionsDTO>(options);
+        }
+
         /// <summary>
         /// Делает опции с реальными сущностями.
         /// </summary>
-        public SearchOptions LoadFromDTO(SearchOptionsDTO dto)
+        protected SearchOptions LoadFromDTO(SearchOptionsDTO dto)
         {
             Contract.Ensures(dto.GetAllChildrenCount() == Contract.Result<SearchOptions>().GetAllChildrenCount());
 
@@ -91,7 +101,8 @@ namespace Diagnosis.ViewModels.DataTransfer
 
             return result;
         }
-        bool Equal(Uom u, UomDTO dto)
+
+        private bool Equal(Uom u, UomDTO dto)
         {
             return u.Abbr == dto.Abbr &&
                 u.Description == dto.Description &&
@@ -99,16 +110,38 @@ namespace Diagnosis.ViewModels.DataTransfer
                 u.Type.Title == dto.Type.Title);
         }
     }
-    public static class Ex
+
+    public class JsonOptionsLoader : OptionsLoader
+    {
+        public JsonOptionsLoader(ISession session)
+            : base(session)
+        {
+        }
+
+        public override SearchOptions ReadOptions(string str)
+        {
+            var dto = str.DeserializeDCJson<SearchOptionsDTO>();
+            var opt = LoadFromDTO(dto);
+            return opt;
+        }
+
+        public override string WriteOptions(SearchOptions options)
+        {
+            var dto = MapToDto(options);
+            return dto.SerializeDCJson();
+        }
+    }
+
+    public static class SearchOptionsExtensions
     {
         public static int GetAllChildrenCount(this SearchOptions o)
         {
             return o.Children.Aggregate(o.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
+
         public static int GetAllChildrenCount(this SearchOptionsDTO dto)
         {
             return dto.Children.Aggregate(dto.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Search;
 using System;
@@ -15,10 +16,6 @@ namespace Diagnosis.ViewModels.Screens
         private SearchViewModel searchVm;
         private OptionsLoader loader;
 
-        static OptionsLoaderViewModel()
-        {
-            Mapper.CreateMap(typeof(SearchOptions), typeof(SearchOptionsDTO));
-        }
 
         public OptionsLoaderViewModel(SearchViewModel s, OptionsLoader loader)
         {
@@ -34,8 +31,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     try
                     {
-                        var dto = Buffer.DeserializeDCJson<SearchOptionsDTO>();
-                        var opt = loader.LoadFromDTO(dto);
+                        var opt = loader.ReadOptions(Buffer);
                         searchVm.SetOptions(opt);
                         Buffer = "";
                         PartialLoaded = opt.PartialLoaded; // TODO по всем детям
@@ -56,10 +52,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     if (searchVm.RootQueryBlock != null)
                     {
-                        var dto = Mapper.Map<SearchOptionsDTO>(searchVm.RootQueryBlock.GetSearchOptions());
+                        var options = searchVm.RootQueryBlock.GetSearchOptions();
                         try
                         {
-                            Buffer = dto.SerializeDCJson();
+                            Buffer = loader.WriteOptions(options);
                         }
                         catch (Exception ex)
                         {

@@ -1,15 +1,14 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.Models
 {
     [Serializable]
-    public class SearchOptions
+    public class SearchOptions : IDomainObject
     {
         [NonSerialized]
         private bool _isRoot;
@@ -217,4 +216,6 @@ namespace Diagnosis.ViewModels.Search
         /// </summary>
         public IEnumerable<HrCategory> Categories { get; set; }
     }
+
+
 }

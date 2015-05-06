@@ -226,7 +226,6 @@
     <Compile Include="DataTransfer\DragDropHelper.cs" />
     <Compile Include="DataTransfer\DragDropInterfaces.cs" />
     <Compile Include="DataTransfer\HrData.cs" />
-    <Compile Include="DataTransfer\OptionsLoader.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Formatters\DateOffsetFormatter.cs" />
@@ -293,7 +292,6 @@
     <Compile Include="Screens\Search\HolderSearchResultViewModel.cs" />
     <Compile Include="Screens\Search\OptionsLoaderViewModel.cs" />
     <Compile Include="Screens\Search\SearchHistoryViewModel.cs" />
-    <Compile Include="DataTransfer\SearchOptionsDTO.cs" />
     <Compile Include="Screens\Search\SearchResultViewModel.cs" />
     <Compile Include="Search\Statistic.cs" />
     <Compile Include="Types\CheckableBase.cs" />
@@ -327,7 +325,6 @@
     <Compile Include="Autocomplete\SuggestionsMaker.cs" />
     <Compile Include="Autocomplete\TagViewModel.cs" />
     <Compile Include="Controls\FilterViewModel.cs" />
-    <Compile Include="Search\SearchOptions.cs" />
     <Compile Include="Controls\PopupSearchViewModel.cs" />
     <Compile Include="Search\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />

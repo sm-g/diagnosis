@@ -143,11 +143,12 @@
     <Compile Include="..\GeneralAssemblyInfo.cs">
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Domain\SearchOptions.cs" />
     <Compile Include="Entities\Admin.cs" />
-    <Compile Include="Entities\DateOffset.cs" />
+    <Compile Include="Domain\DateOffset.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
-    <Compile Include="Entities\Comment.cs" />
+    <Compile Include="Domain\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\SpecialityVocabularies.cs" />
     <Compile Include="Entities\UomFormat.cs" />
@@ -163,11 +164,10 @@
     <Compile Include="Enums\HrView.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
     <Compile Include="Enums\HealthRecordUnit.cs" />
-    <Compile Include="Entities\Measure.cs" />
+    <Compile Include="Domain\Measure.cs" />
     <Compile Include="Entities\Uom.cs" />
     <Compile Include="Entities\Appointment.cs" />
     <Compile Include="Entities\Course.cs" />
-    <Compile Include="Entities\Diagnosis.cs" />
     <Compile Include="Entities\Doctor.cs" />
     <Compile Include="Entities\HealthRecord.cs" />
     <Compile Include="Entities\IcdBlock.cs" />
@@ -213,9 +213,7 @@
       <Name>Diagnosis.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

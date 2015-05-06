@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Search;
@@ -29,7 +30,6 @@ namespace Diagnosis.ViewModels.Screens
             ContentId = ToolContentId;
 
             hist = new History<SearchOptions>();
-            var loader = new OptionsLoader(Session);
 
             hist.PropertyChanged += (s, e) =>
             {
@@ -39,6 +39,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
+            var loader = new JsonOptionsLoader(Session);
             Loader = new OptionsLoaderViewModel(this, loader);
             History = new SearchHistoryViewModel(hist);
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
