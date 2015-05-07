@@ -6,12 +6,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Diagnosis.ViewModels.Search;
+using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class SearchResultViewModel : ViewModelBase
     {
         private readonly SearchOptions _options;
+        private EventMessageHandler handler;
         public SearchResultViewModel(IEnumerable<HealthRecord> hrs, SearchOptions options)
         {
             _options = options;
@@ -25,6 +27,21 @@ namespace Diagnosis.ViewModels.Screens
             });
 
             Statistic = new Statistic(hrs);
+
+            handler = this.Subscribe(Event.DeleteHolder, (e) =>
+            {
+                // убираем удаленного холдера из результатов
+                var h = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                var hsr = Patients.FindHolderKeeperOf(h);
+                if (hsr != null)
+                {
+                    if (hsr.IsRoot)
+                        Patients.Remove(hsr);
+                    else
+                        hsr.Remove();
+                }
+
+            });
         }
 
         public ObservableCollection<HolderSearchResultViewModel> Patients { get; private set; }
@@ -46,6 +63,22 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     new Exporter().ExportToXlsx(Statistic);
                 });
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                }
+
+            }
+            finally
+            {
+                base.Dispose(disposing);
             }
         }
     }

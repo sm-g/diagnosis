@@ -115,7 +115,10 @@ namespace Diagnosis.ViewModels.Screens
             viewer.Open(holder);
             Current = FindItemVmOf(lastOpened);
         }
-
+        /// <summary>
+        /// Добавляет item пациента
+        /// </summary>
+        /// <param name="holder"></param>
         public void Add(IHrsHolder holder)
         {
             var p = holder.GetPatient();
@@ -176,18 +179,9 @@ namespace Diagnosis.ViewModels.Screens
 
         internal CardItemViewModel FindItemVmOf(IHrsHolder holder)
         {
-            holder = holder.Actual as IHrsHolder;
-            CardItemViewModel vm;
-            foreach (var item in TopCardItems)
-            {
-                if (item.Holder == holder)
-                    return item;
-                vm = item.AllChildren.Where(x => x.Holder == holder).FirstOrDefault();
-                if (vm != null)
-                    return vm;
-            }
-            return null;
+            return TopCardItems.FindHolderKeeperOf(holder);
         }
+
 
         /// <summary>
         /// при открытии пациента подписываемся на измение коллекций курсов и осмотров в курсах
