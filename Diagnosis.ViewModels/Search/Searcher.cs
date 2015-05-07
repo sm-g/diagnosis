@@ -10,8 +10,8 @@ namespace Diagnosis.ViewModels.Search
 {
     public abstract class Searcher
     {
+        internal static bool logOn;
         protected static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Searcher));
-        protected static bool logOn;
         protected static IEnumerable<HealthRecord> allHrsCache;
         protected ISession session;
 

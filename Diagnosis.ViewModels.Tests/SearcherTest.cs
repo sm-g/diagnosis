@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<Uom>();
 
             o = new SearchOptions(true);
+            Searcher.logOn = true;
             hrsTotal = hr.Count;
         }
 
@@ -1148,6 +1149,49 @@ namespace Diagnosis.ViewModels.Tests
         #endregion Scope
 
         #region Conf
+        [TestMethod]
+        public void AllInHr_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.HealthRecord)
+           .All()
+           .AddChild(x => x
+               .WithConf()
+               .SetAll(w[22])
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // нет 22
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[40],
+                hr[70],
+                hr[72],
+                hr[73],
+                hr[74]));
+        }
+
+        [TestMethod]
+        public void AnyInHr_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.HealthRecord)
+           .Any()
+           .AddChild(x => x
+               .WithConf()
+               .SetAll(w[22])
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // нет 22
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[40],
+                hr[70],
+                hr[72],
+                hr[73],
+                hr[74]));
+        }
 
         [TestMethod]
         public void AllInHr_WithExcluding_Conf()
@@ -1157,7 +1201,7 @@ namespace Diagnosis.ViewModels.Tests
            .All()
            .AddChild(x => x
                .SetAll(w[22]))
-            .AddChild(x => x
+           .AddChild(x => x
                .WithConf()
                .SetNot(w[1].AsConfidencable(Confidence.Absent)))
            .Search(session);
