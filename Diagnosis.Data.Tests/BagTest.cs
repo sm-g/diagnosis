@@ -9,7 +9,7 @@ using Wintellect.PowerCollections;
 namespace Diagnosis.Data.Tests
 {
     [TestClass]
-    public class OrderedBagTest : InMemoryDatabaseTest
+    public class BagTest : InMemoryDatabaseTest
     {
         [TestInitialize]
         public void Init()
@@ -24,8 +24,8 @@ namespace Diagnosis.Data.Tests
         {
             var c1 = new Comment("1");
             var w1 = new Word("1");
-            var bag1 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w1, c1 });
-            var bag2 = new OrderedBag<IHrItemObject>(new[] { w1 });
+            var bag1 = new Bag<IHrItemObject>(new List<IHrItemObject> { w1, c1 });
+            var bag2 = new Bag<IHrItemObject>(new[] { w1 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -39,8 +39,8 @@ namespace Diagnosis.Data.Tests
             var w1 = new Word("1");
             var c1 = new Comment("1");
             var c2 = new Comment("1");
-            var bag1 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w[1], w[2], w[2], c1 });
-            var bag2 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { c2, w[1], w1 });
+            var bag1 = new Bag<IHrItemObject>(new List<IHrItemObject> { w[1], w[2], w[2], c1 });
+            var bag2 = new Bag<IHrItemObject>(new List<IHrItemObject> { c2, w[1], w1 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -51,8 +51,8 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void Words()
         {
-            var bag1 = new OrderedBag<IHrItemObject>(new[] { w[1], w[2], w[3], w[3] });
-            var bag2 = new OrderedBag<IHrItemObject>(new[] { w[2], w[2], w[3] });
+            var bag1 = new Bag<IHrItemObject>(new[] { w[1], w[2], w[3], w[3] });
+            var bag2 = new Bag<IHrItemObject>(new[] { w[2], w[2], w[3] });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -66,8 +66,8 @@ namespace Diagnosis.Data.Tests
             var chio2 = new ConfWithHio(w[2], Confidence.Present);
             var chio1comment = new ConfWithHio(new Comment(w[1].Title), Confidence.Present);
 
-            var bag1 = new OrderedBag<ConfWithHio>(new[] { chio1, chio2 });
-            var bag2 = new OrderedBag<ConfWithHio>(new[] { chio1comment, chio2 });
+            var bag1 = new Bag<ConfWithHio>(new[] { chio1, chio2 });
+            var bag2 = new Bag<ConfWithHio>(new[] { chio1comment, chio2 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -80,8 +80,8 @@ namespace Diagnosis.Data.Tests
             var w1 = new Word("1");
             var w2 = new Word("2");
             var w3 = new Word("3");
-            var bag1 = new OrderedBag<IHrItemObject>(new[] { w1, w2, w3, w3 });
-            var bag2 = new OrderedBag<IHrItemObject>(new[] { w2, w2, w3 });
+            var bag1 = new Bag<IHrItemObject>(new[] { w1, w2, w3, w3 });
+            var bag2 = new Bag<IHrItemObject>(new[] { w2, w2, w3 });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -92,8 +92,8 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void SameIds()
         {
-            var bag1 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w[1], icd[2], w[2], w[3], w[3] });
-            var bag2 = new OrderedBag<IHrItemObject>(new List<IHrItemObject> { w[2], w[2], icd[3] });
+            var bag1 = new Bag<IHrItemObject>(new List<IHrItemObject> { w[1], icd[2], w[2], w[3], w[3] });
+            var bag2 = new Bag<IHrItemObject>(new List<IHrItemObject> { w[2], w[2], icd[3] });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
@@ -106,9 +106,8 @@ namespace Diagnosis.Data.Tests
         {
             var m = new Measure(0, uom[1]);
             var m2 = new Measure(0, uom[2]);
-            var comparer = new StrictIHrItemObjectComparer();
-            var bag1 = new OrderedBag<IHrItemObject>(new[] { m, m2 }, comparer);
-            var bag2 = new OrderedBag<IHrItemObject>(new[] { m }, comparer);
+            var bag1 = new Bag<IHrItemObject>(new[] { m, m2 });
+            var bag2 = new Bag<IHrItemObject>(new[] { m });
 
             var diff1 = bag1.Difference(bag2);
             var diff2 = bag2.Difference(bag1);
