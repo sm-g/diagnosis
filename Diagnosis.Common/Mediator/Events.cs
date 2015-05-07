@@ -26,7 +26,7 @@ namespace Diagnosis.Common
         public static string Type = "type";
         public static string Holder = "holder";
         public static string Dialog = "dialog";
-        public static string HrItemObjects = "entity";
+        public static string Chios = "entity";
         public static string Window = "window";
         public static string Uom = "uom";
         public static string String = "string";

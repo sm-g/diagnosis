@@ -65,7 +65,14 @@ namespace Diagnosis.Models
         {
             return new Confindencable<T>(hio, conf);
         }
-
+        public static MeasureOp ToMeasureOp(this Measure m, MeasureOperator op = MeasureOperator.GreaterOrEqual)
+        {
+            return new MeasureOp(op, m.Value, m.Uom, m.Word);
+        }
+        public static Measure AsMeasure(this MeasureOp mop)
+        {
+            return new Measure(mop.Value, mop.Uom, mop.Word);
+        }
         public static ConfWithHio GetConfindenceHrItemObject(this HrItem hi)
         {
             return new ConfWithHio(hi.Entity, hi.Confidence);

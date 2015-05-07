@@ -5,6 +5,7 @@ using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
@@ -37,7 +38,6 @@ namespace Diagnosis.ViewModels.Screens
                 this.Subscribe(Event.SendToSearch, (e) =>
                 {
                     IEnumerable<HealthRecord> hrs = null;
-                    IEnumerable<IHrItemObject> hios = null;
                     try
                     {
                         hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
@@ -49,9 +49,10 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     else
                     {
+                        IEnumerable<ConfWithHio> hios = null;
                         try
                         {
-                            hios = e.GetValue<IEnumerable<IHrItemObject>>(MessageKeys.HrItemObjects);
+                            hios = e.GetValue<IEnumerable<ConfWithHio>>(MessageKeys.Chios);
                         }
                         catch { }
                         if (hios != null && hios.Any())
@@ -142,6 +143,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
         internal QueryBlockViewModel RootQueryBlock { get { return QueryEditor.QueryBlocks.FirstOrDefault(); } }
+        /// <summary>
+        /// Блок, принявший отправленное в поиск.
+        /// </summary>
+        internal QueryBlockViewModel LastRecieverQueryBlock { get; private set; }
 
         private void Search()
         {
@@ -165,24 +170,30 @@ namespace Diagnosis.ViewModels.Screens
 
         private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
         {
-            var qb = QueryEditor.QueryBlocks.FirstOrDefault();
-            if (!UseOldMode)
-            {
-                RootQueryBlock.AddChildQbCommand.Execute(null);
-                qb = RootQueryBlock.Children.Last();
-            }
+            var qb = GetRecieverQb();
 
             // все слова из записей
-            var allWords = hrs.Aggregate(
-                new HashSet<Word>(),
+            var allCWords = hrs.Aggregate(
+                new HashSet<Confindencable<Word>>(),
                 (words, hr) =>
                 {
-                    hr.Words.ForAll((w) => words.Add(w));
+                    hr.GetCWords().ForAll(w => words.Add(w));
                     return words;
                 });
+            // все измерения с оператором
+            var allMops = hrs.Aggregate(
+                new HashSet<MeasureOp>(),
+                (mops, hr) =>
+                {
+                    hr.Measures.ForAll(m => mops.Add(m.ToMeasureOp()));
+                    return mops;
+                });
 
-            // если несколько записей — любое из слов
-            qb.AllWords = hrs.Count() != 1;
+            if (UseOldMode)
+            {
+                // если несколько записей — любое из слов
+                qb.AllWords = hrs.Count() != 1;
+            }
 
             // все категории из записей
             qb.Categories.ForAll((cat) => cat.IsChecked = false);
@@ -199,21 +210,33 @@ namespace Diagnosis.ViewModels.Screens
             //var lastHr = hrs.Last();
             //HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
 
-            qb.AutocompleteAll.ReplaceTagsWith(allWords);
+            qb.AutocompleteAll.ReplaceTagsWith(allCWords.Union<object>(allMops));
+            RemoveLastResults();
+        }
+        private void RecieveHrItemObjects(IEnumerable<ConfWithHio> chios)
+        {
+            var qb = GetRecieverQb();
+            qb.AutocompleteAll.ReplaceTagsWith(chios);
+
             RemoveLastResults();
         }
 
-        private void RecieveHrItemObjects(IEnumerable<IHrItemObject> hios)
+        private QueryBlockViewModel GetRecieverQb()
         {
-            var qb = QueryEditor.QueryBlocks.FirstOrDefault();
-            if (!UseOldMode)
+            Contract.Ensures(Contract.Result<QueryBlockViewModel>() != null);
+            QueryBlockViewModel qb;
+
+            if (UseOldMode)
+            {
+                qb = QueryEditor.QueryBlocks.FirstOrDefault();
+            }
+            else
             {
                 RootQueryBlock.AddChildQbCommand.Execute(null);
                 qb = RootQueryBlock.Children.Last();
             }
-            qb.AutocompleteAll.ReplaceTagsWith(hios);
-
-            RemoveLastResults();
+            LastRecieverQueryBlock = qb;
+            return qb;
         }
 
         /// <summary>

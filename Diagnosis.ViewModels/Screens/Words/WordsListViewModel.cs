@@ -122,8 +122,8 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                         {
                             this.Send(Event.SendToSearch, Words.Where(w => w.IsChecked)
-                                .Select(w => w.word)
-                                .AsParams(MessageKeys.HrItemObjects));
+                                .Select(w => w.word.AsConfidencable())
+                                .AsParams(MessageKeys.Chios));
                         }, () => CheckedWordsCount > 0);
             }
         }

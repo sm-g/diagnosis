@@ -347,12 +347,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return sendToSearch ?? (sendToSearch = new VisibleRelayCommand<TagViewModel>((t) =>
                 {
-                    IEnumerable<IHrItemObject> entities;
+                    IEnumerable<ConfWithHio> entities;
                     if (t != null)
-                        entities = t.Blank.ToEnumerable();
+                        entities = new ConfWithHio(t.Blank, t.Confidence).ToEnumerable();
                     else
-                        entities = GetCHIOsOfSelectedCompleted().Select(x => x.HIO);
-                    this.Send(Event.SendToSearch, entities.ToList().AsParams(MessageKeys.HrItemObjects));
+                        entities = GetCHIOsOfSelectedCompleted();
+                    this.Send(Event.SendToSearch, entities.ToList().AsParams(MessageKeys.Chios));
                 }, (t) => WithSendToSearch)
                 {
                     IsVisible = WithSendToSearch
