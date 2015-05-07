@@ -13,6 +13,6 @@ namespace Diagnosis.Data.DTOs
         [DataMember]
         public string Title { get; set; }
         [DataMember]
-        public Confidence Confidence { get; set; }
+        public string Confidence { get; set; }
     }
 }
