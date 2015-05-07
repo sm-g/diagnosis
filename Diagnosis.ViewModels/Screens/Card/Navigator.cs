@@ -23,19 +23,7 @@ namespace Diagnosis.ViewModels.Screens
             TopCardItems = new ObservableCollection<CardItemViewModel>();
             patients = new ObservableCollection<Patient>();
             viewer.OpenedChanged += viewer_OpenedChanged;
-            patients.CollectionChanged += (s, e) =>
-            {
-                if (e.Action == NotifyCollectionChangedAction.Remove)
-                {
-                    var p = (Patient)e.OldItems[0];
-
-                    if (viewer.OpenedPatient == p)
-                    {
-                        var near = patients.ElementNear(e.OldStartingIndex);
-                        NavigateTo(near);
-                    }
-                }
-            };
+            patients.CollectionChanged += navigator_patients_CollectionChanged;
         }
 
         public event EventHandler<HrsHolderEventArgs> CurrentChanged;
@@ -72,6 +60,7 @@ namespace Diagnosis.ViewModels.Screens
                 return GetCurrentPathDescription(viewer, Current.Holder);
             }
         }
+
         /// <summary>
         /// Пациенты в корне дерева.
         /// </summary>
@@ -108,18 +97,15 @@ namespace Diagnosis.ViewModels.Screens
                 return;
             }
 
-            Add(holder);
+            AddPatientItemFor(holder);
 
             lastOpened = holder; // != если viewer открывает последний осмотр
 
             viewer.Open(holder);
             Current = FindItemVmOf(lastOpened);
         }
-        /// <summary>
-        /// Добавляет item пациента
-        /// </summary>
-        /// <param name="holder"></param>
-        public void Add(IHrsHolder holder)
+
+        private void AddPatientItemFor(IHrsHolder holder)
         {
             var p = holder.GetPatient();
             if (!patients.Contains(p))
@@ -182,7 +168,6 @@ namespace Diagnosis.ViewModels.Screens
             return TopCardItems.FindHolderKeeperOf(holder);
         }
 
-
         /// <summary>
         /// при открытии пациента подписываемся на измение коллекций курсов и осмотров в курсах
         /// раскрываем открытый элемент дерева, сохраняем последний открытый
@@ -228,6 +213,20 @@ namespace Diagnosis.ViewModels.Screens
         private void holder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(() => CurrentTitle);
+        }
+
+        private void navigator_patients_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var p = (Patient)e.OldItems[0];
+
+                if (viewer.OpenedPatient == p)
+                {
+                    var near = patients.ElementNear(e.OldStartingIndex);
+                    NavigateTo(near); //  рядом или null
+                }
+            }
         }
 
         private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
