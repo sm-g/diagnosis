@@ -26,19 +26,18 @@
                    HorizontalAlignment="Left"
                    Fill="Orange"
                    ToolTip="Блок загружен частично"
-                   Visibility="{Binding Options.PartialLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
-                   >
+                   Visibility="{Binding Options.PartialLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
         </Rectangle>
 
         <Grid  Margin="5 0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        
-        <DockPanel LastChildFill="False">
-            <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <DockPanel LastChildFill="False">
+                <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource BooleanToVisibilityConverter}}"
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                     <TextBlock Text="Записи, где "
@@ -51,133 +50,115 @@
                               ItemTemplate="{StaticResource EnumComboTemplate}" />
                     <!--<CheckBox IsChecked="{Binding All}"
                           Content="всё," />-->
-                    
+
                     <TextBlock Text=" в области "
                                VerticalAlignment="Center" />
                     <!--<diag:HyperlinkContextMenu Value="{Binding SearchScope}"
                                                ItemConverter="{StaticResource EnumToLabel}"
                                                MenuItemsSource="{Binding  SearchScopeMenuItems}" />-->
                     <ComboBox ItemsSource="{Binding Source={diag:EnumListExtension {x:Type diag:SearchScope}}}"
-                          SelectedItem="{Binding SearchScope, Mode=TwoWay}"
-                          ItemTemplate="{StaticResource EnumComboTemplate}" />
-            </StackPanel>
-            <TextBlock Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
-                       VerticalAlignment="Center"
-                       Text="Записи, где" />
+                              SelectedItem="{Binding SearchScope, Mode=TwoWay}"
+                              ItemTemplate="{StaticResource EnumComboTemplate}" />
+                </StackPanel>
+                <TextBlock Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                           VerticalAlignment="Center"
+                           Text="Записи, где" />
                 <StackPanel Orientation="Horizontal"
-                        Style="{StaticResource hidingTreeViewItemPanel}"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        DockPanel.Dock="Right">
-                <Button Command="{Binding AddSyblingQbCommand}"
-                        Visibility="{Binding AddSyblingQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
-                        ToolTip="Добавить блок">
-                    <Rectangle Width="12"
-                               Height="12"
-                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                         Visual="{DynamicResource appbar_add}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-                <Button Command="{Binding AddChildQbCommand}"
-                        ToolTip="Добавить дочерний блок">
-                    <Rectangle Width="12"
-                               Height="12"
-                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                         Visual="{DynamicResource appbar_add_multiple}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-                <Button Command="{Binding RemoveQbCommand}"
-                        Visibility="{Binding RemoveQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
-                        ToolTip="Убрать блок">
-                    <Rectangle Width="12"
-                               Height="12"
-                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                         Visual="{DynamicResource appbar_close}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </StackPanel>
+                            Style="{StaticResource hidingTreeViewItemPanel}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            DockPanel.Dock="Right">
+                    <Button Command="{Binding AddSyblingQbCommand}"
+                            Visibility="{Binding AddSyblingQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
+                            ToolTip="Добавить блок">
+                        <Rectangle Width="12"
+                                   Height="12"
+                                   Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
+                                             Visual="{DynamicResource appbar_add}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                    <Button Command="{Binding AddChildQbCommand}"
+                            ToolTip="Добавить дочерний блок">
+                        <Rectangle Width="12"
+                                   Height="12"
+                                   Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
+                                             Visual="{DynamicResource appbar_add_multiple}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                    <Button Command="{Binding RemoveQbCommand}"
+                            Visibility="{Binding RemoveQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
+                            ToolTip="Убрать блок">
+                        <Rectangle Width="12"
+                                   Height="12"
+                                   Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
+                                             Visual="{DynamicResource appbar_close}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
                 <CheckBox IsChecked="{Binding WithConfidence}"
                           Margin="5 0"
                           DockPanel.Dock="Right"
                           ToolTip="Строгий фильтр, учитывающий уверенность слов"
                           Content="отрицания" />
-        </DockPanel>
+            </DockPanel>
 
-        <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}"
-                    Grid.Row="1">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="FontSize"
-                            Value="{DynamicResource HelpFontSize}" />
-                </Style>
-            </StackPanel.Resources>
-            <!--описание запроса, видно когда блок неактивен-->
-            <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}">
-                <StackPanel DataContext="{Binding Options}">
-                    <TextBlock Text="{Binding}" TextWrapping="Wrap" />
-                    <!--<StackPanel Orientation="Horizontal"
-                                Visibility="{Binding WordsAll.Count, Converter={StaticResource MoreThanToVisibility}}">
-                        <TextBlock Text="всё из: " />
-                        <diag:CommaList ItemsSource="{Binding WordsAll}" />
+            <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}"
+                        Grid.Row="1">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize"
+                                Value="{DynamicResource HelpFontSize}" />
+                    </Style>
+                </StackPanel.Resources>
+                <!--описание запроса, видно когда блок неактивен-->
+                <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}">
+                    <StackPanel DataContext="{Binding Options}">
+                        <TextBlock Text="{Binding}"
+                                   TextWrapping="Wrap" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding WordsAny.Count, Converter={StaticResource MoreThanToVisibility}}">
-                        <TextBlock>хотя бы <Run Text="{Binding MinAny, Mode=OneWay}" /> <Run Text="из: " /></TextBlock>
-                        <diag:CommaList ItemsSource="{Binding WordsAny}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding WordsNot.Count, Converter={StaticResource MoreThanToVisibility}}">
-                        <TextBlock Text="ни одного из: " />
-                        <diag:CommaList ItemsSource="{Binding WordsNot}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
-                        <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat='{}{0}: '}"></TextBlock>
-                        <diag:CommaList ItemsSource="{Binding Categories}" />
-                    </StackPanel>-->
-                </StackPanel>
                     <TextBlock Text="Не заданы условия поиска."
                                Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </StackPanel>
-        </StackPanel>
-        <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                         Grid.Row="2">
                 <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter IsReversed=True}}"
-                        Grid.Row="2">
-                <Label Content="Всё из" />
-                <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
-                <Label>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="И хотя бы " />
-                        <diag:HyperlinkContextMenu Value="{Binding MinAny}" Width="20"
-                                                   MenuItemsSource="{Binding MinAnyMenuItems}" />
-                        <TextBlock Text=" из: " />
-                    </StackPanel>
-                </Label>
-                <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
-                <Label Content="И ни одиного из" />
-                <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
+                            Grid.Row="2">
+                    <Label Content="Всё из" />
+                    <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
+                    <Label>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="И хотя бы " />
+                            <diag:HyperlinkContextMenu Value="{Binding MinAny}"
+                                                       Width="20"
+                                                       MenuItemsSource="{Binding MinAnyMenuItems}" />
+                            <TextBlock Text=" из: " />
+                        </StackPanel>
+                    </Label>
+                    <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
+                    <Label Content="И ни одиного из" />
+                    <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
 
-                <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
-                <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
-                    <forms:CategoryChooser.ItemsPanelTemplate>
-                        <ItemsPanelTemplate>
-                            <diag:UniformGridWithOrientation Orientation="Vertical"
-                                                             Columns="2" />
-                        </ItemsPanelTemplate>
-                    </forms:CategoryChooser.ItemsPanelTemplate>
-                </forms:CategoryChooser>
+                    <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
+                    <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
+                        <forms:CategoryChooser.ItemsPanelTemplate>
+                            <ItemsPanelTemplate>
+                                <diag:UniformGridWithOrientation Orientation="Vertical"
+                                                                 Columns="2" />
+                            </ItemsPanelTemplate>
+                        </forms:CategoryChooser.ItemsPanelTemplate>
+                    </forms:CategoryChooser>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-    </Grid>
+        </Grid>
     </Grid>
 </UserControl>

@@ -64,7 +64,6 @@
             <Expander.Header>
                 <!--Описание запроса, к которому относятся результаты-->
                 <StackPanel x:Name="searchDescription"
-                            Visibility="{Binding UseOldMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Margin="5,0,0,0">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
@@ -73,25 +72,13 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <StackPanel DataContext="{Binding Options}"
+                    <StackPanel DataContext="{Binding Result.Options}"
                                 Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
-                        <StackPanel Orientation="Horizontal"
-                                    Visibility="{Binding Words.Count, Converter={StaticResource MoreThanToVisibility}}">
-                            <TextBlock Text="любое из слов: "
-                                       Visibility="{Binding AllWords, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                            <TextBlock Visibility="{Binding AllWords, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Run Text="все слова " /><Run Text="{Binding QueryScope, StringFormat='{}{0}: ', Converter={StaticResource ScopeToLabel}}" />
-                            </TextBlock>
-                            <diag:CommaList ItemsSource="{Binding WordsAll}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal"
-                                    Visibility="{Binding Categories.Count, Converter={StaticResource MoreThanToVisibility}}">
-                            <TextBlock Text="{Binding HrCategories, Source={StaticResource Resources}, Converter={StaticResource ToLower}, StringFormat='{}{0}: '}"></TextBlock>
-                            <diag:CommaList ItemsSource="{Binding Categories}" />
-                        </StackPanel>
+                        <TextBlock Text="{Binding}"
+                                   TextWrapping="Wrap" />
                     </StackPanel>
-                    <TextBlock Text="Не заданы условия поиска."
-                               Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock Text="Попробуйте что-нибудь найти."
+                               Visibility="{Binding Result, Converter={StaticResource IsNullToVis}}" />
                 </StackPanel>
             </Expander.Header>
 
