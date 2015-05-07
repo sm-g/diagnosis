@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Util;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
@@ -30,6 +31,7 @@ namespace Diagnosis.ViewModels.Screens
         private QueryGroupOperator _operator;
         private bool inFilling;
         private bool _withConf;
+        private ReentrantFlag inMakingOptions = new ReentrantFlag();
 
         /// <summary>
         ///
@@ -261,7 +263,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _group = value;
                     OnPropertyChanged(() => IsGroup);
-                    OnPropertyChanged(() => DescriptionVisible);
                 }
             }
         }
@@ -369,42 +370,46 @@ namespace Diagnosis.ViewModels.Screens
 
         public SearchOptions MakeOptions()
         {
-            var options = new SearchOptions(IsRoot);
-
-            options.CWordsAll = AutocompleteAll.GetCWords().ToList();
-            options.CWordsAny = AutocompleteAny.GetCWords().ToList();
-            options.CWordsNot = AutocompleteNot.GetCWords().ToList();
-
-            options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-            options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-
-            options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-            options.MinAny = MinAny;
-            options.WithConf = WithConfidence;
-            options.GroupOperator = GroupOperator;
-            options.SearchScope = SearchScope;
-
-            if (_options != null)
-            {
-                // надо обновить опции, если описание скрыто
-                Children.ForAll(qb =>
+            if (inMakingOptions.CanEnter)
+                using (inMakingOptions.Enter())
                 {
-                    qb.Options = qb.MakeOptions();
-                    options.Children.Add(qb.Options);
-                });
-            }
-            if (!IsRoot && _options != null)
-            {
-                // изменились опции
-                // обновляем ссылку в родительских опциях через родительский блок
-                // у родителей не видно опсиание, поэтому не надо менять опции, иначе цикл
-                Contract.Assume(!Parent.DescriptionVisible);
+                    var options = new SearchOptions(IsRoot);
 
-                Parent.Options.Children.Remove(_options);
-                Parent.Options.Children.Add(options);
-            }
+                    options.CWordsAll = AutocompleteAll.GetCWords().ToList();
+                    options.CWordsAny = AutocompleteAny.GetCWords().ToList();
+                    options.CWordsNot = AutocompleteNot.GetCWords().ToList();
 
-            return options;
+                    options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+                    options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+
+                    options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
+                    options.MinAny = MinAny;
+                    options.WithConf = WithConfidence;
+                    options.GroupOperator = GroupOperator;
+                    options.SearchScope = SearchScope;
+
+                    if (_options != null)
+                    {
+                        // обновляем детские опции
+                        Children.ForAll(qb =>
+                        {
+                            qb.Options = qb.MakeOptions();
+                            options.Children.Add(qb.Options);
+                        });
+                    }
+                    if (!IsRoot && _options != null)
+                    {
+                        // изменились опции
+                        // обновляем ссылку в родительских опциях через родительский блок
+
+                        Parent.Options.Children.Remove(_options);
+                        Parent.Options.Children.Add(options);
+                    }
+
+                    return options;
+                }
+
+            return Options;
         }
 
         /// <summary>
