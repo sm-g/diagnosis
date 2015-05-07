@@ -92,6 +92,9 @@ namespace Diagnosis.Client.App.Controls.CardParts
 
         private void records_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
+            if (Vm == null) // list closed
+                return;
+
             var selectedVm = Vm.SelectedHealthRecord;
 
             var item = records.SelectedItem;//== null без синхронизации
