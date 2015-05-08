@@ -11,8 +11,7 @@ using System.Linq;
 namespace Diagnosis.Models
 {
     [DebuggerDisplay("Criterion {Code} {Value}")]
-
-    public class Criterion : EntityBase<Guid>, IDomainObject
+    public class Criterion : ValidatableEntity<Guid>, IDomainObject, ICrit
     {
         private string _description;
         private string _code;
@@ -57,11 +56,10 @@ namespace Diagnosis.Models
             set { SetProperty(ref _options, value, () => Options); }
         }
 
-        //public override ValidationResult SelfValidate()
-        //{
-        //  //  return new AppointmentValidator().Validate(this);
-        //}
 
-
+        public override ValidationResult SelfValidate()
+        {
+            return new CriterionValidator().Validate(this);
+        }
     }
 }

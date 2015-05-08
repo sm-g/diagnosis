@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Diagnosis.Models.Validators;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Estimator : EntityBase<Guid>, IDomainObject
+    [DebuggerDisplay("Estimator {Description}")]
+    public class Estimator : ValidatableEntity<Guid>, IDomainObject, ICrit
     {
         private ISet<CriteriaGroup> criteriaGroups = new HashSet<CriteriaGroup>();
 
@@ -56,6 +59,11 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
+        }
+
+        public override FluentValidation.Results.ValidationResult SelfValidate()
+        {
+            return new EstimatorValidator().Validate(this);
         }
     }
 }

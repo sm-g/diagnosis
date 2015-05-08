@@ -64,6 +64,11 @@ namespace Diagnosis.Models
         void RemoveHealthRecord(HealthRecord hr);
     }
 
+    public interface ICrit
+    {
+
+    }
+
     internal interface IHaveAuditInformation : IEntity
     {
         DateTime UpdatedAt { get; set; }

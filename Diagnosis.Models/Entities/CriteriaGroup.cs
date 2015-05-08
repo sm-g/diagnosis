@@ -1,13 +1,15 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-
+using System.Diagnostics;
 using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class CriteriaGroup : EntityBase<Guid>, IDomainObject
+    [DebuggerDisplay("CriteriaGroup {Description}")]
+    public class CriteriaGroup : ValidatableEntity<Guid>, IDomainObject, ICrit
     {
         private ISet<Criterion> criteria = new HashSet<Criterion>();
 
@@ -56,6 +58,11 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
+        }
+
+        public override FluentValidation.Results.ValidationResult SelfValidate()
+        {
+            return new CriteriaGroupValidator().Validate(this);
         }
     }
 }
