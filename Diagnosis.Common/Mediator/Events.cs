@@ -32,6 +32,7 @@ namespace Diagnosis.Common
         public static string String = "string";
         public static string Name = "name";
         public static string Value = "value";
+        public static string Crit = "crit";
     }
 
     public enum Event
@@ -78,6 +79,7 @@ namespace Diagnosis.Common
         // app
         PushToSettings,
         Shutdown,
+        OpenCrit,
     }
 
     public static class EventAggragatorExtensions

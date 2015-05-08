@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Screens.Criteria"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             xmlns:screen="clr-namespace:Diagnosis.Client.App.Screens"
+             xmlns:crit="clr-namespace:Diagnosis.Client.App.Controls.CriteriaParts"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance diag:CriteriaViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="300"
+             d:DesignWidth="600">
+
+    <UserControl.Resources>
+        <InputBindingCollection x:Shared="False"
+                                x:Key="TreeElementsInputBindings">
+            <KeyBinding Key="Enter"
+                        Command="{Binding OpenCommand}" />
+            <MouseBinding  MouseAction="LeftDoubleClick"
+                           Command="{Binding OpenCommand}" />
+        </InputBindingCollection>
+
+        <DataTemplate DataType="{x:Type diag:EstimatorEditorViewModel}">
+            <crit:EstimatorEditor />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:CriteriaGroupEditorViewModel}">
+            <crit:CriteriaGroupEditor />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type diag:CriterionEditorViewModel}">
+            <crit:CriterionEditor />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"
+                              MinWidth="150" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <TreeView ItemsSource="{Binding TopItems}"
+                  Grid.RowSpan="3">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem"
+                       BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <Setter Property="diag:Attached.InputBindings"
+                            Value="{StaticResource TreeElementsInputBindings}" />
+                    <Setter Property="FontWeight"
+                            Value="Normal" />
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsHighlighted}"
+                                     Value="True">
+                            <Setter Property="Background"
+                                    Value="{StaticResource AccentColorBrush4}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Crit.Description}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                </ContextMenu>
+            </TreeView.ContextMenu>
+        </TreeView>
+
+        <ContentPresenter Content="{Binding CurrentEditor}"
+                          Grid.Column="1"
+                          Margin="10"
+                          Grid.Row="1" />
+
+        <Button Grid.Column="1"
+                Style="{StaticResource HelpButton}"
+                diag:HelpProvider.Topic="criterion" />
+    </Grid>
+</UserControl>

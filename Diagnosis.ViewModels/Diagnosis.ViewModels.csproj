@@ -242,6 +242,13 @@
     <Compile Include="Screens\Card\DateEditorViewModel.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Screens\Criteria\CriteriaItemViewModel.cs" />
+    <Compile Include="Screens\Criteria\CriteriaViewModel.cs" />
+    <Compile Include="Screens\Criteria\CriteriaGroupViewModel.cs" />
+    <Compile Include="Screens\Criteria\EstimatorViewModel.cs" />
+    <Compile Include="Screens\Criteria\CriterionViewModel.cs" />
+    <Compile Include="Screens\Criteria\EstimatorEditorViewModel.cs" />
+    <Compile Include="Screens\Criteria\CriteriaGroupEditorViewModel.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - ClipboardTarget.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
@@ -249,6 +256,7 @@
     <Compile Include="Controls\ConfirmPasswordViewModel.cs" />
     <Compile Include="Screens\HrCategoryViewModel.cs" />
     <Compile Include="Screens\Interfaces.cs" />
+    <Compile Include="Screens\Criteria\CriterionEditorViewModel.cs" />
     <Compile Include="Screens\Search\QueryBlockViewModel.cs" />
     <Compile Include="Screens\Search\QueryEditorViewModel.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />

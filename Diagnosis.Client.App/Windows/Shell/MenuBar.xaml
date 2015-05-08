@@ -29,7 +29,10 @@
             <MenuItem Command="{Binding OpenVocsCommand}"
                       Visibility="{Binding OpenVocsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Header="_Словари" />
-            
+            <MenuItem Command="{Binding OpenCriteriaCommand}"
+                      Visibility="{Binding OpenCriteriaCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Header="_Критерии" />
+
             <MenuItem x:Name="view"
                       Header="_Вид">
                 

@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Diagnosis.Client.App.Controls.CriteriaParts.CriterionEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
+             xmlns:con="http://schemas.kent.boogaart.com/converters"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance design:SampleCriterionEditorViewModel,
+                                              IsDesignTimeCreatable=True}"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.ColumnSpan="4"
+                   FontSize="20"
+                   Text="{Binding Title}"
+                   Style="{StaticResource ScreenTitle}" />
+
+        <Label Content="Код"
+               Grid.Row="1" />
+        <TextBox Grid.Column="1"
+                 Text="{Binding Criterion.Code,
+                                UpdateSourceTrigger=PropertyChanged,
+                                ValidatesOnDataErrors=True}"
+                 Grid.Row="1" />
+
+        <Label Content="Запрос"
+               Grid.Row="1"
+               Grid.Column="3" />
+        <Label Content="Описание"
+               Grid.Row="3" />
+
+        <TextBox Grid.Column="1"
+                 Grid.Row="3"
+                 Text="{Binding Criterion.Description,
+                                UpdateSourceTrigger=PropertyChanged,
+                                ValidatesOnDataErrors=True}"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+
+        <search:QueryEditor DataContext="{Binding QueryEditor}"
+                            Grid.Column="3"
+                            Grid.Row="3" />
+        <Label Content="Процент"
+               Grid.Row="5" />
+        <TextBox Grid.Column="1"
+                 Text="{Binding Criterion.Percent,
+                                UpdateSourceTrigger=PropertyChanged,
+                                ValidatesOnDataErrors=True}"
+                 Grid.Row="5" />
+        <StackPanel Grid.Row="6"
+                    Style="{StaticResource DialogButtonsPanel}"
+                    Grid.ColumnSpan="4">
+            <Button Name="saveButton"
+                    IsDefault="True"
+                    Command="{Binding OkCommand}">
+                Сохранить
+            </Button>
+            <Button Name="cancelButton"
+                    IsCancel="True"
+                    Command="{Binding CancelCommand}">
+                Отмена
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

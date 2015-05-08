@@ -269,6 +269,15 @@
     <Compile Include="Controls\CardParts\Header.xaml.cs">
       <DependentUpon>Header.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CriteriaParts\CriteriaGroupEditor.xaml.cs">
+      <DependentUpon>CriteriaGroupEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CriteriaParts\EstimatorEditor.xaml.cs">
+      <DependentUpon>EstimatorEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CriteriaParts\CriterionEditor.xaml.cs">
+      <DependentUpon>CriterionEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Headers\Appointment.xaml.cs">
       <DependentUpon>Appointment.xaml</DependentUpon>
     </Compile>
@@ -302,6 +311,9 @@
     </Compile>
     <Compile Include="Screens\Sync.xaml.cs">
       <DependentUpon>Sync.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Criteria.xaml.cs">
+      <DependentUpon>Criteria.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Editors\AdminSettings.xaml.cs">
       <DependentUpon>AdminSettings.xaml</DependentUpon>
@@ -413,6 +425,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\CriteriaParts\CriteriaGroupEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CriteriaParts\EstimatorEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CriteriaParts\CriterionEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Headers\Appointment.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -498,6 +522,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Screens\Doctors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Screens\Criteria.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

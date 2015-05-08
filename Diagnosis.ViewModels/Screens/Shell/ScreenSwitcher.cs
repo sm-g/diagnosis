@@ -9,7 +9,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     public enum Screen
     {
-        Login, Doctors, Patients, Words, Card, Sync, Vocabularies
+        Login, Doctors, Patients, Words, Card, Sync, Vocabularies, Criteria
     }
 
     public class ScreenSwitcher : NotifyPropertyChangedBase
@@ -40,6 +40,7 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             SubscribeForOpenInCard();
+            SubscribeForOpenInCriteria();
 
             // closing screen
 
@@ -104,7 +105,7 @@ namespace Diagnosis.ViewModels.Screens
             if (!AuthorityController.CurrentUserCanOpen(screen))
                 throw new InvalidOperationException(string.Format("{0} не может открывать {1}", AuthorityController.CurrentUser, screen));
 
-            var updateCurView = replace || Screen != screen; // не обновляем, если экран тот же и не надо заменять
+            var updateCurView = replace || Screen != screen;
             Screen = screen;
 
             if (updateCurView)
@@ -140,6 +141,12 @@ namespace Diagnosis.ViewModels.Screens
                         CurrentView = new WordsListViewModel();
                         break;
 
+                    case Screen.Criteria:
+                        var crVm = new CriteriaViewModel();
+                        crVm.Open(parameter as ICrit);
+                        CurrentView = crVm;
+                        break;
+
                     case Screen.Card:
                         var cardVm = new CardViewModel(false);
                         cardVm.LastItemRemoved += (s, e) =>
@@ -158,7 +165,18 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (screen == Screen.Card)
                     (CurrentView as CardViewModel).Open(parameter);
+                if (screen == Screen.Criteria)
+                    (CurrentView as CriteriaViewModel).Open(parameter as ICrit);
             }
+        }
+
+        private void SubscribeForOpenInCriteria()
+        {
+            this.Subscribe(Event.OpenCrit, (e) =>
+            {
+                var est = e.GetValue<object>(MessageKeys.Crit);
+                OpenScreen(Screen.Criteria, est);
+            });
         }
 
         private void SubscribeForOpenInCard()

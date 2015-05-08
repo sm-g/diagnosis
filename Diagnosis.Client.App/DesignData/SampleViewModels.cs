@@ -2,6 +2,7 @@
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
+using Diagnosis.ViewModels.Search;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,22 @@ namespace Diagnosis.Client.App.DesignData
             ControlsVisible = true;
         }
     }
-
-
+    public class SampleCriterionEditorViewModel : CriterionEditorViewModel
+    {
+        public SampleCriterionEditorViewModel() : base(Mocks.crit) { }
+    }
+    public class SampleCriteriaGroupEditorViewModel : CriteriaGroupEditorViewModel
+    {
+        public SampleCriteriaGroupEditorViewModel() : base(Mocks.crg) { }
+    }
+    public class SampleEstimatorEditorViewModel : EstimatorEditorViewModel
+    {
+        public SampleEstimatorEditorViewModel() : base(Mocks.est) { }
+    }
+    public class SampleQueryEditorViewModel : QueryEditorViewModel
+    {
+        public SampleQueryEditorViewModel() { }
+    }
     public class SampleQueryBlockViewModel : QueryBlockViewModel
     {
 #pragma warning disable 0618
@@ -90,7 +105,7 @@ namespace Diagnosis.Client.App.DesignData
         public SampleHealthRecordViewModel()
             : base(Mocks.hr)
         {
-           
+
         }
     }
     public class SampleDateEditorViewModel : DateEditorViewModel
@@ -206,6 +221,10 @@ namespace Diagnosis.Client.App.DesignData
         public static Uom uom = new Uom("C", 36, uomType);
         public static Vocabulary voc = new Vocabulary("словарь");
         public static Vocabulary voc2 = new Vocabulary("словарь 2");
+
+        public static Estimator est = new Estimator() { Description = "est" };
+        public static CriteriaGroup crg = new CriteriaGroup(est) { Description = "crgr" };
+        public static Criterion crit = new Criterion(crg) { Description = "crit", Options = "opts" };
 
         public static HrCategory[] cats = new[] {
             new HrCategory("Жалоба",1),
