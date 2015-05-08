@@ -36,15 +36,15 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void StateOnCreated()
         {
-            Assert.AreEqual(1, s.QueryBlocks.Count);
-            Assert.IsTrue(s.AllEmpty);
+            Assert.AreEqual(1, s.QueryEditor.QueryBlocks.Count);
+            Assert.IsTrue(s.QueryEditor.AllEmpty);
         }
 
         [TestMethod]
         public void CannotSearchWithoutOptions()
         {
-            s.QueryBlocks.Clear();
-            Assert.IsTrue(s.AllEmpty);
+            s.QueryEditor.QueryBlocks.Clear();
+            Assert.IsTrue(s.QueryEditor.AllEmpty);
             Assert.IsFalse(s.SearchCommand.CanExecute(null));
         }
 
@@ -132,6 +132,53 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, s.Result.Patients[0].Children[0].FoundHealthRecords.Count); // 7-14
             Assert.AreEqual(2, s.Result.Patients[0].Children[0].Children[0].HealthRecords.Count); // 14
         }
+        [TestMethod]
+        public void ReceiverIsNullBeforeSend()
+        {
+            Assert.IsTrue(s.LastRecieverQueryBlock == null);
+        }
+        [TestMethod]
+        public void RecieveChios()
+        {
+            var chios = new[] { w[1].AsConfidencable(), w[2].AsConfidencable(Confidence.Absent) };
+            this.Send(Event.SendToSearch, chios.AsParams(MessageKeys.Chios));
+
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.CWordsAll.ScrambledEquals(chios));
+        }
+        [TestMethod]
+        public void RecieveHr()
+        {
+            var hrs = new[] { hr[70] };
+            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.HealthRecords));
+
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.CWordsAll.ScrambledEquals(hr[70].GetCWords()));
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.Categories.Single() == hr[70].Category);
+
+        }
+        [TestMethod]
+        public void RecieveHrs()
+        {
+            var hrs = new[] { hr[1], hr[2] };
+            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.HealthRecords));
+
+            var cats = hrs.Select(x => x.Category).Distinct();
+            var words = hrs.SelectMany(x => x.Words).Distinct();
+
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.WordsAll.ScrambledEquals(words));
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.Categories.ScrambledEquals(cats));
+
+        }
+        [TestMethod]
+        public void RecieveMeasure()
+        {
+            var hrs = new[] { hr[20] };
+            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.HealthRecords));
+
+            var ms = hrs.SelectMany(x => x.Measures).Distinct();
+
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.MeasuresAll.Select(x => x.AsMeasure()).ScrambledEquals(ms));
+
+        }
     }
 
     public static class QbExtensions
@@ -187,19 +234,13 @@ namespace Diagnosis.ViewModels.Tests
 
         public static QueryBlockViewModel MinAny(this QueryBlockViewModel qb, int min)
         {
-            qb.AnyMin = min;
+            qb.MinAny = min;
             return qb;
         }
 
         public static QueryBlockViewModel Check(this QueryBlockViewModel qb, params HrCategory[] cats)
         {
             qb.SelectCategory(cats);
-            return qb;
-        }
-
-        public static QueryBlockViewModel Search(this QueryBlockViewModel qb)
-        {
-            qb.SearchCommand.Execute(null);
             return qb;
         }
 

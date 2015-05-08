@@ -7,14 +7,16 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CardItemViewModel : HierarchicalBase<CardItemViewModel>
+    public class CardItemViewModel : HierarchicalBase<CardItemViewModel>, IHolderKeeper
     {
+        private readonly IHrsHolder holder;
         private bool _isHighlighted;
         private bool _showAppTime;
 
         public CardItemViewModel(IHrsHolder holder)
         {
-            Holder = holder;
+            this.holder = holder;
+
             HolderVm = new HolderViewModel(holder, true);
             if (holder is Patient)
             {
@@ -50,7 +52,7 @@ namespace Diagnosis.ViewModels.Screens
             (holder as INotifyPropertyChanged).PropertyChanged += holder_PropertyChanged;
         }
 
-        public IHrsHolder Holder { get; private set; }
+        public IHrsHolder Holder { get { return holder; } }
 
         public HolderViewModel HolderVm { get; private set; }
 

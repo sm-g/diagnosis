@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Screens;
 using NHibernate;
 using System;
 using System.Collections.Generic;
@@ -116,6 +117,22 @@ namespace Diagnosis.ViewModels
                 default:
                     return null;
             }
+        }
+
+        public static T FindHolderKeeperOf<T>(this IEnumerable<T> root, IHrsHolder holder)
+            where T : HierarchicalBase<T>, IHolderKeeper
+        {
+            holder = holder.Actual as IHrsHolder;
+            T vm;
+            foreach (var item in root)
+            {
+                if (item.Holder == holder)
+                    return item;
+                vm = item.AllChildren.Where(x => x.Holder == holder).FirstOrDefault();
+                if (vm != null)
+                    return vm;
+            }
+            return null;
         }
     }
 }

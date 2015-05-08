@@ -86,7 +86,7 @@
     </Compile>
     <Compile Include="HrQueryTest.cs" />
     <Compile Include="OptionsLoaderTest.cs" />
-    <Compile Include="OrderedBagTest.cs" />
+    <Compile Include="BagTest.cs" />
     <Compile Include="PersistTest.cs" />
     <Compile Include="QueryTest.cs" />
     <Compile Include="ScopesTest.cs" />

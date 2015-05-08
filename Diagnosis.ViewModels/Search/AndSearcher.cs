@@ -91,19 +91,13 @@ namespace Diagnosis.ViewModels.Search
 
             //если только исключающие, сначала получаем все записи без слов c нужными атрибутами
 
-            var ex = from q in qb.Children
-                     where q.IsExcluding
-                     select new
-                     {
-                         Qb = q,
-                         ExWords = q.CWordsNot.Select(x=>x.HIO),
-                         Cats = q.Categories,
-                         JustNoHrs = HrSearcher.SearchJustNoWords(session, q)
-                     };
+            var exOpts = from opt in qb.Children
+                         where opt.IsExcluding
+                         select opt;
 
             if (!anyNormal) // only ex blocks
             {
-                var exQbHrsList = ex.Select(x => x.JustNoHrs).ToList();
+                var exQbHrsList = exOpts.Select(x => HrSearcher.SearchJustNoWords(session, x)).ToList();
 
                 if (logOn)
                     logger.DebugFormat("only ex. justNo {0}", Log(exQbHrsList.SelectMany(d => d)));
@@ -136,40 +130,41 @@ namespace Diagnosis.ViewModels.Search
             switch (qb.SearchScope)
             {
                 case SearchScope.HealthRecord:
-                    // не проходят отдельные записи, у которых совпадает атрибут и есть исключенные слова
+                    // не проходят отдельные записи
                     return from hrs in beforeExclude.Values
                            from hr in hrs
-                           from e in ex
-                           where !(
-                                    (!e.Cats.Any() || e.Cats.Contains(hr.Category)) &&
-                                    hr.Words.Intersect(e.ExWords).Any()
-                                   )
+                           from e in exOpts
+                           where !ExSpecMatch(hr, e)
                            select hr;
 
                 case SearchScope.Holder:
                     // хоть одна запись, у которых совпадает атрибут и есть исключенные слова - весь список не проходит
                     return from holderHrs in beforeExclude
                            let hrs = holderHrs.Key.HealthRecords // все записи списка
-                           where ex.All(e => !hrs.Any(hr => // ни одной записи из исключающих блоков
-                                           (!e.Cats.Any() || e.Cats.Contains(hr.Category)) && // категории
-                                           hr.Words.Intersect(e.ExWords).Any()) // со словами
-                               )
+                           where exOpts.All(e => !hrs.Any(hr => ExSpecMatch(hr, e))) // ни одной записи из исключающих блоков
                            from hr in holderHrs.Value // записи из beforeExclude
                            select hr;
 
                 case SearchScope.Patient:
                     return from holderHrs in beforeExclude
                            let hrs = holderHrs.Key.GetAllHrs() // все записи пациента
-                           where ex.All(e => !hrs.Any(hr => // ни одной записи из исключающих блоков
-                                           (!e.Cats.Any() || e.Cats.Contains(hr.Category)) && // категории
-                                           hr.Words.Intersect(e.ExWords).Any()) // со словами
-                               )
-                           from hr in holderHrs.Value // записи из beforeExclude
+                           where exOpts.All(e => !hrs.Any(hr => ExSpecMatch(hr, e)))
+                           from hr in holderHrs.Value
                            select hr;
 
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        /// <summary>
+        /// У записи совпадает атрибут и есть исключенные слова
+        /// </summary>
+        private bool ExSpecMatch(HealthRecord hr, SearchOptions e)
+        {
+            return (!e.Categories.Any() || e.Categories.Contains(hr.Category)) &&   // категории
+                e.WithConf ? hr.GetCWords().Intersect(e.CWordsNot).Any()            // со словами
+                           : hr.Words.Intersect(e.WordsNot).Any();
         }
 
         /// <summary>

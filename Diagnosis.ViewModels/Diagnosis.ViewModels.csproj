@@ -250,6 +250,7 @@
     <Compile Include="Screens\HrCategoryViewModel.cs" />
     <Compile Include="Screens\Interfaces.cs" />
     <Compile Include="Screens\Search\QueryBlockViewModel.cs" />
+    <Compile Include="Screens\Search\QueryEditorViewModel.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
     <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />

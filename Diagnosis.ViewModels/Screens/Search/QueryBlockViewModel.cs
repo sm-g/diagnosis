@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Util;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using NHibernate;
 using System;
@@ -17,52 +17,42 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(QueryBlockViewModel));
         private ISession session;
-        private Action executeSearch;
+        private Action onAutocompleteInputEnded;
 
         private bool _allWords;
         private HealthRecordQueryAndScope _scope;
         private SearchOptions _options;
         private IList<HrCategoryViewModel> _categories;
         private SearchScope _sscope;
-        private int _anyMin;
+        private int _minAny;
         private bool _group;
         private VisibleRelayCommand _removeQbCommand;
         private VisibleRelayCommand _addSyblingQbCommand;
-
         private QueryGroupOperator _operator;
+        private bool inFilling;
+        private bool _withConf;
+        private ReentrantFlag inMakingOptions = new ReentrantFlag();
 
-        public QueryBlockViewModel(ISession session, Action executeSearch, SearchOptions options = null)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="session">Для автокомплитов и категорий</param>
+        /// <param name="onAutocompleteInputEnded"></param>
+        /// <param name="options"></param>
+        public QueryBlockViewModel(ISession session, Action onAutocompleteInputEnded, SearchOptions options = null)
         {
+            Contract.Ensures(options == null || options.Equals(_options));
+
             this.session = session;
-            this.executeSearch = executeSearch;
+            this.onAutocompleteInputEnded = onAutocompleteInputEnded;
 
             _operator = QueryGroupOperator.All;
-            _anyMin = 1;
+            _minAny = 1;
 
             CreateAutocompletes(session);
+            CreateMenuItems();
 
-            Children.CollectionChanged += (s, e) =>
-            {
-                IsGroup = Children.Count > 0;
-                OnPropertyChanged(() => AllEmpty);
-
-                switch (e.Action)
-                {
-                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        var qb = (e.NewItems[0] as QueryBlockViewModel);
-                        Options.Children.Add(qb.Options);
-                        break;
-
-                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                        qb = (e.OldItems[0] as QueryBlockViewModel);
-                        Options.Children.Remove(qb.Options);
-                        RefreshDescription();
-                        break;
-
-                    default:
-                        break;
-                }
-            };
+            Children.CollectionChanged += Children_CollectionChanged;
 
             this.PropertyChanged += (s, e) =>
             {
@@ -74,31 +64,18 @@ namespace Diagnosis.ViewModels.Screens
                         RefreshDescription();
                         OnPropertyChanged(() => DescriptionVisible);
                         break;
-                }
-            };
 
-            AnyMinMenuItems = new ObservableCollection<MenuItem>()
-            {
-                new MenuItem("один", new RelayCommand(()=>AnyMin = 1)),
-                new MenuItem("два", new RelayCommand(()=>AnyMin = 2)),
-                new MenuItem("три", new RelayCommand(()=>AnyMin = 3)),
-            };
-            GroupOperatorMenuItems = new ObservableCollection<MenuItem>()
-            {
-                new MenuItem("всё", new RelayCommand(()=>GroupOperator=QueryGroupOperator.All)),
-                new MenuItem("любое", new RelayCommand(()=>GroupOperator=QueryGroupOperator.Any)),
-            };
-            SearchScopeMenuItems = new ObservableCollection<MenuItem>()
-            {
-                new MenuItem("запись", new RelayCommand(()=>SearchScope = Models.SearchScope.HealthRecord)),
-                new MenuItem("список", new RelayCommand(()=>SearchScope = Models.SearchScope.Holder)),
-                new MenuItem("пациент", new RelayCommand(()=>SearchScope = Models.SearchScope.Patient)),
+                    case "Options":
+                        if (!IsRoot)
+                            Parent.RefreshDescription();
+                        break;
+                }
             };
 
             if (options != null)
             {
+                _options = options;
                 FillFromOptions(options);
-                Options.PartialLoaded = options.PartialLoaded; // TODO не делять опции снова
             }
         }
 
@@ -107,86 +84,56 @@ namespace Diagnosis.ViewModels.Screens
         {
         }
 
-        public ObservableCollection<MenuItem> AnyMinMenuItems { get; private set; }
+        public ObservableCollection<MenuItem> MinAnyMenuItems { get; private set; }
+
         public ObservableCollection<MenuItem> GroupOperatorMenuItems { get; private set; }
+
         public ObservableCollection<MenuItem> SearchScopeMenuItems { get; private set; }
+
+        #region Options bindings
+
+        public SearchScope SearchScope
+        {
+            get
+            {
+                return _sscope;
+            }
+            set
+            {
+                if (_sscope != value)
+                {
+                    _sscope = value;
+                    RefreshDescription();
+                    OnPropertyChanged(() => SearchScope);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Применить блоки к области поиска и выбрать записи, которые удовлетворяют всем/любому/не любому.
+        /// </summary>
+        public QueryGroupOperator GroupOperator
+        {
+            get
+            {
+                return _operator;
+            }
+            set
+            {
+                if (_operator != value)
+                {
+                    _operator = value;
+                    RefreshDescription();
+                    OnPropertyChanged(() => GroupOperator);
+                }
+            }
+        }
 
         public IQbAutocompleteViewModel AutocompleteAll { get; set; }
 
         public IQbAutocompleteViewModel AutocompleteAny { get; set; }
 
         public IQbAutocompleteViewModel AutocompleteNot { get; set; }
-
-        public bool AllEmpty
-        {
-            get
-            {
-                // если групповой блок - только дети, не учитывается содержимое,
-                // которое оставлено для удобства после удаления детей
-                return (IsGroup && Children.All(x => x.AllEmpty))
-                    ||
-                    (!IsGroup && !SelectedCategories.Any()
-                    && AutocompleteAll.IsEmpty
-                    && AutocompleteAny.IsEmpty
-                    && AutocompleteNot.IsEmpty);
-            }
-        }
-
-        public bool AnyPopupOpen
-        {
-            get
-            {
-                return AutocompleteAll.IsPopupOpen ||
-                    AutocompleteAny.IsPopupOpen ||
-                    AutocompleteNot.IsPopupOpen;
-            }
-        }
-
-        public int AnyMin
-        {
-            get
-            {
-                return _anyMin;
-            }
-            set
-            {
-                if (_anyMin != value)
-                {
-                    _anyMin = value;
-                    RefreshDescription();
-                    OnPropertyChanged(() => AnyMin);
-                }
-            }
-        }
-        private bool _withConf;
-        public bool WithConfidence
-        {
-            get
-            {
-                return _withConf;
-            }
-            set
-            {
-                if (_withConf != value)
-                {
-                    _withConf = value;
-                    OnPropertyChanged(() => WithConfidence);
-                }
-            }
-        }
-        /// <summary>
-        /// Опции поиска.
-        /// </summary>
-        public SearchOptions Options
-        {
-            get { return _options ?? (_options = MakeOptions()); }
-            private set
-            {
-                _options = value;
-                logger.DebugFormat("options set: {0} \n{1}", this, value);
-                OnPropertyChanged("Options");
-            }
-        }
 
         public IList<HrCategoryViewModel> Categories
         {
@@ -224,6 +171,83 @@ namespace Diagnosis.ViewModels.Screens
             get { return Categories.Where(cat => cat.IsChecked).ToList(); }
         }
 
+        public int MinAny
+        {
+            get
+            {
+                return _minAny;
+            }
+            set
+            {
+                if (_minAny != value)
+                {
+                    _minAny = value;
+                    RefreshDescription();
+                    OnPropertyChanged(() => MinAny);
+                }
+            }
+        }
+
+        public bool WithConfidence
+        {
+            get
+            {
+                return _withConf;
+            }
+            set
+            {
+                if (_withConf != value)
+                {
+                    _withConf = value;
+                    RefreshDescription();
+                    OnPropertyChanged(() => WithConfidence);
+                }
+            }
+        }
+
+        #endregion Options bindings
+
+        public bool AllEmpty
+        {
+            get
+            {
+                // если групповой блок - только дети, не учитывается содержимое,
+                // которое оставлено для удобства после удаления детей
+                return (IsGroup && Children.All(x => x.AllEmpty))
+                    ||
+                    (!IsGroup && !SelectedCategories.Any()
+                    && AutocompleteAll.IsEmpty
+                    && AutocompleteAny.IsEmpty
+                    && AutocompleteNot.IsEmpty);
+            }
+        }
+
+        public bool AnyPopupOpen
+        {
+            get
+            {
+                return AutocompleteAll.IsPopupOpen ||
+                    AutocompleteAny.IsPopupOpen ||
+                    AutocompleteNot.IsPopupOpen;
+            }
+        }
+
+        /// <summary>
+        /// Опции поиска.
+        /// </summary>
+        public SearchOptions Options
+        {
+            get { return _options ?? (_options = MakeOptions()); }
+            private set
+            {
+                if (inFilling) return;
+
+                _options = value;
+                logger.DebugFormat("options set: {0} \n{1}", this, value);
+                OnPropertyChanged("Options");
+            }
+        }
+
         /// <summary>
         /// Групповой блок, с детьми.
         /// </summary>
@@ -239,7 +263,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     _group = value;
                     OnPropertyChanged(() => IsGroup);
-                    OnPropertyChanged(() => DescriptionVisible);
                 }
             }
         }
@@ -262,15 +285,9 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return (!IsSelected && !IsGroup) ||
-                        !IsExpanded && IsGroup;
+                       (!IsExpanded && IsGroup);
             }
         }
-
-        /// <summary>
-        /// Надо обновить опции для поиска.
-        /// Если опсиание видно, опции всегда свежие.
-        /// </summary>
-        public bool NeedRefresh { get { return !DescriptionVisible; } }
 
         #region Old
 
@@ -309,41 +326,6 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion Old
 
-        public SearchScope SearchScope
-        {
-            get
-            {
-                return _sscope;
-            }
-            set
-            {
-                if (_sscope != value)
-                {
-                    _sscope = value;
-                    RefreshDescription();
-                    OnPropertyChanged(() => SearchScope);
-                }
-            }
-        }
-        /// <summary>
-        /// Применить блоки к области поиска и выбрать записи, которые удовлетворяют всем/любому/не любому.
-        /// </summary>
-        public QueryGroupOperator GroupOperator
-        {
-            get
-            {
-                return _operator;
-            }
-            set
-            {
-                if (_operator != value)
-                {
-                    _operator = value;
-                    RefreshDescription();
-                    OnPropertyChanged(() => GroupOperator);
-                }
-            }
-        }
         public VisibleRelayCommand RemoveQbCommand
         {
             get
@@ -386,64 +368,60 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ICommand SearchCommand
-        {
-            get
-            {
-                return new RelayCommand(executeSearch);
-            }
-        }
-
-
         public SearchOptions MakeOptions()
         {
-            var options = new SearchOptions(IsRoot);
+            if (inMakingOptions.CanEnter)
+                using (inMakingOptions.Enter())
+                {
+                    var options = new SearchOptions(IsRoot);
 
-            options.CWordsAll = AutocompleteAll.GetCWords().ToList();
-            options.CWordsAny = AutocompleteAny.GetCWords().ToList();
-            options.CWordsNot = AutocompleteNot.GetCWords().ToList();
+                    options.CWordsAll = AutocompleteAll.GetCWords().ToList();
+                    options.CWordsAny = AutocompleteAny.GetCWords().ToList();
+                    options.CWordsNot = AutocompleteNot.GetCWords().ToList();
 
-            options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-            options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+                    options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+                    options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
 
-            options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-            options.MinAny = AnyMin;
-            options.WithConf = WithConfidence;
-            options.GroupOperator = GroupOperator;
-            options.SearchScope = SearchScope;
+                    options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
+                    options.MinAny = MinAny;
+                    options.WithConf = WithConfidence;
+                    options.GroupOperator = GroupOperator;
+                    options.SearchScope = SearchScope;
 
-            if (_options != null) // копируем детей
-            {
-                _options.Children.ForAll(x =>
-                    options.Children.Add(x));
-            }
-            if (!IsRoot && _options != null)
-            {
-                // изменились
-                // обновляем ссылку в родительских опциях через родительский блок
-                // у родителей не видно опсиание, поэтому не надо менять опции, при поиске все равно обновляем
-                Contract.Assume(!Parent.DescriptionVisible);
-                Parent.Options.Children.Remove(_options);
-                Parent.Options.Children.Add(options);
-            }
+                    if (_options != null)
+                    {
+                        // обновляем детские опции
+                        Children.ForAll(qb =>
+                        {
+                            qb.Options = qb.MakeOptions();
+                            options.Children.Add(qb.Options);
+                        });
+                    }
+                    if (!IsRoot && _options != null)
+                    {
+                        // изменились опции
+                        // обновляем ссылку в родительских опциях через родительский блок
 
-            Options = options;
-            return options;
-        }
-        /// <summary>
-        /// Свежие опции, пригодные для поиска
-        /// </summary>
-        /// <returns></returns>
-        public SearchOptions GetSearchOptions()
-        {
-            if (NeedRefresh)
-            {
-                return MakeOptions();
-            }
-            Contract.Assume(Options.DeepClone().Equals(MakeOptions()));
+                        Parent.Options.Children.Remove(_options);
+                        Parent.Options.Children.Add(options);
+                    }
+
+                    return options;
+                }
+
             return Options;
         }
 
+        /// <summary>
+        /// Свежие опции, пригодные для поиска
+        /// </summary>
+        public SearchOptions GetSearchOptions()
+        {
+            Contract.Requires(IsRoot);
+
+            Options = MakeOptions();
+            return Options;
+        }
 
         public OldHrSearchOptions GetOldOptions()
         {
@@ -477,6 +455,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
+                Children.CollectionChanged -= Children_CollectionChanged;
+
                 AutocompleteAll.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteAny.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteNot.InputEnded -= Autocomplete_InputEnded;
@@ -530,13 +510,34 @@ namespace Diagnosis.ViewModels.Screens
             AutocompleteNot.Tags.CollectionChanged += Tags_CollectionChanged;
         }
 
-
+        private void CreateMenuItems()
+        {
+            MinAnyMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("один", new RelayCommand(()=>MinAny = 1)),
+                new MenuItem("два", new RelayCommand(()=>MinAny = 2)),
+                new MenuItem("три", new RelayCommand(()=>MinAny = 3)),
+            };
+            GroupOperatorMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("всё", new RelayCommand(()=>GroupOperator=QueryGroupOperator.All)),
+                new MenuItem("любое", new RelayCommand(()=>GroupOperator=QueryGroupOperator.Any)),
+            };
+            SearchScopeMenuItems = new ObservableCollection<MenuItem>()
+            {
+                new MenuItem("запись", new RelayCommand(()=>SearchScope = Models.SearchScope.HealthRecord)),
+                new MenuItem("список", new RelayCommand(()=>SearchScope = Models.SearchScope.Holder)),
+                new MenuItem("пациент", new RelayCommand(()=>SearchScope = Models.SearchScope.Patient)),
+            };
+        }
 
         private void FillFromOptions(SearchOptions options)
         {
+            inFilling = true;
+            // TODO automap
             GroupOperator = options.GroupOperator;
             SearchScope = options.SearchScope;
-            AnyMin = options.MinAny;
+            MinAny = options.MinAny;
             WithConfidence = options.WithConf;
             SelectCategory(options.Categories.ToArray());
 
@@ -546,29 +547,57 @@ namespace Diagnosis.ViewModels.Screens
 
             foreach (var opt in options.Children)
                 AddChildQb(opt);
+            inFilling = false;
         }
+
         /// <summary>
         /// Обновляем описание блока при каждом изменении запроса, если оно видно.
-        /// Изменения: AnyMin, QueryScope, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
+        /// Изменения: MinAny, QueryScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
         /// Хотя при изменениях у детей описания не видно.
         /// </summary>
         private void RefreshDescription()
         {
             if (DescriptionVisible)
-                MakeOptions();
+                Options = MakeOptions();
         }
 
         private QueryBlockViewModel AddChildQb(SearchOptions options = null)
         {
-            var qb = new QueryBlockViewModel(session, executeSearch, options);
+            var qb = new QueryBlockViewModel(session, onAutocompleteInputEnded, options);
 
             qb.PropertyChanged += qb_PropertyChanged;
 
+            this.IsExpanded = true; // теперь описание скрыто
             Add(qb);
-            this.IsExpanded = true;
             return qb;
         }
-        void Autocomplete_CHiosChanged(object sender, EventArgs e)
+
+        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            IsGroup = Children.Count > 0;
+            OnPropertyChanged(() => AllEmpty);
+
+            if (inFilling) return;
+
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    var qb = (e.NewItems[0] as QueryBlockViewModel);
+                    Options.Children.Add(qb.Options);
+                    break;
+
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    qb = (e.OldItems[0] as QueryBlockViewModel);
+                    Options.Children.Remove(qb.Options);
+                    RefreshDescription();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void Autocomplete_CHiosChanged(object sender, EventArgs e)
         {
             RefreshDescription();
         }
@@ -579,15 +608,11 @@ namespace Diagnosis.ViewModels.Screens
             {
                 OnPropertyChanged(() => AllEmpty);
             }
-            else if (e.PropertyName == "Options")
-            {
-                RefreshDescription();
-            }
         }
 
         private void Autocomplete_InputEnded(object sender, BoolEventArgs e)
         {
-            executeSearch();
+            onAutocompleteInputEnded();
         }
 
         private void Tags_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -604,11 +629,13 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => AllEmpty);
                     RefreshDescription();
                     break;
+
                 case "IsPopupOpen":
                     OnPropertyChanged(() => AnyPopupOpen);
                     break;
             }
         }
+
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()

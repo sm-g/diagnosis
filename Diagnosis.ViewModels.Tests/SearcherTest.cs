@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<Uom>();
 
             o = new SearchOptions(true);
+            Searcher.logOn = true;
             hrsTotal = hr.Count;
         }
 
@@ -103,7 +104,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void AnyMinTwoMeasureAndWord()
+        public void MinAnyTwoMeasureAndWord()
         {
             var hrs = o
                 .SetAny(w[22], new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] })
@@ -1147,6 +1148,118 @@ namespace Diagnosis.ViewModels.Tests
 
         #endregion Scope
 
+        #region Conf
+        [TestMethod]
+        public void AllInHr_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.HealthRecord)
+           .All()
+           .AddChild(x => x
+               .WithConf()
+               .SetAll(w[22])
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // нет 22
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[40],
+                hr[70],
+                hr[72],
+                hr[73],
+                hr[74]));
+        }
+
+        [TestMethod]
+        public void AnyInHr_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.HealthRecord)
+           .Any()
+           .AddChild(x => x
+               .WithConf()
+               .SetAll(w[22])
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // нет 22
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[40],
+                hr[70],
+                hr[72],
+                hr[73],
+                hr[74]));
+        }
+
+        [TestMethod]
+        public void AllInHr_WithExcluding_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.HealthRecord)
+           .All()
+           .AddChild(x => x
+               .SetAll(w[22]))
+           .AddChild(x => x
+               .WithConf()
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // нет 22
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[40],
+                hr[70],
+                hr[72],
+                hr[73],
+                hr[74]));
+        }
+
+        [TestMethod]
+        public void AllInHolder_WithExcluding_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.Holder)
+           .All()
+           .AddChild(x => x
+               .SetAll(w[22]))
+           .AddChild(x => x
+               .WithConf()
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // нет 22
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[40],
+                hr[70],
+                hr[72],
+                hr[73],
+                hr[74]));
+        }
+
+        [TestMethod]
+        public void AllInPatient_WithExcluding_Conf()
+        {
+            var hrs = o
+           .Scope(SearchScope.Patient)
+           .All()
+           .AddChild(x => x
+               .SetAll(w[22]))
+           .AddChild(x => x
+               .WithConf()
+               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
+           .Search(session);
+
+            // из-за 22
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+                hr[73],
+                hr[74]));
+        }
+        #endregion
+
         private System.Collections.Generic.IEnumerable<HrCategory> AllCats()
         {
             return cat.Values.Union(HrCategory.Null.ToEnumerable());
@@ -1180,36 +1293,42 @@ namespace Diagnosis.ViewModels.Tests
             qb.GroupOperator = QueryGroupOperator.NotAny;
             return qb;
         }
-
+        public static SearchOptions WithConf(this SearchOptions qb)
+        {
+            qb.WithConf = true;
+            return qb;
+        }
         public static SearchOptions Scope(this SearchOptions qb, SearchScope scope)
         {
             qb.SearchScope = scope;
             return qb;
         }
 
-        public static SearchOptions SetAll(this SearchOptions qb, params IHrItemObject[] all)
+        public static SearchOptions SetAll(this SearchOptions qb, params IDomainObject[] all)
         {
-            //  qb.WordsAll = new List<Word>(all.OfType<Word>());
-            qb.CWordsAll = new List<Confindencable<Word>>(all.OfType<Word>().Select(x => x.AsConfidencable()));
+            qb.CWordsAll = new List<Confindencable<Word>>(
+                all.OfType<Word>().Select(x => x.AsConfidencable())
+                .Union(all.OfType<Confindencable<Word>>()));
             qb.MeasuresAll = new List<MeasureOp>(all.OfType<MeasureOp>());
             return qb;
         }
 
-        public static SearchOptions SetAny(this SearchOptions qb, params IHrItemObject[] any)
+        public static SearchOptions SetAny(this SearchOptions qb, params IDomainObject[] any)
         {
-            //qb.WordsAny = new List<Word>(any.OfType<Word>());
-            qb.CWordsAny = new List<Confindencable<Word>>(any.OfType<Word>().Select(x => x.AsConfidencable()));
+            qb.CWordsAny = new List<Confindencable<Word>>(
+                any.OfType<Word>().Select(x => x.AsConfidencable())
+                .Union(any.OfType<Confindencable<Word>>()));
             qb.MeasuresAny = new List<MeasureOp>(any.OfType<MeasureOp>());
             return qb;
         }
 
-        public static SearchOptions SetNot(this SearchOptions qb, params IHrItemObject[] not)
+        public static SearchOptions SetNot(this SearchOptions qb, params IDomainObject[] not)
         {
-            //qb.WordsNot = new List<Word>(not.OfType<Word>());
-            qb.CWordsNot = new List<Confindencable<Word>>(not.OfType<Word>().Select(x => x.AsConfidencable()));
+            qb.CWordsNot = new List<Confindencable<Word>>(
+                not.OfType<Word>().Select(x => x.AsConfidencable())
+                .Union(not.OfType<Confindencable<Word>>()));
             return qb;
         }
-
         public static SearchOptions MinAny(this SearchOptions qb, int min)
         {
             qb.MinAny = min;

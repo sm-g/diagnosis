@@ -1,17 +1,13 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
-using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using System.Xml.Serialization;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -20,7 +16,6 @@ namespace Diagnosis.ViewModels.Screens
         private bool _controlsVisible;
         private SearchResultViewModel _res;
         private bool _mode;
-        History<SearchOptions> hist;
         private EventMessageHandlersManager msgManager;
 
         public const string ToolContentId = "Search";
@@ -29,37 +24,20 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            hist = new History<SearchOptions>();
+            var hist = new History<SearchOptions>();
 
-            hist.PropertyChanged += (s, e) =>
+            QueryEditor = new QueryEditorViewModel(Session, () =>
             {
-                if (e.PropertyName == "CurrentState")
-                {
-                    SetOptions(hist.CurrentState);
-                }
-            };
+                if (SearchCommand.CanExecute(null))
+                    SearchCommand.Execute(null);
+            });
 
             var loader = new JsonOptionsLoader(Session);
-            Loader = new OptionsLoaderViewModel(this, loader);
-            History = new SearchHistoryViewModel(hist);
-            QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
-            AddRootQb();
-            QueryBlocks.CollectionChanged += (s, e) =>
-            {
-                OnPropertyChanged(() => AllEmpty);
-            };
-
-#if DEBUG
-            //QueryBlocks[0].AddChildQbCommand.Execute(null);
-            //QueryBlocks[0].AddChildQbCommand.Execute(null);
-            //QueryBlocks[0].SearchScope = SearchScope.Holder;
-#endif
 
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
                 {
                     IEnumerable<HealthRecord> hrs = null;
-                    IEnumerable<IHrItemObject> hios = null;
                     try
                     {
                         hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
@@ -71,9 +49,10 @@ namespace Diagnosis.ViewModels.Screens
                     }
                     else
                     {
+                        IEnumerable<ConfWithHio> hios = null;
                         try
                         {
-                            hios = e.GetValue<IEnumerable<IHrItemObject>>(MessageKeys.HrItemObjects);
+                            hios = e.GetValue<IEnumerable<ConfWithHio>>(MessageKeys.Chios);
                         }
                         catch { }
                         if (hios != null && hios.Any())
@@ -88,29 +67,18 @@ namespace Diagnosis.ViewModels.Screens
             );
 
             ControlsVisible = true;
-
-        }
-
-        public bool AllEmpty
-        {
-            get
-            {
-                return QueryBlocks.All(x => x.AllEmpty);
-            }
         }
 
         public ICommand SearchCommand
         {
             get
             {
-                return new RelayCommand(Search, () => !AllEmpty);
+                return new RelayCommand(Search, () => !QueryEditor.AllEmpty);
             }
         }
 
+        public QueryEditorViewModel QueryEditor { get; private set; }
 
-        public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; set; }
-
-        public QueryBlockViewModel RootQueryBlock { get { return QueryBlocks.FirstOrDefault(); } }
 
         public SearchResultViewModel Result
         {
@@ -170,46 +138,20 @@ namespace Diagnosis.ViewModels.Screens
                 if (_mode != value)
                 {
                     _mode = value;
-                    if (value && QueryBlocks.Count == 0)
-                        AddRootQb();
                     OnPropertyChanged(() => UseOldMode);
                 }
             }
         }
-
-        public SearchHistoryViewModel History { get; set; }
-
-        public OptionsLoaderViewModel Loader { get; set; }
-
-        private QueryBlockViewModel AddRootQb(SearchOptions opttions = null)
-        {
-            if (RootQueryBlock != null)
-            {
-                return RootQueryBlock;
-            }
-            var qb = new QueryBlockViewModel(Session,
-                () =>
-                {
-                    if (SearchCommand.CanExecute(null))
-                        SearchCommand.Execute(null);
-                },
-                opttions);
-            qb.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "AllEmpty")
-                {
-                    OnPropertyChanged(() => AllEmpty);
-                }
-            };
-            QueryBlocks.Add(qb);
-            qb.IsExpanded = true;
-            return qb;
-        }
+        internal QueryBlockViewModel RootQueryBlock { get { return QueryEditor.QueryBlocks.FirstOrDefault(); } }
+        /// <summary>
+        /// Блок, принявший отправленное в поиск.
+        /// </summary>
+        internal QueryBlockViewModel LastRecieverQueryBlock { get; private set; }
 
         private void Search()
         {
             IEnumerable<HealthRecord> shrs;
-            var options = QueryBlocks[0].GetSearchOptions();
+            var options = QueryEditor.GetOptions();
             if (UseOldMode)
             {
                 shrs = HrSearcher.SearchOld(Session, RootQueryBlock.GetOldOptions());
@@ -220,47 +162,38 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             Result = new SearchResultViewModel(shrs, options);
-            hist.Memorize(options);
-#if !DEBUG            
+            //hist.Memorize(options);
+#if !DEBUG
             ControlsVisible = false;
 #endif
         }
 
-        /// <summary>
-        /// Меняет опции. Текущие опции теряются, если не совпадают.
-        /// </summary>
-        /// <param name="opt"></param>
-        public void SetOptions(SearchOptions opt)
-        {
-            if (opt == RootQueryBlock.Options)
-                return;
-
-            QueryBlocks.Clear();
-            AddRootQb(opt);
-        }
-
-
-
         private void RecieveHealthRecords(IEnumerable<HealthRecord> hrs)
         {
-            var qb = QueryBlocks.FirstOrDefault();
-            if (!UseOldMode)
-            {
-                RootQueryBlock.AddChildQbCommand.Execute(null);
-                qb = RootQueryBlock.Children.Last();
-            }
+            var qb = GetRecieverQb();
 
             // все слова из записей
-            var allWords = hrs.Aggregate(
-                new HashSet<Word>(),
+            var allCWords = hrs.Aggregate(
+                new HashSet<Confindencable<Word>>(),
                 (words, hr) =>
                 {
-                    hr.Words.ForAll((w) => words.Add(w));
+                    hr.GetCWords().ForAll(w => words.Add(w));
                     return words;
                 });
+            // все измерения с оператором
+            var allMops = hrs.Aggregate(
+                new HashSet<MeasureOp>(),
+                (mops, hr) =>
+                {
+                    hr.Measures.ForAll(m => mops.Add(m.ToMeasureOp()));
+                    return mops;
+                });
 
-            // если несколько записей — любое из слов
-            qb.AllWords = hrs.Count() != 1;
+            if (UseOldMode)
+            {
+                // если несколько записей — любое из слов
+                qb.AllWords = hrs.Count() != 1;
+            }
 
             // все категории из записей
             qb.Categories.ForAll((cat) => cat.IsChecked = false);
@@ -277,21 +210,33 @@ namespace Diagnosis.ViewModels.Screens
             //var lastHr = hrs.Last();
             //HrDateOffsetLower = new DateOffset(lastHr.FromYear, lastHr.FromMonth, lastHr.FromDay);
 
-            qb.AutocompleteAll.ReplaceTagsWith(allWords);
+            qb.AutocompleteAll.ReplaceTagsWith(allCWords.Union<object>(allMops));
+            RemoveLastResults();
+        }
+        private void RecieveHrItemObjects(IEnumerable<ConfWithHio> chios)
+        {
+            var qb = GetRecieverQb();
+            qb.AutocompleteAll.ReplaceTagsWith(chios);
+
             RemoveLastResults();
         }
 
-        private void RecieveHrItemObjects(IEnumerable<IHrItemObject> hios)
+        private QueryBlockViewModel GetRecieverQb()
         {
-            var qb = QueryBlocks.FirstOrDefault();
-            if (!UseOldMode)
+            Contract.Ensures(Contract.Result<QueryBlockViewModel>() != null);
+            QueryBlockViewModel qb;
+
+            if (UseOldMode)
+            {
+                qb = QueryEditor.QueryBlocks.FirstOrDefault();
+            }
+            else
             {
                 RootQueryBlock.AddChildQbCommand.Execute(null);
                 qb = RootQueryBlock.Children.Last();
             }
-            qb.AutocompleteAll.ReplaceTagsWith(hios);
-
-            RemoveLastResults();
+            LastRecieverQueryBlock = qb;
+            return qb;
         }
 
         /// <summary>
@@ -308,11 +253,11 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 msgManager.Dispose();
-                QueryBlocks.Clear();
+                QueryEditor.Dispose();
+                if (Result != null)
+                    Result.Dispose();
             }
             base.Dispose(disposing);
         }
     }
-
-
 }

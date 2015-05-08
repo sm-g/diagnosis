@@ -45,35 +45,29 @@ namespace Diagnosis.Data
             var allWordsTitles = dto.CWordsAll.Union(dto.CWordsAny).Union(dto.CWordsNot).Select(x => x.Title);
             var words = WordQuery.ByTitles(session)(allWordsTitles);
 
-            result.CWordsAll = new List<Confindencable<Word>>(from cw in dto.CWordsAll
-                                                              let w = words.FirstOrDefault(w => w.Title == cw.Title)
-                                                              where w != null
-                                                              select new Confindencable<Word>(w, cw.Confidence));
-
-            result.CWordsAny = new List<Confindencable<Word>>(from cw in dto.CWordsAny
-                                                              let w = words.FirstOrDefault(w => w.Title == cw.Title)
-                                                              where w != null
-                                                              select new Confindencable<Word>(w, cw.Confidence));
-
-            result.CWordsNot = new List<Confindencable<Word>>(from cw in dto.CWordsNot
-                                                              let w = words.FirstOrDefault(w => w.Title == cw.Title)
-                                                              where w != null
-                                                              select new Confindencable<Word>(w, cw.Confidence));
+            bool confNotParsedAll;
+            bool confNotParsedAny;
+            bool confNotParsedNot;
+            result.CWordsAll = new List<Confindencable<Word>>(SelectConfWords(dto.CWordsAll, words, out confNotParsedAll));
+            result.CWordsAny = new List<Confindencable<Word>>(SelectConfWords(dto.CWordsAny, words, out confNotParsedAny));
+            result.CWordsNot = new List<Confindencable<Word>>(SelectConfWords(dto.CWordsNot, words, out confNotParsedNot));
+            var notParsed = confNotParsedAll || confNotParsedAny || confNotParsedNot;
 
             // measures
-            var mWordTitles = from w in dto.MeasuresAll
+            var mWordTitles = (from w in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Word)
-                              where w != null
-                              select w.Title;
+                               where w != null
+                               select w.Title).Distinct().ToList();
 
             var mWords = WordQuery.ByTitles(session)(mWordTitles).ToList();
 
-            var uomSpecs = from u in dto.MeasuresAll
+            var uomSpecs = (from u in dto.MeasuresAll
                                          .Union(dto.MeasuresAny)
                                          .Select(x => x.Uom)
-                           where u != null
-                           select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title };
+                            where u != null
+                            select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title })
+                           .Distinct().ToList();
             var uoms = uomSpecs
                 .Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName))
                 .Where(x => x != null)
@@ -107,7 +101,7 @@ namespace Diagnosis.Data
                 result.Children.Add(child);
             });
 
-            var smthMissed = 
+            var smthMissed =
                  result.CWordsAll.Count != dto.CWordsAll.Count ||
                  result.CWordsAny.Count != dto.CWordsAny.Count ||
                  result.CWordsNot.Count != dto.CWordsNot.Count ||
@@ -117,8 +111,32 @@ namespace Diagnosis.Data
                 mWords.Count != mWordTitles.Count() ||
                 uoms.Count != uomSpecs.Count();
 
-            result.PartialLoaded = smthMissed || result.Children.Any(x => x.PartialLoaded);
+            if (smthMissed || notParsed || result.Children.Any(x => x.PartialLoaded))
+                result.SetPartialLoaded();
+
             return result;
+        }
+
+        private static IEnumerable<Confindencable<Word>> SelectConfWords(IEnumerable<ConfWordDTO> cwords, IEnumerable<Word> words, out bool confNotParsed)
+        {
+            Confidence conf;
+            confNotParsed = false;
+            var res = new List<Confindencable<Word>>();
+            foreach (var cw in cwords)
+            {
+                var word = words.FirstOrDefault(w => w.Title == cw.Title);
+                if (word != null)
+                {
+                    if (!Enum.TryParse<Confidence>(cw.Confidence, out conf))
+                    {
+                        conf = Confidence.Present;
+                        confNotParsed = true;
+                    }
+                    res.Add(word.AsConfidencable(conf));
+                }
+            }
+
+            return res;
         }
     }
 

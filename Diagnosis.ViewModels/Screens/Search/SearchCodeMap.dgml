@@ -1,72 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<DirectedGraph DataVirtualized="True" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+<DirectedGraph DataVirtualized="True" GraphDirection="LeftToRight" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(@1 @4 Type=OldHrSearchOptions)" Category="CodeSchema_Class" Bounds="673.2625,5.5,169.963333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="OldHrSearchOptions" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="OldHrSearchOptions" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/SearchOptions.cs&quot; StartLineNumber=190 StartCharacterOffset=4 EndLineNumber=190 EndCharacterOffset=4)" />
-    <Node Id="@10" Category="CodeSchema_Class" Bounds="233.289166666667,124.5,106.713333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" CommonLabel="Searcher" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Searcher" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/Searcher.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
-    <Node Id="@11" Category="CodeSchema_Class" Bounds="433.005,200.5,193.226666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchHistoryViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchHistoryViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/SearchHistoryViewModel.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
-    <Node Id="@12" Category="CodeSchema_Class" Bounds="689.119166666667,156.5,138.25,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchOptions" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchOptions" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/SearchOptions.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
-    <Node Id="@13" Category="CodeSchema_Class" Bounds="192.675833333333,287.5,187.94,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchResultViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchResultViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/SearchResultViewModel.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
-    <Node Id="@14" Category="CodeSchema_Class" Bounds="0,136.5,155.63,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/SearchViewModel.cs&quot; StartLineNumber=16 StartCharacterOffset=4 EndLineNumber=16 EndCharacterOffset=4)" />
-    <Node Id="@15" Category="CodeSchema_Class" Bounds="707.179166666666,418.5,102.13,25" CodeSchemaProperty_IsPublic="True" CommonLabel="Statistic" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Statistic" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/Statistic.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
-    <Node Id="@5" Category="CodeSchema_Class" Bounds="476.943333333333,418.5,105.35,25" CodeSchemaProperty_IsInternal="True" CommonLabel="Exporter" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Exporter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/Exporter.cs&quot; StartLineNumber=13 StartCharacterOffset=4 EndLineNumber=13 EndCharacterOffset=4)" />
-    <Node Id="@7" Category="CodeSchema_Class" Bounds="417.661666666667,287.5,223.913333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HolderSearchResultViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HolderSearchResultViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/HolderSearchResultViewModel.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
-    <Node Id="@8" Category="CodeSchema_Class" Bounds="187.3175,62.5,198.656666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="OptionsLoaderViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="OptionsLoaderViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/OptionsLoaderViewModel.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
-    <Node Id="@9" Category="CodeSchema_Class" Bounds="439.226666666667,5.5,180.783333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="QueryBlockViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="QueryBlockViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/QueryBlockViewModel.cs&quot; StartLineNumber=15 StartCharacterOffset=4 EndLineNumber=15 EndCharacterOffset=4)" />
+    <Node Id="(@1 @4 Type=OldHrSearchOptions)" Category="CodeSchema_Class" Bounds="0,498.5,169.963333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="OldHrSearchOptions" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="OldHrSearchOptions" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/SearchOptions.cs&quot; StartLineNumber=190 StartCharacterOffset=4 EndLineNumber=190 EndCharacterOffset=4)" />
+    <Node Id="(@1 @6 Type=SearchHistoryViewModel)" Category="CodeSchema_Class" Bounds="422.288333333333,443.5,193.226666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchHistoryViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchHistoryViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/SearchHistoryViewModel.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="@10" Category="CodeSchema_Class" Bounds="189.400833333334,330.5,183.773333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="QueryEditorViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="QueryEditorViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/QueryEditorViewModel.cs&quot; StartLineNumber=14 StartCharacterOffset=4 EndLineNumber=14 EndCharacterOffset=4)" />
+    <Node Id="@11" Category="CodeSchema_Class" Bounds="227.930833333334,187.5,106.713333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" CommonLabel="Searcher" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Searcher" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/Searcher.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
+    <Node Id="@12" Category="CodeSchema_Class" Bounds="449.776666666667,187.5,138.25,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchOptions" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchOptions" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/SearchOptions.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
+    <Node Id="@13" Category="CodeSchema_Class" Bounds="187.3175,79.5,187.94,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchResultViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchResultViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/SearchResultViewModel.cs&quot; StartLineNumber=11 StartCharacterOffset=4 EndLineNumber=11 EndCharacterOffset=4)" />
+    <Node Id="@14" Category="CodeSchema_Class" Bounds="0,187.5,155.63,25" CodeSchemaProperty_IsPublic="True" CommonLabel="SearchViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SearchViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/SearchViewModel.cs&quot; StartLineNumber=16 StartCharacterOffset=4 EndLineNumber=16 EndCharacterOffset=4)" />
+    <Node Id="@15" Category="CodeSchema_Class" Bounds="662.545833333333,32.5,102.13,25" CodeSchemaProperty_IsPublic="True" CommonLabel="Statistic" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Statistic" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/Statistic.cs&quot; StartLineNumber=9 StartCharacterOffset=4 EndLineNumber=9 EndCharacterOffset=4)" />
+    <Node Id="@5" Category="CodeSchema_Class" Bounds="466.226666666667,32.5,105.35,25" CodeSchemaProperty_IsInternal="True" CommonLabel="Exporter" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Exporter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Search/Exporter.cs&quot; StartLineNumber=13 StartCharacterOffset=4 EndLineNumber=13 EndCharacterOffset=4)" />
+    <Node Id="@7" Category="CodeSchema_Class" Bounds="406.945,88.5,223.913333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="HolderSearchResultViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="HolderSearchResultViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/HolderSearchResultViewModel.cs&quot; StartLineNumber=10 StartCharacterOffset=4 EndLineNumber=10 EndCharacterOffset=4)" />
+    <Node Id="@8" Category="CodeSchema_Class" Bounds="419.573333333333,374.5,198.656666666667,25" CodeSchemaProperty_IsPublic="True" CommonLabel="OptionsLoaderViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="OptionsLoaderViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/OptionsLoaderViewModel.cs&quot; StartLineNumber=12 StartCharacterOffset=4 EndLineNumber=12 EndCharacterOffset=4)" />
+    <Node Id="@9" Category="CodeSchema_Class" Bounds="428.51,275.5,180.783333333333,25" CodeSchemaProperty_IsPublic="True" CommonLabel="QueryBlockViewModel" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="QueryBlockViewModel" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=&quot;file:///C:/Users/smg/Documents/Visual Studio 2012/Projects/Diagnosis/Diagnosis.ViewModels/Screens/Search/QueryBlockViewModel.cs&quot; StartLineNumber=15 StartCharacterOffset=4 EndLineNumber=15 EndCharacterOffset=4)" />
   </Nodes>
   <Links>
-    <Link Source="@10" Target="@12" Category="References" Bounds="340.002502441406,137,370.278442382813,16.7774047851563" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="9">
-      <Category Ref="CodeSchema_Calls" />
-    </Link>
-    <Link Source="@11" Target="@12" Category="References" Bounds="625.684326171875,184.222595214844,84.5966186523438,19.0028228759766" IsSourceVirtualized="True" Weight="12">
-      <Category Ref="CodeSchema_ReturnTypeLink" />
-    </Link>
-    <Link Source="@13" Target="@12" Category="References" Bounds="320.126098632813,187.418075561523,417.015686035156,100.081924438477" IsSourceVirtualized="True" Weight="4">
-      <Category Ref="CodeSchema_ReturnTypeLink" />
-    </Link>
-    <Link Source="@13" Target="@15" Category="References" Bounds="303.193542480469,312.5,395.053405761719,111.093475341797" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@10" Target="(@1 @6 Type=SearchHistoryViewModel)" Category="References" Bounds="293.435028076172,355.5,120.171661376953,94.2857971191406" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@13" Target="@5" Category="CodeSchema_Calls" Bounds="298.743743896484,312.5,169.239013671875,112.712646484375" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2" />
-    <Link Source="@13" Target="@7" Category="References" Bounds="380.615844726563,300,28.0458068847656,0" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="15">
-      <Category Ref="CodeSchema_Calls" />
-    </Link>
-    <Link Source="@14" Target="@10" Category="CodeSchema_Calls" Bounds="155.630004882813,143.483825683594,68.7067718505859,4.90507507324219" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@14" Target="@11" Category="References" Bounds="96.1077270507813,161.5,327.897277832031,51.5" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@10" Target="@8" Category="References" Bounds="373.174163818359,345.366027832031,100.910797119141,26.2041625976563" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@14" Target="@12" Category="References" Bounds="114.400451660156,161.5,565.720581054688,15.1363677978516" IsSourceVirtualized="True" Weight="6" />
-    <Link Source="@14" Target="@13" Category="References" Bounds="90.0101470947266,161.5,162.338745117188,122.121612548828" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="7">
+    <Link Source="@10" Target="@9" Category="References" Bounds="320.506683349609,302.082305908203,110.474517822266,28.4176940917969" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="21">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@14" Target="@15" Category="CodeSchema_Calls" Bounds="81.4062118530273,161.5,639.945594787598,313.5" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@14" Target="@8" Category="References" Bounds="88.1754837036133,50.496711730957,153.031700134277,86.003288269043" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@11" Target="@12" Category="References" Bounds="334.644165039063,200,106.132507324219,0" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="9">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@13" Target="@12" Category="References" Bounds="324.183502197266,104.5,165.962829589844,78.3998565673828" IsSourceVirtualized="True" Weight="4">
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
+    <Link Source="@13" Target="@15" Category="References" Bounds="296.371795654297,1,390.711151123047,78.5" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@14" Target="@9" Category="References" Bounds="85.7253646850586,1,346.279182434082,135.5" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="37">
+    <Link Source="@13" Target="@5" Category="CodeSchema_Calls" Bounds="324.183502197266,52.2316246032715,133.104522705078,27.2683753967285" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2" />
+    <Link Source="@13" Target="@7" Category="References" Bounds="375.257507324219,92.5384750366211,22.6958618164063,0.767112731933594" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="15">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@14" Target="@10" Category="References" Bounds="88.6551361083984,212.5,144.838180541992,115.266967773438" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="10">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@5" Target="@15" Category="References" Bounds="582.293334960938,431,115.885803222656,0" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="22">
-      <Category Ref="CodeSchema_Calls" />
-    </Link>
-    <Link Source="@7" Target="@7" Category="References" Bounds="473.640014648438,312.5,111.956665039063,43.5" Weight="1" />
-    <Link Source="@8" Target="@12" Category="CodeSchema_Calls" Bounds="334.634216308594,87.5,348.309020996094,67.9789428710938" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@8" Target="@14" Category="References" Bounds="119.695121765137,87.5,130.036582946777,45.8495178222656" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
-      <Category Ref="CodeSchema_Calls" />
-    </Link>
-    <Link Source="@8" Target="@9" Category="CodeSchema_Calls" Bounds="339.929290771484,32.5555458068848,127.643493652344,29.9444541931152" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@9" Target="(@1 @4 Type=OldHrSearchOptions)" Category="CodeSchema_Calls" Bounds="620.010009765625,18,44.2525024414063,0" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="7">
-      <Category Ref="CodeSchema_ReturnTypeLink" />
-    </Link>
-    <Link Source="@9" Target="@12" Category="References" Bounds="558.145202636719,30.5,180.282104492188,119.828079223633" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="46">
+    <Link Source="@14" Target="@11" Category="CodeSchema_Calls" Bounds="155.630004882813,200,63.3008270263672,0" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@14" Target="@12" Category="References" Bounds="104.42259979248,156,369.66236114502,31.5" IsSourceVirtualized="True" Weight="6" />
+    <Link Source="@14" Target="@13" Category="References" Bounds="93.2193984985352,107.01789855957,136.53148651123,80.4821014404297" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="7">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@9" Target="@9" Category="References" Bounds="484.422485351563,30.5,90.3916625976563,43.5" Weight="1" />
+    <Link Source="@14" Target="@15" Category="CodeSchema_Calls" Bounds="104.42259979248,66.0307235717773,602.117195129395,177.969276428223" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@14" Target="@9" Category="References" Bounds="93.2193984985352,212.5,326.295951843262,72.0672302246094" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="18">
+      <Category Ref="CodeSchema_Calls" />
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
+    <Link Source="@5" Target="@15" Category="References" Bounds="571.57666015625,45,81.9691772460938,0" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="22">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@7" Target="@7" Category="References" Bounds="462.92333984375,113.5,111.956665039063,43.5" Weight="1" />
+    <Link Source="@8" Target="@10" Category="References" Bounds="306.223297119141,360.711730957031,165.692932128906,48.448974609375" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="4">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@9" Target="@9" Category="References" Bounds="473.705841064453,300.5,90.3916320800781,43.5" Weight="1" />
   </Links>
   <Categories>
     <Category Id="CodeSchema_Calls" Label="Calls" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Called By" OutgoingActionLabel="Calls" />
@@ -88,6 +85,7 @@
     <Property Id="DelayedChildNodesState" Label="Delayed Child Nodes State" Description="Unspecified if the delayed child nodes state is not specified. NotFetched if the group contains child nodes that are not fetched into the graph yet. Fetched if the group has all its delayed child nodes already fetched." DataType="Microsoft.VisualStudio.GraphModel.DelayedDataState" />
     <Property Id="DelayedCrossGroupLinksState" Label="Delayed Cross-Group Links State" Description="Unspecified if the delayed cross-group links state is not specified. NotFetched if delayed cross-group links on this node are not fetched into the graph yet. Fetched if all delayed cross-group links have already fetched." DataType="Microsoft.VisualStudio.GraphModel.DelayedDataState" />
     <Property Id="Expression" DataType="System.String" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
     <Property Id="Group" Label="Group" Description="Display the node as a group" DataType="Microsoft.VisualStudio.GraphModel.GraphGroupStyle" />
     <Property Id="GroupLabel" DataType="System.String" />
     <Property Id="Icon" Label="Icon" Description="Icon" DataType="System.String" />
@@ -121,8 +119,8 @@
     <Alias n="7" Id="(@1 @6 Type=HolderSearchResultViewModel)" />
     <Alias n="8" Id="(@1 @6 Type=OptionsLoaderViewModel)" />
     <Alias n="9" Id="(@1 @6 Type=QueryBlockViewModel)" />
-    <Alias n="10" Id="(@1 @4 Type=Searcher)" />
-    <Alias n="11" Id="(@1 @6 Type=SearchHistoryViewModel)" />
+    <Alias n="10" Id="(@1 @4 Type=QueryEditorViewModel)" />
+    <Alias n="11" Id="(@1 @4 Type=Searcher)" />
     <Alias n="12" Id="(@1 @4 Type=SearchOptions)" />
     <Alias n="13" Id="(@1 @6 Type=SearchResultViewModel)" />
     <Alias n="14" Id="(@1 @6 Type=SearchViewModel)" />

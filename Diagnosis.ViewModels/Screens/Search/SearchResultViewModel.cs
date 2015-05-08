@@ -6,15 +6,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Diagnosis.ViewModels.Search;
+using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class SearchResultViewModel : ViewModelBase
     {
-        private SearchOptions _options;
+        private readonly SearchOptions _options;
+        private EventMessageHandler handler;
         public SearchResultViewModel(IEnumerable<HealthRecord> hrs, SearchOptions options)
         {
-            Options = options;
+            _options = options;
 
             Patients = new ObservableCollection<HolderSearchResultViewModel>();
 
@@ -25,6 +27,21 @@ namespace Diagnosis.ViewModels.Screens
             });
 
             Statistic = new Statistic(hrs);
+
+            handler = this.Subscribe(Event.DeleteHolder, (e) =>
+            {
+                // убираем удаленного холдера из результатов
+                var h = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                var hsr = Patients.FindHolderKeeperOf(h);
+                if (hsr != null)
+                {
+                    if (hsr.IsRoot)
+                        Patients.Remove(hsr);
+                    else
+                        hsr.Remove();
+                }
+
+            });
         }
 
         public ObservableCollection<HolderSearchResultViewModel> Patients { get; private set; }
@@ -32,16 +49,11 @@ namespace Diagnosis.ViewModels.Screens
         public Statistic Statistic { get; private set; }
 
         /// <summary>
-        /// Опции последнго поиска.
+        /// Опции, которыми получен результат.
         /// </summary>
         public SearchOptions Options
         {
             get { return _options; }
-            private set
-            {
-                _options = value;
-                OnPropertyChanged("Options");
-            }
         }
         public RelayCommand ExportCommand
         {
@@ -51,6 +63,22 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     new Exporter().ExportToXlsx(Statistic);
                 });
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                }
+
+            }
+            finally
+            {
+                base.Dispose(disposing);
             }
         }
     }

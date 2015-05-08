@@ -8,12 +8,14 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class HolderSearchResultViewModel : HierarchicalBase<HolderSearchResultViewModel>
+    public class HolderSearchResultViewModel : HierarchicalBase<HolderSearchResultViewModel>, IHolderKeeper
     {
+        private readonly IHrsHolder holder;
+
         private HolderSearchResultViewModel(IHrsHolder holder, IEnumerable<HealthRecord> foundHrs = null)
         {
-            Holder = holder;
-            // автообновление результатов поиска - сейчас только удаляются запись и добавляется, но не обновляется текст записи
+            this.holder = holder;
+            // автообновление результатов поиска - сейчас только удаляются запись, но не обновляется текст записи
             Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
             if (foundHrs != null)
             {
@@ -36,7 +38,7 @@ namespace Diagnosis.ViewModels.Screens
             return MakeTreeResults1(hrs);
         }
 
-        public IHrsHolder Holder { get; private set; }
+        public IHrsHolder Holder { get { return holder; } }
 
         /// <summary>
         /// Записи, подходящие под поиковый запрос
@@ -142,13 +144,11 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Holder_HealthRecordsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
-                HealthRecords.Add(e.NewItems[0] as HealthRecord);
-            }
-            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-            {
-                HealthRecords.Remove(e.OldItems[0] as HealthRecord);
+                var hr = e.OldItems[0] as HealthRecord;
+                HealthRecords.Remove(hr);
+                FoundHealthRecords.Remove(hr);
             }
         }
 

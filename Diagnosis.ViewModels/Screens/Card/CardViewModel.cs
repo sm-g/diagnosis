@@ -252,45 +252,53 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Открывает держателя или выделяет записи.
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="lastAppOrCourse"></param>
-        internal void Open(object parameter, bool lastAppOrCourse = false)
+        internal void Open(object toOpen, bool lastAppOrCourse = false)
         {
-            Contract.Requires(parameter != null);
-            logger.DebugFormat("open {0}", parameter);
+            Contract.Requires(toOpen != null);
 
-            IHrsHolder holder;
-            if (parameter is IHrsHolder)
+            logger.DebugFormat("open {0}", toOpen);
+
+            if (toOpen is IHrsHolder)
+                OpenHolder(toOpen as IHrsHolder, lastAppOrCourse);
+            else if (toOpen is HealthRecord)
+                OpenHr(toOpen as HealthRecord);
+            else if (toOpen is IEnumerable<HealthRecord>)
+                OpenHrs(toOpen as IEnumerable<HealthRecord>);
+            else throw new ArgumentException("toOpen");
+        }
+
+        private void OpenHolder(IHrsHolder holder, bool lastAppOrCourse)
+        {
+            Contract.Ensures(HrList.holder == holder || lastAppOrCourse);
+
+            holder = holder.Actual as IHrsHolder;
+            var was = viewer.AutoOpen;
+            if (lastAppOrCourse)
+                viewer.AutoOpen = true;
+
+            Navigator.NavigateTo(holder);
+
+            viewer.AutoOpen = was;
+        }
+
+        private void OpenHr(HealthRecord hr)
+        {
+            Contract.Ensures(HrList.holder == hr.Holder);
+
+            OpenHolder(hr.Holder, false);
+            HrList.SelectHealthRecord(hr);
+        }
+
+        private void OpenHrs(IEnumerable<HealthRecord> hrs)
+        {
+            Contract.Ensures(!hrs.Any() || HrList.holder == hrs.First().Holder);
+
+            var first = hrs.FirstOrDefault();
+            if (first != null)
             {
-                holder = (parameter as IEntity).Actual as IHrsHolder;
-
-                if (lastAppOrCourse)
-                    viewer.AutoOpen = true;
-
-                Navigator.NavigateTo(holder);
-
-                if (lastAppOrCourse)
-                    viewer.AutoOpen = false;
-            }
-            else if (parameter is HealthRecord)
-            {
-                var hr = parameter as HealthRecord;
-                Navigator.Add(hr.GetPatient());
-                holder = hr.Holder.Actual as IHrsHolder;
-                Navigator.NavigateTo(holder);
-                HrList.SelectHealthRecord(hr);
-            }
-            else if (parameter is IEnumerable<HealthRecord>)
-            {
-                var hrs = parameter as IEnumerable<HealthRecord>;
-                var first = hrs.FirstOrDefault();
-                if (first != null)
-                {
-                    Navigator.Add(first.GetPatient());
-                    holder = first.Holder.Actual as IHrsHolder;
-                    Navigator.NavigateTo(holder);
-                    HrList.SelectHealthRecords(hrs);
-                }
+                OpenHolder(first.Holder, false);
+                // если есть удаленные записи - просто не будут выделены
+                HrList.SelectHealthRecords(hrs);
             }
         }
 

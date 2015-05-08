@@ -14,7 +14,7 @@ namespace Diagnosis.Data.DTOs
             Mapper.CreateMap<Word, WordDTO>();
             Mapper.CreateMap<Confindencable<Word>, ConfWordDTO>()
                 .ForMember(d => d.Title, o => o.MapFrom(s => s.HIO.Title))
-                .ForMember(d => d.Confidence, o => o.MapFrom(s => s.Confidence));
+                .ForMember(d => d.Confidence, o => o.MapFrom(s => s.Confidence.ToString()));
             Mapper.CreateMap(typeof(Uom), typeof(UomDTO));
             Mapper.CreateMap(typeof(UomType), typeof(UomTypeDTO));
             Mapper.CreateMap(typeof(MeasureOp), typeof(MeasureOpDTO));

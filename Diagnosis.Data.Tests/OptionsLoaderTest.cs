@@ -64,6 +64,20 @@ namespace Diagnosis.Data.Tests
 
             Assert.IsTrue(opt.Equals(read));
         }
+        [TestMethod]
+        public void WriteReadSameWordEquals()
+        {
+            var opt = new SearchOptions();
+            opt.CWordsAll.Add(w[1].AsConfidencable());
+            opt.CWordsAny.Add(w[1].AsConfidencable());
+            opt.MeasuresAll.Add(new MeasureOp(MeasureOperator.Equal, 1, uom[1], w[1]));
+            opt.MeasuresAny.Add(new MeasureOp(MeasureOperator.Between, 3, uom[2], w[1]));
+
+            var str = l.WriteOptions(opt);
+            var read = l.ReadOptions(str);
+
+            Assert.IsTrue(opt.Equals(read));
+        }
 
         [TestMethod]
         public void WriteReadWithChildEquals()

@@ -285,6 +285,9 @@
     <Compile Include="Controls\FormParts\ConfirmPasswordControl.xaml.cs">
       <DependentUpon>ConfirmPasswordControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Search\QueryEditor.xaml.cs">
+      <DependentUpon>QueryEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\DateOffsetConverters.cs" />
     <Compile Include="Controls\Search\OldQueryBlock.xaml.cs">
       <DependentUpon>OldQueryBlock.xaml</DependentUpon>
@@ -435,6 +438,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Search\QueryBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Search\QueryEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
