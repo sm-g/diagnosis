@@ -33,17 +33,11 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    try
-                    {
-                        string str = GetStringToLoad();
-                        var opt = loader.ReadOptions(str);
-                        master.SetOptions(opt);
-                        PartialLoaded = opt.PartialLoaded;
-                    }
-                    catch (Exception)
-                    {
+                    string str = GetStringToLoad();
+                    var opt = loader.ReadOptions(str);
+                    master.SetOptions(opt);
+                    PartialLoaded = opt.PartialLoaded;
 
-                    }
                 }, () => CanLoad());
             }
         }
