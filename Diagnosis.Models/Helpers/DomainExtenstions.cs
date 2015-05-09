@@ -268,58 +268,6 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Выражение для проверки равенства двух сущностей по значению, несмотря на разные ID.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <returns></returns>
-        public static Expression<Func<T, bool>> EqualsByVal<T>(T x) where T : IEntity
-        {
-            var @switch2 = new Dictionary<Type, Expression<Func<T, bool>>> {
-                { typeof(Uom), (y) => 
-                    (x as Uom).Abbr == (y as Uom).Abbr &&
-                    (x as Uom).Description == (y as Uom).Description &&
-                    (x as Uom).Type.Title == (y as Uom).Type.Title                   
-                },
-                { typeof(UomType), (y) => 
-                    (x as UomType).Title == (y as UomType).Title
-                },
-                { typeof(UomFormat), (y) => 
-                    (x as UomFormat).String == (y as UomFormat).String &&
-                    (x as UomFormat).MeasureValue== (y as UomFormat).MeasureValue &&
-                    (x as UomFormat).Uom.Abbr == (y as UomFormat).Uom.Abbr &&
-                    (x as UomFormat).Uom.Description== (y as UomFormat).Uom.Description&&
-                    (x as UomFormat).Uom.Type.Title== (y as UomFormat).Uom.Type.Title
-                },
-                { typeof(HrCategory), (y) => 
-                    (x as HrCategory).Title == (y as HrCategory).Title
-                },
-                { typeof(Speciality), (y) => 
-                    (x as Speciality).Title == (y as Speciality).Title
-                },
-                { typeof(Vocabulary), (y) => 
-                    (x as Vocabulary).Title == (y as Vocabulary).Title
-                },
-                { typeof(SpecialityIcdBlocks), (y) =>
-                    (x as SpecialityIcdBlocks).IcdBlock == (y as SpecialityIcdBlocks).IcdBlock &&
-                    (x as SpecialityIcdBlocks).Speciality.Title == (y as SpecialityIcdBlocks).Speciality.Title
-                },
-                { typeof(SpecialityVocabularies), (y) =>
-                    (x as SpecialityVocabularies).Vocabulary.Title == (y as SpecialityVocabularies).Vocabulary.Title &&
-                    (x as SpecialityVocabularies).Speciality.Title == (y as SpecialityVocabularies).Speciality.Title
-                },
-                //{ typeof(VocabularyWords), (y) => // не загружается с сервера
-                //    (x as VocabularyWords).Vocabulary.Title == (y as VocabularyWords).Vocabulary.Title &&
-                //    (x as VocabularyWords).Word.Title == (y as VocabularyWords).Word.Title
-                //}
-            };
-            var type = x.Actual.GetType();
-
-            if (@switch2.Keys.Contains(type))
-                return @switch2[type];
-
-            throw new NotImplementedException();
-        }
-        /// <summary>
         /// Проверяет равенство двух сущностей по значению, несмотря на разные ID.
         /// </summary>
         /// <param name="x"></param>
