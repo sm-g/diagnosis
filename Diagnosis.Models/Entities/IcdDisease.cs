@@ -3,7 +3,7 @@
 namespace Diagnosis.Models
 {
     [Serializable]
-    public class IcdDisease : EntityBase<int>, IDomainObject, IHrItemObject, IComparable<IcdDisease>, IIcdEntity
+    public class IcdDisease : EntityBase<int>, IDomainObject, IHrItemObject, IIcdEntity
     {
         [NonSerialized]
         private IcdBlock _icdBlock;
@@ -40,23 +40,14 @@ namespace Diagnosis.Models
         {
             var icd = hio as IcdDisease;
             if (icd != null)
-                return this.CompareTo(icd);
+                return this.CompareTo(icd as IIcdEntity);
             else
                 return new HrItemObjectComparer().Compare(this, hio);
         }
 
-        public virtual int CompareTo(IcdDisease other)
-        {
-            if (other == null)
-                return -1;
-            return this.Code.CompareTo(other.Code);
-        }
-
         public virtual int CompareTo(IIcdEntity other)
         {
-            if (other == null)
-                return -1;
-            return this.Code.CompareTo(other.Code);
+            return new IcdEntityComparer().Compare(this, other);
         }
 
         public override string ToString()

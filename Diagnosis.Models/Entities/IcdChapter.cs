@@ -31,9 +31,7 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(IIcdEntity other)
         {
-            if (other == null)
-                return -1;
-            return this.Code.CompareTo(other.Code);
+            return new IcdEntityComparer().Compare(this, other);
         }
     }
 }

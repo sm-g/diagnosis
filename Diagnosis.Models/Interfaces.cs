@@ -37,7 +37,7 @@ namespace Diagnosis.Models
     /// Сущность МКБ
     /// </summary>
     [ContractClass(typeof(ContractForIIcdEntity))]
-    public interface IIcdEntity : IComparable<IIcdEntity>
+    public interface IIcdEntity : IComparable<IIcdEntity> // disease < block < chapter
     {
         string Code { get; }
         string Title { get; }

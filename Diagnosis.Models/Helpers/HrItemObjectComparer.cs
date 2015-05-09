@@ -88,4 +88,35 @@ namespace Diagnosis.Models
             return p1.CompareTo(p2);
         }
     }
+
+    public class IcdEntityComparer : IComparer<IIcdEntity>
+    {
+        // disease < block < chapter
+        private static Dictionary<Type, int> priorities = new Dictionary<Type, int>();
+        static IcdEntityComparer()
+        {
+            priorities.Add(typeof(IcdDisease), 1);
+            priorities.Add(typeof(IcdBlock), 2);
+            priorities.Add(typeof(IcdChapter), 3);
+        }
+        private int PriorityFor(Type type)
+        {
+            var actualType = priorities.Keys.FirstOrDefault(x => x.IsAssignableFrom(type));
+            if (actualType == null)
+                return int.MinValue;
+
+            return priorities[actualType];
+        }
+
+        public int Compare(IIcdEntity x, IIcdEntity y)
+        {
+            int p1 = PriorityFor(x.GetType());
+            int p2 = PriorityFor(y.GetType());
+            if (p1 == p2)
+            {
+                return x.Code.CompareTo(y.Code);
+            }
+            return p1.CompareTo(p2);
+        }
+    }
 }
