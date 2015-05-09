@@ -232,15 +232,10 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(IHrsHolder h)
         {
-            var app = h as Appointment;
-            if (app != null)
-                return 1;
-
             var course = h as Course;
             if (course != null)
                 return this.CompareTo(course);
-
-            return -1; // h is Patient
+            return new HrsHolderComparer().Compare(this, h);
         }
 
         public virtual int CompareTo(Course other)
