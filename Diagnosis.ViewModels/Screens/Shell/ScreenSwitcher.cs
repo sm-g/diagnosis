@@ -143,7 +143,11 @@ namespace Diagnosis.ViewModels.Screens
 
                     case Screen.Criteria:
                         var crVm = new CriteriaViewModel();
-                        crVm.Open(parameter as ICrit);
+                        var crit = parameter as ICrit;
+                        if (crit != null)
+                        {
+                            crVm.Open(crit);
+                        }
                         CurrentView = crVm;
                         break;
 
@@ -161,12 +165,18 @@ namespace Diagnosis.ViewModels.Screens
                         break;
                 }
             }
-            else
+            else // только открываем сущность на экране
             {
                 if (screen == Screen.Card)
                     (CurrentView as CardViewModel).Open(parameter);
-                if (screen == Screen.Criteria)
-                    (CurrentView as CriteriaViewModel).Open(parameter as ICrit);
+                else if (screen == Screen.Criteria)
+                {
+                    var crit = parameter as ICrit;
+                    if (crit != null)
+                    {
+                        (CurrentView as CriteriaViewModel).Open(crit);
+                    }
+                }
             }
         }
 
