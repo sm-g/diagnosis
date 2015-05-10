@@ -269,7 +269,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void OpenHolder(IHrsHolder holder, bool lastAppOrCourse)
         {
-            Contract.Ensures(HrList.holder == holder || lastAppOrCourse);
+            Contract.Ensures(HrList.holder == holder.Actual || lastAppOrCourse);
 
             holder = holder.Actual as IHrsHolder;
             var was = viewer.AutoOpen;
@@ -283,7 +283,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void OpenHr(HealthRecord hr)
         {
-            Contract.Ensures(HrList.holder == hr.Holder);
+            Contract.Ensures(HrList.holder == hr.Holder.Actual);
 
             OpenHolder(hr.Holder, false);
             HrList.SelectHealthRecord(hr);
