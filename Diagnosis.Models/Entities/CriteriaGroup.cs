@@ -59,7 +59,10 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
-
+        public override string ToString()
+        {
+            return "{0}".FormatStr(Description.Truncate(20));
+        }
         public override FluentValidation.Results.ValidationResult SelfValidate()
         {
             return new CriteriaGroupValidator().Validate(this);

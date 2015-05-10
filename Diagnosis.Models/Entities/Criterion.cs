@@ -55,7 +55,10 @@ namespace Diagnosis.Models
             get { return _options; }
             set { SetProperty(ref _options, value, () => Options); }
         }
-
+        public override string ToString()
+        {
+            return "{0} {1}".FormatStr(Code, Description.Truncate(20));
+        }
 
         public override ValidationResult SelfValidate()
         {

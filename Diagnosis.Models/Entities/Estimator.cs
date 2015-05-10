@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models.Validators;
+using Diagnosis.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -59,6 +60,10 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
+        }
+        public override string ToString()
+        {
+            return "{0}".FormatStr(Description.Truncate(20));
         }
 
         public override FluentValidation.Results.ValidationResult SelfValidate()

@@ -45,11 +45,11 @@
         <TextBox Grid.Column="1"
                  Grid.Row="3"
                  AcceptsReturn="True"
+                 TextWrapping="Wrap"
                  Text="{Binding Estimator.Description,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
         <search:QueryEditor DataContext="{Binding QueryEditor}"
                             Grid.Column="3"

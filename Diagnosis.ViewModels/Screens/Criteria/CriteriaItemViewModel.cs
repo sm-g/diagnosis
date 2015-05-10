@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -12,6 +13,8 @@ namespace Diagnosis.ViewModels.Screens
 
         public CriteriaItemViewModel(ICrit cr)
         {
+            Contract.Requires(cr != null);
+
             Crit = cr;
             if (cr is Estimator)
             {
@@ -31,8 +34,9 @@ namespace Diagnosis.ViewModels.Screens
 
                 cg.CriteriaChanged += nested_IHrsHolders_Changed;
             }
-
             (cr as INotifyPropertyChanged).PropertyChanged += crit_PropertyChanged;
+
+            IsExpanded = true;
         }
 
         public ICrit Crit { get; private set; }
@@ -115,7 +119,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void crit_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            // sort?
+            OnPropertyChanged(() => Crit); // refresh text binding
         }
     }
 }
