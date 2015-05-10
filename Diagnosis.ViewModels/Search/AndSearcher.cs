@@ -163,8 +163,8 @@ namespace Diagnosis.ViewModels.Search
         private bool ExSpecMatch(HealthRecord hr, SearchOptions e)
         {
             return (!e.Categories.Any() || e.Categories.Contains(hr.Category)) &&   // категории
-                e.WithConf ? hr.GetCWords().Intersect(e.CWordsNot).Any()            // со словами
-                           : hr.Words.Intersect(e.WordsNot).Any();
+                (e.WithConf ? hr.GetCWords().Intersect(e.CWordsNot).Any()            // со словами
+                            : hr.Words.Intersect(e.WordsNot).Any());
         }
 
         /// <summary>

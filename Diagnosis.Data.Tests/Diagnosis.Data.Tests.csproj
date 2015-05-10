@@ -89,6 +89,7 @@
     <Compile Include="BagTest.cs" />
     <Compile Include="PersistTest.cs" />
     <Compile Include="QueryTest.cs" />
+    <Compile Include="RelationHelperTest.cs" />
     <Compile Include="ScopesTest.cs" />
     <Compile Include="SyncerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

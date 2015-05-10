@@ -48,7 +48,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.HealthRecord" Collapsed="true">
-    <Position X="6.75" Y="7.75" Width="1.5" />
+    <Position X="6.75" Y="7.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -62,9 +62,9 @@
       <Property Name="Appointment" />
       <Property Name="Doctor" />
       <Property Name="Category" />
-      <Property Name="Unit" />
       <Property Name="FromDate" />
       <Property Name="ToDate" />
+      <Property Name="Unit" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="HrItems" />
@@ -262,7 +262,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.WordTemplate" Collapsed="true">
-    <Position X="14.75" Y="10" Width="1.5" />
+    <Position X="18" Y="8.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAEIAAAEAEAAEAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Entities\WordTemplate.cs</FileName>
@@ -285,8 +285,8 @@
   <Class Name="Diagnosis.Models.MeasureOp" Collapsed="true">
     <Position X="4.25" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAIAAgAAAAAAAAEgAAAgAAAAAAAAIAIAAAIAQAAIAA=</HashCode>
-      <FileName>Domain\Measure.cs</FileName>
+      <HashCode>AgAIAAgAAAAAAAAEgAAAgAAAAAAAAIAAAAAIAQAAIAA=</HashCode>
+      <FileName>Domain\MeasureOp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Operator" />
@@ -303,17 +303,15 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Diagnosis.Models.VocabularyWords" Collapsed="true">
-    <Position X="14.5" Y="6.75" Width="1.5" />
+    <Position X="15" Y="6.75" Width="1.5" />
     <AssociationLine Name="Word" Type="Diagnosis.Models.Word" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="14.969" Y="7.441" />
-        <Point X="14.969" Y="7.816" />
-        <Point X="13.974" Y="7.816" Type="JumpStart" />
-        <Point X="13.807" Y="7.816" Type="JumpEnd" />
-        <Point X="13.742" Y="7.816" Type="JumpStart" />
-        <Point X="13.575" Y="7.816" Type="JumpEnd" />
-        <Point X="13.506" Y="7.816" Type="JumpStart" />
-        <Point X="13.34" Y="7.816" Type="JumpEnd" />
+        <Point X="15.469" Y="7.441" />
+        <Point X="15.469" Y="7.816" />
+        <Point X="13.755" Y="7.816" Type="JumpStart" />
+        <Point X="13.589" Y="7.816" Type="JumpEnd" />
+        <Point X="13.513" Y="7.816" Type="JumpStart" />
+        <Point X="13.346" Y="7.816" Type="JumpEnd" />
         <Point X="12.562" Y="7.816" />
         <Point X="12.562" Y="8.75" />
       </Path>
@@ -327,8 +325,8 @@
       <Property Name="Vocabulary" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Diagnosis.Models.ConfindenceWithHrItemObject" Collapsed="true">
-    <Position X="15.25" Y="11.25" Width="1.5" />
+  <Class Name="Diagnosis.Models.ConfWithHio" Collapsed="true">
+    <Position X="15.75" Y="10.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQEgAAAACAAAIAAAIAAAAAAAAAAgAA=</HashCode>
       <FileName>Domain\Chio.cs</FileName>
@@ -340,7 +338,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Confindencable&lt;T&gt;" Collapsed="true">
-    <Position X="15.25" Y="12.5" Width="1.5" />
+    <Position X="15.75" Y="12.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>Domain\Chio.cs</FileName>
@@ -360,10 +358,28 @@
   <Class Name="Diagnosis.Models.SearchOptions" Collapsed="true">
     <Position X="19.75" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>RAAoAAAAAAAAAAgEgAAEAAEACAAQEICAAQKAIQAIAKA=</HashCode>
+      <HashCode>RAAoAAAAAAAAAAgMgAAEAAEACAAQEICAAQKAIQAIAKA=</HashCode>
       <FileName>Domain\SearchOptions.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.SpecialityVocabularies" Collapsed="true">
+    <Position X="14" Y="11.75" Width="1.5" />
+    <AssociationLine Name="Vocabulary" Type="Diagnosis.Models.Vocabulary" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.594" Y="11.75" />
+        <Point X="14.594" Y="9.125" />
+        <Point X="15.5" Y="9.125" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Entities\SpecialityVocabularies.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Speciality" />
+      <Property Name="Vocabulary" />
+    </ShowAsAssociation>
   </Class>
   <Interface Name="Diagnosis.Models.IHrItemObject" Collapsed="true">
     <Position X="17.75" Y="11.25" Width="1.5" />

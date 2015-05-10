@@ -290,8 +290,7 @@ namespace Diagnosis.Models
             var pat = h as Patient;
             if (pat != null)
                 return this.CompareTo(pat);
-
-            return 1;
+            return new HrsHolderComparer().Compare(this, h);
         }
 
         public virtual int CompareTo(Patient other)

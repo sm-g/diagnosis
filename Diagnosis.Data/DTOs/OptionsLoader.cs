@@ -20,6 +20,11 @@ namespace Diagnosis.Data
             this.session = session;
         }
 
+        /// <summary>
+        /// Десериализует опции. Возвращает null в случае ошибки.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public abstract SearchOptions ReadOptions(string str);
 
         public abstract string WriteOptions(SearchOptions options);
@@ -149,9 +154,16 @@ namespace Diagnosis.Data
 
         public override SearchOptions ReadOptions(string str)
         {
-            var dto = str.DeserializeDCJson<SearchOptionsDTO>();
-            var opt = LoadFromDTO(dto);
-            return opt;
+            try
+            {
+                var dto = str.DeserializeDCJson<SearchOptionsDTO>();
+                var opt = LoadFromDTO(dto);
+                return opt;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public override string WriteOptions(SearchOptions options)

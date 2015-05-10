@@ -125,8 +125,7 @@ namespace Diagnosis.Models
             var app = h as Appointment;
             if (app != null)
                 return this.CompareTo(app);
-
-            return -1;
+            return new HrsHolderComparer().Compare(this, h);
         }
 
         public virtual int CompareTo(Appointment other)

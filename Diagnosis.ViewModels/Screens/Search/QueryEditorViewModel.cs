@@ -73,7 +73,7 @@ namespace Diagnosis.ViewModels.Search
         public void SetOptions(SearchOptions opt)
         {
             var root = QueryBlocks.FirstOrDefault();
-            if (root != null && opt.Equals(root.MakeOptions()))
+            if (root != null && root.MakeOptions().Equals(opt))
                 return;
 
             SetRootOptions(opt);

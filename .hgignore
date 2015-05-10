@@ -11,6 +11,7 @@ Thumbs.db
 *.psess
 *.vsp
 *.vspx
+*.trx
 *.coverage
 Release/
 Debug/
