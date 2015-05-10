@@ -33,6 +33,7 @@
 
         <TextBox Grid.Column="1"
                  Grid.Row="2"
+                 AcceptsReturn="True"
                  Text="{Binding CriteriaGroup.Description,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"

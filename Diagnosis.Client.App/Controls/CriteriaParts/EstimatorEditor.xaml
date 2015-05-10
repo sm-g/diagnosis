@@ -44,6 +44,7 @@
 
         <TextBox Grid.Column="1"
                  Grid.Row="3"
+                 AcceptsReturn="True"
                  Text="{Binding Estimator.Description,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"

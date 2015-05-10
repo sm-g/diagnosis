@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public override bool CanOk
         {
-            get { return true; }
+            get { return crgroup.IsValid(); }
         }
 
         protected override void OnOk()

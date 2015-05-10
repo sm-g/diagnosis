@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public string Percent
+        public string Value
         {
             get
             {

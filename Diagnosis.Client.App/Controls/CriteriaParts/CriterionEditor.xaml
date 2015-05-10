@@ -51,6 +51,7 @@
 
         <TextBox Grid.Column="1"
                  Grid.Row="3"
+                 AcceptsReturn="True"
                  Text="{Binding Criterion.Description,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"
@@ -63,7 +64,7 @@
         <Label Content="Процент"
                Grid.Row="5" />
         <TextBox Grid.Column="1"
-                 Text="{Binding Criterion.Percent,
+                 Text="{Binding Criterion.Value,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"
                  Grid.Row="5" />

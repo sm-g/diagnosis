@@ -70,7 +70,10 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
-
+        public override bool CanOk
+        {
+            get { return estimator.IsValid(); }
+        }
         protected override void OnOk()
         {
             estimator.HeaderHrsOptions = loader.WriteOptions(QueryEditor.GetOptions());

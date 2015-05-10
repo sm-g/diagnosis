@@ -36,6 +36,11 @@ namespace Diagnosis.ViewModels.Screens
 
         public QueryEditorViewModel QueryEditor { get; private set; }
 
+        public override bool CanOk
+        {
+            get { return criterion.IsValid(); }
+        }
+
         protected override void OnOk()
         {
             criterion.Options = loader.WriteOptions(QueryEditor.GetOptions());
