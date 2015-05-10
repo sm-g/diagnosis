@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace Diagnosis.Data
 {
+
     public abstract class OptionsLoader
     {
         private ISession session;
@@ -25,9 +26,30 @@ namespace Diagnosis.Data
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public abstract SearchOptions ReadOptions(string str);
+        public SearchOptions ReadOptions(string str)
+        {
+            try
+            {
+                var dto = ReadOptionsInner(str);
+                var opt = LoadFromDTO(dto);
+                opt.SetIsRoot();
+                return opt;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
-        public abstract string WriteOptions(SearchOptions options);
+        public string WriteOptions(SearchOptions options)
+        {
+            var dto = MapToDto(options);
+            return WriteOptionsInner(dto);
+        }
+
+        protected abstract SearchOptionsDTO ReadOptionsInner(string str);
+
+        protected abstract string WriteOptionsInner(SearchOptionsDTO dto);
 
         protected SearchOptionsDTO MapToDto(SearchOptions options)
         {
@@ -152,27 +174,16 @@ namespace Diagnosis.Data
         {
         }
 
-        public override SearchOptions ReadOptions(string str)
+        protected override SearchOptionsDTO ReadOptionsInner(string str)
         {
-            try
-            {
-                var dto = str.DeserializeDCJson<SearchOptionsDTO>();
-                var opt = LoadFromDTO(dto);
-                return opt;
-            }
-            catch
-            {
-                return null;
-            }
+            return str.DeserializeDCJson<SearchOptionsDTO>();
         }
 
-        public override string WriteOptions(SearchOptions options)
+        protected override string WriteOptionsInner(SearchOptionsDTO dto)
         {
-            var dto = MapToDto(options);
             return dto.SerializeDCJson();
         }
     }
-
     public static class SearchOptionsExtensions
     {
         public static int GetAllChildrenCount(this SearchOptions o)

@@ -87,7 +87,14 @@ namespace Diagnosis.Models
             Contract.Requires(!PartialLoaded);
             _part = true;
         }
+        public void SetIsRoot()
+        {
+            // только один раз после загрузки опций
+            Contract.Requires(!IsRoot);
+            Contract.Ensures(!Children.Any(x => x.IsRoot));
 
+            _isRoot = true;
+        }
         public override string ToString()
         {
             //var all = "всё {0}".FormatStr(string.Join(", ", WordsAll));
