@@ -60,9 +60,9 @@ namespace Diagnosis.Data.Sync
             };
 
         private static string[] userTableNames = new[] {
-                //Names.PassportTbl,
+                Names.Passport,
                 Names.Doctor,
-               // Names.SettingTbl,
+                Names.Setting,
             };
 
         private static string[] holderTableNames = new[] {

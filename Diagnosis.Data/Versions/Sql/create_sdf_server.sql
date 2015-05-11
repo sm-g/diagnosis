@@ -64,12 +64,12 @@ CREATE TABLE [Patient] (
 , [UpdatedAt] datetime DEFAULT GETDATE() NOT NULL
 );
 GO
---CREATE TABLE [Passport] (
---  [Id] uniqueidentifier NOT NULL
---, [HashAndSalt] nchar(70) NULL
---, [Remember] bit DEFAULT 0 NOT NULL
---);
---GO
+CREATE TABLE [Passport] (
+  [Id] uniqueidentifier NOT NULL
+, [HashAndSalt] nchar(70) NULL
+, [Remember] bit DEFAULT 0 NOT NULL
+);
+GO
 CREATE TABLE [IcdChapter] (
   [Id] int IDENTITY (1,1) NOT NULL
 , [Title] nvarchar(150) NOT NULL
@@ -112,13 +112,13 @@ CREATE TABLE [Doctor] (
 , [CustomVocabularyID] uniqueidentifier NULL
 );
 GO
---CREATE TABLE [Setting] (
---  [Id] uniqueidentifier NOT NULL
---, [DoctorID] uniqueidentifier NULL
---, [Title] nvarchar(255) NOT NULL
---, [Value] nvarchar(255) NOT NULL
---);
---GO
+CREATE TABLE [Setting] (
+  [Id] uniqueidentifier NOT NULL
+, [DoctorID] uniqueidentifier NULL
+, [Title] nvarchar(255) NOT NULL
+, [Value] nvarchar(255) NOT NULL
+);
+GO
 CREATE TABLE [Course] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
 , [PatientID] uniqueidentifier NOT NULL
