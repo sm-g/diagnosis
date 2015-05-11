@@ -3,7 +3,7 @@ using FluentMigrator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions.Client
+namespace Diagnosis.Data.Versions.Server
 {
     [Migration(201505041200)]
     public class AddUomFormat : SyncronizedMigration
@@ -19,7 +19,7 @@ namespace Diagnosis.Data.Versions.Client
         {
             get
             {
-                return new[] { Names.UomFormat, Names.Uom, Names.Word };
+                return new[] { Names.UomFormat, Names.Uom };
             }
         }
 
@@ -33,11 +33,6 @@ namespace Diagnosis.Data.Versions.Client
                 CONSTRAINT {4} FOREIGN KEY ({1}) REFERENCES {5} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION )")
                 .FormatStr(Names.UomFormat, Names.Id.Uom, Names.Col.UomFStr, Names.Col.UomFValue, Names.FK.UomFormat_Uom, Names.Uom));
 
-            // самая частая единица
-            Alter.Table(Names.Word)
-                .AddColumn(Names.Id.Uom).AsGuid().Nullable();
-            Create.ForeignKey(Names.FK.Word_Uom)
-                .FromTable(Names.Word).ForeignColumn(Names.Id.Uom).ToTable(Names.Uom).PrimaryColumn("Id");
         }
 
         public override void Down()

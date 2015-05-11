@@ -2,13 +2,14 @@
 using Diagnosis.Data.NHibernate;
 using FluentMigrator;
 
-namespace Diagnosis.Data.Versions.Server
+namespace Diagnosis.Data.Versions.Server // TODO for sql server
 {
+#if !DEBUG
     [Migration(201504140000)]
     public class InsertInitials : SyncronizedMigration
     {
         public InsertInitials() :
-            base(Constants.SqlCeProvider) // TODO for sql server
+            base(Constants.SqlCeProvider) 
         { }
 
         public override string[] UpTables
@@ -17,30 +18,18 @@ namespace Diagnosis.Data.Versions.Server
             {
                 return new[] {
                     Names.IcdBlock, Names.IcdChapter, Names.IcdDisease,
-#if DEBUG
-                    Names.Uom, Names.UomType,
-                    Names.Speciality, Names.SpecialityIcdBlocks,
-                    Names.HrCategory,
-                    Names.Vocabulary, Names.WordTemplate, Names.SpecialityVocabularies
-#endif
                 };
             }
         }
 
         public override void Up()
         {
-#if DEBUG
-            foreach (var sqlRow in InMemoryHelper.GetScript(true, true))
-            {
-                Execute.Sql(sqlRow);
-            }
-#else
             Execute.EmbeddedScript("insert_Icd.sql");
-#endif
         }
 
         public override void Down()
         {
         }
     }
+#endif
 }
