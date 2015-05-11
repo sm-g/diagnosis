@@ -179,7 +179,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     if (CurrentView is IFilterableList)
                     {
-                        (CurrentView as dynamic).Filter.IsFocused = true;
+                        (CurrentView as IFilterableList).Filter.IsFocused = true;
                     }
                     else
                     {

@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public partial class ShortHealthRecordViewModel : CheckableBase
+    public partial class ShortHealthRecordViewModel : CheckableBase, IFocusable
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ShortHealthRecordViewModel));
         internal readonly HealthRecord healthRecord;

@@ -17,7 +17,7 @@ using System.Windows.Input;
 namespace Diagnosis.ViewModels.Screens
 {
     [DebuggerDisplay("HrList for {holder}")]
-    public partial class HrListViewModel : ViewModelBase
+    public partial class HrListViewModel : ViewModelBase, IFocusable
     {
         /// <summary>
         /// When fixing duplicates in List.SelectedItems

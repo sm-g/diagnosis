@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Controls
 {
-    internal interface IFilter
+    internal interface IFilter : IFocusable
     {
         event EventHandler Cleared;
         event EventHandler Filtered;
@@ -23,4 +23,5 @@ namespace Diagnosis.ViewModels.Controls
         void Clear();
         void Filter();
     }
+
 }
