@@ -195,6 +195,7 @@
     <Compile Include="Validators\AppointmentValidator.cs" />
     <Compile Include="Validators\CourseValidator.cs" />
     <Compile Include="Validators\DoctorValidator.cs" />
+    <Compile Include="Validators\UomFormatValidator.cs" />
     <Compile Include="Validators\VocabularyValidator.cs" />
     <Compile Include="Validators\SpecialityValidator.cs" />
     <Compile Include="Validators\UomValidator.cs" />

@@ -2,10 +2,10 @@
 using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Diagnosis.Models
 {
@@ -35,6 +35,8 @@ namespace Diagnosis.Models
         protected Uom()
         {
         }
+
+        public virtual event NotifyCollectionChangedEventHandler FormatsChanged;
 
         public virtual string Abbr
         {
@@ -85,6 +87,34 @@ namespace Diagnosis.Models
         public virtual IEnumerable<UomFormat> Formats { get { return formats; } }
 
         public virtual bool IsBase { get { return Factor == 0; } }
+
+        public virtual void SetFormats(IEnumerable<UomFormat> formatsToBe)
+        {
+            Contract.Requires(!Formats.Any()); // только при создании единицы
+            Contract.Requires(formatsToBe.All(x => x.Uom == null));
+
+            var formatsToAdd = new List<UomFormat>(formatsToBe);
+
+            foreach (var item in formatsToAdd)
+            {
+                item.Uom = this;
+                formats.Add(item);
+            }
+
+            if (formatsToAdd.Count > 0)
+            {
+                OnFormatsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+        }
+
+        protected virtual void OnFormatsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            var h = FormatsChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
 
         public virtual string FormatValue(double value)
         {

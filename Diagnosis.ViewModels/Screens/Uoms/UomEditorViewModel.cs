@@ -9,6 +9,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using NHibernate.Linq;
 using Diagnosis.Models.Validators;
+using System.Collections.ObjectModel;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -25,6 +26,7 @@ namespace Diagnosis.ViewModels.Screens
             this.uom = uom;
 
             Types = new List<UomType>(Session.QueryOver<UomType>().List());
+            Formats = new ObservableCollection<UomFormat>(uom.Formats);
 
             (uom as IEditableObject).BeginEdit();
             Uom = new UomViewModel(uom);
@@ -56,6 +58,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
         public List<UomType> Types { get; private set; }
+        public ObservableCollection<UomFormat> Formats { get; private set; }
 
         public UomViewModel Uom
         {
@@ -83,6 +86,7 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnOk()
         {
             uom.Factor = Math.Log10(Uom.ValueInBase); // 1 мл = 1000 л, фактор 3
+            uom.SetFormats(Formats.Where(x => x.IsValid()));
 
             (uom as IEditableObject).EndEdit();
 
