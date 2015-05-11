@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using System;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace Diagnosis.ViewModels.Screens
 {
     internal interface IFilterableList
     {
-        //  FilterViewModel<T> Filter { get; }
+        IFilter Filter { get; }
     }
 
     public interface IHolderKeeper
