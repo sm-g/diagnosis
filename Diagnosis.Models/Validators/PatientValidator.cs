@@ -17,13 +17,12 @@ namespace Diagnosis.Models.Validators
 
             Custom(p =>
             {
-                // не нужно, пока дата вводится через DatePicker
                 try
                 {
                     DateHelper.CheckDate(p.BirthYear, p.BirthMonth, p.BirthDay);
                     return null;
                 }
-                catch (Exception)
+                catch (ArgumentOutOfRangeException)
                 {
                     return new ValidationFailure("Date", "Неверная дата рождения.");
                 }

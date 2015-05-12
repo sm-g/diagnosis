@@ -9,6 +9,9 @@ namespace Diagnosis.Models.Validators
     {
         public CourseValidator()
         {
+            RuleFor(x => x.Patient).NotNull();
+            RuleFor(x => x.LeadDoctor).NotNull();
+
             Func<Course, DateTime> firstAppDate = (x) =>
             {
                 var first = x.GetOrderedAppointments().FirstOrDefault();

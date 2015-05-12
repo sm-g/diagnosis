@@ -9,6 +9,7 @@ namespace Diagnosis.Models.Validators
     {
         public UomFormatValidator()
         {
+            RuleFor(x => x.Uom).NotNull();
             RuleFor(w => w.String).NotNull().Length(1, 50);
         }
     }
