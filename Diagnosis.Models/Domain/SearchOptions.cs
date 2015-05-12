@@ -95,6 +95,20 @@ namespace Diagnosis.Models
 
             _isRoot = true;
         }
+        public void Minimize()
+        {
+            if (IsGroup)
+            {
+                CWordsAll.Clear();
+                CWordsAny.Clear();
+                CWordsNot.Clear();
+                MeasuresAll.Clear();
+                MeasuresAny.Clear();
+                Categories.Clear();
+                Children.ForAll(x => x.Minimize());
+            }
+        }
+
         public override string ToString()
         {
             //var all = "всё {0}".FormatStr(string.Join(", ", WordsAll));

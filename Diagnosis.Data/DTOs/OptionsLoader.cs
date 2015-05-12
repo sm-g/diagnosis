@@ -43,6 +43,7 @@ namespace Diagnosis.Data
 
         public string WriteOptions(SearchOptions options)
         {
+            options.Minimize();
             var dto = MapToDto(options);
             return WriteOptionsInner(dto);
         }
