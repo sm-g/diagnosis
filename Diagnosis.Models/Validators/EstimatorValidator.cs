@@ -9,8 +9,8 @@ namespace Diagnosis.Models.Validators
     {
         public EstimatorValidator()
         {
-            RuleFor(w => w.Description).Length(1, 2000);
-            RuleFor(w => w.HeaderHrsOptions).NotEmpty();
+            RuleFor(w => w.Description).Length(1, 2000).NotNull();
+            //    RuleFor(w => w.HeaderHrsOptions).NotEmpty();
         }
     }
 }

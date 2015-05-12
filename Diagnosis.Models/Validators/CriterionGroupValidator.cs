@@ -9,7 +9,8 @@ namespace Diagnosis.Models.Validators
     {
         public CriteriaGroupValidator()
         {
-            RuleFor(w => w.Description).Length(1, 2000);
+            RuleFor(w => w.Description).Length(1, 2000).NotNull();
+            RuleFor(w => w.Estimator).NotEmpty();
         }
     }
 }
