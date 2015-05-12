@@ -44,6 +44,7 @@ namespace Diagnosis.Common
         OpenHealthRecords,
         EditHealthRecord,
         OpenHolder,
+        OpenCrit,
 
         // windows
         EditDoctor,
@@ -62,6 +63,9 @@ namespace Diagnosis.Common
         DeleteHolder,
         AddHr,
 
+        // 
+        DeleteCrit,
+
         // nhibernate
         WordPersisted,
         WordSaved,
@@ -79,7 +83,6 @@ namespace Diagnosis.Common
         // app
         PushToSettings,
         Shutdown,
-        OpenCrit,
     }
 
     public static class EventAggragatorExtensions

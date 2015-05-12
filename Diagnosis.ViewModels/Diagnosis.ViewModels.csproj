@@ -246,10 +246,12 @@
     <Compile Include="Screens\Criteria\CriteriaItemViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaGroupViewModel.cs" />
+    <Compile Include="Screens\Criteria\CritNavigator.cs" />
     <Compile Include="Screens\Criteria\EstimatorViewModel.cs" />
     <Compile Include="Screens\Criteria\CriterionViewModel.cs" />
     <Compile Include="Screens\Criteria\EstimatorEditorViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaGroupEditorViewModel.cs" />
+    <Compile Include="Screens\Criteria\CritViewer.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - ClipboardTarget.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />

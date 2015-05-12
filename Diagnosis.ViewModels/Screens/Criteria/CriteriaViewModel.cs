@@ -5,7 +5,6 @@ using EventAggregator;
 using log4net;
 using NHibernate.Linq;
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -16,23 +15,42 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(CriteriaViewModel));
 
         private Saver saver;
-
-        private DialogViewModel _cur;
+        private static CritViewer viewer;
+        private DialogViewModel _curEditor;
+        private EventMessageHandler handler;
 
         public CriteriaViewModel()
         {
-            if (IsInDesignMode) return;
-
             saver = new Saver(Session);
-
-            TopItems = new ObservableCollection<CriteriaItemViewModel>();
+            viewer = new CritViewer();
+            Navigator = new CritNavigator(viewer, CloseEditor);
+            Navigator.CurrentChanged += (s, e) =>
+            {
+                ShowEditor(e.entity as ICrit);
+            };
+            Navigator.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "CurrentTitle")
+                {
+                    Title = Navigator.CurrentTitle;
+                }
+            };
 
             var ests = Session.Query<Estimator>().ToList();
             ests.ForEach(x =>
-                TopItems.Add(new CriteriaItemViewModel(x)));
+                Navigator.AddTopItemFor(x));
 
+            handler = this.Subscribe(Event.DeleteCrit, (e) =>
+            {
+                var crit = e.GetValue<ICrit>(MessageKeys.Crit);
+                OnDeleteCrit(crit);
+            });
+            //var last = ests.LastOrDefault();
+            //if (last != null)
+            //{
+            //    Open(last);
+            //}
         }
-
         /// <summary>
         /// Создает и тут же вызывает Open(entity).
         /// </summary>
@@ -42,29 +60,32 @@ namespace Diagnosis.ViewModels.Screens
             Open(entity);
         }
 
-        public ObservableCollection<CriteriaItemViewModel> TopItems
+        public CritNavigator Navigator { get; private set; }
+
+        public RelayCommand AddCommand
         {
-            get;
-            private set;
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    CloseEditor();
+                    var est = new Estimator();
+                    Navigator.NavigateTo(est);
+                });
+            }
         }
 
         public DialogViewModel CurrentEditor
         {
             get
             {
-                return _cur;
+                return _curEditor;
             }
             set
             {
-                if (_cur != value)
+                if (_curEditor != value)
                 {
-                    _cur = value;
-                    if (value != null)
-                    {
-                        // закрываем редактор
-                        value.OnDialogResult((r) =>
-                            CurrentEditor = null);
-                    }
+                    _curEditor = value;
                     OnPropertyChanged(() => CurrentEditor);
                 }
             }
@@ -74,6 +95,95 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(crit != null);
             logger.DebugFormat("open {0}", crit);
+
+            Navigator.NavigateTo(crit);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        private void OnDeleteCrit(ICrit crit)
+        {
+            viewer.RemoveFromHistory(crit);
+
+            if (crit is Estimator)
+            {
+                Navigator.Remove(crit as Estimator);
+                saver.Delete(crit);
+            }
+            else if (crit is CriteriaGroup)
+            {
+                var crgr = crit as CriteriaGroup;
+                crgr.Estimator.RemoveCriteriaGroup(crgr);
+                saver.Save(viewer.OpenedEstimator);
+            }
+            else if (crit is Criterion)
+            {
+                var cr = crit as Criterion;
+                cr.Group.RemoveCriterion(cr);
+                saver.Save(viewer.OpenedEstimator);
+            }
+        }
+
+        /// <summary>
+        /// Close opened editor.
+        /// </summary>
+        private void CloseEditor()
+        {
+            if (CurrentEditor == null)
+                return;
+
+            if (CurrentEditor.DialogResult == null)
+            {
+                if (CurrentEditor.CanOk)
+                    CurrentEditor.OkCommand.Execute(null);
+                else
+                    CurrentEditor.CancelCommand.Execute(null);
+            }
+
+            if (CurrentEditor == null)
+                // если закрыли выше
+                return;
+
+            CurrentEditor.Dispose();
+            CurrentEditor = null;
+        }
+        /// <summary>
+        /// Close opened editor by setting dialog result.
+        /// </summary>
+        private void CloseEditor(bool result)
+        {
+            Contract.Requires(CurrentEditor != null);
+
+            var crit = (CurrentEditor as ICritKeeper).Crit;
+            CurrentEditor.Dispose();
+            CurrentEditor = null;
+
+            if (result == false)
+            {
+                // удаляем новую сущность, если ее нельзя сохранять
+                if (crit.IsTransient) 
+                    OnDeleteCrit(crit);
+            }
+        }
+        private void ShowEditor(ICrit crit)
+        {
+            if (CurrentEditor != null && (CurrentEditor as ICritKeeper).Crit == crit)
+                return; // уже открыт
+
+            CloseEditor();
 
             if (crit is Estimator)
             {
@@ -87,19 +197,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 CurrentEditor = new CriterionEditorViewModel(crit as Criterion);
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
+            if (CurrentEditor != null)
             {
-                if (disposing)
-                {
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
+                CurrentEditor.OnDialogResult((r) => CloseEditor(r));
             }
         }
     }

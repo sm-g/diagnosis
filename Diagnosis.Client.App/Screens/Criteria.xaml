@@ -14,12 +14,40 @@
 
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"
-                                x:Key="TreeElementsInputBindings">
+                                x:Key="CritElementsInputBindings">
             <KeyBinding Key="Enter"
                         Command="{Binding OpenCommand}" />
+            <KeyBinding Key="F2"
+                        Command="{Binding EditCommand}" />
+            <KeyBinding Key="Insert"
+                        Command="{Binding InsertCommand}" />
+            <KeyBinding Key="Del"
+                        Command="{Binding DeleteCommand}" />
             <MouseBinding  MouseAction="LeftDoubleClick"
                            Command="{Binding OpenCommand}" />
         </InputBindingCollection>
+
+        <!--Tag is CritItemVM-->
+        <ContextMenu x:Key="CritContextMenu"
+                     DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Открыть"
+                      TextElement.FontWeight="Bold"
+                      Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Command="{Binding OpenCommand}" />
+            
+            <MenuItem Header="Добавить группу"
+                      InputGestureText="Insert"
+                      Visibility="{Binding AddCritGroupCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Command="{Binding AddCritGroupCommand}" />
+            <MenuItem Header="Добавить критерий"
+                      InputGestureText="Insert"
+                      Visibility="{Binding AddCriterionCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      Command="{Binding AddCriterionCommand}" />
+                             
+            <MenuItem Header="Удалить"
+                      Style="{StaticResource deleteMenuItem}"
+                      Command="{Binding DeleteCommand}" />
+        </ContextMenu>
 
         <DataTemplate DataType="{x:Type diag:EstimatorEditorViewModel}">
             <crit:EstimatorEditor />
@@ -42,17 +70,32 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TreeView ItemsSource="{Binding TopItems}"
+        <TreeView ItemsSource="{Binding Navigator.TopItems}"
                   Grid.RowSpan="3">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
                        BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="diag:Attached.InputBindings"
-                            Value="{StaticResource TreeElementsInputBindings}" />
+                            Value="{StaticResource CritElementsInputBindings}" />
                     <Setter Property="FontWeight"
                             Value="Normal" />
+                    <Setter Property="Tag"
+                            Value="{Binding}" />
+                    <Setter Property="ContextMenu"
+                            Value="{StaticResource CritContextMenu}" />
 
                     <Style.Triggers>
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource EqualAllToBool}">
+                                    <Binding Path="DataContext.Navigator.Current"
+                                             RelativeSource="{RelativeSource AncestorType=screen:Criteria}" />
+                                    <Binding />
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter Property="FontWeight"
+                                    Value="Bold" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsHighlighted}"
                                      Value="True">
                             <Setter Property="Background"
@@ -71,7 +114,29 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>
-
+        
+        <DockPanel>
+            <DockPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize"
+                            Value="{DynamicResource HelpFontSize}" />
+                </Style>
+            </DockPanel.Resources>
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Visibility="{Binding Navigator.NoTopItems, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Run Text="Сначала " /><Hyperlink Command="{Binding AddCommand}">
+                    <Hyperlink.Style>
+                        <Style TargetType="Hyperlink">
+                            <Setter Property="Focusable"
+                                    Value="{Binding Navigator.NoTopItems}" />
+                        </Style>
+                    </Hyperlink.Style>добавьте приказ</Hyperlink><Run>.</Run>
+            </TextBlock>
+        </DockPanel>
+        
         <ContentPresenter Content="{Binding CurrentEditor}"
                           Grid.Column="1"
                           Margin="10"
