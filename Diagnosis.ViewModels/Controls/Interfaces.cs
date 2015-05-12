@@ -7,22 +7,21 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Controls
 {
-    internal interface IFilter<T>
+    internal interface IFilter : IFocusable
     {
         event EventHandler Cleared;
         event EventHandler Filtered;
 
         string Query { get; set; }
-
-        ObservableCollection<T> Results { get; }
-
-        bool DoAutoFilter { get; set; }
-
         bool IsQueryEmpty { get; }
-
         ICommand ClearCommand { get; }
+        ICommand FilterCommand { get; }
+        int AutoFilterMinQueryLength { get; set; }
+        bool DoAutoFilter { get; set; }
+        bool AutoFiltered { get; set; }
 
         void Clear();
         void Filter();
     }
+
 }

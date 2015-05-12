@@ -9,7 +9,7 @@ namespace Diagnosis.Models.Validators
     {
         public VocabularyValidator()
         {
-            RuleFor(w => w.Title).Length(1, 50);
+            RuleFor(w => w.Title).Length(1, 50).NotNull();
         }
     }
 }

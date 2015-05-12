@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +10,7 @@ namespace Diagnosis.Models
 {
     [DebuggerDisplay("uomformat {String} {MeasureValue}")]
     [Serializable]
-    public class UomFormat : EntityBase<Guid>, IDomainObject
+    public class UomFormat : ValidatableEntity<Guid>, IDomainObject
     {
         private string _str;
         private double _value;
@@ -23,11 +24,9 @@ namespace Diagnosis.Models
             MeasureValue = value;
             Uom = uom;
         }
-
-        protected UomFormat()
+        public UomFormat()
         {
         }
-
 
         public virtual Uom Uom
         {
@@ -60,5 +59,10 @@ namespace Diagnosis.Models
             return string.Format("{0} ({1})", String, MeasureValue);
         }
 
+
+        public override FluentValidation.Results.ValidationResult SelfValidate()
+        {
+            return new UomFormatValidator().Validate(this);
+        }
     }
 }

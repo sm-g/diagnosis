@@ -64,7 +64,7 @@
             <DockPanel>
                 <Label />
                 <CheckBox x:Name="isBase"
-                          ToolTip="Через базовую единицу выражаются другие единицы типа."                          
+                          ToolTip="Через базовую единицу выражаются другие единицы типа."
                           IsChecked="{Binding IsBase}">
                     <AccessText Text="_Базовая единица типа" />
                 </CheckBox>
@@ -82,6 +82,27 @@
                                         ValidatesOnDataErrors=True}" />
                 <TextBlock VerticalAlignment="Center"
                            Text="{Binding BaseSymbol, StringFormat={} {0}}" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="_Форматы"
+                       ToolTip="При вводе строка меняется на число."
+                       Target="{Binding ElementName=formats}" />
+                <DataGrid Name="formats"
+                          ItemsSource="{Binding DataContext.Formats, ElementName=uomEditor}"
+                          Style="{DynamicResource MyDataGridStyle}"
+                          HeadersVisibility="All"
+                          IsReadOnly="False"
+                          CanUserAddRows="True"
+                          CanUserDeleteRows="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Строка"
+                                            IsReadOnly="False"
+                                            Binding="{Binding String}" />
+                        <DataGridTextColumn Header="Число"
+                                            IsReadOnly="False"
+                                            Binding="{Binding MeasureValue}" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </DockPanel>
         </StackPanel>
 

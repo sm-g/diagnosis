@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class PatientsListViewModel : ScreenBaseViewModel, IFilterableList
+    public class PatientsListViewModel : ScreenBaseViewModel, IFilterableList, IFocusable
     {
         private Patient _current;
         private bool _noPatients;
@@ -358,6 +358,11 @@ namespace Diagnosis.ViewModels.Screens
                 new Saver(Session).Save(doctor);
             }
             base.Dispose(disposing);
+        }
+
+        IFilter IFilterableList.Filter
+        {
+            get { return Filter; }
         }
     }
 }

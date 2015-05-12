@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Controls
 {
-    public class FilterViewModel<T> : ViewModelBase, IFilter<T>
+    public class FilterViewModel<T> : ViewModelBase, IFilter
     {
         private readonly Func<string, IEnumerable<T>> finder;
         private string _query;
@@ -21,8 +21,6 @@ namespace Diagnosis.ViewModels.Controls
             Results = new ObservableCollection<T>();
             DoAutoFilter = true;
         }
-
-        #region IFilter
 
         public event EventHandler Cleared;
 
@@ -98,30 +96,6 @@ namespace Diagnosis.ViewModels.Controls
             get { return string.IsNullOrWhiteSpace(Query); }
         }
 
-        public void Filter()
-        {
-            IEnumerable<T> res;
-            if (IsQueryEmpty)
-            {
-                res = finder.Invoke("");
-            }
-            else
-            {
-                res = finder.Invoke(Query);
-            }
-
-            Results.SyncWith(res);
-
-            OnFiltered();
-        }
-
-        public void Clear()
-        {
-            Query = "";
-        }
-
-        #endregion IFilter
-
         public bool IsFocused
         {
             get
@@ -160,6 +134,27 @@ namespace Diagnosis.ViewModels.Controls
             }
         }
 
+        public void Filter()
+        {
+            IEnumerable<T> res;
+            if (IsQueryEmpty)
+            {
+                res = finder.Invoke("");
+            }
+            else
+            {
+                res = finder.Invoke(Query);
+            }
+
+            Results.SyncWith(res);
+
+            OnFiltered();
+        }
+
+        public void Clear()
+        {
+            Query = "";
+        }
         protected void OnCleared()
         {
             var h = Cleared;

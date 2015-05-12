@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class HrEditorViewModel : ViewModelBase, IClipboardTarget
+    public class HrEditorViewModel : ViewModelBase, IClipboardTarget, IFocusable
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(HrEditorViewModel));
 

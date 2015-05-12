@@ -80,44 +80,18 @@ namespace Diagnosis.ViewModels.Screens
                 this.Subscribe(Event.DeleteHolder, (e) =>
                 {
                     var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-
-                    // убрать из результатов поиска (или проверять при открытии, удален ли)
-                    viewer.RemoveFromHistory(holder);
-
-                    if (holder is Patient)
-                    {
-                        saver.SaveWithCleanup(viewer.OpenedPatient);
-
-                        Navigator.Remove(holder as Patient);
-                        saver.Delete(holder);
-                        if (Navigator.TopCardItems.Count == 0)
-                            OnLastItemRemoved();
-                        return;
-                    }
-                    else if (holder is Course)
-                    {
-                        var course = holder as Course;
-                        course.Patient.RemoveCourse(course);
-                        saver.SaveWithCleanup(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
-                    }
-                    else if (holder is Appointment)
-                    {
-                        var app = holder as Appointment;
-                        app.Course.RemoveAppointment(app);
-                        saver.SaveWithCleanup(viewer.OpenedPatient);
-                    }
+                    OnDeleteHolder(holder);
                 }),
                 this.Subscribe(Event.AddHr, (e) =>
-                    {
+                {
                     var h= e.GetValue<IHrsHolder>(MessageKeys.Holder);
                     var startEdit= e.GetValue<bool>(MessageKeys.Boolean);
 
                     AddHr(h, startEdit);
-                    })
+                })
                 }
             );
         }
-
         /// <summary>
         /// Создает карту и тут же вызывает Open(entity).
         /// </summary>
@@ -232,12 +206,12 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Открывает запись и редактор для записи и начинает редактирование слов.
         /// </summary>
-        public void FocusHrEditor(HealthRecord hr, bool addToSelected = true)
+        public void StartEditHr(HealthRecord hr, bool addToSelected = true)
         {
             Contract.Requires(hr != null);
             Contract.Assume(hr.Holder == HrList.holder);
 
-            //logger.DebugFormat("FocusHrEditor to {0}", hr);
+            //logger.DebugFormat("StartEditHr {0}", hr);
             HrList.SelectHealthRecord(hr, addToSelected);
             HrEditor.Load(hr);
             HrEditor.Autocomplete.StartEdit();
@@ -299,6 +273,35 @@ namespace Diagnosis.ViewModels.Screens
                 OpenHolder(first.Holder, false);
                 // если есть удаленные записи - просто не будут выделены
                 HrList.SelectHealthRecords(hrs);
+            }
+        }
+
+        private void OnDeleteHolder(IHrsHolder holder)
+        {
+            // убрать из результатов поиска (или проверять при открытии, удален ли)
+            viewer.RemoveFromHistory(holder);
+
+            if (holder is Patient)
+            {
+                saver.SaveWithCleanup(viewer.OpenedPatient);
+
+                Navigator.Remove(holder as Patient);
+                saver.Delete(holder);
+                if (Navigator.TopCardItems.Count == 0)
+                    OnLastItemRemoved();
+                return;
+            }
+            else if (holder is Course)
+            {
+                var course = holder as Course;
+                course.Patient.RemoveCourse(course);
+                saver.SaveWithCleanup(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
+            }
+            else if (holder is Appointment)
+            {
+                var app = holder as Appointment;
+                app.Course.RemoveAppointment(app);
+                saver.SaveWithCleanup(viewer.OpenedPatient);
             }
         }
 
@@ -505,7 +508,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (startEdit)
             {
-                FocusHrEditor(hr, false);
+                StartEditHr(hr, false);
             }
             return hr;
         }

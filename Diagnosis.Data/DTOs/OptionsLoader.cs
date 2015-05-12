@@ -16,6 +16,11 @@ namespace Diagnosis.Data
     {
         private ISession session;
 
+        static OptionsLoader()
+        {
+            ModelDtosMapper.Map();
+        }
+
         public OptionsLoader(ISession session)
         {
             this.session = session;

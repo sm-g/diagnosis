@@ -3,7 +3,7 @@ using FluentMigrator;
 using System;
 using System.Linq;
 
-namespace Diagnosis.Data.Versions.Client
+namespace Diagnosis.Data.Versions.Server
 {
     [Migration(201504121200)]
     public class AddHrToDateDescribedAt : SyncronizedMigration

@@ -13,7 +13,7 @@ namespace Diagnosis.Models.Tests
             var cat2 = new HrCategory("test", 1);
             Assert.IsTrue(cat != cat2);
             Assert.AreNotEqual(cat, cat2);
-            Assert.IsTrue(cat.EqualsByVal(cat2));
+            Assert.IsTrue(cat.Title == cat2.Title);
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace Diagnosis.Models.Tests
             var cat2 = new HrCategory(HrCategory.Null.Title, 1);
             Assert.IsTrue(cat != cat2);
             Assert.AreNotEqual(cat, cat2);
-            Assert.IsTrue(cat.EqualsByVal(cat2));
+            Assert.IsTrue(cat.Title == cat2.Title);
         }
     }
 }

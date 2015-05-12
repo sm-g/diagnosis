@@ -77,11 +77,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void OpenNewCourse()
         {
-            // открываем пациента
-
             card.Open(p[1]);
-            Assert.AreEqual(p[1], card.Navigator.Current.Holder);
-
             // начинаем курс
             p[1].AddCourse(d1);
 
@@ -92,10 +88,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void OpenNewApp()
         {
-            // открываем курс
-
             card.Open(c[2]);
-            Assert.IsFalse(c[2].IsEnded); // можно добавить осмотр
             Assert.IsTrue(card.Navigator.Current.HolderVm.AddAppointmentCommand.CanExecute(null));
 
             card.Navigator.Current.HolderVm.AddAppointmentCommand.Execute(null);
@@ -190,7 +183,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             card.Open(a[2]);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.FocusHrEditor(hr[21], false);
+            card.StartEditHr(hr[21], false);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);
             Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
@@ -213,7 +206,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             card.Open(a[2]);
             card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.FocusHrEditor(hr[21], false);
+            card.StartEditHr(hr[21], false);
             card.HrEditor.CloseCommand.Execute(null);
 
             Assert.AreEqual(hr[21], card.HrList.SelectedHealthRecord.healthRecord);

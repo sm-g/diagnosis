@@ -197,5 +197,9 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
+        IFilter IFilterableList.Filter
+        {
+            get { return Filter; }
+        }
     }
 }

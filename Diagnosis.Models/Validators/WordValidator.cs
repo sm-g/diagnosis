@@ -11,7 +11,7 @@ namespace Diagnosis.Models.Validators
 
         public WordValidator()
         {
-            RuleFor(w => w.Title).Length(1, 100);
+            RuleFor(w => w.Title).Length(1, 100).NotNull();
         }
     }
 }

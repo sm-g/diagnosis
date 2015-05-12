@@ -210,5 +210,9 @@ namespace Diagnosis.ViewModels.Screens
                 SelectedWords.Add(toSelect);
 
         }
+        IFilter IFilterableList.Filter
+        {
+            get { return Filter; }
+        }
     }
 }

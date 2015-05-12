@@ -134,11 +134,11 @@ namespace Diagnosis.ViewModels.Screens
             Current.IsExpanded = true;
             Current.ExpandParents();
 
-            var holder = Current.Holder;
 
             TopCardItems.ForAll(x => HightlightLastOpenedFor(x));
 
             // close nested for saving
+            var holder = Current.Holder;
             if (holder is Patient)
             {
                 viewer.OpenedCourse = null;

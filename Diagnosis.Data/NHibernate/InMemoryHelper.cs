@@ -51,7 +51,7 @@ namespace Diagnosis.Data.NHibernate
                         .Select(x => x.StartsWith("\r\n--SET IDENTITY_INSERT")
                             ? x.Remove(0, 4) // uncomment
                             : x)
-                        .TakeWhile(x => !(forServer && x.StartsWith("-- CLIENT")))
+                        .TakeWhile(x => !(forServer && x.Contains("-- CLIENT"))) // for server take sql before 
                         .ToArray();
 
                 return new[] { sql };

@@ -9,7 +9,7 @@ namespace Diagnosis.ViewModels.Controls
     /// <summary>
     /// Показывает результаты при установке фокуса.
     /// </summary>
-    public class PopupSearchViewModel<T> : ViewModelBase
+    public class PopupSearchViewModel<T> : ViewModelBase, IFocusable
         where T : class
     {
         #region Fields

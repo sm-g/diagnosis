@@ -201,6 +201,7 @@
     <Compile Include="Validators\EstimatorValidator.cs" />
     <Compile Include="Validators\DoctorValidator.cs" />
     <Compile Include="Validators\CriterionValidator.cs" />
+    <Compile Include="Validators\UomFormatValidator.cs" />
     <Compile Include="Validators\VocabularyValidator.cs" />
     <Compile Include="Validators\SpecialityValidator.cs" />
     <Compile Include="Validators\UomValidator.cs" />

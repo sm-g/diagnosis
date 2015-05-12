@@ -240,7 +240,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 var card = (CurrentView as CardViewModel);
                 if (goToEditor)
-                    card.FocusHrEditor(hr);
+                    card.StartEditHr(hr);
                 else
                     card.ToogleHrEditor();
             });

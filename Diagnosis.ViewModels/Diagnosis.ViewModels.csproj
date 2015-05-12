@@ -230,6 +230,7 @@
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Formatters\DateOffsetFormatter.cs" />
+    <Compile Include="Framework\Interfaces.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
     <Compile Include="Framework\WindowViewModel.cs" />

@@ -81,8 +81,6 @@ namespace Diagnosis.Client.App
 
             DbMaintenance();
 
-            ModelDtosMapper.Map();
-
             StartMainWindow();
         }
 
