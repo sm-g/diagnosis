@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.Models
@@ -37,16 +38,27 @@ namespace Diagnosis.Models
             get { return criteria; }
         }
 
-        public virtual void AddCriterion(Criterion cr)
+        protected internal virtual void AddCriterion(Criterion cr)
         {
+            Contract.Requires(cr.Group == null);
+            if (criteria.Add(cr))
+            {
+                cr.Group = this;
+                OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cr));
+            }
+        }
+        public virtual Criterion AddCriterion()
+        {
+            var cr = new Criterion(this);
             criteria.Add(cr);
             OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cr));
+            return cr;
         }
-
         public virtual void RemoveCriterion(Criterion cr)
         {
             if (criteria.Remove(cr))
             {
+                cr.Group = null;
                 OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, cr));
             }
         }

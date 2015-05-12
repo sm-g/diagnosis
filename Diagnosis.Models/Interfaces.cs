@@ -65,7 +65,7 @@ namespace Diagnosis.Models
         void RemoveHealthRecord(HealthRecord hr);
     }
 
-    public interface ICrit
+    public interface ICrit : IEntity, IDomainObject
     {
 
     }
