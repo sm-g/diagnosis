@@ -15,6 +15,7 @@ namespace Diagnosis.Models
     public interface IEntity : INotifyPropertyChanged
     {
         bool IsDirty { get; set; }
+        bool IsTransient { get; }
         object Id { get; }
         object Actual { get; }
     }
@@ -167,6 +168,12 @@ namespace Diagnosis.Models
         int IComparable<IHrsHolder>.CompareTo(IHrsHolder other) { throw new NotImplementedException(); }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+
+        public bool IsTransient
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 
     [ContractClassFor(typeof(IIcdEntity))]
