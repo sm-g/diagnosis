@@ -215,12 +215,14 @@ namespace Diagnosis.Common
         /// <summary>
         /// from http://stackoverflow.com/a/16344936/3009578
         /// </summary>
-        public static void Sort<T, TKey>(this ObservableCollection<T> collection, Func<T, TKey> keyExtractor, IComparer<TKey> comparer = null)
+        public static void Sort<T, TKey>(this ObservableCollection<T> collection, Func<T, TKey> keyExtractor, bool reverse = false, IComparer<TKey> comparer = null)
             where TKey : IComparable<TKey>
         {
             comparer = comparer ?? Comparer<TKey>.Default;
 
-            List<T> sorted = collection.OrderBy(x => keyExtractor(x), comparer).ToList();
+            List<T> sorted = reverse
+                ? collection.OrderByDescending(x => keyExtractor(x), comparer).ToList()
+                : collection.OrderBy(x => keyExtractor(x), comparer).ToList();
             for (int i = 0; i < sorted.Count; i++)
             {
                 var index = collection.IndexOf(sorted[i]);

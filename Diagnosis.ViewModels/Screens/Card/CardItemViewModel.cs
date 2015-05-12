@@ -163,7 +163,9 @@ namespace Diagnosis.ViewModels.Screens
 
         private void holder_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (sender is Course || sender is Appointment)
+            if (sender is Course)
+                Parent.Children.Sort(vm => vm.Holder, reverse:true);
+            else if (sender is Appointment)
                 Parent.Children.Sort(vm => vm.Holder);
         }
     }
