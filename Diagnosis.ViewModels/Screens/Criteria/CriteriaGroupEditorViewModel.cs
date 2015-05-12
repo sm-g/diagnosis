@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CriteriaGroupEditorViewModel : DialogViewModel
+    public class CriteriaGroupEditorViewModel : DialogViewModel, ICritKeeper
     {
         internal readonly CriteriaGroup crgroup;
 
@@ -15,7 +15,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             this.crgroup = group;
 
-            crgroup.CriteriaChanged += crgroup_CriteriaChanged;
             Criteria = new ObservableCollection<CriterionEditorViewModel>();
 
             CriteriaGroup = new CriteriaGroupViewModel(crgroup);
@@ -82,14 +81,13 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                crgroup.CriteriaChanged -= crgroup_CriteriaChanged;
             }
             base.Dispose(disposing);
         }
 
-        private void crgroup_CriteriaChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        public ICrit Crit
         {
-            throw new NotImplementedException();
+            get { return crgroup; }
         }
     }
 }

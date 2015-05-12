@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class EstimatorEditorViewModel : DialogViewModel
+    public class EstimatorEditorViewModel : DialogViewModel, ICritKeeper
     {
         internal readonly Estimator estimator;
 
@@ -19,7 +19,6 @@ namespace Diagnosis.ViewModels.Screens
             this.estimator = estimator;
             loader = new JsonOptionsLoader(Session);
 
-            estimator.CriteriaGroupsChanged += estimator_CriteriaGroupsChanged;
             CriteriaGroups = new ObservableCollection<CriteriaGroupEditorViewModel>();
 
             QueryEditor = new QueryEditorViewModel(Session, () => { });
@@ -91,14 +90,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                estimator.CriteriaGroupsChanged -= estimator_CriteriaGroupsChanged;
             }
             base.Dispose(disposing);
         }
 
-        private void estimator_CriteriaGroupsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+
+        public ICrit Crit
         {
-            throw new NotImplementedException();
+            get { return estimator; }
         }
     }
 }

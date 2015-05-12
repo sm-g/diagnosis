@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CriterionEditorViewModel : DialogViewModel
+    public class CriterionEditorViewModel : DialogViewModel, ICritKeeper
     {
         internal readonly Criterion criterion;
         private OptionsLoader loader;
@@ -60,6 +60,11 @@ namespace Diagnosis.ViewModels.Screens
             {
             }
             base.Dispose(disposing);
+        }
+
+        public ICrit Crit
+        {
+            get { return criterion; }
         }
     }
 }

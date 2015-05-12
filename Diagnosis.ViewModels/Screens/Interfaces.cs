@@ -14,4 +14,9 @@ namespace Diagnosis.ViewModels.Screens
     {
         IHrsHolder Holder { get; }
     }
+
+    public interface ICritKeeper
+    {
+        ICrit Crit { get; }
+    }
 }

@@ -134,5 +134,20 @@ namespace Diagnosis.ViewModels
             }
             return null;
         }
+        public static T FindCritKeeperOf<T>(this IEnumerable<T> root, ICrit crit)
+           where T : HierarchicalBase<T>, ICritKeeper
+        {
+            crit = crit.Actual as ICrit;
+            T vm;
+            foreach (var item in root)
+            {
+                if (item.Crit == crit)
+                    return item;
+                vm = item.AllChildren.Where(x => x.Crit == crit).FirstOrDefault();
+                if (vm != null)
+                    return vm;
+            }
+            return null;
+        }
     }
 }
