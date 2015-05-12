@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              Padding="{StaticResource SreenPadding}"
              d:DataContext="{d:DesignInstance diag:SpecialityListViewModel, IsDesignTimeCreatable=False}"
-             d:DesignHeight="300"
+             d:DesignHeight="400"
              d:DesignWidth="600">
     <UserControl.Resources>
     </UserControl.Resources>
@@ -85,9 +85,9 @@
                 <RowDefinition Height="36" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="10" />
-                <RowDefinition Height="*" MaxHeight="150" />
+                <RowDefinition Height="2*"  />
                 <RowDefinition Height="10" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
