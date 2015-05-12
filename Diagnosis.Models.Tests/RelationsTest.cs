@@ -141,7 +141,7 @@ namespace Diagnosis.Models.Tests
             c.RemoveAppointment(app);
 
             Assert.IsFalse(c.Appointments.Contains(app));
-            // у осмотра все еще есть курс
+            Assert.IsTrue(app.Course == c);
         }
 
         [TestMethod]
@@ -155,6 +155,7 @@ namespace Diagnosis.Models.Tests
 
             p.RemoveCourse(c);
             Assert.IsFalse(p.Courses.Contains(c));
+            Assert.IsTrue(c.Patient == p);
         }
 
         [TestMethod]
@@ -243,7 +244,34 @@ namespace Diagnosis.Models.Tests
             Assert.IsFalse(d1.HealthRecords.Contains(hr));
             Assert.IsFalse(d1.HealthRecords.Contains(hr2));
         }
+        [TestMethod]
+        public void CrGroup2Criterion()
+        {
+            var gr = new CriteriaGroup();
+            var cr = gr.AddCriterion();
 
+            Assert.AreEqual(cr, gr.Criteria.Single());
+            Assert.AreEqual(gr, cr.Group);
+
+            gr.RemoveCriterion(cr);
+
+            Assert.IsFalse(gr.Criteria.Contains(cr));
+            Assert.IsNull(cr.Group);
+        }
+
+        [TestMethod]
+        public void Estimator2CrGroup()
+        {
+            var e = new Estimator();
+            var gr = e.AddCriteriaGroup();
+
+            Assert.AreEqual(gr, e.CriteriaGroups.Single());
+            Assert.AreEqual(e, gr.Estimator);
+
+            e.RemoveCriteriaGroup(gr);
+            Assert.IsFalse(e.CriteriaGroups.Contains(gr));
+            Assert.IsNull(gr.Estimator);
+        }
         [TestMethod]
         public void HrCascade()
         {

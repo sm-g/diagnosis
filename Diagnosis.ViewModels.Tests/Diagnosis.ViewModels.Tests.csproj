@@ -83,6 +83,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AutocompleteTest.cs" />
+    <Compile Include="CriteriaTest.cs" />
     <Compile Include="CardTest.cs" />
     <Compile Include="DateOffsetFormatterTest.cs" />
     <Compile Include="DateOffsetVMTest.cs" />
