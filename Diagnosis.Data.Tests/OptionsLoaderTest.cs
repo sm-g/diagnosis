@@ -21,7 +21,6 @@ namespace Diagnosis.Data.Tests
 
             Load<Word>();
             Load<Uom>();
-            ModelDtosMapper.Map();
 
             l = new JsonOptionsLoader(session);
         }
