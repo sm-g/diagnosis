@@ -248,7 +248,6 @@ namespace Diagnosis.Models
         {
             if (unit.CompareTo(Unit) < 0 && !(unit == DateUnit.Day && Unit == DateUnit.Week))
                 throw new ArgumentException("Can not add such part of date to current dateoffset.");
-            Contract.EndContractBlock();
 
             DateTime dt;
             switch (unit)
@@ -547,6 +546,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// Возвращает DateTime представление для объекта DateOffset, отсутствующие значения заменены 1.
         /// </summary>
+        [Pure]
         public virtual DateTime GetSortingDate()
         {
             int year = Year ?? 1;

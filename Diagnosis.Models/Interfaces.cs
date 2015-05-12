@@ -124,12 +124,7 @@ namespace Diagnosis.Models
     [ContractClassFor(typeof(IHrsHolder))]
     abstract class ContractForIHrsHolder : IHrsHolder
     {
-
-        event NotifyCollectionChangedEventHandler IHrsHolder.HealthRecordsChanged
-        {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
-        }
+        public event NotifyCollectionChangedEventHandler HealthRecordsChanged = delegate { };
 
         IEnumerable<HealthRecord> IHrsHolder.HealthRecords
         {

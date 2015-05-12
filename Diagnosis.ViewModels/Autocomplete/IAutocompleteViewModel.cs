@@ -8,9 +8,11 @@ using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
+    [ContractClass(typeof(ContractForIViewAutocompleteViewModel))]
     public interface IViewAutocompleteViewModel
     {
         bool CanCompleteOnLostFocus { get; set; }
@@ -56,6 +58,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         void StartEdit();
         void AddFromEditor(BlankType type, int index = -1);
     }
+    [ContractClass(typeof(ContractForIQbAutocompleteViewModel))]
     public interface IQbAutocompleteViewModel : ITagsTrackableAutocomplete, IDisposable, INotifyPropertyChanged
     {
         INotifyCollectionChanged Tags { get; }
