@@ -105,7 +105,7 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Crit, StringFormat={}{0}}" />
+                    <TextBlock Text="{Binding Crit, StringFormat={}{0}}" TextTrimming="WordEllipsis" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
             <TreeView.ContextMenu>

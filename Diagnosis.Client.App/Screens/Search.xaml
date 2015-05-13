@@ -71,7 +71,7 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <StackPanel DataContext="{Binding Result.Options}"
+                    <StackPanel DataContext="{Binding Result.QuerySource}"
                                 Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
                         <TextBlock Text="{Binding}"
                                    TextWrapping="Wrap" />
@@ -187,7 +187,7 @@
                    HorizontalAlignment="Center"
                    Margin="10"
                    Visibility="{Binding NothingFound, Converter={StaticResource BooleanToVisibilityConverter}}">
-            Не найдено подходящих записей.
+            Не нашли подходящие записи.
         </TextBlock>
 
         <Grid Grid.Row="3"
