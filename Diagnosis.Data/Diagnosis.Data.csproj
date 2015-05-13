@@ -236,6 +236,11 @@
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
     <Compile Include="Queries\VocabularyQuery.cs" />
     <Compile Include="Queries\CategoryQuery.cs" />
+    <Compile Include="Search\AndSearcher.cs" />
+    <Compile Include="Search\HrSearcher.cs" />
+    <Compile Include="Search\NotOrSearcher.cs" />
+    <Compile Include="Search\OrSearcher.cs" />
+    <Compile Include="Search\Searcher.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="SqlHelper.cs" />
     <Compile Include="Sync\AfterSyncChecker.cs" />
@@ -294,6 +299,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Search\SearcherClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.Data.Search
 {
     public abstract class Searcher
     {

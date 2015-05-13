@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;

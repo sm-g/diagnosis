@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels.Tests
             s.SearchCommand.Execute(null);
 
             Assert.AreEqual(1, (s.Result.Statistic as HrsStatistic).Patients.Count);
-            Assert.AreEqual(a[1], (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[0].Holder);
+            Assert.AreEqual(a[1], (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].Children[0].Holder);
 
             Assert.AreEqual(2, (s.Result.Statistic as HrsStatistic).HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[1]));
@@ -113,10 +113,10 @@ namespace Diagnosis.ViewModels.Tests
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(0, (s.Result.Patients[0] as HolderResultItemViewModel).FoundHealthRecords.Count); // найденные — только слова в области
-            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
-            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[0].FoundHealthRecords.Count);
-            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[1].FoundHealthRecords.Count);
+            Assert.AreEqual(0, (s.Result.Patients[0] as HrsResultItemViewModel).FoundHealthRecords.Count); // найденные — только слова в области
+            Assert.AreEqual(1, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
+            Assert.AreEqual(1, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].Children[0].FoundHealthRecords.Count);
+            Assert.AreEqual(1, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].Children[1].FoundHealthRecords.Count);
         }
 
         [TestMethod]
@@ -128,9 +128,9 @@ namespace Diagnosis.ViewModels.Tests
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(0, (s.Result.Patients[0] as HolderResultItemViewModel).FoundHealthRecords.Count);
-            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
-            Assert.AreEqual(2, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[0].HealthRecords.Count); // 14
+            Assert.AreEqual(0, (s.Result.Patients[0] as HrsResultItemViewModel).FoundHealthRecords.Count);
+            Assert.AreEqual(1, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
+            Assert.AreEqual(2, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].Children[0].HealthRecords.Count); // 14
         }
         [TestMethod]
         public void ReceiverIsNullBeforeSend()

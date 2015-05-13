@@ -300,10 +300,6 @@
     <Compile Include="Screens\Vocabularies\VocabularyEditorViewModel.cs" />
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Screens\Vocabularies\VocabularyViewModel.cs" />
-    <Compile Include="Search\NotOrSearcher.cs" />
-    <Compile Include="Search\OrSearcher.cs" />
-    <Compile Include="Search\Searcher.cs" />
-    <Compile Include="Search\AndSearcher.cs" />
     <Compile Include="Services\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Screens\Search\HrsResultItemViewModel.cs" />
@@ -343,7 +339,6 @@
     <Compile Include="Autocomplete\TagViewModel.cs" />
     <Compile Include="Controls\FilterViewModel.cs" />
     <Compile Include="Controls\PopupSearchViewModel.cs" />
-    <Compile Include="Search\HrSearcher.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
     <Compile Include="Types\SpecialCaseItem.cs" />
     <Compile Include="Screens\Vocabularies\VocabularySyncViewModel.cs" />
@@ -373,7 +368,8 @@
     </None>
     <None Include="Screens\Card\CardCodeMap.dgml" />
     <None Include="Screens\HealthRecords\CodeMap1.dgml" />
-    <None Include="Search\SearchClassDiagram.cd" />
+    <None Include="Screens\Search\CodeMap1.dgml" />
+    <None Include="Screens\Search\SearchClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

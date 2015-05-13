@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.Data.Search
 {
     /// <summary>
     /// NotAny x = All excluding x
