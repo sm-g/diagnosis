@@ -236,11 +236,14 @@
     <Compile Include="Side.cs" />
     <Compile Include="SqlHelper.cs" />
     <Compile Include="Sync\AfterSyncChecker.cs" />
-    <Compile Include="Sync\Helpers.cs" />
+    <Compile Include="Sync\Poster.cs" />
+    <Compile Include="Sync\SyncOrchestrator.cs" />
+    <Compile Include="Sync\SyncerExtensions.cs" />
     <Compile Include="Sync\Rh.cs" />
     <Compile Include="Sync\Rhs.cs" />
     <Compile Include="Sync\Syncer.cs" />
     <Compile Include="Sync\Scopes.cs" />
+    <Compile Include="Sync\SyncUtil.cs" />
     <Compile Include="Sync\VocLoader.cs" />
     <Compile Include="Versions\Client\18 AddUomFormat.cs" />
     <Compile Include="Versions\Client\17 AddHrToDateDescribedAt.cs" />

@@ -57,7 +57,7 @@ namespace Diagnosis.ViewModels.Screens
                     TryGetAvailableVocs();
                 }
             };
-            Syncer.MessagePosted += syncer_MessagePosted;
+            Poster.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
 
             TryGetAvailableVocs();
@@ -243,7 +243,7 @@ namespace Diagnosis.ViewModels.Screens
                 syncer = syncer.OnlySelectedVocs(s, vocsToLoad);
 
             Mouse.OverrideCursor = Cursors.AppStarting;
-            await syncer.SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+            await syncer.SendFrom(Side.Server, Scope.Voc);
             Mouse.OverrideCursor = null;
         }
 
@@ -346,7 +346,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Syncer.SyncEnded -= syncer_SyncEnded;
-                Syncer.MessagePosted -= syncer_MessagePosted;
+                Poster.MessagePosted -= syncer_MessagePosted;
                 uiTaskFactory.StartNew(() =>
                 {
                     Vocs.Clear();

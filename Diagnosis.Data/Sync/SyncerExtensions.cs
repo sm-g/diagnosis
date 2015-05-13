@@ -1,16 +1,15 @@
-﻿using Diagnosis.Models;
+﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using NHibernate;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
 {
-    public static class Helpers
+    public static class SyncerExtensions
     {
-        public static void FakeUpdate(this ISession s, Type type, Guid id)
+        private static void FakeUpdate(this ISession s, Type type, Guid id)
         {
             var table = Names.GetTblByType(type);
             s.CreateSQLQuery(string.Format("UPDATE {0} SET Id = Id WHERE Id = '{1}'", table, id)).ExecuteUpdate();
@@ -49,8 +48,8 @@ namespace Diagnosis.Data.Sync
             // слова словаря не загружаются с сервера
 
             return s;
-
         }
+
         /// <summary>
         /// Не синхронизируем область словарей
         /// но загружаем новые шаблоны для установленных словарей
@@ -99,13 +98,6 @@ namespace Diagnosis.Data.Sync
             });
 
             return s;
-        }
-
-        public static Task GetEndedTask()
-        {
-            var t = new Task(() => { });
-            t.Start();
-            return t;
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels.Screens
 
             Remote = new DataConnectionViewModel(server);
 
-            Syncer.MessagePosted += syncer_MessagePosted;
+            Poster.MessagePosted += syncer_MessagePosted;
             Syncer.SyncEnded += syncer_SyncEnded;
         }
 
@@ -309,7 +309,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Syncer.SyncEnded -= syncer_SyncEnded;
-                Syncer.MessagePosted -= syncer_MessagePosted;
+                Poster.MessagePosted -= syncer_MessagePosted;
 
                 Remote.Dispose();
 
