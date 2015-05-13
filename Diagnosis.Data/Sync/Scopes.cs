@@ -1,5 +1,4 @@
-﻿using Diagnosis.Data.Versions;
-using Diagnosis.Models;
+﻿using Diagnosis.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +76,6 @@ namespace Diagnosis.Data.Sync
                 Names.HrItem,
             };
 
-
         private static Dictionary<Scope, string> scopeNames = new Dictionary<Scope, string>
         {
             {Scope.Holder,      holderScope},
@@ -88,7 +86,7 @@ namespace Diagnosis.Data.Sync
             {Scope.Voc,         vocScope},
         };
 
-        private static Dictionary<Scope, string[]> scopeToTables = new Dictionary<Scope, string[]>
+        private static Dictionary<Scope, IEnumerable<string>> scopeToTables = new Dictionary<Scope, IEnumerable<string>>
         {
             {Scope.Holder,      holderTableNames},
             {Scope.Hr,          hrTableNames},
@@ -97,6 +95,8 @@ namespace Diagnosis.Data.Sync
             {Scope.Icd,         icdTableNames},
             {Scope.Voc,         vocTableNames},
         };
+
+        private static Dictionary<string, IEnumerable<Scope>> tableToScopes = scopeToTables.ReverseManyToMany();
 
         public static IList<Scope> GetOrderedUploadScopes()
         {
@@ -107,25 +107,29 @@ namespace Diagnosis.Data.Sync
                 Scope.Hr,
             };
         }
+
         public static IList<Scope> GetOrderedDownloadScopes()
         {
             return new List<Scope>()
             {
-#if !DEBUG		  
+#if !DEBUG
                 Scope.Icd,
     #endif
                 Scope.Voc,
                 Scope.Reference,
             };
         }
+
         public static IList<Scope> GetOrderedScopes(this Side from)
         {
             switch (from)
             {
                 case Side.Client:
                     return GetOrderedUploadScopes();
+
                 case Side.Server:
                     return GetOrderedDownloadScopes();
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -137,7 +141,37 @@ namespace Diagnosis.Data.Sync
             if (tbl == default(String))
                 throw new ArgumentOutOfRangeException("Type is not syncronized");
 
-            return scopeToTables.Where(x => x.Value.Contains(tbl)).Select(x => x.Key);
+            return tableToScopes[tbl];
+        }
+
+        public static IEnumerable<Scope> GetScopes(this string table)
+        {
+            return tableToScopes[table];
+        }
+
+        /// <summary>
+        /// Все области, в которых есть хотя бы одна таблица из области scope.
+        /// </summary>
+        public static IEnumerable<Scope> GetRelatedScopes(this Scope scope)
+        {
+            switch (scope)
+            {
+                case Scope.Voc:
+                case Scope.Reference:
+                case Scope.User:
+                    return new[] { Scope.Voc, Scope.Reference, Scope.User };
+                case Scope.Holder:
+                    return new[] { Scope.Holder };
+                case Scope.Hr:
+                    return new[] { Scope.Hr };
+                case Scope.Icd:
+                    return new[] { Scope.Icd };
+                default:
+                    throw new NotImplementedException();
+            }
+            //return ToTableNames(scope)
+            //    .SelectMany(t => GetScopes(t))
+            //    .Distinct();
         }
 
         public static IEnumerable<Type> GetTypes(this Scope scope)
@@ -171,13 +205,11 @@ namespace Diagnosis.Data.Sync
             throw new NotImplementedException();
         }
 
-        public static string[] ToTableNames(this Scope scope)
+        public static IEnumerable<string> ToTableNames(this Scope scope)
         {
-            string[] result;
+            IEnumerable<string> result;
             if (scopeToTables.TryGetValue(scope, out result))
-            {
                 return result;
-            }
 
             throw new NotImplementedException();
         }
@@ -186,6 +218,5 @@ namespace Diagnosis.Data.Sync
         {
             return referenceTableNames.Contains(table) ? referenceSchema : stagingSchema;
         }
-
     }
 }

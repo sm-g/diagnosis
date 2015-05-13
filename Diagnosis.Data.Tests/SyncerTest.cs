@@ -295,8 +295,18 @@ namespace Diagnosis.Data.Tests
             SyncUtil.Clear();
 
             // sync user
-            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.User);
+            bool errorWas = false;
+            EventHandler<StringEventArgs> h = (s1, e) =>
+            {
+                errorWas = e.str.Contains("Error");
+            };
+            Poster.MessagePosted += h;
 
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.User);
+            Poster.MessagePosted -= h;
+
+            // doctor table already provisioned in user scope
+            Assert.IsTrue(!errorWas);
 
         }
 

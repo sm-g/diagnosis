@@ -170,7 +170,9 @@ namespace Diagnosis.Data.Sync
 
             InSync = false;
         }
-
+        /// <summary>
+        /// Депровизим области, в которых есть таблицы миграции.
+        /// </summary>
         public static void BeforeMigrate(string connstr, string provider, params string[] tables)
         {
             Contract.Requires(!InSync);
@@ -185,18 +187,8 @@ namespace Diagnosis.Data.Sync
                     return;
                 }
 
-                HashSet<Scope> scopes = new HashSet<Scope>();
-                foreach (Scope scope in Scopes.GetOrderedScopes())
-                {
-                    foreach (var table in tables)
-                    {
-                        if (scope.ToTableNames().Contains(table))
-                        {
-                            scopes.Add(scope);
-                            break;
-                        }
-                    }
-                }
+                var scopes = tables.SelectMany(t => t.GetScopes()).Distinct().ToList();
+
                 Poster.PostMessage("Going to deprovision scopes: '{0}' in '{1}'\n", string.Join("', '", scopes, connstr));
                 foreach (var scope in scopes)
                 {
@@ -250,10 +242,22 @@ namespace Diagnosis.Data.Sync
                     return;
                 }
 
+                var related = new List<Scope>();
                 foreach (var scope in scopes.OrderScopes())
                 {
                     Sync(from, scope, serverConn, clientConn);
+                    related.AddRange(scope.GetRelatedScopes());
                 }
+
+                // провизим все области в которых есть таблицы
+                var extra = related.Distinct().Except(scopes).ToList();
+                Poster.PostMessage("+\nRelated scopes to provision: ", string.Join("', '", extra));
+                foreach (var scope in extra)
+                {
+                    SyncUtil.Provision(clientConn, scope, serverConn);
+                    SyncUtil.Provision(serverConn, scope, null);
+                }
+
             }
         }
 
@@ -278,7 +282,7 @@ namespace Diagnosis.Data.Sync
 
             try
             {
-                Poster.PostMessage("Synchronize...");
+                Poster.PostMessage("+\nSynchronize...");
 
                 var syncStats = syncOrchestrator.Synchronize();
 

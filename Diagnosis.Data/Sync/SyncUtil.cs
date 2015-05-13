@@ -126,7 +126,7 @@ namespace Diagnosis.Data.Sync
         /// <param name="scope"></param>
         /// <param name="connection"></param>
         /// <returns>Таблицы, которые не были добавлены.</returns>
-        private static IList<string> AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
+        private static IList<string> AddTablesToScopeDescr(IEnumerable<string> tableNames, DbSyncScopeDescription scope, DbConnection connection)
         {
             var failed = new List<string>();
             Poster.PostMessage("Adding tables to scope '{0}' in '{1}'...", scope.ScopeName, connection.ConnectionString);
