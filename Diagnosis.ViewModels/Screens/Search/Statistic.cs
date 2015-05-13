@@ -5,18 +5,72 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Screens
 {
-    public class Statistic
+    public abstract class StatisticBase
+    {        /// <summary>
+        /// Пациенты, о которых записи, по имени
+        /// </summary>
+        public abstract ReadOnlyCollection<Patient> Patients { get; }
+
+        public int PatientsCount
+        {
+            get { return Patients.Count; }
+        }
+
+        public int Females
+        {
+            get { return Patients.Where(p => p.IsMale.HasValue && !p.IsMale.Value).Count(); }
+        }
+
+        public int Males
+        {
+            get { return Patients.Where(p => p.IsMale.HasValue && p.IsMale.Value).Count(); }
+        }
+
+        public int UnknownSex
+        {
+            get { return Patients.Where(p => !p.IsMale.HasValue).Count(); }
+        }
+
+        public int? MaxAge
+        {
+            get { return PatientsCount == 0 ? -1 : Patients.Where(p => p.Age.HasValue).Max(p => p.Age); }
+        }
+
+        public int? MinAge
+        {
+            get { return PatientsCount == 0 ? -1 : Patients.Where(p => p.Age.HasValue).Min(p => p.Age); }
+        }
+
+    }
+    public class CritStatistic : StatisticBase
     {
-        public Statistic(IEnumerable<HealthRecord> hrs)
+        ReadOnlyCollection<Patient> _pats;
+        private Dictionary<Patient, IEnumerable<Criterion>> patCrs;
+
+
+        public CritStatistic(Dictionary<Patient, IEnumerable<Criterion>> patCrs)
+        {
+            this.patCrs = patCrs;
+            _pats = patCrs.Keys.ToList().AsReadOnly();
+        }
+        public override ReadOnlyCollection<Patient> Patients
+        {
+            get { return _pats; }
+        }
+    }
+    public class HrsStatistic : StatisticBase
+    {
+        ReadOnlyCollection<Patient> _pats;
+        public HrsStatistic(IEnumerable<HealthRecord> hrs)
         {
             HealthRecords = hrs
                 .OrderBy(p => p.CreatedAt)
                 .ToList()
                 .AsReadOnly();
 
-            Patients = hrs
+            _pats = hrs
                 .Select(x => x.GetPatient())
                 .Distinct()
                 .OrderBy(p => p.FullName)
@@ -64,10 +118,7 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        /// <summary>
-        /// Пациенты, о которых записи, по имени
-        /// </summary>
-        public ReadOnlyCollection<Patient> Patients { get; private set; }
+
 
         /// <summary>
         /// Все слова из записей, по алфавиту
@@ -86,35 +137,6 @@ namespace Diagnosis.ViewModels.Search
 
         public Dictionary<HealthRecord, Dictionary<Word, GridValue>> GridValues { get; private set; }
 
-        public int PatientsCount
-        {
-            get { return Patients.Count; }
-        }
-
-        public int Females
-        {
-            get { return Patients.Where(p => p.IsMale.HasValue && !p.IsMale.Value).Count(); }
-        }
-
-        public int Males
-        {
-            get { return Patients.Where(p => p.IsMale.HasValue && p.IsMale.Value).Count(); }
-        }
-
-        public int UnknownSex
-        {
-            get { return Patients.Where(p => !p.IsMale.HasValue).Count(); }
-        }
-
-        public int? MaxAge
-        {
-            get { return PatientsCount == 0 ? -1 : Patients.Where(p => p.Age.HasValue).Max(p => p.Age); }
-        }
-
-        public int? MinAge
-        {
-            get { return PatientsCount == 0 ? -1 : Patients.Where(p => p.Age.HasValue).Min(p => p.Age); }
-        }
 
         internal int MaxMeasuresFor(Word word)
         {
@@ -172,6 +194,11 @@ namespace Diagnosis.ViewModels.Search
             public bool? Bool { get; private set; }
 
             public IEnumerable<Measure> Measures { get; private set; }
+        }
+
+        public override ReadOnlyCollection<Patient> Patients
+        {
+            get { return _pats; }
         }
     }
 }

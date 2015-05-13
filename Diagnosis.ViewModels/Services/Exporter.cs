@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Framework;
+using Diagnosis.ViewModels.Screens;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -9,7 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels
 {
     internal class Exporter
     {
@@ -18,7 +19,7 @@ namespace Diagnosis.ViewModels.Search
         private static double hrIdColWidth = 13;
         private static string uomHeader = "ед. изм.";
 
-        public void ExportToXlsx(Statistic stats)
+        public void ExportToXlsx(HrsStatistic stats)
         {
             var result = new FileDialogService().ShowSaveFileDialog(null,
                   FileType.Xlsx.ToEnumerable(),
@@ -33,7 +34,7 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
-        private static ExcelPackage MakeExcelPackage(Statistic stats)
+        private static ExcelPackage MakeExcelPackage(HrsStatistic stats)
         {
             ExcelPackage package = new ExcelPackage();
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Матрица");

@@ -76,10 +76,10 @@ namespace Diagnosis.ViewModels.Tests
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Appointment;
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(1, s.Result.Statistic.Patients.Count);
-            Assert.AreEqual(a[1], s.Result.Patients[0].Children[0].Children[0].Holder);
+            Assert.AreEqual(1, (s.Result.Statistic as HrsStatistic).Patients.Count);
+            Assert.AreEqual(a[1], (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[0].Holder);
 
-            Assert.AreEqual(2, s.Result.Statistic.HealthRecords.Count);
+            Assert.AreEqual(2, (s.Result.Statistic as HrsStatistic).HealthRecords.Count);
             Assert.IsTrue(s.Contains(hr[1]));
             Assert.IsTrue(s.Contains(hr[2]));
         }
@@ -90,8 +90,8 @@ namespace Diagnosis.ViewModels.Tests
             (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[5]);
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(3, s.Result.Statistic.Words.Count); // 10 - все слова пациента
-            Assert.AreEqual(0, s.Result.Statistic.WordsWithMeasure.Count);
+            Assert.AreEqual(3, (s.Result.Statistic as HrsStatistic).Words.Count); // 10 - все слова пациента
+            Assert.AreEqual(0, (s.Result.Statistic as HrsStatistic).WordsWithMeasure.Count);
         }
 
         [TestMethod]
@@ -100,8 +100,8 @@ namespace Diagnosis.ViewModels.Tests
             (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[1]);
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(1, s.Result.Statistic.WordsWithMeasure.Count);
-            Assert.AreEqual(w[3], s.Result.Statistic.WordsWithMeasure[0]);
+            Assert.AreEqual(1, (s.Result.Statistic as HrsStatistic).WordsWithMeasure.Count);
+            Assert.AreEqual(w[3], (s.Result.Statistic as HrsStatistic).WordsWithMeasure[0]);
         }
 
         [TestMethod]
@@ -113,10 +113,10 @@ namespace Diagnosis.ViewModels.Tests
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count); // найденные — только слова в области
-            Assert.AreEqual(1, s.Result.Patients[0].Children[0].FoundHealthRecords.Count); // 7-14
-            Assert.AreEqual(1, s.Result.Patients[0].Children[0].Children[0].FoundHealthRecords.Count);
-            Assert.AreEqual(1, s.Result.Patients[0].Children[0].Children[1].FoundHealthRecords.Count);
+            Assert.AreEqual(0, (s.Result.Patients[0] as HolderResultItemViewModel).FoundHealthRecords.Count); // найденные — только слова в области
+            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
+            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[0].FoundHealthRecords.Count);
+            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[1].FoundHealthRecords.Count);
         }
 
         [TestMethod]
@@ -128,9 +128,9 @@ namespace Diagnosis.ViewModels.Tests
             s.RootQueryBlock.QueryScope = HealthRecordQueryAndScope.Course;
             s.SearchCommand.Execute(null);
 
-            Assert.AreEqual(0, s.Result.Patients[0].FoundHealthRecords.Count);
-            Assert.AreEqual(1, s.Result.Patients[0].Children[0].FoundHealthRecords.Count); // 7-14
-            Assert.AreEqual(2, s.Result.Patients[0].Children[0].Children[0].HealthRecords.Count); // 14
+            Assert.AreEqual(0, (s.Result.Patients[0] as HolderResultItemViewModel).FoundHealthRecords.Count);
+            Assert.AreEqual(1, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
+            Assert.AreEqual(2, (s.Result.Patients[0] as HolderResultItemViewModel).Children[0].Children[0].HealthRecords.Count); // 14
         }
         [TestMethod]
         public void ReceiverIsNullBeforeSend()
@@ -246,12 +246,12 @@ namespace Diagnosis.ViewModels.Tests
 
         public static bool Contains(this SearchViewModel s, params HealthRecord[] hrs)
         {
-            return hrs.All(x => s.Result.Statistic.HealthRecords.Contains(x));
+            return hrs.All(x => (s.Result.Statistic as HrsStatistic).HealthRecords.Contains(x));
         }
 
         public static bool NotContains(this SearchViewModel s, params HealthRecord[] hrs)
         {
-            return hrs.All(x => !s.Result.Statistic.HealthRecords.Contains(x));
+            return hrs.All(x => !(s.Result.Statistic as HrsStatistic).HealthRecords.Contains(x));
         }
     }
 }

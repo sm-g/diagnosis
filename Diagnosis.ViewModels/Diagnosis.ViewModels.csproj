@@ -230,7 +230,7 @@
     <Compile Include="DataTransfer\HrData.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="Formatters\DateOffsetFormatter.cs" />
+    <Compile Include="Services\DateOffsetFormatter.cs" />
     <Compile Include="Framework\Interfaces.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
@@ -261,8 +261,11 @@
     <Compile Include="Screens\HrCategoryViewModel.cs" />
     <Compile Include="Screens\Interfaces.cs" />
     <Compile Include="Screens\Criteria\CriterionEditorViewModel.cs" />
+    <Compile Include="Screens\Search\HrsSearchResultViewModel.cs" />
     <Compile Include="Screens\Search\QueryBlockViewModel.cs" />
     <Compile Include="Screens\Search\QueryEditorViewModel.cs" />
+    <Compile Include="Screens\Search\CritResultItemViewModel.cs" />
+    <Compile Include="Screens\Search\CritSearchResultViewModel.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />
     <Compile Include="Screens\Shell\ServerMainWindowViewModel.cs" />
     <Compile Include="Screens\Uoms\UomEditorViewModel.cs" />
@@ -301,13 +304,13 @@
     <Compile Include="Search\OrSearcher.cs" />
     <Compile Include="Search\Searcher.cs" />
     <Compile Include="Search\AndSearcher.cs" />
-    <Compile Include="Search\Exporter.cs" />
+    <Compile Include="Services\Exporter.cs" />
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
-    <Compile Include="Screens\Search\HolderSearchResultViewModel.cs" />
+    <Compile Include="Screens\Search\HrsResultItemViewModel.cs" />
     <Compile Include="Screens\Search\OptionsLoaderViewModel.cs" />
     <Compile Include="Screens\Search\SearchHistoryViewModel.cs" />
-    <Compile Include="Screens\Search\SearchResultViewModel.cs" />
-    <Compile Include="Search\Statistic.cs" />
+    <Compile Include="Screens\Search\AbstractSearchResultViewModel.cs" />
+    <Compile Include="Screens\Search\Statistic.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Editors\AppointmentViewModel.cs" />
     <Compile Include="Autocomplete\DiagnosisViewModel.cs" />
@@ -370,7 +373,6 @@
     </None>
     <None Include="Screens\Card\CardCodeMap.dgml" />
     <None Include="Screens\HealthRecords\CodeMap1.dgml" />
-    <None Include="Screens\Search\SearchCodeMap.dgml" />
     <None Include="Search\SearchClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />
