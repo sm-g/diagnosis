@@ -2,11 +2,11 @@
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace Diagnosis.Data.Mappings
+namespace Diagnosis.Data.Mappings.Client
 {
-    public class WordMap : ClassMapping<Word>
+    public class WordMapClient : ClassMapping<Word>
     {
-        public WordMap()
+        public WordMapClient()
         {
             Id(x => x.Id, m =>
             {
@@ -78,6 +78,47 @@ namespace Diagnosis.Data.Mappings
             {
                 r.OneToMany();
             });
+        }
+    }
+}
+namespace Diagnosis.Data.Mappings.Server
+{
+    public class WordMapServer : ClassMapping<Word>
+    {
+        public WordMapServer()
+        {
+            Id(x => x.Id, m =>
+            {
+                m.Generator(Generators.GuidComb);
+            });
+
+            Property(x => x.Title, m =>
+            {
+                m.NotNullable(true);
+                m.Length(100);
+                m.UniqueKey(Names.Unique.WordTitle);
+            });
+
+            ManyToOne(x => x.Parent, m =>
+            {
+                m.Column(Names.Col.WordParent);
+            });
+
+            Set(x => x.Children, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Col.WordParent);
+                });
+                s.Inverse(true);
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+
+
         }
     }
 }

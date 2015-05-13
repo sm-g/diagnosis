@@ -70,7 +70,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         private bool _focused;
         private string _query;
         private State _state;
-        private bool _isDeleteOnly;
         private bool _isLast;
         private bool _listItemFocused;
         private bool _selected;

@@ -670,8 +670,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void ReplaceTagsWith(IEnumerable<object> items)
         {
-            Contract.Requires(items != null);
-
             // оставляем последний тег
             while (Tags.Count != 1)
             {
@@ -690,7 +688,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public IEnumerable<ConfWithHio> GetCHIOs()
         {
-            Contract.Requires(Tags.All(t => t.State != State.Typing));
+            Contract.Assume(Tags.All(t => t.State != State.Typing));
 
             Tags.Where(x => x.BlankType == BlankType.None && x.State != State.Init)
                  .ForAll((x) => logger.WarnFormat("{0} without entity blank, skip", x));
@@ -924,8 +922,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void CompleteOnLostFocus(TagViewModel tag)
         {
-            Contract.Requires(tag != null);
-
             // при завершении пустого тега он удаляется, теряется фокус и автокомплит пытается завершить тег еще раз
             if (!Tags.Contains(tag))
                 return;

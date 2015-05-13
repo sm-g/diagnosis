@@ -1,17 +1,12 @@
 ﻿using Diagnosis.Common;
-using Microsoft.Synchronization;
 using Microsoft.Synchronization.Data;
-using Microsoft.Synchronization.Data.SqlServer;
-using Microsoft.Synchronization.Data.SqlServerCe;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
-using System.Data.SqlServerCe;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Sync
@@ -20,9 +15,7 @@ namespace Diagnosis.Data.Sync
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Syncer));
 
-        private static Dictionary<string, DbSyncTableDescription> map = new Dictionary<string, DbSyncTableDescription>();
         private static Stopwatch sw = new Stopwatch();
-        private static string prefix = Scopes.syncPrefix;
 
         private static bool inSync;
         private static object lockInSync = new object();
@@ -45,7 +38,6 @@ namespace Diagnosis.Data.Sync
             this.clientProviderName = Constants.SqlCeProvider;
         }
 
-        public static event EventHandler<StringEventArgs> MessagePosted;
 
         public static event EventHandler<TimeSpanEventArgs> SyncEnded;
 
@@ -102,9 +94,6 @@ namespace Diagnosis.Data.Sync
         /// Specify conncetions in correct order in ctor.
         /// We can reverse both <paramref name="from"/> and connections in ctor to get same result.
         /// </summary>
-        /// <param name="from"></param>
-        /// <param name="scopes"></param>
-        /// <returns></returns>
         public async Task SendFrom(Side from, IEnumerable<Scope> scopes = null)
         {
             if (InSync)
@@ -129,33 +118,15 @@ namespace Diagnosis.Data.Sync
             OnSyncEnded(sw.Elapsed);
         }
 
-        internal void SendFromCore(Side from, IEnumerable<Scope> scopes)
+        /// <summary>
+        /// Sync specified scope.
+        /// Specify conncetions in correct order in ctor.
+        /// We can reverse both <paramref name="from"/> and connections in ctor to get same result.
+        /// </summary>
+        public async Task SendFrom(Side from, Scope scope)
         {
-            AddedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-            DeletedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
-
-            Poster.PostMessage("+++\nGoing to sync scopes: '{0}' from {1}\n", string.Join("', '", scopes), from);
-            using (var serverConn = CreateConnection(Side.Server))
-            using (var clientConn = CreateConnection(Side.Client))
-            {
-                if (!serverConn.IsAvailable())
-                {
-                    CanNotConnect(serverConn);
-                    return;
-                }
-                if (!clientConn.IsAvailable())
-                {
-                    CanNotConnect(clientConn);
-                    return;
-                }
-
-                foreach (var scope in scopes.OrderScopes())
-                {
-                    Sync(from, scope, serverConn, clientConn);
-                }
-            }
+            await SendFrom(from, scope.ToEnumerable());
         }
-
         public async Task Deprovision(Side side, IEnumerable<Scope> scopesToDeprovision = null)
         {
             if (side == Side.Client)
@@ -184,7 +155,7 @@ namespace Diagnosis.Data.Sync
                     {
                         foreach (Scope scope in scopes)
                         {
-                            Deprovision(conn, scope);
+                            SyncUtil.Deprovision(conn, scope);
                         }
                     }
                     else
@@ -199,9 +170,13 @@ namespace Diagnosis.Data.Sync
 
             InSync = false;
         }
-
+        /// <summary>
+        /// Депровизим области, в которых есть таблицы миграции.
+        /// </summary>
         public static void BeforeMigrate(string connstr, string provider, params string[] tables)
         {
+            Contract.Requires(!InSync);
+
             Poster.PostMessage("BeforeMigrate tables: '{0}' in '{1}'\n", string.Join("', '", tables));
 
             using (var con = CreateConnection(connstr, provider))
@@ -212,22 +187,12 @@ namespace Diagnosis.Data.Sync
                     return;
                 }
 
-                HashSet<Scope> scopes = new HashSet<Scope>();
-                foreach (Scope scope in Scopes.GetOrderedScopes())
-                {
-                    foreach (var table in tables)
-                    {
-                        if (scope.ToTableNames().Contains(table))
-                        {
-                            scopes.Add(scope);
-                            break;
-                        }
-                    }
-                }
+                var scopes = tables.SelectMany(t => t.GetScopes()).Distinct().ToList();
+
                 Poster.PostMessage("Going to deprovision scopes: '{0}' in '{1}'\n", string.Join("', '", scopes, connstr));
                 foreach (var scope in scopes)
                 {
-                    Deprovision(con, scope);
+                    SyncUtil.Deprovision(con, scope);
                 }
             }
         }
@@ -257,6 +222,45 @@ namespace Diagnosis.Data.Sync
             }
         }
 
+        private void SendFromCore(Side from, IEnumerable<Scope> scopes)
+        {
+            AddedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+            DeletedOnServerIdsPerType = new Dictionary<Type, IEnumerable<object>>();
+
+            Poster.PostMessage("+++\nGoing to sync scopes: '{0}' from {1}\n", string.Join("', '", scopes), from);
+            using (var serverConn = CreateConnection(Side.Server))
+            using (var clientConn = CreateConnection(Side.Client))
+            {
+                if (!serverConn.IsAvailable())
+                {
+                    CanNotConnect(serverConn);
+                    return;
+                }
+                if (!clientConn.IsAvailable())
+                {
+                    CanNotConnect(clientConn);
+                    return;
+                }
+
+                var related = new List<Scope>();
+                foreach (var scope in scopes.OrderScopes())
+                {
+                    Sync(from, scope, serverConn, clientConn);
+                    related.AddRange(scope.GetRelatedScopes());
+                }
+
+                // провизим все области в которых есть таблицы
+                var extra = related.Distinct().Except(scopes).ToList();
+                Poster.PostMessage("+\nRelated scopes to provision: ", string.Join("', '", extra));
+                foreach (var scope in extra)
+                {
+                    SyncUtil.Provision(clientConn, scope, serverConn);
+                    SyncUtil.Provision(serverConn, scope, null);
+                }
+
+            }
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -267,18 +271,18 @@ namespace Diagnosis.Data.Sync
         {
             Poster.PostMessage("Begin sync scope '{0}'", scope);
 
-            Provision(serverConn, scope, null);
-            Provision(clientConn, scope, serverConn);
+            SyncUtil.Provision(serverConn, scope, null);
+            SyncUtil.Provision(clientConn, scope, serverConn);
 
             var scopeName = scope.ToScopeString();
-            var clientProvider = CreateProvider(clientConn, scopeName);
-            var serverProvider = CreateProvider(serverConn, scopeName);
+            var clientProvider = SyncUtil.CreateProvider(clientConn, scopeName);
+            var serverProvider = SyncUtil.CreateProvider(serverConn, scopeName);
 
             var syncOrchestrator = CreateOrch(from, clientProvider, serverProvider);
 
             try
             {
-                Poster.PostMessage("Synchronize...");
+                Poster.PostMessage("+\nSynchronize...");
 
                 var syncStats = syncOrchestrator.Synchronize();
 
@@ -352,178 +356,8 @@ namespace Diagnosis.Data.Sync
             return syncOrchestrator;
         }
 
-        private static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)
-        {
-            RelationalSyncProvider serverProvider;
-            if (conn is SqlCeConnection)
-                serverProvider = new SqlCeSyncProvider(scopeName, conn as SqlCeConnection, prefix);
-            else if (conn is SqlConnection)
-                serverProvider = new SqlSyncProvider(scopeName, conn as SqlConnection, prefix);
-            else throw new ArgumentOutOfRangeException();
 
-            return serverProvider;
-        }
 
-        private static void Provision(DbConnection con, Scope scope, DbConnection conToGetScopeDescr)
-        {
-            try
-            {
-                var applied = false;
-                if (con is SqlCeConnection)
-                {
-                    applied = ProvisionSqlCe(con as SqlCeConnection, scope, conToGetScopeDescr);
-                }
-                else if (con is SqlConnection)
-                {
-                    applied = ProvisionSqlServer(con as SqlConnection, scope);
-                }
-
-                if (applied)
-                    Poster.PostMessage("Provisioned scope '{0}' in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
-                else
-                    Poster.PostMessage("Scope '{0}' exists in '{1}'\n", scope.ToScopeString(), con.ConnectionString);
-            }
-            catch (Exception ex)
-            {
-                Poster.PostMessage(ex);
-            }
-        }
-
-        private static bool ProvisionSqlCe(SqlCeConnection con, Scope scope, DbConnection conToGetScopeDescr)
-        {
-            var sqlceProv = new SqlCeSyncScopeProvisioning(con);
-            sqlceProv.ObjectPrefix = prefix;
-
-            if (!sqlceProv.ScopeExists(scope.ToScopeString()))
-            {
-                var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
-                var failedTables = AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
-
-                if (failedTables.Count > 0 && conToGetScopeDescr != null)
-                {
-                    Poster.PostMessage("GetScopeDescription for scope '{0}' from '{1}'", scope.ToScopeString(), conToGetScopeDescr.ConnectionString);
-                    //use scope description from server to intitialize the client
-                    scopeDescr = GetScopeDescription(scope, conToGetScopeDescr);
-                }
-
-                sqlceProv.PopulateFromScopeDescription(scopeDescr);
-
-                sqlceProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
-                sqlceProv.Apply();
-                return true;
-            }
-            return false;
-        }
-
-        private static bool ProvisionSqlServer(SqlConnection con, Scope scope)
-        {
-            var sqlProv = new SqlSyncScopeProvisioning(con);
-            sqlProv.ObjectSchema = prefix;
-
-            if (!sqlProv.ScopeExists(scope.ToScopeString()))
-            {
-                var scopeDescr = new DbSyncScopeDescription(scope.ToScopeString());
-                AddTablesToScopeDescr(scope.ToTableNames(), scopeDescr, con);
-
-                sqlProv.PopulateFromScopeDescription(scopeDescr);
-
-                sqlProv.SetCreateTableDefault(DbSyncCreationOption.CreateOrUseExisting);
-                sqlProv.Apply();
-                return true;
-            }
-            return false;
-        }
-
-        private static DbSyncScopeDescription GetScopeDescription(Scope scope, DbConnection conn)
-        {
-            DbSyncScopeDescription scopeDesc = null;
-            if (conn is SqlCeConnection)
-                scopeDesc = SqlCeSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlCeConnection)conn);
-            else if (conn is SqlConnection)
-                scopeDesc = SqlSyncDescriptionBuilder.GetDescriptionForScope(scope.ToScopeString(), prefix, (SqlConnection)conn);
-
-            return scopeDesc;
-        }
-
-        private static void Deprovision(DbConnection con, Scope scope)
-        {
-            try
-            {
-                if (con is SqlCeConnection)
-                    DeprovisionSqlCe(con as SqlCeConnection, scope.ToScopeString());
-                else if (con is SqlConnection)
-                    DeprovisionSqlServer(con as SqlConnection, scope.ToScopeString());
-
-                Poster.PostMessage("Deprovisioned '{0}'\n", scope.ToScopeString());
-            }
-            catch (Exception ex)
-            {
-                Poster.PostMessage(ex);
-            }
-        }
-
-        private static void DeprovisionSqlCe(SqlCeConnection con, string scopeName)
-        {
-            var scopeDeprovisioning = new SqlCeSyncScopeDeprovisioning(con);
-            scopeDeprovisioning.ObjectPrefix = prefix;
-            scopeDeprovisioning.DeprovisionScope(scopeName);
-        }
-
-        private static void DeprovisionSqlServer(SqlConnection con, string scopeName)
-        {
-            var scopeDeprovisioning = new SqlSyncScopeDeprovisioning(con);
-            scopeDeprovisioning.ObjectSchema = prefix;
-            scopeDeprovisioning.DeprovisionScope(scopeName);
-        }
-
-        /// <summary>
-        /// Добавляет таблицы в область синхронизации.
-        /// </summary>
-        /// <param name="tableNames"></param>
-        /// <param name="scope"></param>
-        /// <param name="connection"></param>
-        /// <returns>Таблицы, которые не были добавлены.</returns>
-        private static IList<string> AddTablesToScopeDescr(string[] tableNames, DbSyncScopeDescription scope, DbConnection connection)
-        {
-            var failed = new List<string>();
-            Poster.PostMessage("Adding tables to scope '{0}' in '{1}'...", scope.ScopeName, connection.ConnectionString);
-
-            foreach (var name in tableNames)
-            {
-                try
-                {
-                    DbSyncTableDescription desc;
-
-                    // не создаем описание для таблицы повторно, после провизионирования другой области с этой таблицей
-                    var nameWithSchema = connection is SqlCeConnection ? name : name.GetSchemaForTable() + '.' + name;
-                    var nameWithConn = connection.ConnectionString + nameWithSchema;
-
-                    if (!map.TryGetValue(nameWithConn, out desc))
-                    {
-                        if (connection is SqlCeConnection)
-                            desc = SqlCeSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlCeConnection);
-                        else if (connection is SqlConnection)
-                            desc = SqlSyncDescriptionBuilder.GetDescriptionForTable(nameWithSchema, connection as SqlConnection);
-
-                        map[nameWithConn] = desc;
-                    }
-                    else
-                    {
-                        Poster.PostMessage("Reuse created Description For Table '{0}'", name);
-                    }
-
-                    desc.GlobalName = name;
-                    scope.Tables.Add(desc);
-                    Poster.PostMessage("Table '{0}' added, columns: {1}", name, string.Join(", ", desc.Columns.Select(x => x.UnquotedName)));
-                }
-                catch (Exception ex)
-                {
-                    Poster.PostMessage(ex);
-                    failed.Add(name);
-                }
-            }
-            return failed;
-        }
 
         private static void CanNotConnect(DbConnection con)
         {
@@ -539,215 +373,8 @@ namespace Diagnosis.Data.Sync
             }
         }
 
-        private static class Poster
-        {
-            public static void PostMessage(string str)
-            {
-                logger.DebugFormat(str);
-                Send(str);
-            }
-
-            public static void PostMessage(string str, params object[] p)
-            {
-                logger.DebugFormat(string.Format(str, p));
-                Send(string.Format(str, p));
-            }
-
-            public static void PostMessage(Exception ex)
-            {
-                logger.WarnFormat(ex.ToString());
-                Send(ex.Message);
-            }
-
-            private static void Send(string str)
-            {
-                var h = MessagePosted;
-                if (h != null)
-                {
-                    h(typeof(Syncer), new StringEventArgs(str));
-                }
-            }
-        }
-
-        public class DownloadSyncOrchestrator : SyncOrchestrator
-        {
-            public DownloadSyncOrchestrator(RelationalSyncProvider from, RelationalSyncProvider to)
-            {
-                ConflictsCounter = new Dictionary<DbConflictType, int>();
-                AddedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
-                DeletedIdsPerTable = new Dictionary<string, IEnumerable<object>>();
-
-                this.RemoteProvider = from;
-                this.LocalProvider = to;
-                this.Direction = SyncDirectionOrder.Download;
-
-                from.ChangesSelected += from_ChangesSelected;
-                to.ApplyChangeFailed += to_ApplyChangeFailed;
-                to.ChangesApplied += to_ChangesApplied;
-                to.DbConnectionFailure += (s, e) =>
-                {
-                    Poster.PostMessage("DbConnectionFailure: {0}", e.FailureException.Message);
-                };
-
-                TablesTrackAdding = Enumerable.Empty<string>();
-                TablesTrackDeleting = Enumerable.Empty<string>();
-                TableToIdsForSync = new Dictionary<string, IEnumerable<object>>();
-                TablesToIgnoreAddingFilter = new Dictionary<string, Func<DataRow, bool>>();
-                TableRowsShaper = new Dictionary<string, Action<DataRow>>();
-            }
-
-            // settings
-            public IEnumerable<string> TablesTrackAdding { get; set; }
-
-            public IEnumerable<string> TablesTrackDeleting { get; set; }
-
-            public Dictionary<string, IEnumerable<object>> TableToIdsForSync { get; set; }
-
-            public Dictionary<string, Func<DataRow, bool>> TablesToIgnoreAddingFilter { get; set; }
-
-            public Dictionary<string, Action<DataRow>> TableRowsShaper { get; set; }
-
-            // results
-            public Dictionary<DbConflictType, int> ConflictsCounter { get; private set; }
-
-            public Dictionary<string, IEnumerable<object>> AddedIdsPerTable { get; private set; }
-
-            public Dictionary<string, IEnumerable<object>> DeletedIdsPerTable { get; private set; }
-
-            private void from_ChangesSelected(object sender, DbChangesSelectedEventArgs e)
-            {
-                foreach (var table in TablesToIgnoreAddingFilter.Keys)
-                {
-                    DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
-                    {
-                        if (row.RowState == DataRowState.Added)
-                        {
-                            if (TablesToIgnoreAddingFilter[table](row))
-                                dataTable.Rows.Remove(row);
-                        }
-                    });
-                }
-                foreach (var table in TableToIdsForSync.Keys)
-                {
-                    DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
-                    {
-                        if (!TableToIdsForSync[table].Contains(row["Id"]))
-                        {
-                            dataTable.Rows.Remove(row);
-                        }
-                    });
-                }
-
-                foreach (var table in TableRowsShaper.Keys)
-                {
-                    DoPerTableRow(e.Context.DataSet.Tables, table, (dataTable, row) =>
-                    {
-                        TableRowsShaper[table](row);
-                    });
-                }
-            }
-
-            private void to_ChangesApplied(object sender, DbChangesAppliedEventArgs e)
-            {
-                // запоминаем добавленные строки для желаемых таблиц
-
-                foreach (var table in TablesTrackAdding)
-                {
-                    if (e.Context.DataSet.Tables.Contains(table))
-                    {
-                        var dataTable = e.Context.DataSet.Tables[table];
-
-                        AddedIdsPerTable.Add(
-                               dataTable.TableName,
-                               dataTable.Rows
-                                   .Cast<DataRow>()
-                                   .Where(x => x.RowState == DataRowState.Added)
-                                   .Select(x => x["Id"])
-                                   .ToList());
-                    }
-                }
-
-                // запоминаем удаляемые строки для желаемых таблиц
-
-                foreach (var table in TablesTrackDeleting)
-                {
-                    if (e.Context.DataSet.Tables.Contains(table))
-                    {
-                        var dataTable = e.Context.DataSet.Tables[table];
-
-                        DeletedIdsPerTable.Add(
-                            dataTable.TableName,
-                            dataTable.Rows
-                                .Cast<DataRow>()
-                                .Where(x => x.RowState == DataRowState.Deleted)
-                                .Select(x => x["Id"])
-                                .ToList());
-                    }
-                }
-            }
-
-            private void to_ApplyChangeFailed(object sender, DbApplyChangeFailedEventArgs e)
-            {
-                var toProvider = sender as RelationalSyncProvider;
-
-#if DEBUG
-                if (toProvider.ScopeName == Scope.Icd.ToScopeString())
-                    return;
-#endif
-                if (e.Conflict.Type == DbConflictType.ErrorsOccurred)
-                {
-                    Poster.PostMessage("ApplyChangeFailed. Error: {0}", e.Error);
-                }
-                else if (SyncTracer.IsVerboseEnabled() == false)
-                {
-                    SyncTracer.Warning(1, "CONFLICT DETECTED FOR CLIENT {0}", toProvider.Connection);
-                    SyncTracer.Warning(2, "** Local change **");
-                    SyncTracer.Warning(2, TableToStr(e.Conflict.LocalChange));
-                    SyncTracer.Warning(2, "** Remote change **");
-                    SyncTracer.Warning(2, TableToStr(e.Conflict.RemoteChange));
-                }
-
-                if (!ConflictsCounter.Keys.Contains(e.Conflict.Type))
-                    ConflictsCounter[e.Conflict.Type] = 0;
-
-                ConflictsCounter[e.Conflict.Type]++;
-
-                if (e.Conflict.Type != DbConflictType.ErrorsOccurred)
-                    e.Action = ApplyAction.RetryWithForceWrite;
-            }
-
-            private string TableToStr(DataTable table)
-            {
-                if (table == null)
-                    return string.Empty;
-                int rowCount = table.Rows.Count;
-                int colCount = table.Columns.Count;
-                var tableAsStr = new StringBuilder();
-
-                for (int r = 0; r < rowCount; r++)
-                {
-                    for (int i = 0; i < colCount; i++)
-                    {
-                        tableAsStr.Append(table.Rows[r][i] + " | ");
-                    }
-                    tableAsStr.AppendLine();
-                }
-                return tableAsStr.ToString();
-            }
-
-            private void DoPerTableRow(DataTableCollection tables, string table, Action<DataTable, DataRow> act)
-            {
-                if (tables.Contains(table))
-                {
-                    var dataTable = tables[table];
-                    var rows = dataTable.Rows.Cast<DataRow>().ToList();
-
-                    foreach (var row in rows)
-                    {
-                        act(dataTable, row);
-                    }
-                }
-            }
-        }
     }
+
+
+
 }

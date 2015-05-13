@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentValidation;
 
 namespace Diagnosis.Models.Tests
 {
@@ -186,9 +187,8 @@ namespace Diagnosis.Models.Tests
             var a2 = new Appointment();
             c.AddAppointment(a2);
 
-            a2.DateAndTime = dt[5].AddHours(1);
-            Assert.IsTrue(c.IsValid());
-            Assert.IsTrue(a2.IsValid());
+            a2.DateAndTime = dt[5].AddHours(1);            
+            Assert.IsTrue(!a2.SelfValidate().Errors.Any(x => x.PropertyName.Contains("Date")));
         }
     }
 }

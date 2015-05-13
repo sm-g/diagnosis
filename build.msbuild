@@ -8,7 +8,7 @@
   <PropertyGroup>
     <Major>1</Major>
     <Minor>7</Minor>
-    <Patch>0</Patch>
+    <Patch>1</Patch>
     <PreReleaseString />
 
     <VersionInfoString Condition="$(PreReleaseString) != ''">$(Major).$(Minor).$(Patch)-$(PreReleaseString)</VersionInfoString>

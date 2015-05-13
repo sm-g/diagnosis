@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Diagnosis.Data.Mappings
 {
-    internal class Helper
+    internal class MappingHelper
     {
         public static bool MappingForSqlite { get; set; }
         public static string SqlDateTimeNow

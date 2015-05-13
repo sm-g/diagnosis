@@ -157,7 +157,7 @@ namespace Diagnosis.Client.App
             {
             }
 
-            NHibernateHelper.Default.Init(conInfo);
+            NHibernateHelper.Default.Init(conInfo, Side.Client);
 
             if (NHibernateHelper.Default.InMemory)
             {

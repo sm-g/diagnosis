@@ -29,5 +29,13 @@ namespace Diagnosis.Common.Types
         {
             return !c1.Equals(c2);
         }
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

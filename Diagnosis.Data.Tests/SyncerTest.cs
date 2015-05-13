@@ -27,13 +27,13 @@ namespace Diagnosis.Data.Tests
             InMemoryHelper.FillData(sCfg, sSession, true);
             s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
 
-            Syncer.MessagePosted += Syncer_MessagePosted;
+            Poster.MessagePosted += Syncer_MessagePosted;
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            Syncer.MessagePosted -= Syncer_MessagePosted;
+            Poster.MessagePosted -= Syncer_MessagePosted;
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace Diagnosis.Data.Tests
             InMemoryHelper.FillData(clCfg, clSession, false);
             var clPatCount = clSession.Query<Patient>().Count();
 
-            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder.ToEnumerable());
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder);
 
             // новый пациент на клиенте
             using (var tr = clSession.BeginTransaction())
@@ -107,7 +107,7 @@ namespace Diagnosis.Data.Tests
                 tr.Commit();
             }
             s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
-            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder.ToEnumerable());
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder);
 
             Assert.AreEqual(clPatCount + 1, sSession.Query<Patient>().Count());
         }
@@ -122,7 +122,7 @@ namespace Diagnosis.Data.Tests
             // не синхронизируем новые словари
             var installedVocs = sSession.Query<Vocabulary>();
             await s.WithInstalledVocs(installedVocs)
-                .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+                .SendFrom(Side.Server, Scope.Voc);
 
             new VocLoader(clSession).AfterSyncVocs(s.DeletedOnServerIdsPerType);
 
@@ -136,7 +136,7 @@ namespace Diagnosis.Data.Tests
         public async Task SendVocScopeFromServer()
         {
             // без указания установленных словарей добавлены все сущности области словарей
-            await s.SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+            await s.SendFrom(Side.Server, Scope.Voc);
             new VocLoader(clSession).AfterSyncVocs(s.DeletedOnServerIdsPerType);
 
             Assert.AreEqual(sSession.Query<Vocabulary>().Count(), clSession.Query<Vocabulary>().Count());
@@ -150,7 +150,7 @@ namespace Diagnosis.Data.Tests
             // load voc from server
             var voc = sSession.Get<Vocabulary>(IntToGuid<Vocabulary>(2));
             await s.OnlySelectedVocs(sSession, voc.ToEnumerable())
-                .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+                .SendFrom(Side.Server, Scope.Voc);
 
             // добавлен словарь, шаблоны
             Assert.IsTrue(clSession.Query<Vocabulary>().Any(x => x.Id == voc.Id));
@@ -185,7 +185,7 @@ namespace Diagnosis.Data.Tests
 
             // load voc from server
             await s.OnlySelectedVocs(sSession, voc.ToEnumerable())
-                .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+                .SendFrom(Side.Server, Scope.Voc);
 
             // после загрузки проверяем справочные сущности на совпадение
             var checker = new AfterSyncChecker(clSession);
@@ -213,14 +213,14 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public async Task LoadVocAddNewWtSendVocScopeFromServer()
+        public async Task LoadVoc_AddNewWt_SendVocScopeFromServer()
         {
             var l = new VocLoader(clSession);
 
             // load voc from server
             var voc = sSession.Get<Vocabulary>(IntToGuid<Vocabulary>(1));
             await s.OnlySelectedVocs(sSession, voc.ToEnumerable())
-                .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+                .SendFrom(Side.Server, Scope.Voc);
 
             // добавляем шаблон в словарь на сервере
             voc.AddTemplates(new[] { "qwe" });
@@ -232,7 +232,7 @@ namespace Diagnosis.Data.Tests
 
             s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
             await s.WithInstalledVocs(installedVocs)
-                .SendFrom(Side.Server, Scope.Voc.ToEnumerable());
+                .SendFrom(Side.Server, Scope.Voc);
             new VocLoader(clSession).AfterSyncVocs(s.DeletedOnServerIdsPerType);
 
             Assert.AreEqual(cWtCount + 1, clSession.Query<WordTemplate>().Count());
@@ -254,33 +254,60 @@ namespace Diagnosis.Data.Tests
             await syncer.WithoutDoctors().SendFrom(Side.Server, scopes);
 
             // пробуем достать словари
-            var nhib = NHibernateHelper.FromConnectionInfo(sdfFileCon);
+            var nhib = NHibernateHelper.FromConnectionInfo(sdfFileCon, Side.Server);
 
             int exVocsCount;
             using (var s = nhib.OpenSession())
             using (var tr = s.BeginTransaction())
             {
                 exVocsCount = s.Query<Vocabulary>().Count();
+                // значит создана Doctors
+                var docsCount = s.Query<Doctor>().Count();
             }
-
-            // значит создана Doctors
 
             var serverVocsCount = sSession.Query<Vocabulary>().Count(); // даже пользовательские, их не должно быть на сервере
             Assert.AreEqual(serverVocsCount, exVocsCount);
         }
 
         [TestMethod]
-        public async Task SendFromClientNoCustomVocsOnServer()
+        public async Task SendFromClient_NoCustomVocsOnServer()
         {
             InMemoryHelper.FillData(clCfg, clSession, false);
 
             await s.WithoutCustomVocsInDoc().SendFrom(Side.Client);
 
-            var sCustoms = sSession.Query<Doctor>().Select(x => x.CustomVocabulary).ToList(); // создается при обращении
+            var sCustoms = sSession.Query<Vocabulary>().ToList();
             var clVocs = clSession.Query<Vocabulary>().ToList();
             var common = sCustoms.Intersect(clVocs);
 
-            Assert.AreEqual(0, common.Count());
+            Assert.AreEqual(0, common.Where(x => x.IsCustom).Count());
+        }
+
+        [TestMethod]
+        public async Task LoadVocs_NewSession_SendFromClient_DoctorOk()
+        {
+            // sync voc
+            var voc = sSession.Get<Vocabulary>(IntToGuid<Vocabulary>(2));
+            await s.OnlySelectedVocs(sSession, voc.ToEnumerable())
+                .SendFrom(Side.Server, Scope.Voc);
+
+            // close app
+            SyncUtil.Clear();
+
+            // sync user
+            bool errorWas = false;
+            EventHandler<StringEventArgs> h = (s1, e) =>
+            {
+                errorWas = e.str.Contains("Error");
+            };
+            Poster.MessagePosted += h;
+
+            await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.User);
+            Poster.MessagePosted -= h;
+
+            // doctor table already provisioned in user scope
+            Assert.IsTrue(!errorWas);
+
         }
 
         #endregion Vocs

@@ -192,11 +192,12 @@ namespace Diagnosis.Data
     }
     public static class SearchOptionsExtensions
     {
+        [Pure]
         public static int GetAllChildrenCount(this SearchOptions o)
         {
             return o.Children.Aggregate(o.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
-
+        [Pure]
         public static int GetAllChildrenCount(this SearchOptionsDTO dto)
         {
             return dto.Children.Aggregate(dto.Children.Count, (x, d) => x + GetAllChildrenCount(d));

@@ -24,7 +24,7 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Column(c =>
                 {
-                    c.Default(Helper.SqlDateTimeNow);
+                    c.Default(MappingHelper.SqlDateTimeNow);
                 });
             });
             Property(x => x.UpdatedAt, m =>
@@ -32,7 +32,7 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Column(c =>
                 {
-                    c.Default(Helper.SqlDateTimeNow);
+                    c.Default(MappingHelper.SqlDateTimeNow);
                 });
             });
 

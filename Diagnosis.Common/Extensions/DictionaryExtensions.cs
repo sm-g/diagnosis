@@ -40,5 +40,25 @@ namespace Diagnosis.Common
                 return string.Empty;
             }
         }
+
+        public static Dictionary<T1, IEnumerable<T2>> ReverseManyToMany<T1, T2>(this Dictionary<T2, IEnumerable<T1>> crps)
+        {
+            var table = crps
+                .SelectMany(
+                    x => x.Value,
+                    (key, entry) => new
+                    {
+                        T2 = key.Key,
+                        T1 = entry
+                    }
+                );
+
+            var reversed = table
+                .GroupBy(x => x.T1,
+                        x => x.T2,
+                        (t1, t2s) => new { T2s = t2s, T1 = t1 })
+                .ToDictionary(x => x.T1, x => x.T2s);
+            return reversed;
+        }
     }
 }

@@ -2,7 +2,7 @@
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace Diagnosis.Data.Mappings
+namespace Diagnosis.Data.Mappings.Client
 {
     public class DoctorMap : ClassMapping<Doctor>
     {
@@ -94,6 +94,76 @@ namespace Diagnosis.Data.Mappings
             }, r =>
             {
                 r.OneToMany();
+            });
+        }
+    }
+}
+
+namespace Diagnosis.Data.Mappings.Server
+{
+    public class DoctorMap : ClassMapping<Doctor>
+    {
+        public DoctorMap()
+        {
+            Id(x => x.Id, m =>
+            {
+                m.Generator(Generators.GuidComb);
+            });
+
+            Property(x => x.FirstName, m =>
+            {
+                m.Length(20);
+            });
+            Property(x => x.MiddleName, m =>
+            {
+                m.Length(20);
+            });
+            Property(x => x.LastName, m =>
+            {
+                m.NotNullable(true);
+                m.Length(20);
+            });
+            Property(x => x.IsMale);
+
+            Set(x => x.Appointments, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Doctor);
+                });
+                s.Inverse(true);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+            Set(x => x.Courses, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Doctor);
+                });
+                s.Inverse(true);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+            Set(x => x.HealthRecords, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Doctor);
+                });
+                s.Inverse(true);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
+            ManyToOne(x => x.Speciality, m =>
+            {
+                m.Column(Names.Id.Speciality);
             });
         }
     }

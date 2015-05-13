@@ -41,6 +41,15 @@ namespace Diagnosis.Common.Tests
         }
 
         [TestMethod]
+        public void SortObservableCollectionReverse()
+        {
+            var coll = new ObservableCollection<int>(new[] { 1, 3, 5 });
+            coll.Sort(x => x, true);
+
+            Assert.AreEqual(2, coll.IndexOf(1));
+        }
+
+        [TestMethod]
         public void FirstAfterAndNotIn()
         {
             var list = new List<object> { 1, 2, 3, 4 };

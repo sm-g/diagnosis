@@ -22,5 +22,24 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(typeof(Speciality).GetScopes().Count() > 1);
 
         }
+
+        [TestMethod]
+        public void GetRelated()
+        {
+            var r = Scope.User.GetRelatedScopes();
+            Assert.IsTrue(r.Contains(Scope.Voc));
+            Assert.IsTrue(r.Contains(Scope.User));
+            Assert.IsTrue(r.Contains(Scope.Reference));
+
+            r = Scope.Voc.GetRelatedScopes();
+            Assert.IsTrue(r.Contains(Scope.Voc));
+            Assert.IsTrue(r.Contains(Scope.User));
+            Assert.IsTrue(r.Contains(Scope.Reference));
+
+            r = Scope.Reference.GetRelatedScopes();
+            Assert.IsTrue(r.Contains(Scope.Voc));
+            Assert.IsTrue(r.Contains(Scope.User));
+            Assert.IsTrue(r.Contains(Scope.Reference));
+        }
     }
 }
