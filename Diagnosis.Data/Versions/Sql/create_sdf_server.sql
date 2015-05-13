@@ -109,7 +109,7 @@ CREATE TABLE [Doctor] (
 , [LastName] nvarchar(20) NOT NULL
 , [IsMale] bit NULL
 , [SpecialityID] uniqueidentifier NULL
-, [CustomVocabularyID] uniqueidentifier NULL
+--, [CustomVocabularyID] uniqueidentifier NULL
 );
 GO
 CREATE TABLE [Setting] (
@@ -256,8 +256,8 @@ GO
 --GO
 ALTER TABLE [Doctor] ADD CONSTRAINT [FK_Doctor_Speciality] FOREIGN KEY ([SpecialityID]) REFERENCES [Speciality]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
-ALTER TABLE [Doctor] ADD CONSTRAINT [FK_Doctor_Vocabulary] FOREIGN KEY ([CustomVocabularyID]) REFERENCES [Vocabulary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
+--ALTER TABLE [Doctor] ADD CONSTRAINT [FK_Doctor_Vocabulary] FOREIGN KEY ([CustomVocabularyID]) REFERENCES [Vocabulary]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+--GO
 --ALTER TABLE [Setting] ADD CONSTRAINT [FK_Setting_Doctor] FOREIGN KEY ([DoctorID]) REFERENCES [Doctor]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 --GO
 ALTER TABLE [Course] ADD CONSTRAINT [FK_Course_Doctor] FOREIGN KEY ([DoctorID]) REFERENCES [Doctor]([Id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
