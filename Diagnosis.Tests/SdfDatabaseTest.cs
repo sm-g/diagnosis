@@ -33,9 +33,9 @@ namespace Diagnosis.Tests
             SqlHelper.CreateSqlCeByPath(serverSdf);
             //  File.Copy("db.sdf", serverSdf, true);
 
-            Diagnosis.Data.Mappings.Helper.Reset();
-            var clMap = NHibernateHelper.CreateMapping(clientCon.ProviderName);
-            var sMap = NHibernateHelper.CreateMapping(serverCon.ProviderName); // TODO должен быть отдельный маппинг или скрипт
+            Diagnosis.Data.Mappings.MappingHelper.Reset();
+            var clMap = NHibernateHelper.CreateMapping(clientCon.ProviderName, Side.Client);
+            var sMap = NHibernateHelper.CreateMapping(serverCon.ProviderName, Side.Server);
 
             clCfg = NHibernateHelper.CreateConfiguration(clientCon, clMap, true);
             sCfg = NHibernateHelper.CreateConfiguration(serverCon, sMap, true);

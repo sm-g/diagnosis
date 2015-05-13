@@ -16,7 +16,7 @@ namespace Diagnosis.Tests
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
-            Diagnosis.Data.Mappings.Helper.Reset();
+            Diagnosis.Data.Mappings.MappingHelper.Reset();
             NHibernateHelper.Default.InMemory = true;
             NHibernateHelper.Default.ShowSql = true;
             NHibernateHelper.Default.FromTest = true;

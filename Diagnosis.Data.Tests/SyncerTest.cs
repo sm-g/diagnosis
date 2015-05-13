@@ -254,7 +254,7 @@ namespace Diagnosis.Data.Tests
             await syncer.WithoutDoctors().SendFrom(Side.Server, scopes);
 
             // пробуем достать словари
-            var nhib = NHibernateHelper.FromConnectionInfo(sdfFileCon);
+            var nhib = NHibernateHelper.FromConnectionInfo(sdfFileCon, Side.Server);
 
             int exVocsCount;
             using (var s = nhib.OpenSession())
@@ -276,11 +276,11 @@ namespace Diagnosis.Data.Tests
 
             await s.WithoutCustomVocsInDoc().SendFrom(Side.Client);
 
-            var sCustoms = sSession.Query<Doctor>().Select(x => x.CustomVocabulary).ToList(); // создается при обращении
+            var sCustoms = sSession.Query<Vocabulary>().ToList();
             var clVocs = clSession.Query<Vocabulary>().ToList();
             var common = sCustoms.Intersect(clVocs);
 
-            Assert.AreEqual(0, common.Count());
+            Assert.AreEqual(0, common.Where(x => x.IsCustom).Count());
         }
 
         #endregion Vocs

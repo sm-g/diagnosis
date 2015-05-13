@@ -1,6 +1,8 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Data.Mappings;
+using Diagnosis.Data.Mappings.Client;
+using Diagnosis.Data.Mappings.Server;
 using Diagnosis.Data.NHibernate;
 using NHibernate;
 using NHibernate.Cfg;
@@ -30,6 +32,7 @@ namespace Diagnosis.Data
 
         private bool inmem;
         private const string sqliteInmemoryConstr = "Data Source=:memory:;Version=3;New=True;BinaryGuid=False";
+        private Side side;
 
         protected NHibernateHelper()
         {
@@ -90,7 +93,7 @@ namespace Diagnosis.Data
             {
                 if (_mapping == null)
                 {
-                    _mapping = CreateMapping(connection.ProviderName);
+                    _mapping = CreateMapping(connection.ProviderName, side);
                 }
                 return _mapping;
             }
@@ -104,23 +107,25 @@ namespace Diagnosis.Data
         /// <summary>
         /// Хелпер для указанного подключения. Не требует инициализации.
         /// </summary>
-        public static NHibernateHelper FromConnectionInfo(ConnectionInfo conn)
+        public static NHibernateHelper FromConnectionInfo(ConnectionInfo conn, Side side)
         {
             var instance = new NHibernateHelper();
-            instance.Init(conn, false);
+            instance.Init(conn, side, false);
 
             return instance;
         }
 
-        public static HbmMapping CreateMapping(string provider)
+        public static HbmMapping CreateMapping(string provider, Side side)
         {
             if (provider == Constants.SqliteProvider)
-                Helper.MappingForSqlite = true;
+                MappingHelper.MappingForSqlite = true;
 
             var mapper = new ModelMapper();
-            var mapType = typeof(WordMap);
-            var assemblyContainingMapping = Assembly.GetAssembly(mapType);
-            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == mapType.Namespace);
+
+            var sideMapType = side == Side.Client ? typeof(WordMapClient) : typeof(WordMapServer);
+            var commonMapType = typeof(MappingHelper);
+            var assemblyContainingMapping = Assembly.GetAssembly(sideMapType);
+            var types = assemblyContainingMapping.GetExportedTypes().Where(t => t.Namespace == sideMapType.Namespace || t.Namespace == commonMapType.Namespace);
             mapper.AddMappings(types);
             return mapper.CompileMappingForAllExplicitlyAddedEntities();
         }
@@ -200,12 +205,13 @@ namespace Diagnosis.Data
         /// <param name="conn"></param>
         ///
         /// <returns>Connection success</returns>
-        public bool Init(ConnectionInfo conn, bool useSavedCfg = true)
+        public bool Init(ConnectionInfo conn, Side side, bool useSavedCfg = true)
         {
             if (connection != default(ConnectionInfo))
                 throw new System.InvalidOperationException("Already initialized");
 
             this.useSavedCfg = useSavedCfg;
+            this.side = side;
 
             var fail = !conn.IsAvailable();
 

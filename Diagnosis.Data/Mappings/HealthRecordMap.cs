@@ -49,10 +49,10 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Column(c =>
                 {
-                    c.Default(Helper.SqlDateTimeNow);
+                    c.Default(MappingHelper.SqlDateTimeNow);
                 });
             });
-            Property(x => x.IsDeleted, m =>
+            Property(x => x.IsDeleted, m => // не нужно на сервере
             {
                 m.NotNullable(true);
                 m.Column(c =>
@@ -73,7 +73,7 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Column(c =>
                 {
-                    c.Default(Helper.SqlDateTimeNow);
+                    c.Default(MappingHelper.SqlDateTimeNow);
                 });
             });
             Property(x => x.UpdatedAt, m =>
@@ -81,7 +81,7 @@ namespace Diagnosis.Data.Mappings
                 m.NotNullable(true);
                 m.Column(c =>
                 {
-                    c.Default(Helper.SqlDateTimeNow);
+                    c.Default(MappingHelper.SqlDateTimeNow);
                 });
             });
             Property(x => x.Unit, m => m.Type<EnumStringType<HealthRecordUnit>>());

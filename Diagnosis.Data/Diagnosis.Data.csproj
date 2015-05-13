@@ -205,7 +205,6 @@
     <Compile Include="DTOs\UomDTO.cs" />
     <Compile Include="DTOs\UomTypeDTO.cs" />
     <Compile Include="DTOs\WordDTO.cs" />
-    <Compile Include="Mappings\AdminMap.cs" />
     <Compile Include="Mappings\UomFormatMap.cs" />
     <Compile Include="Mappings\VocabularyWordsMap.cs" />
     <Compile Include="Mappings\SpecialityVocabulariesMap.cs" />

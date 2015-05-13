@@ -208,7 +208,7 @@ namespace Diagnosis.ViewModels.Screens
                 var conn = Remote.ConnectionInfo;
                 if (nhib == null || nhib.ConnectionString != conn.ConnectionString)
                     // подключаемся к источнику
-                    nhib = NHibernateHelper.FromConnectionInfo(conn);
+                    nhib = NHibernateHelper.FromConnectionInfo(conn, Side.Server);
 
                 return nhib;
             }
