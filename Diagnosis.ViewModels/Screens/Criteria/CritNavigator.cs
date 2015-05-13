@@ -25,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
             this.viewer = viewer;
             viewer.OpenedChanged += viewer_OpenedChanged;
 
+            NoTopItems = true;
             TopItems = new ObservableCollection<CriteriaItemViewModel>();
             TopItems.CollectionChanged += (s, e) =>
             {

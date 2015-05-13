@@ -106,6 +106,8 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     handler.Dispose();
+                    CloseEditor();
+                    Navigator.Dispose();
                 }
             }
             finally
@@ -174,7 +176,7 @@ namespace Diagnosis.ViewModels.Screens
             if (result == false)
             {
                 // удаляем новую сущность, если ее нельзя сохранять
-                if (crit.IsTransient) 
+                if (crit.IsTransient)
                     OnDeleteCrit(crit);
             }
         }
