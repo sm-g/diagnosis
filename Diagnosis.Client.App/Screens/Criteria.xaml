@@ -62,9 +62,8 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"
-                              MinWidth="150" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

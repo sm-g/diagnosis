@@ -199,7 +199,16 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        public RelayCommand EditEstimatorCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Event.EditCrit, SelectedEstimator.AsParams(MessageKeys.Crit));
+                }, () => SelectedEstimator != null);
+            }
+        }
         internal QueryBlockViewModel RootQueryBlock { get { return QueryEditor.QueryBlocks.FirstOrDefault(); } }
 
         /// <summary>
@@ -217,7 +226,6 @@ namespace Diagnosis.ViewModels.Screens
 
                 var crOpts = est.CriteriaGroups
                     .SelectMany(x => x.Criteria)
-                    .AsParallel()
                     .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options) });
 
                 var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));

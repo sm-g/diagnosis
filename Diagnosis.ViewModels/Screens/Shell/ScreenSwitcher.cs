@@ -184,8 +184,14 @@ namespace Diagnosis.ViewModels.Screens
         {
             this.Subscribe(Event.OpenCrit, (e) =>
             {
-                var est = e.GetValue<object>(MessageKeys.Crit);
-                OpenScreen(Screen.Criteria, est);
+                var crit = e.GetValue<ICrit>(MessageKeys.Crit);
+                OpenScreen(Screen.Criteria, crit);
+            });
+
+            this.Subscribe(Event.EditCrit, (e) =>
+            {
+                var crit = e.GetValue<ICrit>(MessageKeys.Crit);
+                OpenScreen(Screen.Criteria, crit);
             });
         }
 

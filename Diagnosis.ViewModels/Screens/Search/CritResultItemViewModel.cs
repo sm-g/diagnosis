@@ -25,6 +25,16 @@ namespace Diagnosis.ViewModels.Screens
         public IEnumerable<Criterion> Criteria { get { return _crits; } }
         public IEnumerable<HealthRecord> TopHrs { get { return _hrs; } }
 
+        public RelayCommand<Criterion> EditCriterionCommand
+        {
+            get
+            {
+                return new RelayCommand<Criterion>((cr) =>
+                {
+                    this.Send(Event.EditCrit, cr.AsParams(MessageKeys.Crit));
+                });
+            }
+        }
         protected override void Dispose(bool disposing)
         {
             try

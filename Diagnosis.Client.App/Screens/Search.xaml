@@ -11,7 +11,9 @@
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              xmlns:con="http://schemas.kent.boogaart.com/converters"
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              x:Name="search"
+             xmlns:headers="clr-namespace:Diagnosis.Client.App.Controls.Headers"
              mc:Ignorable="d"
              d:DesignHeight="500"
              d:DataContext="{d:DesignInstance design:SampleSearchViewModel, IsDesignTimeCreatable=True}"
@@ -52,9 +54,6 @@
         <!--<TextBlock Style="{StaticResource ScreenTitle}"
                    Margin="5,0,0,0">Поиск</TextBlock>-->
 
-        <!--<CheckBox IsChecked="{Binding UseOldMode}"
-                  Content="Старый поиск" />-->
-        
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
                   MaxHeight="{Binding ActualHeight, ElementName=search, Converter={con:ExpressionConverter {}{0} * 8/10}}"
@@ -87,8 +86,27 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-
-                <search:QueryEditor DataContext="{Binding QueryEditor}" />
+                <TabControl SelectedIndex="{Binding SearchTabIndex}"
+                            mah:TabControlHelper.Transition="Down"
+                            mah:TabControlHelper.IsUnderlined="True">
+                    <TabItem Header="Редактор запросов"
+                             mah:ControlsHelper.HeaderFontSize="{StaticResource ScreenTitleFontSize}">
+                        <search:QueryEditor DataContext="{Binding QueryEditor}" />
+                    </TabItem>
+                    <TabItem Header="Сохраненный запрос"
+                             mah:ControlsHelper.HeaderFontSize="{StaticResource ScreenTitleFontSize}">
+                        <DockPanel LastChildFill="False">
+                            <Label>Запрос</Label>
+                            <ComboBox ItemsSource="{Binding Estimators}"
+                                      Margin="20 0"
+                                      MinWidth="150"
+                                      SelectedItem="{Binding SelectedEstimator}" />
+                            <Button Command="{Binding EditEstimatorCommand}"
+                                    DockPanel.Dock="Right"
+                                    Content="edit" />
+                        </DockPanel>
+                    </TabItem>
+                </TabControl>
                 <Button Command="{Binding SearchCommand}"
                         Margin="5"
                         HorizontalAlignment="Stretch"
@@ -96,24 +114,74 @@
             </Grid>
         </Expander>
 
-        <TreeView ItemsSource="{Binding Result.Patients}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  Grid.Row="2"
-                  Margin="5"
-                  Visibility="{Binding Result, Converter={StaticResource NotNullToVis}}">
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem"
-                       BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                    <Setter Property="diag:Attached.InputBindings"
-                            Value="{StaticResource SearchResultInputBindings}" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <search:SearchResult />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <ContentPresenter Content="{Binding Result}"
+                          Grid.Row="2"
+                          Margin="5"
+                          Visibility="{Binding DataContent.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
+            <ContentPresenter.ContentTemplateSelector>
+                <search:SearchResultDataTemplateSelector>
+                    <search:SearchResultDataTemplateSelector.CritTemplate>
+                        <DataTemplate>
+                            <ListBox ItemsSource="{Binding Patients}"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.GroupStyle>
+                                    <GroupStyle>
+                                        <GroupStyle.ContainerStyle>
+                                            <Style TargetType="GroupItem">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate>
+                                                            <StackPanel Background="Transparent">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto" />
+                                                                        <ColumnDefinition />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <headers:Holder DataContext="{Binding Name}" />
+                                                                    <Separator Foreground="Gray"
+                                                                               Grid.Column="1"
+                                                                               VerticalAlignment="Center" />
+                                                                </Grid>
+                                                                <ItemsPresenter />
+                                                            </StackPanel>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </GroupStyle.ContainerStyle>
+                                    </GroupStyle>
+                                </ListBox.GroupStyle>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <search:CritSearchResult />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DataTemplate>
+                    </search:SearchResultDataTemplateSelector.CritTemplate>
+                    <search:SearchResultDataTemplateSelector.DefaultTemplate>
+                        <DataTemplate>
+                            <TreeView ItemsSource="{Binding Patients}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="TreeViewItem"
+                                           BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                        <Setter Property="diag:Attached.InputBindings"
+                                                Value="{StaticResource SearchResultInputBindings}" />
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <search:SearchResult />
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </DataTemplate>
+                    </search:SearchResultDataTemplateSelector.DefaultTemplate>
+                </search:SearchResultDataTemplateSelector>
+            </ContentPresenter.ContentTemplateSelector>
+        </ContentPresenter>
 
         <TextBlock Grid.Row="2"
                    HorizontalAlignment="Center"

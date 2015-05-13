@@ -50,6 +50,7 @@ namespace Diagnosis.Common
         EditDoctor,
         EditPatient,
         EditHolder,
+        EditCrit,
         EditWord,
         EditUom,
         OpenSettings,

@@ -17,17 +17,25 @@ namespace Diagnosis.Client.App.DesignData
             ControlsVisible = true;
         }
     }
+    public class SamplePatResultViewModel : CritResultItemViewModel
+    {
+        public SamplePatResultViewModel()
+            : base(Mocks.pat, new[] { Mocks.hr }, new[] { Mocks.crit }) { }
+    }
     public class SampleCriterionEditorViewModel : CriterionEditorViewModel
     {
-        public SampleCriterionEditorViewModel() : base(Mocks.crit) { }
+        public SampleCriterionEditorViewModel()
+            : base(Mocks.crit) { }
     }
     public class SampleCriteriaGroupEditorViewModel : CriteriaGroupEditorViewModel
     {
-        public SampleCriteriaGroupEditorViewModel() : base(Mocks.crg) { }
+        public SampleCriteriaGroupEditorViewModel()
+            : base(Mocks.crg) { }
     }
     public class SampleEstimatorEditorViewModel : EstimatorEditorViewModel
     {
-        public SampleEstimatorEditorViewModel() : base(Mocks.est) { }
+        public SampleEstimatorEditorViewModel()
+            : base(Mocks.est) { }
     }
     public class SampleQueryEditorViewModel : QueryEditorViewModel
     {
