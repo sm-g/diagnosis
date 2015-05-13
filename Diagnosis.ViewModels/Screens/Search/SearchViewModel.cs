@@ -229,8 +229,9 @@ namespace Diagnosis.ViewModels.Screens
                     .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options) });
 
                 var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));
-
-                Result = new CritSearchResultViewModel(crHrs, est);
+                var hOpt = loader.ReadOptions(est.HeaderHrsOptions);
+                var topHrs = Searcher.GetResult(Session, hOpt);
+                Result = new CritSearchResultViewModel(crHrs, topHrs, est);
             }
             else
             {

@@ -13,7 +13,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         private readonly Estimator est;
 
-        public CritSearchResultViewModel(Dictionary<Criterion, IEnumerable<HealthRecord>> crHrs, Estimator est)
+        public CritSearchResultViewModel(Dictionary<Criterion, IEnumerable<HealthRecord>> crHrs, IEnumerable<HealthRecord> topHrs, Estimator est)
         {
             this.est = est;
 
@@ -27,7 +27,12 @@ namespace Diagnosis.ViewModels.Screens
 
             var patCrs = crps.ReverseManyToMany();
 
-            var vms = patCrs.Select(x => new CritResultItemViewModel(x.Key, null, x.Value));
+            var patHeadHrs = topHrs
+                .GroupBy(x => x.GetPatient())
+                .ToDictionary(x => x.Key, x => x.ToList());
+
+            var vms = patCrs.Select(x => 
+                new CritResultItemViewModel(x.Key, patHeadHrs.GetValueOrDefault(x.Key), x.Value));
 
             Patients = new ObservableCollection<IResultItem>(vms);
 

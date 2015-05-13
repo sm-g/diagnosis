@@ -35,6 +35,11 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+        public IHrsHolder Holder
+        {
+            get { return _patient; }
+        }
+
         protected override void Dispose(bool disposing)
         {
             try
@@ -48,11 +53,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 base.Dispose(disposing);
             }
-        }
-
-        public IHrsHolder Holder
-        {
-            get { return _patient; }
         }
     }
 }
