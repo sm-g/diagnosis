@@ -94,7 +94,10 @@ namespace Diagnosis.ViewModels.Screens
 
         public bool HasExistingValue { get; set; }
         public bool WasEdited { get; set; }
-
+        string[] IExistTestable.TestExistingFor
+        {
+            get { return new[] { "Title" }; }
+        }
         public override string this[string columnName]
         {
             get

@@ -123,7 +123,11 @@ namespace Diagnosis.ViewModels.Screens
 
         public bool HasExistingValue { get; set; }
 
-        public bool WasEdited { get; set; }
+        public bool WasEdited { get; private set; }
+        public string[] TestExistingFor
+        {
+            get { return new[] { "Description", "Abbr", "Type" }; }
+        }
 
         public override string this[string columnName]
         {
@@ -141,7 +145,7 @@ namespace Diagnosis.ViewModels.Screens
                     .FirstOrDefault();
 
                 // оригинальная ошибка валидации остается
-                if (message == null && HasExistingValue && UomValidator.TestExistingFor.Contains(columnName))
+                if (message == null && HasExistingValue && TestExistingFor.Contains(columnName))
                     message = "Такая единица уже есть.";
 
                 if (columnName == "ValueInBase" && ValueInBase.CompareTo(0) <= 0)
@@ -172,8 +176,8 @@ namespace Diagnosis.ViewModels.Screens
             OnPropertyChanged(e.PropertyName);
 
             // validate linked fields
-            if (UomValidator.TestExistingFor.Contains(e.PropertyName))
-                OnPropertyChanged(UomValidator.TestExistingFor);
+            if (TestExistingFor.Contains(e.PropertyName))
+                OnPropertyChanged(TestExistingFor);
 
             WasEdited = true;
         }
@@ -186,5 +190,8 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(() => IsBase);
             }
         }
+
+
+
     }
 }

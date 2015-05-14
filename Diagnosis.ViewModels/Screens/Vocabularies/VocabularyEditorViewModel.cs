@@ -19,6 +19,7 @@ namespace Diagnosis.ViewModels.Screens
         private Vocabulary voc;
         private string _templates;
         private int count;
+        private ExistanceTester<Models.Vocabulary> tester;
 
         public VocabularyEditorViewModel(Vocabulary voc)
         {
@@ -30,17 +31,9 @@ namespace Diagnosis.ViewModels.Screens
             Templates = new ObservableCollection<string>();
             TooLongTemplates = new ObservableCollection<string>();
 
-            var vocs = Session.Query<Vocabulary>()
-                .ToList();
             Vocabulary = new VocabularyViewModel(voc);
-            Vocabulary.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "Title")
-                {
-                    TestExisting(Vocabulary, vocs);
-                }
-            };
-            TestExisting(Vocabulary, vocs);
+            tester = new ExistanceTester<Vocabulary>(voc, Vocabulary, Session);
+            tester.Test();
 
             Title = "Редактор словаря";
             HelpTopic = "editVocabulary";
@@ -101,7 +94,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return voc.IsValid() && !Vocabulary.HasExistingTitle;
+                return voc.IsValid() && !Vocabulary.HasExistingValue;
             }
         }
 
@@ -137,16 +130,11 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Vocabulary.Dispose();
+                tester.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        /// <summary>
-        /// Нельзя ввести словарь, который уже есть.
-        /// </summary>
-        private void TestExisting(VocabularyViewModel vm, IEnumerable<Vocabulary> vocs)
-        {
-            vm.HasExistingTitle = vocs.Any(s => s.Title == voc.Title && s != voc);
-        }
+
     }
 }

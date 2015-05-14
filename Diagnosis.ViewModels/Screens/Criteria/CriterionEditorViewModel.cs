@@ -12,6 +12,7 @@ namespace Diagnosis.ViewModels.Screens
     {
         internal readonly Criterion criterion;
         private OptionsLoader loader;
+        private ExistanceTester<Models.Criterion> tester;
 
         public CriterionEditorViewModel(Criterion cr)
         {
@@ -21,6 +22,8 @@ namespace Diagnosis.ViewModels.Screens
             QueryEditor = new QueryEditorViewModel(Session, () => { });
 
             Criterion = new CriterionViewModel(criterion);
+            tester = new ExistanceTester<Criterion>(cr, Criterion, Session);
+            tester.Test();
 
             var opt = loader.ReadOptions(criterion.Options);
             QueryEditor.SetOptions(opt);
@@ -58,6 +61,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
+                tester.Dispose();
+                Criterion.Dispose();
             }
             base.Dispose(disposing);
         }

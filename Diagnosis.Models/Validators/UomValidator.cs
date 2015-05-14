@@ -7,8 +7,6 @@ namespace Diagnosis.Models.Validators
 {
     public class UomValidator : AbstractValidator<Uom>
     {
-        public static string[] TestExistingFor = { "Description", "Abbr", "Type" };
-
         public UomValidator()
         {
             RuleFor(w => w.Description).NotNull().Length(1, 100);

@@ -108,5 +108,11 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
+
+
+        string[] IExistTestable.TestExistingFor
+        {
+            get { return new[] { "Title" }; }
+        }
     }
 }

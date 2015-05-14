@@ -25,23 +25,14 @@ namespace Diagnosis.ViewModels.Screens
 
         public string Value { get { return crit.Value; } set { crit.Value = value; } }
 
-        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged(e.PropertyName);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                crit.PropertyChanged -= model_PropertyChanged;
-            }
-            base.Dispose(disposing);
-        }
-
         public bool HasExistingValue { get; set; }
 
         public bool WasEdited { get; set; }
+
+        string[] IExistTestable.TestExistingFor
+        {
+            get { return new[] { "Code" }; }
+        }
 
         public override string this[string columnName]
         {
@@ -59,6 +50,21 @@ namespace Diagnosis.ViewModels.Screens
                 if (HasExistingValue) message = "Такой критерий уже есть.";
                 return message != null ? message : string.Empty;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                crit.PropertyChanged -= model_PropertyChanged;
+            }
+            base.Dispose(disposing);
+        }
+
+        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
         }
     }
 }

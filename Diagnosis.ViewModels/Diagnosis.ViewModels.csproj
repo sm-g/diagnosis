@@ -230,6 +230,7 @@
     <Compile Include="DataTransfer\HrData.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Screens\ExistanceTester.cs" />
     <Compile Include="Services\DateOffsetFormatter.cs" />
     <Compile Include="Framework\Interfaces.cs" />
     <Compile Include="Framework\MenuItem.cs" />
