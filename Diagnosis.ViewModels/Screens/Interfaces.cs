@@ -10,12 +10,16 @@ namespace Diagnosis.ViewModels.Screens
         IFilter Filter { get; }
     }
 
-    public interface IHolderKeeper
+    public interface IKeeper<T>
+    {
+        T Kept { get; }
+    }
+    public interface IHolderKeeper //: IKeeper<IHrsHolder>
     {
         IHrsHolder Holder { get; }
     }
 
-    public interface ICritKeeper
+    public interface ICritKeeper //: IKeeper<ICrit>
     {
         ICrit Crit { get; }
     }

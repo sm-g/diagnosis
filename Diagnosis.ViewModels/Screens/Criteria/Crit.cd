@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Diagnosis.ViewModels.Screens.CriteriaGroupEditorViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACGAAADAAQAECAAAAAAAQAEAgAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Criteria\CriteriaGroupEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CriteriaGroup" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CriteriaGroupViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAACAgAAQQAAAAAACAAAAAAAAAAAAAAAEAABA=</HashCode>
+      <FileName>Screens\Criteria\CriteriaGroupViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CriteriaItemViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAIEACAgQAEEACAAAAAAAEggAAAAMAAAAAgAAAA=</HashCode>
+      <FileName>Screens\Criteria\CriteriaItemViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CriteriaViewModel" Collapsed="true">
+    <Position X="8.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgABCACIAACAAAABAGAAAAAgAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Criteria\CriteriaViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="viewer" />
+      <Property Name="CurrentEditor" />
+      <Property Name="Navigator" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CriterionEditorViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAECAAABABgAAAAAAQAEAgAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Criteria\CriterionEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="loader" />
+      <Property Name="Criterion" />
+      <Property Name="QueryEditor" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CriterionViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAgAAQQAAAgAACAAAAAAAAAIAAgAAEAABA=</HashCode>
+      <FileName>Screens\Criteria\CriterionViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CritNavigator" Collapsed="true">
+    <Position X="11" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEAAAEAAAAAAABAABAAIEAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Criteria\CritNavigator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.EstimatorEditorViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAECAAACAAQAEDgAAAAAAQAIAgAQCAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Criteria\EstimatorEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="loader" />
+      <Property Name="Estimator" />
+      <Property Name="QueryEditor" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.EstimatorViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAgAAQQAAAAAACAAAAAAAAAAAAEAAEAABA=</HashCode>
+      <FileName>Screens\Criteria\EstimatorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.Data.OptionsLoader" Collapsed="true">
+    <Position X="5.5" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.QueryEditorViewModel" Collapsed="true">
+    <Position X="5.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAQCEAAQAAAEAAAEAAAAAAAAgAAAACAAAQAAA=</HashCode>
+      <FileName>Screens\Search\QueryEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.DialogViewModel" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>VIAAACAAAIIAAECEAAAQEAAQAAAAARSIBASAAAAACAA=</HashCode>
+      <FileName>Framework\DialogViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.HierViewer&lt;T1, T2, T3, I&gt;" Collapsed="true">
+    <Position X="11.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgSCCAAGACBlJAICBADAAYFAAAAAAAAAAAAAAQCAINI=</HashCode>
+      <FileName>Screens\HierViewer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

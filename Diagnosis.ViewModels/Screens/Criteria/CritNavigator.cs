@@ -1,110 +1,50 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using log4net;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CritNavigator : ViewModelBase
+    public class CritNavigator : AbstractNavigatorViewModel<CriteriaItemViewModel, Estimator, CriteriaGroup, Criterion, ICrit>
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(CritNavigator));
-        private CriteriaItemViewModel _current;
-        private ObservableCollection<Estimator> ests;
         private Action beforeInsert;
-        private CritViewer viewer;
-        private bool _noTop;
 
-        public CritNavigator(CritViewer viewer, Action beforeInsert)
+        public CritNavigator(HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer, Action beforeInsert)
+            : base(viewer)
         {
             this.beforeInsert = beforeInsert;
-            this.viewer = viewer;
-            viewer.OpenedChanged += viewer_OpenedChanged;
-
-            NoTopItems = true;
-            TopItems = new ObservableCollection<CriteriaItemViewModel>();
-            TopItems.CollectionChanged += (s, e) =>
-            {
-                NoTopItems = !TopItems.Any();
-            };
-
-            ests = new ObservableCollection<Estimator>();
-            ests.CollectionChanged += nav_ests_CollectionChanged;
         }
 
-        public event EventHandler<DomainEntityEventArgs> CurrentChanged;
-
-        public event EventHandler<DomainEntityEventArgs> Navigating;
-
-        public ObservableCollection<CriteriaItemViewModel> TopItems { get; private set; }
-
-        public bool NoTopItems
+        public override void AddRootItemFor(ICrit crit)
         {
-            get
+            var p = crit.GetEstimator();
+            if (!roots.Contains(p))
             {
-                return _noTop;
-            }
-            set
-            {
-                if (_noTop != value)
-                {
-                    _noTop = value;
-                    OnPropertyChanged(() => NoTopItems);
-                }
+                roots.Add(p);
+                var itemVm = new CriteriaItemViewModel(p, beforeInsert);
+                TopItems.Add(itemVm);
             }
         }
 
-        public CriteriaItemViewModel Current
-        {
-            get
-            {
-                return _current;
-            }
-            private set
-            {
-                if (_current != value)
-                {
-                    _current = value;
-
-                    OnCurrentCritChanged();
-
-                    OnPropertyChanged(() => Current);
-                    OnCurrentChanged(new DomainEntityEventArgs(value != null ? value.Crit : null));
-                }
-            }
-        }
-
-        public string CurrentTitle
-        {
-            get
-            {
-                if (Current == null)
-                    return "";
-
-                return GetCurrentPathDescription(Current.Crit);
-            }
-        }
-
-        public static string GetCurrentPathDescription(ICrit current)
+        protected override string GetCurrentPathDescription(HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer, CriteriaItemViewModel current)
         {
             string delim = " \\ ";
             var sb = new StringBuilder();
 
-            var est = current.GetEstimator();
+            var crit = current.Crit;
+            var est = crit.GetEstimator();
             sb.Append(est);
-            if (current is CriteriaGroup)
+            if (crit is CriteriaGroup)
             {
                 sb.Append(delim);
                 sb.Append("группа");
-                sb.Append(current as CriteriaGroup);
+                sb.Append(crit as CriteriaGroup);
             }
-            else if (current is Criterion)
+            else if (crit is Criterion)
             {
-                var c = current as Criterion;
+                var c = crit as Criterion;
                 sb.Append(delim);
                 sb.Append("группа");
                 sb.Append(c.Group);
@@ -113,153 +53,36 @@ namespace Diagnosis.ViewModels.Screens
             }
             return sb.ToString();
         }
-
-        public void NavigateTo(ICrit crit)
+        protected override void CurrentChanging()
         {
-            OnNavigating(new DomainEntityEventArgs(crit as IDomainObject));
-            if (crit == null)
-            {
-                viewer.CloseAll();
-                Current = null;
-                return;
-            }
-
-            AddTopItemFor(crit);
-
-            viewer.Open(crit);
-            Current = FindItemVmOf(crit);
+            // close nested
+            var crit = Current.Crit;
+            if (crit is Estimator)
+                viewer.OpenedMiddle = null;
+            else if (crit is CriteriaGroup)
+                viewer.OpenedLeaf = null;
         }
 
-        public void AddTopItemFor(ICrit crit)
-        {
-            var p = crit.GetEstimator();
-            if (!ests.Contains(p))
-            {
-                ests.Add(p);
-                var itemVm = new CriteriaItemViewModel(p, beforeInsert);
-                TopItems.Add(itemVm);
-            }
-        }
-
-        public void Remove(Estimator p)
-        {
-            if (ests.Remove(p))
-            {
-                var itemVm = FindItemVmOf(p);
-                TopItems.Remove(itemVm);
-            }
-        }
-
-        internal CriteriaItemViewModel FindItemVmOf(ICrit crit)
+        protected internal override CriteriaItemViewModel FindItemVmOf(ICrit crit)
         {
             return TopItems.FindCritKeeperOf(crit);
         }
 
-        protected virtual void OnCurrentChanged(DomainEntityEventArgs e)
+        protected override void OnRootClosed(Estimator est)
         {
-            logger.DebugFormat("Current is {0}", e.entity);
-
-            var h = CurrentChanged;
-            if (h != null)
+            est.CriteriaGroupsChanged -= est_GroupsChanged;
+            foreach (var item in est.CriteriaGroups)
             {
-                h(this, e);
+                item.CriteriaChanged -= crGr_CriteriaChanged;
             }
         }
 
-        protected virtual void OnNavigating(DomainEntityEventArgs e)
+        protected override void OnRootOpened(Estimator est)
         {
-            logger.DebugFormat("Navigating to {0}", e.entity);
-
-            var h = Navigating;
-            if (h != null)
+            est.CriteriaGroupsChanged += est_GroupsChanged;
+            foreach (var item in est.CriteriaGroups)
             {
-                h(this, e);
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                viewer.OpenedChanged -= viewer_OpenedChanged;
-            }
-            base.Dispose(disposing);
-        }
-
-        private void viewer_OpenedChanged(object sender, CritViewer.OpeningEventArgs e)
-        {
-            Contract.Requires(e.entity is ICrit);
-            logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
-
-            var crit = e.entity as ICrit;
-            var est = crit as Estimator;
-
-            if (e.action == CritViewer.OpeningAction.Open)
-            {
-                if (crit is Estimator)
-                {
-                    est.CriteriaGroupsChanged += est_GroupsChanged;
-                    foreach (var item in est.CriteriaGroups)
-                    {
-                        item.CriteriaChanged += crGr_CriteriaChanged;
-                    }
-                }
-
-                crit.PropertyChanged += crit_PropertyChanged;
-            }
-            else
-            {
-                if (crit is Estimator)
-                {
-                    est.CriteriaGroupsChanged -= est_GroupsChanged;
-                    foreach (var item in est.CriteriaGroups)
-                    {
-                        item.CriteriaChanged -= crGr_CriteriaChanged;
-                    }
-                }
-                crit.PropertyChanged -= crit_PropertyChanged;
-            }
-        }
-
-        private void OnCurrentCritChanged()
-        {
-            if (Current == null)
-                return;
-
-            Current.IsSelected = true;
-            Current.IsExpanded = true;
-            Current.ExpandParents();
-
-            // close nested
-            var crit = Current.Crit;
-            if (crit is Estimator)
-            {
-                viewer.OpenedCriteriaGroup = null;
-            }
-            else if (crit is CriteriaGroup)
-            {
-                viewer.OpenedCriterion = null;
-            }
-
-            OnPropertyChanged(() => CurrentTitle);
-        }
-
-        private void crit_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //OnPropertyChanged(() => CurrentTitle);
-        }
-
-        private void nav_ests_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var p = (Estimator)e.OldItems[0];
-
-                if (viewer.OpenedEstimator == p)
-                {
-                    var near = ests.ElementNear(e.OldStartingIndex);
-                    NavigateTo(near); //  рядом или null
-                }
+                item.CriteriaChanged += crGr_CriteriaChanged;
             }
         }
 
@@ -269,7 +92,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var crGr = (CriteriaGroup)e.NewItems[0];
                 crGr.CriteriaChanged += crGr_CriteriaChanged;
-                // при добавлении открываем его
                 NavigateTo(crGr);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -277,37 +99,31 @@ namespace Diagnosis.ViewModels.Screens
                 var crGr = (CriteriaGroup)e.OldItems[0];
                 crGr.CriteriaChanged -= crGr_CriteriaChanged;
 
-                // при удалении открытого открываем рядом с удаленным или est, если это был последний crGr
-                if (viewer.OpenedCriteriaGroup == crGr)
+                if (viewer.OpenedMiddle == crGr)
                 {
-                    var near = viewer.OpenedEstimator.CriteriaGroups.ElementNear(e.OldStartingIndex);
-                    if (near == null)
-                    {
-                        viewer.OpenedCriteriaGroup = null;
-                        NavigateTo(viewer.OpenedEstimator);
-                    }
-                    else
-                        NavigateTo(near);
+                    viewer.Close(crGr);
+                    ICrit near = viewer.OpenedRoot.CriteriaGroups.ElementNear(e.OldStartingIndex);
+                    NavigateTo(near ?? viewer.OpenedRoot);
                 }
             }
         }
 
+        // при добавлении открываем его
+        // при удалении открытого открываем рядом или выше, если это был последний
         private void crGr_CriteriaChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                // при добавлении открываем его
                 NavigateTo((Criterion)e.NewItems[0]);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 var criterion = (Criterion)e.OldItems[0];
-                // при удалении открытого открываем рядом или выше, если это был последний
-                if (viewer.OpenedCriterion == criterion)
+                if (viewer.OpenedLeaf == criterion)
                 {
                     viewer.Close(criterion);
-                    ICrit near = viewer.OpenedCriteriaGroup.Criteria.ElementNear(e.OldStartingIndex);
-                    NavigateTo(near ?? viewer.OpenedCriteriaGroup);
+                    ICrit near = viewer.OpenedMiddle.Criteria.ElementNear(e.OldStartingIndex);
+                    NavigateTo(near ?? viewer.OpenedMiddle);
                 }
             }
         }

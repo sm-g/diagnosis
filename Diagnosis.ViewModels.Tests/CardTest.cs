@@ -224,9 +224,9 @@ namespace Diagnosis.ViewModels.Tests
             IHrsHolder holder = null;
             bool removed = false;
 
-            var NavigatingEh = (EventHandler<HrsHolderEventArgs>)((s, e) =>
+            var NavigatingEh = (EventHandler<DomainEntityEventArgs>)((s, e) =>
             {
-                holder = e.holder;
+                holder = e.entity as IHrsHolder;
             });
             var LastItemRemovedEh = (EventHandler)((s, e) =>
             {

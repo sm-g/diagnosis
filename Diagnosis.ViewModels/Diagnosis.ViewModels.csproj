@@ -228,6 +228,8 @@
     <Compile Include="DataTransfer\DragDropHelper.cs" />
     <Compile Include="DataTransfer\DragDropInterfaces.cs" />
     <Compile Include="DataTransfer\HrData.cs" />
+    <Compile Include="Screens\AbstractNavigator.cs" />
+    <Compile Include="Screens\Card\CardNavigator.cs" />
     <Compile Include="Screens\HierViewer.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
@@ -254,7 +256,6 @@
     <Compile Include="Screens\Criteria\CriterionViewModel.cs" />
     <Compile Include="Screens\Criteria\EstimatorEditorViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaGroupEditorViewModel.cs" />
-    <Compile Include="Screens\Criteria\CritViewer.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - ClipboardTarget.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
@@ -276,7 +277,6 @@
     <Compile Include="Screens\Doctors\DoctorViewModel.cs" />
     <Compile Include="Screens\Card\Editors\AppointmentEditorViewModel.cs" />
     <Compile Include="Screens\Card\HeaderViewModel.cs" />
-    <Compile Include="Screens\Card\Navigator.cs" />
     <Compile Include="Screens\Card\CardItemViewModel.cs" />
     <Compile Include="Screens\Card\Editors\CourseEditorViewModel.cs" />
     <Compile Include="Screens\Card\CardViewModel.cs" />
@@ -361,6 +361,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Autocomplete\IAutocomplete.dgml" />
+    <None Include="Screens\Criteria\Crit.cd" />
     <None Include="Framework\CodeMap1.dgml" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />

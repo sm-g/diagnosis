@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
         private HrListViewModel _hrList;
         private HeaderViewModel _header;
         private readonly HrEditorViewModel _hrEditor;
-        private readonly NavigatorViewModel _navigator;
+        private readonly CardNavigator _navigator;
 
         private bool editorWasOpened;
         private Saver saver;
@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels.Screens
             doctor = AuthorityController.CurrentDoctor;
 
             saver = new Saver(Session);
-            _navigator = new NavigatorViewModel(viewer);
+            _navigator = new CardNavigator(viewer);
             _hrEditor = new HrEditorViewModel(Session);
 
             Navigator.CurrentChanged += (s, e) =>
@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
                 // add to history
                 HrEditor.Unload(); // закрываем редактор при смене активной сущности
 
-                var holder = e.holder;
+                var holder = (e.arg as CardItemViewModel).Holder;
 
                 ShowHrsList(holder);
                 ShowHeader(holder);
@@ -126,7 +126,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HrEditorViewModel HrEditor { get { return _hrEditor; } }
 
-        public NavigatorViewModel Navigator { get { return _navigator; } }
+        public CardNavigator Navigator { get { return _navigator; } }
 
         public HeaderViewModel Header
         {
@@ -289,9 +289,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 saver.SaveWithCleanup(viewer.OpenedRoot);
 
-                Navigator.Remove(holder as Patient);
+                Navigator.RemoveRoot(holder as Patient);
                 saver.Delete(holder);
-                if (Navigator.TopCardItems.Count == 0)
+                if (Navigator.TopItems.Count == 0)
                     OnLastItemRemoved();
                 return;
             }

@@ -15,18 +15,24 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(CriteriaViewModel));
 
         private Saver saver;
-        private static CritViewer viewer;
+        private static HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer;
         private DialogViewModel _curEditor;
         private EventMessageHandler handler;
 
         public CriteriaViewModel()
         {
             saver = new Saver(Session);
-            viewer = new CritViewer();
+            viewer = new HierViewer<Estimator, CriteriaGroup, Criterion, ICrit>(
+                cg => cg.Estimator,
+                cr => cr.Group,
+                e => e.CriteriaGroups,
+                cg => cg.Criteria
+                );
             Navigator = new CritNavigator(viewer, CloseEditor);
             Navigator.CurrentChanged += (s, e) =>
             {
-                ShowEditor(e.entity as ICrit);
+                var c = e.arg as CriteriaItemViewModel;
+                ShowEditor(c.Crit as ICrit);
             };
             Navigator.PropertyChanged += (s, e) =>
             {
@@ -38,7 +44,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var ests = Session.Query<Estimator>().ToList();
             ests.ForEach(x =>
-                Navigator.AddTopItemFor(x));
+                Navigator.AddRootItemFor(x));
 
             handler = this.Subscribe(Event.DeleteCrit, (e) =>
             {
@@ -122,20 +128,20 @@ namespace Diagnosis.ViewModels.Screens
 
             if (crit is Estimator)
             {
-                Navigator.Remove(crit as Estimator);
+                Navigator.RemoveRoot(crit as Estimator);
                 saver.Delete(crit);
             }
             else if (crit is CriteriaGroup)
             {
                 var crgr = crit as CriteriaGroup;
                 crgr.Estimator.RemoveCriteriaGroup(crgr);
-                saver.Save(viewer.OpenedEstimator);
+                saver.Save(viewer.OpenedRoot);
             }
             else if (crit is Criterion)
             {
                 var cr = crit as Criterion;
                 cr.Group.RemoveCriterion(cr);
-                saver.Save(viewer.OpenedEstimator);
+                saver.Save(viewer.OpenedRoot);
             }
         }
 
