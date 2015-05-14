@@ -18,6 +18,7 @@ namespace Diagnosis.Models
 
         public CriteriaGroup(Estimator est)
         {
+            Contract.Requires(est != null);
             Estimator = est;
         }
 

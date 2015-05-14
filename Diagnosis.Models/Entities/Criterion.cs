@@ -21,6 +21,7 @@ namespace Diagnosis.Models
 
         public Criterion(CriteriaGroup gr)
         {
+            Contract.Requires(gr != null);
             Group = gr;
         }
 
