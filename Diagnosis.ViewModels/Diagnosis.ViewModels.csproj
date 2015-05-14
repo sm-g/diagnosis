@@ -228,6 +228,7 @@
     <Compile Include="DataTransfer\DragDropHelper.cs" />
     <Compile Include="DataTransfer\DragDropInterfaces.cs" />
     <Compile Include="DataTransfer\HrData.cs" />
+    <Compile Include="Screens\HierViewer.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Formatters\DateOffsetFormatter.cs" />
@@ -308,7 +309,6 @@
     <Compile Include="Screens\HealthRecords\EventDateViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
-    <Compile Include="Screens\Card\PatientViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>

@@ -325,7 +325,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (Patients.Count > 0)
             {
-                SelectedPatient = PatientViewer.LastOpenedPatient ?? (Patient)view.GetItemAt(0);
+                SelectedPatient = HierViewer<Patient, Course, Appointment, IHrsHolder>.LastOpenedRoot
+                    ?? (Patient)view.GetItemAt(0);
             }
         }
 

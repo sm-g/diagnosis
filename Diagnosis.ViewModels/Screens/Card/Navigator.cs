@@ -12,12 +12,12 @@ namespace Diagnosis.ViewModels.Screens
     public class NavigatorViewModel : ViewModelBase
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(NavigatorViewModel));
-        private PatientViewer viewer;
+        private HierViewer<Patient, Course, Appointment, IHrsHolder> viewer;
         private CardItemViewModel _curHolder;
         private ObservableCollection<Patient> patients;
         private IHrsHolder lastOpened;
 
-        public NavigatorViewModel(PatientViewer viewer)
+        public NavigatorViewModel(HierViewer<Patient, Course, Appointment, IHrsHolder> viewer)
         {
             this.viewer = viewer;
             TopCardItems = new ObservableCollection<CardItemViewModel>();
@@ -70,19 +70,19 @@ namespace Diagnosis.ViewModels.Screens
             private set;
         }
 
-        public static string GetCurrentPathDescription(PatientViewer viewer, IHrsHolder current)
+        public static string GetCurrentPathDescription(HierViewer<Patient, Course, Appointment, IHrsHolder> viewer, IHrsHolder current)
         {
             string delim = " \\ ";
-            string result = NameFormatter.GetFullName(viewer.OpenedPatient) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedPatient.CreatedAt);
+            string result = NameFormatter.GetFullName(viewer.OpenedRoot) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedRoot.CreatedAt);
 
             if (current is Course)
             {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
+                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedMiddle.Start, viewer.OpenedMiddle.End);
             }
             else if (current is Appointment)
             {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedCourse.Start, viewer.OpenedCourse.End);
-                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedAppointment.DateAndTime);
+                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedMiddle.Start, viewer.OpenedMiddle.End);
+                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedLeaf.DateAndTime);
             }
             return result;
         }
@@ -140,13 +140,9 @@ namespace Diagnosis.ViewModels.Screens
             // close nested for saving
             var holder = Current.Holder;
             if (holder is Patient)
-            {
-                viewer.OpenedCourse = null;
-            }
+                viewer.OpenedMiddle = null;
             else if (holder is Course)
-            {
-                viewer.OpenedAppointment = null;
-            }
+                viewer.OpenedLeaf = null;
 
             OnPropertyChanged(() => CurrentTitle);
         }
@@ -174,15 +170,14 @@ namespace Diagnosis.ViewModels.Screens
         ///
         /// при закрытии сворачиваем элемент дерева
         /// </summary>
-        private void viewer_OpenedChanged(object sender, PatientViewer.OpeningEventArgs e)
+        private void viewer_OpenedChanged(object sender, OpeningEventArgs<IHrsHolder> e)
         {
-            Contract.Requires(e.entity is IHrsHolder);
             logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);
 
-            var holder = e.entity as IHrsHolder;
+            var holder = e.entity;
             var patient = holder as Patient;
 
-            if (e.action == PatientViewer.OpeningAction.Open)
+            if (e.action == OpeningAction.Open)
             {
                 if (holder is Patient)
                 {
@@ -221,7 +216,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var p = (Patient)e.OldItems[0];
 
-                if (viewer.OpenedPatient == p)
+                if (viewer.OpenedRoot == p)
                 {
                     var near = patients.ElementNear(e.OldStartingIndex);
                     NavigateTo(near); //  рядом или null
@@ -244,16 +239,11 @@ namespace Diagnosis.ViewModels.Screens
                 course.AppointmentsChanged -= course_AppointmentsChanged;
 
                 // при удалении открытого курса открываем курс рядом с удаленным или пациента, если это был последний курс
-                if (viewer.OpenedCourse == course)
+                if (viewer.OpenedMiddle == course)
                 {
-                    var near = viewer.OpenedPatient.Courses.ElementNear(e.OldStartingIndex);
-                    if (near == null)
-                    {
-                        viewer.OpenedCourse = null;
-                        NavigateTo(viewer.OpenedPatient);
-                    }
-                    else
-                        NavigateTo(near);
+                    viewer.Close(course);
+                    IHrsHolder near = viewer.OpenedRoot.Courses.ElementNear(e.OldStartingIndex);
+                    NavigateTo(near ?? viewer.OpenedRoot);
                 }
             }
         }
@@ -269,16 +259,11 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var app = (Appointment)e.OldItems[0];
                 // при удалении открытого осмотра открываем осмотр рядом или курс, если это был последний осмотр
-                if (viewer.OpenedAppointment == app)
+                if (viewer.OpenedLeaf == app)
                 {
-                    var near = viewer.OpenedCourse.Appointments.ElementNear(e.OldStartingIndex);
-                    if (near == null)
-                    {
-                        viewer.OpenedAppointment = null;
-                        NavigateTo(viewer.OpenedCourse);
-                    }
-                    else
-                        NavigateTo(near);
+                    viewer.Close(app);
+                    IHrsHolder near = viewer.OpenedMiddle.Appointments.ElementNear(e.OldStartingIndex);
+                    NavigateTo(near ?? viewer.OpenedMiddle);
                 }
             }
         }

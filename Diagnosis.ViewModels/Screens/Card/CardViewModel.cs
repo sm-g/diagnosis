@@ -15,7 +15,7 @@ namespace Diagnosis.ViewModels.Screens
     public partial class CardViewModel : ScreenBaseViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
-        private static PatientViewer viewer; // static to hold history
+        private static HierViewer<Patient, Course, Appointment, IHrsHolder> viewer; // static to hold history
         private HrListViewModel _hrList;
         private HeaderViewModel _header;
         private readonly HrEditorViewModel _hrEditor;
@@ -152,7 +152,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedPatient.AddCourse(AuthorityController.CurrentDoctor);
+                    viewer.OpenedRoot.AddCourse(AuthorityController.CurrentDoctor);
                 });
             }
         }
@@ -163,9 +163,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedCourse.AddAppointment(AuthorityController.CurrentDoctor);
+                    viewer.OpenedMiddle.AddAppointment(AuthorityController.CurrentDoctor);
                 },
-                () => viewer.OpenedCourse != null && viewer.OpenedCourse.End == null);
+                () => viewer.OpenedMiddle != null && viewer.OpenedMiddle.End == null);
             }
         }
 
@@ -219,7 +219,11 @@ namespace Diagnosis.ViewModels.Screens
 
         public void ResetHistory()
         {
-            viewer = new PatientViewer();
+            viewer = new HierViewer<Patient, Course, Appointment, IHrsHolder>(
+                c => c.Patient,
+                a => a.Course,
+                p => p.GetOrderedCourses(),
+                c => c.GetOrderedAppointments());
             HrListViewModel.ResetHistory();
         }
 
@@ -246,13 +250,13 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Ensures(HrList.holder == holder.Actual || lastAppOrCourse);
 
             holder = holder.Actual as IHrsHolder;
-            var was = viewer.AutoOpen;
+            var was = viewer.AutoOpenChild;
             if (lastAppOrCourse)
-                viewer.AutoOpen = true;
+                viewer.AutoOpenChild = true;
 
             Navigator.NavigateTo(holder);
 
-            viewer.AutoOpen = was;
+            viewer.AutoOpenChild = was;
         }
 
         private void OpenHr(HealthRecord hr)
@@ -283,7 +287,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (holder is Patient)
             {
-                saver.SaveWithCleanup(viewer.OpenedPatient);
+                saver.SaveWithCleanup(viewer.OpenedRoot);
 
                 Navigator.Remove(holder as Patient);
                 saver.Delete(holder);
@@ -295,13 +299,13 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var course = holder as Course;
                 course.Patient.RemoveCourse(course);
-                saver.SaveWithCleanup(viewer.OpenedPatient); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
+                saver.SaveWithCleanup(viewer.OpenedRoot); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
             }
             else if (holder is Appointment)
             {
                 var app = holder as Appointment;
                 app.Course.RemoveAppointment(app);
-                saver.SaveWithCleanup(viewer.OpenedPatient);
+                saver.SaveWithCleanup(viewer.OpenedRoot);
             }
         }
 
@@ -452,7 +456,7 @@ namespace Diagnosis.ViewModels.Screens
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
             // сохраняем пациента и чистим записи при закрытии чего-либо (ранее в viewer.OpenedCanged мог быть переход вверх без закрытия - не сохраняет)
-            saver.SaveWithCleanup(viewer.OpenedPatient);
+            saver.SaveWithCleanup(viewer.OpenedRoot);
         }
 
         private void ShowHeader(IHrsHolder holder)
