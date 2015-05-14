@@ -206,6 +206,9 @@
     <Compile Include="DTOs\UomTypeDTO.cs" />
     <Compile Include="DTOs\WordDTO.cs" />
     <Compile Include="Mappings\UomFormatMap.cs" />
+    <Compile Include="Mappings\EstimatorMap.cs" />
+    <Compile Include="Mappings\CriteriaGroupMap.cs" />
+    <Compile Include="Mappings\CriterionMap.cs" />
     <Compile Include="Mappings\VocabularyWordsMap.cs" />
     <Compile Include="Mappings\SpecialityVocabulariesMap.cs" />
     <Compile Include="Mappings\VocabularyMap.cs" />
@@ -233,6 +236,11 @@
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
     <Compile Include="Queries\VocabularyQuery.cs" />
     <Compile Include="Queries\CategoryQuery.cs" />
+    <Compile Include="Search\AndSearcher.cs" />
+    <Compile Include="Search\HrSearcher.cs" />
+    <Compile Include="Search\NotOrSearcher.cs" />
+    <Compile Include="Search\OrSearcher.cs" />
+    <Compile Include="Search\Searcher.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="SqlHelper.cs" />
     <Compile Include="Sync\AfterSyncChecker.cs" />
@@ -245,6 +253,7 @@
     <Compile Include="Sync\Scopes.cs" />
     <Compile Include="Sync\SyncUtil.cs" />
     <Compile Include="Sync\VocLoader.cs" />
+    <Compile Include="Versions\Client\19 AddCriteria.cs" />
     <Compile Include="Versions\Client\18 AddUomFormat.cs" />
     <Compile Include="Versions\Client\17 AddHrToDateDescribedAt.cs" />
     <Compile Include="Versions\Client\09 AddHolderHrUpdatedAt.cs" />
@@ -290,6 +299,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Search\SearcherClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">

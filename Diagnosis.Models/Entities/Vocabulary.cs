@@ -182,8 +182,7 @@ namespace Diagnosis.Models
 
             var wasTitles = this.WordTemplates.Select(x => x.Title).ToList();
 
-            titlesToBe = titlesToBe.Distinct(
-                StringComparer.CurrentCultureIgnoreCase);
+            titlesToBe = titlesToBe.Distinct(StringComparer.OrdinalIgnoreCase);
 
             var toAdd = new HashSet<string>(titlesToBe);
             toAdd.ExceptWith(wasTitles);

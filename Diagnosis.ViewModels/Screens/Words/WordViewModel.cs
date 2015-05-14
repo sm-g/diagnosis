@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class WordViewModel : HierarchicalBase<WordViewModel>
+    public class WordViewModel : HierarchicalBase<WordViewModel>, IExistTestable
     {
         internal readonly Word word;
 
@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(w != null);
             word = w;
+            this.validatableEntity = word;
             word.PropertyChanged += word_PropertyChanged;
         }
 
@@ -92,31 +93,15 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool HasExistingTitle { get; set; }
+        public bool HasExistingValue { get; set; }
         public bool WasEdited { get; set; }
-
-        public override string this[string columnName]
+        string[] IExistTestable.TestExistingFor
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = word.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingTitle) message = "Такое слово уже есть.";
-                return message != null ? message : string.Empty;
-            }
+            get { return new[] { "Title" }; }
         }
-
-        private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        string IExistTestable.ThisValueExistsMessage
         {
-            OnPropertyChanged(e.PropertyName);
-            WasEdited = true;
+            get { return "Такое слово уже есть."; }
         }
 
         public override string ToString()
@@ -131,6 +116,12 @@ namespace Diagnosis.ViewModels.Screens
                 word.PropertyChanged -= word_PropertyChanged;
             }
             base.Dispose(disposing);
+        }
+
+        private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
         }
     }
 }

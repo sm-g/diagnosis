@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class VocabularyViewModel : CheckableBase
+    public class VocabularyViewModel : CheckableBase, IExistTestable
     {
         internal readonly Vocabulary voc;
 
@@ -13,6 +13,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(voc != null);
             this.voc = voc;
+            this.validatableEntity = voc;
             voc.PropertyChanged += voc_PropertyChanged;
             voc.WordTemplatesChanged += voc_WordTemplatesChanged;
 
@@ -61,37 +62,18 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool HasExistingTitle { get; set; }
+        public bool HasExistingValue { get; set; }
 
         public bool WasEdited { get; set; }
 
-        public override string this[string columnName]
+        string[] IExistTestable.TestExistingFor
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = voc.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingTitle) message = "Такой словарь уже есть.";
-                return message != null ? message : string.Empty;
-            }
+            get { return new[] { "Title" }; }
         }
 
-        private void voc_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        string IExistTestable.ThisValueExistsMessage
         {
-            OnPropertyChanged(e.PropertyName);
-            WasEdited = true;
-        }
-
-        private void voc_WordTemplatesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(() => TemplatesCount);
+            get { return "Такой словарь уже есть."; }
         }
 
         public override string ToString()
@@ -107,6 +89,17 @@ namespace Diagnosis.ViewModels.Screens
                 voc.WordTemplatesChanged -= voc_WordTemplatesChanged;
             }
             base.Dispose(disposing);
+        }
+
+        private void voc_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
+        }
+
+        private void voc_WordTemplatesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(() => TemplatesCount);
         }
     }
 }

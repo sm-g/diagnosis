@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class UomViewModel : CheckableBase
+    public class UomViewModel : CheckableBase, IExistTestable
     {
         internal readonly Uom uom;
 
@@ -15,6 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(u != null);
             uom = u;
+            this.validatableEntity = uom;
             uom.PropertyChanged += uom_PropertyChanged;
             if (uom.Type != null)
                 uom.Type.PropertyChanged += Type_PropertyChanged;
@@ -121,16 +122,23 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool HasExistingDescrAbbr { get; set; }
+        public bool HasExistingValue { get; set; }
 
-        public bool WasEdited { get; set; }
+        public bool WasEdited { get; private set; }
+        public string[] TestExistingFor
+        {
+            get { return new[] { "Description", "Abbr", "Type" }; }
+        }
+        string IExistTestable.ThisValueExistsMessage
+        {
+            get { return ""; }
+        }
 
         public override string this[string columnName]
         {
             get
             {
-                if (!WasEdited)
-                    return string.Empty;
+                if (!WasEdited) return string.Empty;
 
                 var results = uom.SelfValidate();
                 if (results == null)
@@ -142,7 +150,7 @@ namespace Diagnosis.ViewModels.Screens
                     .FirstOrDefault();
 
                 // оригинальная ошибка валидации остается
-                if (message == null && HasExistingDescrAbbr && UomValidator.TestExistingFor.Contains(columnName))
+                if (message == null && HasExistingValue && TestExistingFor.Contains(columnName))
                     message = "Такая единица уже есть.";
 
                 if (columnName == "ValueInBase" && ValueInBase.CompareTo(0) <= 0)
@@ -173,8 +181,10 @@ namespace Diagnosis.ViewModels.Screens
             OnPropertyChanged(e.PropertyName);
 
             // validate linked fields
-            if (UomValidator.TestExistingFor.Contains(e.PropertyName))
-                OnPropertyChanged(UomValidator.TestExistingFor);
+            if (TestExistingFor.Contains(e.PropertyName))
+                OnPropertyChanged(TestExistingFor);
+
+            WasEdited = true;
         }
 
         private void Type_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -185,5 +195,8 @@ namespace Diagnosis.ViewModels.Screens
                 OnPropertyChanged(() => IsBase);
             }
         }
+
+
+
     }
 }

@@ -59,6 +59,10 @@
             <DataTemplate DataType="{x:Type diag:VocabularySyncViewModel}">
                 <screen:Vocabs />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type diag:CriteriaViewModel}">
+                <screen:Criteria />
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
                 <diag:UndoOverlay />
             </DataTemplate>

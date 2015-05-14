@@ -10,6 +10,7 @@ using System.Linq;
 using NHibernate.Linq;
 using Diagnosis.Models.Validators;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -19,6 +20,7 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Uom uom;
 
         private UomViewModel _vm;
+        private ExistanceTester<Models.Uom> tester;
 
         public UomEditorViewModel(Uom uom)
         {
@@ -32,18 +34,10 @@ namespace Diagnosis.ViewModels.Screens
             Uom = new UomViewModel(uom);
             Uom.IsBase = false; // не делать новые единицы базовыми по умолчанию
 
-            var uoms = Session.Query<Uom>()
-               .ToList();
-            Uom.PropertyChanged += (s, e) =>
-            {
-                if (UomValidator.TestExistingFor.Contains(e.PropertyName))
-                {
-                    TestExisting(Uom, uoms);
-                }
-                Uom.WasEdited = true;
-            };
-
-            TestExisting(Uom, uoms);
+            // Нельзя добавить единицу с таким же описанием или обозначением в группе.
+            var customEqTest = (Expression<Func<Uom, bool>>)((x) => (x.Description == uom.Description || x.Abbr == uom.Abbr) && x.Type == uom.Type);
+            tester = new ExistanceTester<Uom>(uom, Uom, Session, customEqTest);
+            tester.Test();
 
             Title = "Единица";
             HelpTopic = "edituom";
@@ -54,7 +48,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return !Uom.HasExistingDescrAbbr && uom.IsValid();
+                return !Uom.HasExistingValue && uom.IsValid();
             }
         }
         public List<UomType> Types { get; private set; }
@@ -75,14 +69,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-        /// <summary>
-        /// Нельзя добавить единицу с таким же описанием или обозначением в группе.
-        /// </summary>
-        private void TestExisting(UomViewModel vm, IEnumerable<Uom> uoms)
-        {
-            vm.HasExistingDescrAbbr = uoms.Any(x =>
-                (x.Description == uom.Description || x.Abbr == uom.Abbr) && x.Type == uom.Type && x != uom);
-        }
+
         protected override void OnOk()
         {
             uom.Factor = Math.Log10(Uom.ValueInBase); // 1 мл = 1000 л, фактор 3
@@ -116,6 +103,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Uom.Dispose();
+                tester.Dispose();
             }
             base.Dispose(disposing);
         }

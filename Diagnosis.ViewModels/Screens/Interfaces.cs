@@ -14,4 +14,17 @@ namespace Diagnosis.ViewModels.Screens
     {
         IHrsHolder Holder { get; }
     }
+
+    public interface ICritKeeper
+    {
+        ICrit Crit { get; }
+    }
+
+    public interface IExistTestable
+    {
+        bool WasEdited { get; }
+        bool HasExistingValue { get; set; }
+        string[] TestExistingFor { get; }
+        string ThisValueExistsMessage { get; }
+    }
 }

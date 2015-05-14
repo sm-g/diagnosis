@@ -32,6 +32,7 @@ namespace Diagnosis.Common
         public static string String = "string";
         public static string Name = "name";
         public static string Value = "value";
+        public static string Crit = "crit";
     }
 
     public enum Event
@@ -43,11 +44,13 @@ namespace Diagnosis.Common
         OpenHealthRecords,
         EditHealthRecord,
         OpenHolder,
+        OpenCrit,
 
         // windows
         EditDoctor,
         EditPatient,
         EditHolder,
+        EditCrit,
         EditWord,
         EditUom,
         OpenSettings,
@@ -60,6 +63,9 @@ namespace Diagnosis.Common
         HideOverlay,
         DeleteHolder,
         AddHr,
+
+        // 
+        DeleteCrit,
 
         // nhibernate
         WordPersisted,

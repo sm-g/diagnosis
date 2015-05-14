@@ -30,6 +30,9 @@ namespace Diagnosis.Tests
         protected Dictionary<int, Vocabulary> voc = new Dictionary<int, Vocabulary>();
         protected Dictionary<int, WordTemplate> wTemp = new Dictionary<int, WordTemplate>();
         protected Dictionary<int, Speciality> spec = new Dictionary<int, Speciality>();
+        protected Dictionary<int, Estimator> est = new Dictionary<int, Estimator>();
+        protected Dictionary<int, CriteriaGroup> cgr = new Dictionary<int, CriteriaGroup>();
+        protected Dictionary<int, Criterion> cr = new Dictionary<int, Criterion>();
 
         private static Dictionary<Type, int[]> ids = new Dictionary<Type, int[]>()
         {
@@ -47,6 +50,9 @@ namespace Diagnosis.Tests
             { typeof(Vocabulary),   new[] { 1, 2 } },
             { typeof(WordTemplate), new[] { 1, 2, 3, 4, 5, 6, 7 } },
             { typeof(Speciality),   new[] { 1 } },
+            { typeof(Estimator),    new[] { 1 } },
+            { typeof(CriteriaGroup),new[] { 1 } },
+            { typeof(Criterion),    new[] { 1 } },
         };
 
         private static Dictionary<Type, string> guidFormats = new Dictionary<Type, string>()
@@ -68,6 +74,9 @@ namespace Diagnosis.Tests
             { typeof(VocabularyWords),       "00000{0:000}-1400-0000-0000-000000000{0:000}" },
             { typeof(SpecialityVocabularies),"00000{0:000}-1500-0000-0000-000000000{0:000}" },
             { typeof(UomFormat),             "00000{0:000}-1600-0000-0000-000000000{0:000}" },
+            { typeof(Estimator),             "00000{0:000}-1700-0000-0000-000000000{0:000}" },
+            { typeof(CriteriaGroup),         "00000{0:000}-1800-0000-0000-000000000{0:000}" },
+            { typeof(Criterion),             "00000{0:000}-1900-0000-0000-000000000{0:000}" },
         };
 
         static DbTest()
@@ -92,6 +101,9 @@ namespace Diagnosis.Tests
                 { typeof(Vocabulary),   () => ids[typeof(T)].ForAll((id) => voc[id] = session.Get<Vocabulary>       (IntToGuid<Vocabulary>(id))) },
                 { typeof(WordTemplate), () => ids[typeof(T)].ForAll((id) => wTemp[id] = session.Get<WordTemplate>   (IntToGuid<WordTemplate>(id))) },
                 { typeof(Speciality),   () => ids[typeof(T)].ForAll((id) => spec[id] = session.Get<Speciality>      (IntToGuid<Speciality>(id))) },
+                { typeof(Estimator),    () => ids[typeof(T)].ForAll((id) => est[id] = session.Get<Estimator>        (IntToGuid<Estimator>(id))) },
+                { typeof(CriteriaGroup),() => ids[typeof(T)].ForAll((id) => cgr[id] = session.Get<CriteriaGroup>    (IntToGuid<CriteriaGroup>(id))) },
+                { typeof(Criterion),    () => ids[typeof(T)].ForAll((id) => cr[id] = session.Get<Criterion>         (IntToGuid<Criterion>(id))) },
             };
 
             Action act;

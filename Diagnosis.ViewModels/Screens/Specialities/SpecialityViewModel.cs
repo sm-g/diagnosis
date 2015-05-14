@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class SpecialityViewModel : ViewModelBase
+    public class SpecialityViewModel : ViewModelBase, IExistTestable
     {
         internal readonly Speciality spec;
 
@@ -15,6 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(s != null);
             spec = s;
+            this.validatableEntity = spec;
             spec.PropertyChanged += spec_PropertyChanged;
             spec.BlocksChanged += spec_BlocksChanged;
             spec.VocsChanged += spec_VocsChanged;
@@ -37,26 +38,16 @@ namespace Diagnosis.ViewModels.Screens
             get { return spec.IsDirty; }
         }
 
-        public bool HasExistingTitle { get; set; }
+        public bool HasExistingValue { get; set; }
 
         public bool WasEdited { get; set; }
-
-        public override string this[string columnName]
+        string[] IExistTestable.TestExistingFor
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = spec.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingTitle) message = "Такая специальность уже есть.";
-                return message != null ? message : string.Empty;
-            }
+            get { return new[] { "Title" }; }
+        }
+        string IExistTestable.ThisValueExistsMessage
+        {
+            get { return "Такая специальность уже есть."; }
         }
 
         public override string ToString()

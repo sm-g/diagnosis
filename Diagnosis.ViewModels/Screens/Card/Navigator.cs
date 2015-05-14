@@ -252,7 +252,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                // при добавлении осмотра открываем его
+                // при добавлении осмотра открываем его (сохраняется  еще при закрытии дргой страницы)
                 NavigateTo((Appointment)e.NewItems[0]);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)

@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
             IDataObject dataObj = new DataObject();
             dataObj.SetData(HrData.DataFormat.Name, data);
             dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
-            Clipboard.SetDataObject(dataObj, false);
+            Clipboard.SetDataObject(dataObj, true);
 
             logger.LogHrs("copy", hrInfos);
         }

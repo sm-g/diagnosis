@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Diagnosis.ViewModels.Screens.HrsResultItemViewModel" Collapsed="true">
+    <Position X="0.5" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACCAAJAAQEAAAAAAAAEAEADAAAAAQAAAAAAA=</HashCode>
+      <FileName>Screens\Search\HrsResultItemViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.SearchViewModel" Collapsed="true">
+    <Position X="1.25" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQBAEwAAACCApAIBgwCAhAQABCAAAQCAAQACBAAgBAA=</HashCode>
+      <FileName>Screens\Search\SearchViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="QueryEditor" />
+      <Property Name="Result" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.QueryBlockViewModel">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>NAAIgAAiASRA0gEGIAMIhNGWEFAFMAgBAAQQqAFIASA=</HashCode>
+      <FileName>Screens\Search\QueryBlockViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="AutocompleteAll" />
+      <Property Name="AutocompleteAny" />
+      <Property Name="AutocompleteNot" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.SearchHistoryViewModel" Collapsed="true">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAgI=</HashCode>
+      <FileName>Screens\Search\SearchHistoryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.OptionsLoaderViewModel" Collapsed="true">
+    <Position X="7" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAgBIQhQAgBAAAAgIQAAAAAAACAAAAAACAAQAA=</HashCode>
+      <FileName>Screens\Search\OptionsLoaderViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.AbstractSearchResultViewModel" Collapsed="true">
+    <Position X="1.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAkAACIABAAAAAAgBAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Search\AbstractSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Statistic" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Patients" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CritResultItemViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAMCCAAgAAAAAAAAAAAAAAAABAAAAAAAAABCAA=</HashCode>
+      <FileName>Screens\Search\CritResultItemViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CritSearchResultViewModel" Collapsed="true">
+    <Position X="2.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAIAAAAAAAAABAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Screens\Search\CritSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.HrsSearchResultViewModel" Collapsed="true">
+    <Position X="0.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAEAAAIAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Search\HrsSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.StatisticBase" Collapsed="true">
+    <Position X="4.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAQAAAQAAAAAAAAAABQAACAAAQAA=</HashCode>
+      <FileName>Screens\Search\Statistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CritStatistic" Collapsed="true">
+    <Position X="6.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAEAAABAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Search\Statistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.HrsStatistic" Collapsed="true">
+    <Position X="4.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAABAAAAQAAACAkEAAABAAAAAAoAAA=</HashCode>
+      <FileName>Screens\Search\Statistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Search.QueryEditorViewModel" Collapsed="true">
+    <Position X="9" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAQCEAAQAAAEAAAEAAAAAAAAgAAAACAAAQAAA=</HashCode>
+      <FileName>Screens\Search\QueryEditorViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="History" />
+      <Property Name="Loader" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="QueryBlocks" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Interface Name="Diagnosis.ViewModels.Autocomplete.IQbAutocompleteViewModel" Collapsed="true">
+    <Position X="14" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAACAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAA=</HashCode>
+      <FileName>Autocomplete\IAutocompleteViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Diagnosis.ViewModels.Screens.IResultItem" Collapsed="true">
+    <Position X="3.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Search\AbstractSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

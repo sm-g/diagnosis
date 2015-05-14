@@ -6,7 +6,6 @@ using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using log4net;
-using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private Speciality spec;
         private PopupSearchViewModel<IcdBlock> _diagnosisSearch2;
+        private ExistanceTester<Models.Speciality> tester;
 
         public SpecialityEditorViewModel(Speciality spec)
         {
@@ -42,17 +42,9 @@ namespace Diagnosis.ViewModels.Screens
             AllVocs = new ObservableCollection<VocabularyViewModel>();
             SpecVocs = new ObservableCollection<VocabularyViewModel>();
 
-            var specs = Session.Query<Speciality>()
-                .ToList();
             Speciality = new SpecialityViewModel(spec);
-            Speciality.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "Title")
-                {
-                    TestExisting(Speciality, specs);
-                }
-            };
-            TestExisting(Speciality, specs);
+            tester = new ExistanceTester<Speciality>(spec, Speciality, Session);
+            tester.Test();
 
             CreateDiagnosisSearch();
             DiagnosisSearch.Filter.Clear();
@@ -190,7 +182,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return spec.IsValid() && !Speciality.HasExistingTitle;
+                return spec.IsValid() && !Speciality.HasExistingValue;
             }
         }
 
@@ -229,19 +221,12 @@ namespace Diagnosis.ViewModels.Screens
                 spec.BlocksChanged -= spec_BlocksChanged;
                 spec.VocsChanged -= spec_VocsChanged;
 
+                tester.Dispose();
                 Speciality.Dispose();
                 SpecDiagnosisSearch.Dispose();
                 DiagnosisSearch.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        /// <summary>
-        /// Нельзя ввести специальность, которая уже есть.
-        /// </summary>
-        private void TestExisting(SpecialityViewModel vm, IEnumerable<Speciality> specs)
-        {
-            vm.HasExistingTitle = specs.Any(s => s.Title == spec.Title && s != spec);
         }
 
         /// <summary>

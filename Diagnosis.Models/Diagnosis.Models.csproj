@@ -148,6 +148,9 @@
     <Compile Include="Entities\Admin.cs" />
     <Compile Include="Domain\Chio.cs" />
     <Compile Include="Domain\DateOffset.cs" />
+    <Compile Include="Entities\CriteriaGroup.cs" />
+    <Compile Include="Entities\Criterion.cs" />
+    <Compile Include="Entities\Estimator.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
     <Compile Include="Domain\Comment.cs" />
@@ -194,7 +197,10 @@
     <Compile Include="ValidatableEntity.cs" />
     <Compile Include="Validators\AppointmentValidator.cs" />
     <Compile Include="Validators\CourseValidator.cs" />
+    <Compile Include="Validators\CriterionGroupValidator.cs" />
+    <Compile Include="Validators\EstimatorValidator.cs" />
     <Compile Include="Validators\DoctorValidator.cs" />
+    <Compile Include="Validators\CriterionValidator.cs" />
     <Compile Include="Validators\UomFormatValidator.cs" />
     <Compile Include="Validators\VocabularyValidator.cs" />
     <Compile Include="Validators\SpecialityValidator.cs" />

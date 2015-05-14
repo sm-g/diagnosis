@@ -79,6 +79,21 @@ namespace Diagnosis.Models
         }
     }
 
+    public static class ICritExtensions
+    {
+        [Pure]
+        public static Estimator GetEstimator(this ICrit crit)
+        {
+            if (crit is Estimator)
+                return crit as Estimator;
+            if (crit is CriteriaGroup)
+                return (crit as CriteriaGroup).Estimator;
+            if (crit is Criterion)
+                return (crit as Criterion).Group == null ? null : (crit as Criterion).Group.Estimator;
+
+            throw new NotImplementedException();
+        }
+    }
     public static class IHrsHolderExtensions
     {
         /// <summary>
@@ -88,19 +103,14 @@ namespace Diagnosis.Models
         public static IEnumerable<HealthRecord> GetAllHrs(this IHrsHolder holder)
         {
             if (holder is Patient)
-            {
                 return (holder as Patient).GetAllHrs();
-            }
             if (holder is Course)
-            {
                 return (holder as Course).GetAllHrs();
-            }
             if (holder is Appointment)
-            {
                 return (holder as Appointment).HealthRecords;
-            }
 
-            throw new ArgumentOutOfRangeException("holder");
+
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -112,19 +122,13 @@ namespace Diagnosis.Models
         public static IEnumerable<Word> GetAllWords(this IHrsHolder holder)
         {
             if (holder is Patient)
-            {
                 return (holder as Patient).GetAllWords();
-            }
             if (holder is Course)
-            {
                 return (holder as Course).GetAllWords();
-            }
             if (holder is Appointment)
-            {
                 return (holder as Appointment).GetAllWords();
-            }
 
-            throw new ArgumentOutOfRangeException("holder");
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -145,17 +149,11 @@ namespace Diagnosis.Models
         public static Patient GetPatient(this IHrsHolder holder)
         {
             if (holder is Patient)
-            {
                 return holder as Patient;
-            }
             if (holder is Course)
-            {
                 return (holder as Course).Patient;
-            }
             if (holder is Appointment)
-            {
                 return (holder as Appointment).Course.Patient;
-            }
 
             throw new ArgumentOutOfRangeException("holder");
         }
@@ -203,6 +201,7 @@ namespace Diagnosis.Models
         /// запись — без элементов и даты или удаленная
         /// слово — без записей с этим словом
         /// словарь — без слов
+        /// 
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -258,6 +257,24 @@ namespace Diagnosis.Models
                         return !w.Words.Any();
                     }
                 },
+                { typeof(Estimator),() =>
+                    {
+                        var e = entity as Estimator;
+                        return !e.CriteriaGroups.Any();
+                    }
+                },
+                { typeof(CriteriaGroup),() =>
+                    {
+                        var w = entity as CriteriaGroup;
+                        return !w.Criteria.Any();
+                    }
+                },
+                { typeof(Criterion),() =>
+                    {
+                        var w = entity as Criterion;
+                        return true;
+                    }
+                }
             };
 
             var type = entity.Actual.GetType();

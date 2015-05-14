@@ -16,7 +16,6 @@ namespace Diagnosis.ViewModels.Screens
         public AppointmentEditorViewModel(Appointment app)
         {
             this.app = app;
-            this.validatableEntity = app;
             columnToPropertyMap = new Dictionary<string, string>() {
                 {"Date", "DateAndTime"},
                 {"Time", "DateAndTime"}

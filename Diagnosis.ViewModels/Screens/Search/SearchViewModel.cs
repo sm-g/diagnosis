@@ -1,10 +1,12 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
@@ -14,8 +16,12 @@ namespace Diagnosis.ViewModels.Screens
     public class SearchViewModel : ToolViewModel
     {
         private bool _controlsVisible;
-        private SearchResultViewModel _res;
+        private AbstractSearchResultViewModel _res;
         private bool _mode;
+        private int _searchTabIndex;
+        private ObservableCollection<Estimator> _estimators;
+        private Estimator _est;
+        private OptionsLoader loader;
         private EventMessageHandlersManager msgManager;
 
         public const string ToolContentId = "Search";
@@ -25,6 +31,7 @@ namespace Diagnosis.ViewModels.Screens
             ContentId = ToolContentId;
 
             var hist = new History<SearchOptions>();
+            loader = new JsonOptionsLoader(Session);
 
             QueryEditor = new QueryEditorViewModel(Session, () =>
             {
@@ -32,7 +39,8 @@ namespace Diagnosis.ViewModels.Screens
                     SearchCommand.Execute(null);
             });
 
-            var loader = new JsonOptionsLoader(Session);
+            var ests = Session.QueryOver<Estimator>().List();
+            Estimators = new ObservableCollection<Estimator>(ests);
 
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
@@ -73,14 +81,15 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return new RelayCommand(Search, () => !QueryEditor.AllEmpty);
+                return new RelayCommand(Search,
+                    () => (IsCriteriaSearch && SelectedEstimator != null)
+                        || !QueryEditor.AllEmpty);
             }
         }
 
         public QueryEditorViewModel QueryEditor { get; private set; }
 
-
-        public SearchResultViewModel Result
+        public AbstractSearchResultViewModel Result
         {
             get
             {
@@ -104,7 +113,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return Result != null && Result.Statistic.PatientsCount == 0;
+                return Result != null && (Result as dynamic).Statistic.PatientsCount == 0;
             }
         }
 
@@ -142,27 +151,105 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
+        public int SearchTabIndex
+        {
+            get
+            {
+                return _searchTabIndex;
+            }
+            set
+            {
+                if (_searchTabIndex != value)
+                {
+                    _searchTabIndex = value;
+                    OnPropertyChanged(() => SearchTabIndex);
+                    OnPropertyChanged(() => IsCriteriaSearch);
+                }
+            }
+        }
+
+        public ObservableCollection<Estimator> Estimators
+        {
+            get
+            {
+                return _estimators;
+            }
+            set
+            {
+                if (_estimators != value)
+                {
+                    _estimators = value;
+                    OnPropertyChanged(() => Estimators);
+                }
+            }
+        }
+
+        public Estimator SelectedEstimator
+        {
+            get
+            {
+                return _est;
+            }
+            set
+            {
+                if (_est != value)
+                {
+                    _est = value;
+                    OnPropertyChanged(() => SelectedEstimator);
+                }
+            }
+        }
+        public RelayCommand EditEstimatorCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Event.EditCrit, SelectedEstimator.AsParams(MessageKeys.Crit));
+                }, () => SelectedEstimator != null);
+            }
+        }
         internal QueryBlockViewModel RootQueryBlock { get { return QueryEditor.QueryBlocks.FirstOrDefault(); } }
+
         /// <summary>
         /// Блок, принявший отправленное в поиск.
         /// </summary>
         internal QueryBlockViewModel LastRecieverQueryBlock { get; private set; }
 
+        private bool IsCriteriaSearch { get { return SearchTabIndex == 1; } }
+
         private void Search()
         {
-            IEnumerable<HealthRecord> shrs;
-            var options = QueryEditor.GetOptions();
-            if (UseOldMode)
+            if (IsCriteriaSearch)
             {
-                shrs = HrSearcher.SearchOld(Session, RootQueryBlock.GetOldOptions());
+                Estimator est = SelectedEstimator;
+
+                var crOpts = est.CriteriaGroups
+                    .SelectMany(x => x.Criteria)
+                    .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options) });
+
+                var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));
+                var hOpt = loader.ReadOptions(est.HeaderHrsOptions);
+                var topHrs = Searcher.GetResult(Session, hOpt);
+                Result = new CritSearchResultViewModel(crHrs, topHrs, est);
             }
             else
             {
-                shrs = Searcher.GetResult(Session, options);
-            }
+                IEnumerable<HealthRecord> shrs;
+                var options = QueryEditor.GetOptions();
+                if (UseOldMode)
+                {
+                    shrs = HrSearcher.SearchOld(Session, RootQueryBlock.GetOldOptions());
+                }
+                else
+                {
+                    shrs = Searcher.GetResult(Session, options);
+                }
 
-            Result = new SearchResultViewModel(shrs, options);
-            //hist.Memorize(options);
+                //hist.Memorize(options);
+                Result = new HrsSearchResultViewModel(shrs, options);
+            }
 #if !DEBUG
             ControlsVisible = false;
 #endif
@@ -213,6 +300,7 @@ namespace Diagnosis.ViewModels.Screens
             qb.AutocompleteAll.ReplaceTagsWith(allCWords.Union<object>(allMops));
             RemoveLastResults();
         }
+
         private void RecieveHrItemObjects(IEnumerable<ConfWithHio> chios)
         {
             var qb = GetRecieverQb();

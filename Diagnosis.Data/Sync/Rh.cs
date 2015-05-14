@@ -14,11 +14,11 @@ namespace Diagnosis.Data.Sync
     /// <summary>
     /// Relation helper
     /// </summary>
-    internal interface IRH : IComparable<Type>
+    public interface IRH : IComparable<Type>
     {
     }
 
-    internal class RHFactory
+    public class RHFactory
     {
         private static Dictionary<Type, IRH> dict = new Dictionary<Type, IRH>();
 
@@ -32,6 +32,10 @@ namespace Diagnosis.Data.Sync
             dict.Add(typeof(SpecialityIcdBlocks), new RHSpecBlocks());
             dict.Add(typeof(SpecialityVocabularies), new RHSpecVocs());
             dict.Add(typeof(Vocabulary), new RHVoc());
+            dict.Add(typeof(Criterion), new RHCriterion());
+            dict.Add(typeof(CriteriaGroup), new RHCriteriaGroup());
+            dict.Add(typeof(Estimator), new RHEstimator());
+            dict.Add(typeof(Word), new RHWord());
         }
 
         public static RH<T> Create<T>()
@@ -39,7 +43,7 @@ namespace Diagnosis.Data.Sync
             IRH rh;
             if (dict.TryGetValue(typeof(T), out rh))
                 return rh as RH<T>;
-            return new RHDummy() as RH<T>;
+            throw new NotImplementedException("No rh factory for type");
         }
         public static IRH Create(Type type)
         {
@@ -50,7 +54,11 @@ namespace Diagnosis.Data.Sync
         }
     }
 
-    internal abstract class RH<T> : IRH
+    /// <summary>
+    /// Отношения child-parent для клиента.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class RH<T> : IRH
     {
         public virtual IEnumerable<Type> Childs { get { return Enumerable.Empty<Type>(); } }
 

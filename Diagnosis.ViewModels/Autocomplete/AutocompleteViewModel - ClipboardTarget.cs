@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             dataObj.SetData(TagData.DataFormat.Name, data);
             dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
-            Clipboard.SetDataObject(dataObj, false);
+            Clipboard.SetDataObject(dataObj, true);
 
             logger.LogHrItemObjects("copy", hios);
         }

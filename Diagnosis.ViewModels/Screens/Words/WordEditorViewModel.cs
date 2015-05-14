@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using EventAggregator;
 using NHibernate.Linq;
@@ -14,25 +15,18 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(WordEditorViewModel));
         private readonly Word word;
         internal Word saved;
-        private List<Word> dbWords;
+        private ExistanceTester<Models.Word> tester;
 
         public WordEditorViewModel(Word word)
         {
             this.word = word;
             (word as IEditableObject).BeginEdit();
 
-            dbWords = Session.Query<Word>()
-                .ToList();
 
             Word = new WordViewModel(word);
-            Word.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "Title")
-                {
-                    TestExisting(Word);
-                }
-            };
-            TestExisting(Word);
+            //Нельзя ввести слово, которое уже есть в словарях врача.
+            tester = new ExistanceTester<Word>(word, Word, Session, extraTest: w => AuthorityController.CurrentDoctor.Words.Contains(w));
+            tester.Test();
 
             Title = "Редактирование слова";
             HelpTopic = "addword";
@@ -49,18 +43,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return word.IsValid() && !Word.HasExistingTitle;
+                return word.IsValid() && !Word.HasExistingValue;
             }
-        }
-
-        /// <summary>
-        /// Нельзя ввести слово, которое уже есть в словарях врача.
-        /// </summary>
-        private void TestExisting(WordViewModel vm)
-        {
-            vm.HasExistingTitle = dbWords.Any(w =>
-                w.Title.MatchesAsStrings(word.Title) && w != word &&
-                AuthorityController.CurrentDoctor.Words.Contains(w));
         }
 
         protected override void OnOk()
@@ -68,8 +52,7 @@ namespace Diagnosis.ViewModels.Screens
             (word as IEditableObject).EndEdit();
 
             // если такое слово уже было, делааем доступным врачу
-
-            var toSave = dbWords.FirstOrDefault(w => w.Title == word.Title && w != word) ?? word;
+            var toSave = WordQuery.ByTitle(Session)(word.Title) ?? word;
             AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
             new Saver(Session).Save(toSave);
 
@@ -87,6 +70,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Word.Dispose();
+                tester.Dispose();
             }
             base.Dispose(disposing);
         }

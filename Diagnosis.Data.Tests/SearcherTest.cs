@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.Tests;
 using Diagnosis.ViewModels.Search;
