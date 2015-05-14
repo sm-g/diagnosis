@@ -109,7 +109,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             var temps = _templates
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
             var tooLong = temps.Where(x => x.Length > WordTemplate.MaxLength);
 

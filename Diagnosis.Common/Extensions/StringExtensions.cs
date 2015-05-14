@@ -46,7 +46,7 @@ namespace Diagnosis.Common
         {
             if (str == null || obj == null)
                 return false;
-            return str.ToLowerInvariant() == obj.ToString().ToLowerInvariant();
+            return str.Equals(obj.ToString(), StringComparison.OrdinalIgnoreCase);
         }
 
         public static int CompareToNullSafe(this string one, string two)
