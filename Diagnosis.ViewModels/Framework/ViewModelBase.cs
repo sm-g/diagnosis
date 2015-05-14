@@ -12,6 +12,7 @@ using System.Reflection;
 using System.IO;
 using System.Threading.Tasks;
 using Diagnosis.Common.Types;
+using Diagnosis.ViewModels.Screens;
 
 namespace Diagnosis.ViewModels
 {
@@ -66,16 +67,25 @@ namespace Diagnosis.ViewModels
                 if (validatableEntity == null)
                     return string.Empty;
 
+                var exTestable = this as IExistTestable;
+                if (exTestable != null && !exTestable.WasEdited)
+                    return string.Empty;
+
                 var results = validatableEntity.SelfValidate();
                 if (results == null)
                     return string.Empty;
+
                 var message = results.Errors
                     .Where(x => x.PropertyName == columnName ||
                             columnToPropertyMap != null &&
                             x.PropertyName == columnToPropertyMap.GetValueOrDefault(columnName))
                     .Select(x => x.ErrorMessage)
                     .FirstOrDefault();
-                return message != null ? message : string.Empty;
+
+                if (exTestable != null && exTestable.HasExistingValue)
+                    message = exTestable.ThisValueExistsMessage;
+
+                return message ?? string.Empty;
             }
         }
         #endregion

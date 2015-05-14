@@ -237,6 +237,28 @@ namespace Diagnosis.Data.Sync
                      (x as Criterion).Code == (y as Criterion).Code;
         }
     }
+
+    internal class RHCriteriaGroup : RH<CriteriaGroup>
+    {
+        public override IEnumerable<Type> Parents { get { return new[] { typeof(Estimator) }; } }
+        public override IEnumerable<Type> Childs { get { return new[] { typeof(Criterion) }; } }
+
+        public override Expression<Func<CriteriaGroup, bool>> EqualsByVal(CriteriaGroup x)
+        {
+            return (y) =>
+                     x.Description == y.Description;
+        }
+    }
+    internal class RHEstimator : RH<Estimator>
+    {
+        public override IEnumerable<Type> Childs { get { return new[] { typeof(CriteriaGroup) }; } }
+
+        public override Expression<Func<Estimator, bool>> EqualsByVal(Estimator x)
+        {
+            return (y) =>
+                     x.Description == y.Description;
+        }
+    }
     internal class RHWord : RH<Word>
     {
         public override IEnumerable<Type> Childs { get { return new[] { typeof(HrItem), typeof(VocabularyWords) }; } }

@@ -33,23 +33,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return new[] { "Code" }; }
         }
-
-        public override string this[string columnName]
+        string IExistTestable.ThisValueExistsMessage
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = crit.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingValue) message = "Такой критерий уже есть.";
-                return message != null ? message : string.Empty;
-            }
+            get { return "Такой критерий уже есть."; }
         }
 
         protected override void Dispose(bool disposing)

@@ -13,6 +13,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(voc != null);
             this.voc = voc;
+            this.validatableEntity = voc;
             voc.PropertyChanged += voc_PropertyChanged;
             voc.WordTemplatesChanged += voc_WordTemplatesChanged;
 
@@ -65,33 +66,14 @@ namespace Diagnosis.ViewModels.Screens
 
         public bool WasEdited { get; set; }
 
-        public override string this[string columnName]
+        string[] IExistTestable.TestExistingFor
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = voc.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingValue) message = "Такой словарь уже есть.";
-                return message != null ? message : string.Empty;
-            }
+            get { return new[] { "Title" }; }
         }
 
-        private void voc_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        string IExistTestable.ThisValueExistsMessage
         {
-            OnPropertyChanged(e.PropertyName);
-            WasEdited = true;
-        }
-
-        private void voc_WordTemplatesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(() => TemplatesCount);
+            get { return "Такой словарь уже есть."; }
         }
 
         public override string ToString()
@@ -109,10 +91,15 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
-
-        string[] IExistTestable.TestExistingFor
+        private void voc_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            get { return new[] { "Title" }; }
+            OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
+        }
+
+        private void voc_WordTemplatesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(() => TemplatesCount);
         }
     }
 }

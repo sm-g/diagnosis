@@ -15,6 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(s != null);
             spec = s;
+            this.validatableEntity = spec;
             spec.PropertyChanged += spec_PropertyChanged;
             spec.BlocksChanged += spec_BlocksChanged;
             spec.VocsChanged += spec_VocsChanged;
@@ -44,23 +45,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return new[] { "Title" }; }
         }
-
-        public override string this[string columnName]
+        string IExistTestable.ThisValueExistsMessage
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = spec.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingValue) message = "Такая специальность уже есть.";
-                return message != null ? message : string.Empty;
-            }
+            get { return "Такая специальность уже есть."; }
         }
 
         public override string ToString()

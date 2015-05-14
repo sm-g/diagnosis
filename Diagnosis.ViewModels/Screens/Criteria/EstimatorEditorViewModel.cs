@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
 
             (estimator as IEditableObject).BeginEdit();
 
-            Title = "Редактор оценщика";
+            Title = "Редактор приказа";
             HelpTopic = "";
             WithHelpButton = false;
         }
@@ -71,7 +71,7 @@ namespace Diagnosis.ViewModels.Screens
         }
         public override bool CanOk
         {
-            get { return estimator.IsValid(); }
+            get { return estimator.IsValid() && !Estimator.HasExistingValue; }
         }
         protected override void OnOk()
         {

@@ -14,6 +14,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(w != null);
             word = w;
+            this.validatableEntity = word;
             word.PropertyChanged += word_PropertyChanged;
         }
 
@@ -98,28 +99,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return new[] { "Title" }; }
         }
-        public override string this[string columnName]
+        string IExistTestable.ThisValueExistsMessage
         {
-            get
-            {
-                if (!WasEdited) return string.Empty;
-
-                var results = word.SelfValidate();
-                if (results == null)
-                    return string.Empty;
-                var message = results.Errors
-                    .Where(x => x.PropertyName == columnName)
-                    .Select(x => x.ErrorMessage)
-                    .FirstOrDefault();
-                if (HasExistingValue) message = "Такое слово уже есть.";
-                return message != null ? message : string.Empty;
-            }
-        }
-
-        private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged(e.PropertyName);
-            WasEdited = true;
+            get { return "Такое слово уже есть."; }
         }
 
         public override string ToString()
@@ -134,6 +116,12 @@ namespace Diagnosis.ViewModels.Screens
                 word.PropertyChanged -= word_PropertyChanged;
             }
             base.Dispose(disposing);
+        }
+
+        private void word_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
         }
     }
 }

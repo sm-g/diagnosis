@@ -33,6 +33,8 @@ namespace Diagnosis.Data.Sync
             dict.Add(typeof(SpecialityVocabularies), new RHSpecVocs());
             dict.Add(typeof(Vocabulary), new RHVoc());
             dict.Add(typeof(Criterion), new RHCriterion());
+            dict.Add(typeof(CriteriaGroup), new RHCriteriaGroup());
+            dict.Add(typeof(Estimator), new RHEstimator());
             dict.Add(typeof(Word), new RHWord());
         }
 

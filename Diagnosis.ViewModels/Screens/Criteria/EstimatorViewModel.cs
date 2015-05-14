@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class EstimatorViewModel : ViewModelBase
+    public class EstimatorViewModel : ViewModelBase, IExistTestable
     {
         internal readonly Estimator est;
 
@@ -18,22 +18,19 @@ namespace Diagnosis.ViewModels.Screens
             validatableEntity = est;
             est.PropertyChanged += model_PropertyChanged;
         }
+        public string Description { get { return est.Description; } set { est.Description = value; } }
+        public bool HasExistingValue { get; set; }
 
-        public string Description
+        public bool WasEdited { get; set; }
+
+        string[] IExistTestable.TestExistingFor
         {
-            get
-            {
-                return est.Description;
-            }
-            set
-            {
-                est.Description = value;
-            }
+            get { return new[] { "Description" }; }
         }
 
-        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        string IExistTestable.ThisValueExistsMessage
         {
-            OnPropertyChanged(e.PropertyName);
+            get { return "Такой приказ уже есть."; }
         }
 
         protected override void Dispose(bool disposing)
@@ -43,6 +40,12 @@ namespace Diagnosis.ViewModels.Screens
                 est.PropertyChanged -= model_PropertyChanged;
             }
             base.Dispose(disposing);
+        }
+
+        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+            WasEdited = true;
         }
     }
 }

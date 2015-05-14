@@ -15,6 +15,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(u != null);
             uom = u;
+            this.validatableEntity = uom;
             uom.PropertyChanged += uom_PropertyChanged;
             if (uom.Type != null)
                 uom.Type.PropertyChanged += Type_PropertyChanged;
@@ -127,6 +128,10 @@ namespace Diagnosis.ViewModels.Screens
         public string[] TestExistingFor
         {
             get { return new[] { "Description", "Abbr", "Type" }; }
+        }
+        string IExistTestable.ThisValueExistsMessage
+        {
+            get { return ""; }
         }
 
         public override string this[string columnName]

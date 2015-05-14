@@ -41,7 +41,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public override bool CanOk
         {
-            get { return criterion.IsValid(); }
+            get { return criterion.IsValid() && !Criterion.HasExistingValue; }
         }
 
         protected override void OnOk()

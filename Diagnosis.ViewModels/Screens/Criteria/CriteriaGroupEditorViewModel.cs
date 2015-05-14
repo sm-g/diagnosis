@@ -10,6 +10,7 @@ namespace Diagnosis.ViewModels.Screens
     public class CriteriaGroupEditorViewModel : DialogViewModel, ICritKeeper
     {
         internal readonly CriteriaGroup crgroup;
+        private ExistanceTester<Models.CriteriaGroup> tester;
 
         public CriteriaGroupEditorViewModel(CriteriaGroup group)
         {
@@ -18,6 +19,8 @@ namespace Diagnosis.ViewModels.Screens
             Criteria = new ObservableCollection<CriterionEditorViewModel>();
 
             CriteriaGroup = new CriteriaGroupViewModel(crgroup);
+            tester = new ExistanceTester<CriteriaGroup>(crgroup, CriteriaGroup, Session);
+            tester.Test();
 
             (crgroup as IEditableObject).BeginEdit();
 
@@ -62,7 +65,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public override bool CanOk
         {
-            get { return crgroup.IsValid(); }
+            get { return crgroup.IsValid() && !CriteriaGroup.HasExistingValue; }
         }
 
         protected override void OnOk()

@@ -232,7 +232,7 @@ namespace Diagnosis.Client.App.DesignData
 
         public static Estimator est = new Estimator() { Description = "est" };
         public static CriteriaGroup crg = new CriteriaGroup(est) { Description = "crgr" };
-        public static Criterion crit = new Criterion(crg) { Description = "crit", Options = "opts" };
+        public static Criterion crit = new Criterion(crg) { Description = "crit", Code = "1", Value = "10", Options = "opts" };
 
         public static HrCategory[] cats = new[] {
             new HrCategory("Жалоба",1),

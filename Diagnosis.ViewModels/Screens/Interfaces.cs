@@ -25,5 +25,6 @@ namespace Diagnosis.ViewModels.Screens
         bool WasEdited { get; }
         bool HasExistingValue { get; set; }
         string[] TestExistingFor { get; }
+        string ThisValueExistsMessage { get; }
     }
 }
