@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CriterionViewModel : ViewModelBase
+    public class CriterionViewModel : ViewModelBase, IExistTestable
     {
         internal readonly Criterion crit;
 
@@ -19,41 +19,11 @@ namespace Diagnosis.ViewModels.Screens
             crit.PropertyChanged += model_PropertyChanged;
         }
 
-        public string Description
-        {
-            get
-            {
-                return crit.Description;
-            }
-            set
-            {
-                crit.Description = value;
-            }
-        }
+        public string Description { get { return crit.Description; } set { crit.Description = value; } }
 
-        public string Code
-        {
-            get
-            {
-                return crit.Code;
-            }
-            set
-            {
-                crit.Code = value;
-            }
-        }
+        public string Code { get { return crit.Code; } set { crit.Code = value; } }
 
-        public string Value
-        {
-            get
-            {
-                return crit.Value;
-            }
-            set
-            {
-                crit.Value = value;
-            }
-        }
+        public string Value { get { return crit.Value; } set { crit.Value = value; } }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -67,6 +37,28 @@ namespace Diagnosis.ViewModels.Screens
                 crit.PropertyChanged -= model_PropertyChanged;
             }
             base.Dispose(disposing);
+        }
+
+        public bool HasExistingValue { get; set; }
+
+        public bool WasEdited { get; set; }
+
+        public override string this[string columnName]
+        {
+            get
+            {
+                if (!WasEdited) return string.Empty;
+
+                var results = crit.SelfValidate();
+                if (results == null)
+                    return string.Empty;
+                var message = results.Errors
+                    .Where(x => x.PropertyName == columnName)
+                    .Select(x => x.ErrorMessage)
+                    .FirstOrDefault();
+                if (HasExistingValue) message = "Такой критерий уже есть.";
+                return message != null ? message : string.Empty;
+            }
         }
     }
 }

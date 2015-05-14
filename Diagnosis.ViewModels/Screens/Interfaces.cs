@@ -19,4 +19,10 @@ namespace Diagnosis.ViewModels.Screens
     {
         ICrit Crit { get; }
     }
+
+    public interface IExistTestable
+    {
+        bool WasEdited { get; }
+        bool HasExistingValue { get; set; }
+    }
 }

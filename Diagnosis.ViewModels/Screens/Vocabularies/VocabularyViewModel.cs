@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class VocabularyViewModel : CheckableBase
+    public class VocabularyViewModel : CheckableBase, IExistTestable
     {
         internal readonly Vocabulary voc;
 
@@ -61,7 +61,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool HasExistingTitle { get; set; }
+        public bool HasExistingValue { get; set; }
 
         public bool WasEdited { get; set; }
 
@@ -78,7 +78,7 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => x.PropertyName == columnName)
                     .Select(x => x.ErrorMessage)
                     .FirstOrDefault();
-                if (HasExistingTitle) message = "Такой словарь уже есть.";
+                if (HasExistingValue) message = "Такой словарь уже есть.";
                 return message != null ? message : string.Empty;
             }
         }

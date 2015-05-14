@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class SpecialityViewModel : ViewModelBase
+    public class SpecialityViewModel : ViewModelBase, IExistTestable
     {
         internal readonly Speciality spec;
 
@@ -37,7 +37,7 @@ namespace Diagnosis.ViewModels.Screens
             get { return spec.IsDirty; }
         }
 
-        public bool HasExistingTitle { get; set; }
+        public bool HasExistingValue { get; set; }
 
         public bool WasEdited { get; set; }
 
@@ -54,7 +54,7 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => x.PropertyName == columnName)
                     .Select(x => x.ErrorMessage)
                     .FirstOrDefault();
-                if (HasExistingTitle) message = "Такая специальность уже есть.";
+                if (HasExistingValue) message = "Такая специальность уже есть.";
                 return message != null ? message : string.Empty;
             }
         }

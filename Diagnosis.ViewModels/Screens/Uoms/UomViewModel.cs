@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class UomViewModel : CheckableBase
+    public class UomViewModel : CheckableBase, IExistTestable
     {
         internal readonly Uom uom;
 
@@ -121,7 +121,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool HasExistingDescrAbbr { get; set; }
+        public bool HasExistingValue { get; set; }
 
         public bool WasEdited { get; set; }
 
@@ -129,8 +129,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                if (!WasEdited)
-                    return string.Empty;
+                if (!WasEdited) return string.Empty;
 
                 var results = uom.SelfValidate();
                 if (results == null)
@@ -142,7 +141,7 @@ namespace Diagnosis.ViewModels.Screens
                     .FirstOrDefault();
 
                 // оригинальная ошибка валидации остается
-                if (message == null && HasExistingDescrAbbr && UomValidator.TestExistingFor.Contains(columnName))
+                if (message == null && HasExistingValue && UomValidator.TestExistingFor.Contains(columnName))
                     message = "Такая единица уже есть.";
 
                 if (columnName == "ValueInBase" && ValueInBase.CompareTo(0) <= 0)
@@ -175,6 +174,8 @@ namespace Diagnosis.ViewModels.Screens
             // validate linked fields
             if (UomValidator.TestExistingFor.Contains(e.PropertyName))
                 OnPropertyChanged(UomValidator.TestExistingFor);
+
+            WasEdited = true;
         }
 
         private void Type_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

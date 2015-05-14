@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class WordViewModel : HierarchicalBase<WordViewModel>
+    public class WordViewModel : HierarchicalBase<WordViewModel>, IExistTestable
     {
         internal readonly Word word;
 
@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public bool HasExistingTitle { get; set; }
+        public bool HasExistingValue { get; set; }
         public bool WasEdited { get; set; }
 
         public override string this[string columnName]
@@ -108,7 +108,7 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => x.PropertyName == columnName)
                     .Select(x => x.ErrorMessage)
                     .FirstOrDefault();
-                if (HasExistingTitle) message = "Такое слово уже есть.";
+                if (HasExistingValue) message = "Такое слово уже есть.";
                 return message != null ? message : string.Empty;
             }
         }
