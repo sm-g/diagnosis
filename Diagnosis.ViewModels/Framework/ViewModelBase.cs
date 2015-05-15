@@ -72,8 +72,6 @@ namespace Diagnosis.ViewModels
                     return string.Empty;
 
                 var results = validatableEntity.SelfValidate();
-                if (results == null)
-                    return string.Empty;
 
                 var message = results.Errors
                     .Where(x => x.PropertyName == columnName ||
@@ -85,7 +83,7 @@ namespace Diagnosis.ViewModels
                 if (exTestable != null && exTestable.HasExistingValue)
                     message = exTestable.ThisValueExistsMessage;
 
-                return message ?? string.Empty;
+                return message;
             }
         }
         #endregion

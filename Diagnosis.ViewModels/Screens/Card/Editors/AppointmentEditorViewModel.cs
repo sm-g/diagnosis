@@ -16,33 +16,19 @@ namespace Diagnosis.ViewModels.Screens
         public AppointmentEditorViewModel(Appointment app)
         {
             this.app = app;
-            columnToPropertyMap = new Dictionary<string, string>() {
-                {"Date", "DateAndTime"},
-                {"Time", "DateAndTime"}
-            };
 
             app.PropertyChanged += app_PropertyChanged;
             (app as IEditableObject).BeginEdit();
             (app.Course as IEditableObject).BeginEdit();
+
+            Appointment = new AppointmentViewModel(app);
 
             Title = "Редактирование осмотра";
             HelpTopic = "editholder";
             WithHelpButton = true;
 
         }
-
-        public DateTime Time
-        {
-            get { return app.DateAndTime; }
-            set { app.DateAndTime = app.DateAndTime.Date.Add(value.TimeOfDay); }
-        }
-
-        public DateTime Date
-        {
-            get { return app.DateAndTime.Date; }
-            set { app.DateAndTime = value.Add(app.DateAndTime.TimeOfDay); }
-        }
-
+        public AppointmentViewModel Appointment { get; private set; }
         public RelayCommand CorrectCourseDatesCommand
         {
             get
@@ -50,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     app.Course.FitDatesToApps();
-                    OnPropertyChanged("Date", "Time");
+                    OnPropertyChanged(() => Appointment);
                     OnPropertyChanged(() => DateTimeInvalid);
                 });
             }
@@ -91,6 +77,7 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 app.PropertyChanged -= app_PropertyChanged;
+                Appointment.Dispose();
             }
             base.Dispose(disposing);
         }

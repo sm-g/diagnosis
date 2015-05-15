@@ -24,14 +24,14 @@
             <Label Content="_Дата"
                    Target="{Binding ElementName=date}" />
             <DatePicker x:Name="date"
-                        Text="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                        Text="{Binding Appointment.Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         </DockPanel>
         <DockPanel>
             <Label Content="_Время"
                    Target="{Binding ElementName=time}" />
             <ex:TimePicker x:Name="time"
                            TextElement.FontSize="{StaticResource ContentFontSize}"
-                           Value="{Binding Time, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                           Value="{Binding Appointment.Time, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         </DockPanel>
         <DockPanel Visibility="{Binding DateTimeInvalid, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Label />

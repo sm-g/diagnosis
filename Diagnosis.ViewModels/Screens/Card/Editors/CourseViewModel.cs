@@ -31,34 +31,19 @@ namespace Diagnosis.ViewModels.Screens
 
         public DateTime Start
         {
-            get
-            {
-                return course.Start.Date;
-            }
-            set
-            {
-                course.Start = value;
-            }
+            get { return course.Start.Date; }
+            set { course.Start = value; }
         }
 
         public bool IsEnded
         {
-            get
-            {
-                return course.IsEnded;
-            }
+            get { return course.IsEnded; }
         }
 
         public DateTime? End
         {
-            get
-            {
-                return course.End;
-            }
-            set
-            {
-                course.End = value;
-            }
+            get { return course.End; }
+            set { course.End = value; }
         }
 
         #endregion Model
