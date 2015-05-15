@@ -33,13 +33,22 @@
             </Style>
 
             <InputBindingCollection x:Shared="False"
-                                    x:Key="SearchResultInputBindings">
+                                    x:Key="HolderResultInputBindings">
                 <KeyBinding Key="Space"
                             Command="{Binding OpenCommand}" />
                 <KeyBinding Key="Enter"
                             Command="{Binding OpenCommand}" />
                 <MouseBinding  MouseAction="LeftDoubleClick"
                                Command="{Binding OpenCommand}" />
+            </InputBindingCollection>
+            <InputBindingCollection x:Shared="False"
+                                    x:Key="CritResultInputBindings">
+                <KeyBinding Key="Space"
+                            Command="{Binding OpenPatientCommand}" />
+                <KeyBinding Key="Enter"
+                            Command="{Binding OpenPatientCommand}" />
+                <MouseBinding MouseAction="LeftDoubleClick"
+                              Command="{Binding OpenPatientCommand}" />
             </InputBindingCollection>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -124,7 +133,7 @@
                         <DataTemplate>
                             <ListBox ItemsSource="{Binding Patients}"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                <ListBox.GroupStyle>
+                                <!--<ListBox.GroupStyle>
                                     <GroupStyle>
                                         <GroupStyle.ContainerStyle>
                                             <Style TargetType="GroupItem">
@@ -150,8 +159,14 @@
                                             </Style>
                                         </GroupStyle.ContainerStyle>
                                     </GroupStyle>
-                                </ListBox.GroupStyle>
-
+                                </ListBox.GroupStyle>-->
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}"
+                                           BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                        <Setter Property="diag:Attached.InputBindings"
+                                                Value="{StaticResource CritResultInputBindings}" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <search:CritSearchResult />
@@ -168,7 +183,7 @@
                                     <Style TargetType="TreeViewItem"
                                            BasedOn="{StaticResource {x:Type TreeViewItem}}">
                                         <Setter Property="diag:Attached.InputBindings"
-                                                Value="{StaticResource SearchResultInputBindings}" />
+                                                Value="{StaticResource HolderResultInputBindings}" />
                                     </Style>
                                 </TreeView.ItemContainerStyle>
                                 <TreeView.ItemTemplate>

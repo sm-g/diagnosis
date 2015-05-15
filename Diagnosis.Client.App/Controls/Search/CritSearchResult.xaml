@@ -13,44 +13,74 @@
                                               IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
              d:DesignWidth="250">
-    <UserControl.Resources>
+    <UserControl.Resources>        
+        <InputBindingCollection x:Shared="False"
+                                x:Key="CritInputBindings">
+            <KeyBinding Key="Enter"
+                        Command="{Binding DataContext.EditCriterionCommand,
+                                          ElementName=searchResult}"
+                        CommandParameter="{Binding}" />
+            <MouseBinding MouseAction="LeftDoubleClick"
+                          Command="{Binding DataContext.EditCriterionCommand,
+                                            ElementName=searchResult}"
+                          CommandParameter="{Binding}" />
+        </InputBindingCollection>
     </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <headers:Holder DataContext="{Binding Patient}" />
-        <diag:CommaList ItemsSource="{Binding TopHrs}"
-                        Visibility="{Binding TopHrs.Count,
-                                             Converter={StaticResource MoreThanToVisibility}}"
-                        Grid.Column="1">
-            <diag:CommaList.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource hrItems}}"
-                               TextWrapping="Wrap">
-                    </TextBlock>
-                </DataTemplate>
-            </diag:CommaList.ItemTemplate>
-            <diag:CommaList.Separator>
-                <TextBlock Text="; " />
-            </diag:CommaList.Separator>
-        </diag:CommaList>
+        <Border BorderThickness="0 0 0 1"
+                BorderBrush="Gray">
+            <DockPanel>
+                <headers:Holder DataContext="{Binding Patient}"
+                                DockPanel.Dock="Top" />
+                <diag:CommaList ItemsSource="{Binding TopHrs}"
+                                Visibility="{Binding TopHrs.Count,
+                                                 Converter={StaticResource MoreThanToVisibility}}"
+                                Grid.Column="1">
+                    <diag:CommaList.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource hrItems}}"
+                                       TextWrapping="Wrap">
+                            </TextBlock>
+                        </DataTemplate>
+                    </diag:CommaList.ItemTemplate>
+                    <diag:CommaList.Separator>
+                        <TextBlock Text="; " />
+                    </diag:CommaList.Separator>
+                </diag:CommaList>
+            </DockPanel>
+        </Border>
         <ListBox ItemsSource="{Binding Criteria}"
+                 Background="Transparent"
                  Grid.Row="1"
+                 Grid.IsSharedSizeScope="True"
                  Grid.ColumnSpan="2">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}"
+                       BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="Background"
+                            Value="Transparent" />
+
+                    <Setter Property="diag:Attached.InputBindings"
+                            Value="{StaticResource CritInputBindings}" />
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="code" />
                             <ColumnDefinition />
-                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto"
+                                              SharedSizeGroup="value" />
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Code}"
@@ -63,13 +93,13 @@
                                    Grid.Column="1" />
                         <TextBlock Text="{Binding Value}"
                                    Grid.Column="2" />
-                        <StackPanel Grid.Column="3"
+                        <!--<StackPanel Grid.Column="3"
                                     Style="{StaticResource hidingListBoxItemPanel}">
                             <Button Content="edit"
                                     Command="{Binding DataContext.EditCriterionCommand,
                                                       ElementName=searchResult}"
                                     CommandParameter="{Binding}" />
-                        </StackPanel>
+                        </StackPanel>-->
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

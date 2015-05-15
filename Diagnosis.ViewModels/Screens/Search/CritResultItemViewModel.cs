@@ -24,7 +24,16 @@ namespace Diagnosis.ViewModels.Screens
         public Patient Patient { get { return _patient; } }
         public IEnumerable<Criterion> Criteria { get { return _crits; } }
         public IEnumerable<HealthRecord> TopHrs { get { return _hrs; } }
-
+        public RelayCommand OpenPatientCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    this.Send(Event.OpenPatient, Patient.AsParams(MessageKeys.Patient));
+                });
+            }
+        }
         public RelayCommand<Criterion> EditCriterionCommand
         {
             get
