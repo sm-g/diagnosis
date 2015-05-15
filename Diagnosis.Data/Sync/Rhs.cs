@@ -45,8 +45,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<Speciality, bool>> EqualsByVal(Speciality x)
         {
-            return (y) =>
-                 (x as Speciality).Title == (y as Speciality).Title;
+            return y =>
+                 x.Title.ToLower() == y.Title.ToLower();
         }
     }
 
@@ -75,8 +75,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<HrCategory, bool>> EqualsByVal(HrCategory x)
         {
-            return (y) =>
-                      (x as HrCategory).Title == (y as HrCategory).Title;
+            return y =>
+                      x.Title.ToLower() == y.Title.ToLower();
         }
     }
 
@@ -110,8 +110,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<Vocabulary, bool>> EqualsByVal(Vocabulary x)
         {
-            return (y) =>
-                     (x as Vocabulary).Title == (y as Vocabulary).Title;
+            return y =>
+                     x.Title.ToLower() == y.Title.ToLower();
         }
     }
 
@@ -121,9 +121,9 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<SpecialityIcdBlocks, bool>> EqualsByVal(SpecialityIcdBlocks x)
         {
-            return (y) =>
-                    (x as SpecialityIcdBlocks).IcdBlock == (y as SpecialityIcdBlocks).IcdBlock &&
-                    (x as SpecialityIcdBlocks).Speciality.Title == (y as SpecialityIcdBlocks).Speciality.Title;
+            return y =>
+                    x.IcdBlock == y.IcdBlock &&
+                    x.Speciality.Title.ToLower() == y.Speciality.Title.ToLower();
         }
     }
 
@@ -133,9 +133,9 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<SpecialityVocabularies, bool>> EqualsByVal(SpecialityVocabularies x)
         {
-            return (y) =>
-                    (x as SpecialityVocabularies).Vocabulary.Title == (y as SpecialityVocabularies).Vocabulary.Title &&
-                    (x as SpecialityVocabularies).Speciality.Title == (y as SpecialityVocabularies).Speciality.Title;
+            return y =>
+                    x.Vocabulary.Title.ToLower() == y.Vocabulary.Title.ToLower() &&
+                    x.Speciality.Title.ToLower() == y.Speciality.Title.ToLower();
         }
     }
 
@@ -145,8 +145,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<UomType, bool>> EqualsByVal(UomType x)
         {
-            return (y) =>
-                    (x as UomType).Title == (y as UomType).Title;
+            return y =>
+                    x.Title.ToLower() == y.Title.ToLower();
         }
 
         protected override Expression<Func<TUpdate, UomType>> GetGetterInner<TUpdate>()
@@ -177,10 +177,10 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<Uom, bool>> EqualsByVal(Uom x)
         {
-            return (y) =>
-                    (x as Uom).Abbr == (y as Uom).Abbr &&
-                    (x as Uom).Description == (y as Uom).Description &&
-                    (x as Uom).Type.Title == (y as Uom).Type.Title;
+            return y =>
+                    x.Abbr.ToLower() == y.Abbr.ToLower() &&
+                    x.Description.ToLower() == y.Description.ToLower() &&
+                    x.Type.Title.ToLower().ToLower() == y.Type.Title.ToLower();
         }
 
         protected override Expression<Func<TUpdate, Uom>> GetGetterInner<TUpdate>()
@@ -219,12 +219,12 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<UomFormat, bool>> EqualsByVal(UomFormat x)
         {
-            return (y) =>
-                     (x as UomFormat).String == (y as UomFormat).String &&
-                     (x as UomFormat).MeasureValue == (y as UomFormat).MeasureValue &&
-                     (x as UomFormat).Uom.Abbr == (y as UomFormat).Uom.Abbr &&
-                     (x as UomFormat).Uom.Description == (y as UomFormat).Uom.Description &&
-                     (x as UomFormat).Uom.Type.Title == (y as UomFormat).Uom.Type.Title;
+            return y =>
+                     x.String.ToLower() == y.String.ToLower() &&
+                     x.MeasureValue == y.MeasureValue &&
+                     x.Uom.Abbr.ToLower() == y.Uom.Abbr.ToLower() &&
+                     x.Uom.Description.ToLower() == y.Uom.Description.ToLower() &&
+                     x.Uom.Type.Title.ToLower() == y.Uom.Type.Title.ToLower();
         }
     }
     internal class RHCriterion : RH<Criterion>
@@ -233,8 +233,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<Criterion, bool>> EqualsByVal(Criterion x)
         {
-            return (y) =>
-                     (x as Criterion).Code == (y as Criterion).Code;
+            return y =>
+                     x.Code.ToLower() == y.Code.ToLower();
         }
     }
 
@@ -245,8 +245,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<CriteriaGroup, bool>> EqualsByVal(CriteriaGroup x)
         {
-            return (y) =>
-                     x.Description == y.Description;
+            return y =>
+                     x.Description.ToLower() == y.Description.ToLower();
         }
     }
     internal class RHEstimator : RH<Estimator>
@@ -255,8 +255,8 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<Estimator, bool>> EqualsByVal(Estimator x)
         {
-            return (y) =>
-                     x.Description == y.Description;
+            return y =>
+                     x.Description.ToLower() == y.Description.ToLower();
         }
     }
     internal class RHWord : RH<Word>
@@ -266,7 +266,7 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<Word, bool>> EqualsByVal(Word x)
         {
-            return (y) =>
+            return y =>
                      x.Title.ToLower() == y.Title.ToLower();
         }
     }
@@ -275,7 +275,7 @@ namespace Diagnosis.Data.Sync
 
         public override Expression<Func<IEntity, bool>> EqualsByVal(IEntity x)
         {
-            return (y) => false;
+            return y => false;
         }
     }
 }
