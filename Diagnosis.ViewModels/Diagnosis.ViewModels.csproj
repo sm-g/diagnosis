@@ -250,12 +250,12 @@
     <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaItemViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaViewModel.cs" />
-    <Compile Include="Screens\Criteria\CriteriaGroupViewModel.cs" />
+    <Compile Include="Screens\Criteria\Editors\CriteriaGroupViewModel.cs" />
     <Compile Include="Screens\Criteria\CritNavigator.cs" />
-    <Compile Include="Screens\Criteria\EstimatorViewModel.cs" />
-    <Compile Include="Screens\Criteria\CriterionViewModel.cs" />
-    <Compile Include="Screens\Criteria\EstimatorEditorViewModel.cs" />
-    <Compile Include="Screens\Criteria\CriteriaGroupEditorViewModel.cs" />
+    <Compile Include="Screens\Criteria\Editors\EstimatorViewModel.cs" />
+    <Compile Include="Screens\Criteria\Editors\CriterionViewModel.cs" />
+    <Compile Include="Screens\Criteria\Editors\EstimatorEditorViewModel.cs" />
+    <Compile Include="Screens\Criteria\Editors\CriteriaGroupEditorViewModel.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - ClipboardTarget.cs" />
     <Compile Include="Screens\HealthRecords\HrListViewModel - DragDrop.cs" />
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
@@ -263,7 +263,7 @@
     <Compile Include="Controls\ConfirmPasswordViewModel.cs" />
     <Compile Include="Screens\HrCategoryViewModel.cs" />
     <Compile Include="Screens\Interfaces.cs" />
-    <Compile Include="Screens\Criteria\CriterionEditorViewModel.cs" />
+    <Compile Include="Screens\Criteria\Editors\CriterionEditorViewModel.cs" />
     <Compile Include="Screens\Search\HrsSearchResultViewModel.cs" />
     <Compile Include="Screens\Search\QueryBlockViewModel.cs" />
     <Compile Include="Screens\Search\QueryEditorViewModel.cs" />
