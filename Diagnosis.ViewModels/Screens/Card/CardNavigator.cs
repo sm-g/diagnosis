@@ -15,6 +15,8 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override string GetCurrentPathDescription(HierViewer<Patient, Course, Appointment, IHrsHolder> viewer, CardItemViewModel current)
         {
+            if (current == null) return null;
+
             string delim = " \\ ";
             string result = NameFormatter.GetFullName(viewer.OpenedRoot) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedRoot.CreatedAt);
 

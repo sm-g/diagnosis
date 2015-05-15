@@ -175,7 +175,9 @@ namespace Diagnosis.ViewModels.Screens
         {
             Contract.Requires(CurrentEditor != null);
 
+
             var crit = (CurrentEditor as ICritKeeper).Crit;
+            //viewer.Close(crit);
             CurrentEditor.Dispose();
             CurrentEditor = null;
 
@@ -185,6 +187,8 @@ namespace Diagnosis.ViewModels.Screens
                 if (crit.IsTransient)
                     OnDeleteCrit(crit);
             }
+
+            Navigator.NavigateTo(null);
         }
         private void ShowEditor(ICrit crit)
         {

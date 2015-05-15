@@ -23,6 +23,7 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly ILog logger = LogManager.GetLogger(typeof(AbstractNavigatorViewModel<,,,,>));
         private TItem _curHolder;
         private I lastOpened;
+        private bool inNavigating;
         private bool _noTop;
 
         public AbstractNavigatorViewModel(HierViewer<T1, T2, T3, I> viewer)
@@ -48,8 +49,6 @@ namespace Diagnosis.ViewModels.Screens
         public event EventHandler<ObjectEventArgs> CurrentChanged;
 
         public event EventHandler<DomainEntityEventArgs> Navigating;
-        private bool inNavigating;
-
         public bool NoTopItems
         {
             get
@@ -80,6 +79,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     OnCurrentChanging();
 
+                    OnPropertyChanged(() => CurrentTitle);
                     OnPropertyChanged(() => Current);
                     OnCurrentChanged(new ObjectEventArgs(value != null ? value : null));
                 }
@@ -186,8 +186,6 @@ namespace Diagnosis.ViewModels.Screens
             Current.ExpandParents();
 
             CurrentChanging();
-
-            OnPropertyChanged(() => CurrentTitle);
         }
         protected void OnAdded(I node)
         {
@@ -197,11 +195,7 @@ namespace Diagnosis.ViewModels.Screens
                 NavigateTo(node);
             }
         }
-        /// <summary>
-        /// при открытии подписываемся на измение коллекций доччерних сущностей
-        /// сохраняем последний открытый
-        ///
-        /// </summary>
+
         private void viewer_OpenedChanged(object sender, OpeningEventArgs<I> e)
         {
             logger.DebugFormat("{0} {1} {2}", e.action, e.entity.GetType().Name, e.entity);

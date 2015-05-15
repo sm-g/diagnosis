@@ -31,7 +31,9 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         protected override string GetCurrentPathDescription(HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer, CriteriaItemViewModel current)
-        {
+        {            
+            if (current == null) return null;
+            
             string delim = " \\ ";
             var sb = new StringBuilder();
 

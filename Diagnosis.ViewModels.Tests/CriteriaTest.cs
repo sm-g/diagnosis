@@ -46,6 +46,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             crit.Open(cgr[1]);
             Assert.AreEqual(cgr[1], crit.Navigator.Current.Crit);
+            Assert.AreEqual(cgr[1], (crit.CurrentEditor as ICritKeeper).Crit);
         }
 
         [TestMethod]
@@ -53,6 +54,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             crit.Open(cr[1]);
             Assert.AreEqual(cr[1], crit.Navigator.Current.Crit);
+            Assert.AreEqual(cr[1], (crit.CurrentEditor as ICritKeeper).Crit);
         }
 
         [TestMethod]
@@ -74,6 +76,19 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(cgr[1].Criteria.LastOrDefault(), crit.Navigator.Current.Crit);
         }
 
+        [TestMethod]
+        public void Reopen()
+        {
+            crit.Open(cgr[1]);
+            crit.CurrentEditor.CancelCommand.Execute(null);
+
+            Assert.AreEqual(null, crit.Navigator.Current);
+
+            crit.Open(cgr[1]);
+
+            Assert.AreEqual(cgr[1], crit.Navigator.Current.Crit);
+            Assert.AreEqual(cgr[1], (crit.CurrentEditor as ICritKeeper).Crit);
+        }
         #endregion Opening
 
         #region Saving
