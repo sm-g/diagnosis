@@ -1,12 +1,8 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using log4net;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics.Contracts;
 using System.Linq;
-
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -40,8 +36,9 @@ namespace Diagnosis.ViewModels.Screens
             var p = holder.GetPatient();
             if (!roots.Contains(p))
             {
-                roots.Add(p);
+                // first create ItemVm
                 var itemVm = new CardItemViewModel(p);
+                roots.Add(p);
                 TopItems.Add(itemVm);
             }
         }
@@ -61,10 +58,9 @@ namespace Diagnosis.ViewModels.Screens
         protected internal override CardItemViewModel FindItemVmOf(IHrsHolder node)
         {
             return TopItems.FindHolderKeeperOf(node);
-
         }
 
-        protected override void OnRootClosed(Patient patient)
+        protected override void OnRootRemoved(Patient patient)
         {
             patient.CoursesChanged -= patient_CoursesChanged;
             foreach (var item in patient.Courses)
@@ -73,7 +69,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        protected override void OnRootOpened(Patient patient)
+        protected override void OnRootAdded(Patient patient)
         {
             patient.CoursesChanged += patient_CoursesChanged;
             foreach (var item in patient.Courses)
@@ -86,45 +82,60 @@ namespace Diagnosis.ViewModels.Screens
         // при удалении открытого открываем рядом или выше, если это был последний на уровне
         private void patient_CoursesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            Course course;
+            switch (e.Action)
             {
-                var course = (Course)e.NewItems[0];
-                course.AppointmentsChanged += course_AppointmentsChanged;
+                case NotifyCollectionChangedAction.Add:
+                    course = (Course)e.NewItems[0];
+                    course.AppointmentsChanged += course_AppointmentsChanged;
 
-                NavigateTo(course);
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var course = (Course)e.OldItems[0];
-                course.AppointmentsChanged -= course_AppointmentsChanged;
+                    OnAdded(course);
+                    break;
 
-                if (viewer.OpenedMiddle == course)
-                {
-                    viewer.Close(course);
-                    IHrsHolder near = viewer.OpenedRoot.Courses.ElementNear(e.OldStartingIndex);
-                    NavigateTo(near ?? viewer.OpenedRoot);
-                }
+                case NotifyCollectionChangedAction.Remove:
+                    course = (Course)e.OldItems[0];
+                    course.AppointmentsChanged -= course_AppointmentsChanged;
+
+                    if (viewer.OpenedMiddle == course)
+                    {
+                        viewer.Close(course);
+                        if (NavigateUpperOnRemoved)
+                        {
+                            IHrsHolder near = viewer.OpenedRoot.Courses.ElementNear(e.OldStartingIndex);
+                            NavigateTo(near ?? viewer.OpenedRoot);
+                        }
+                    }
+                    break;
             }
         }
 
         private void course_AppointmentsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            Appointment app;
+            switch (e.Action)
             {
-                // (сохраняется  еще при закрытии дргой страницы)
-                NavigateTo((Appointment)e.NewItems[0]);
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var app = (Appointment)e.OldItems[0];
-                if (viewer.OpenedLeaf == app)
-                {
-                    viewer.Close(app);
-                    IHrsHolder near = viewer.OpenedMiddle.Appointments.ElementNear(e.OldStartingIndex);
-                    NavigateTo(near ?? viewer.OpenedMiddle);
-                }
+                case NotifyCollectionChangedAction.Add:
+                    app = (Appointment)e.NewItems[0];
+                    // (сохраняется  еще при закрытии дргой страницы)
+
+                    OnAdded(app);
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    app = (Appointment)e.OldItems[0];
+                    if (viewer.OpenedLeaf == app)
+                    {
+                        viewer.Close(app);
+                        if (NavigateUpperOnRemoved)
+                        {
+                            IHrsHolder near = viewer.OpenedMiddle.Appointments.ElementNear(e.OldStartingIndex);
+                            NavigateTo(near ?? viewer.OpenedMiddle);
+                        }
+                    }
+                    break;
             }
         }
+
         private void HightlightLastOpenedFor(CardItemViewModel vm)
         {
             vm.Children.ForAll(x => x.IsHighlighted = false);

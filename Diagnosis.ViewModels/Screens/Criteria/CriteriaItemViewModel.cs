@@ -39,7 +39,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 cg.CriteriaChanged += nested_ICrit_Changed;
             }
-            (crit as INotifyPropertyChanged).PropertyChanged += crit_PropertyChanged;
+            crit.PropertyChanged += crit_PropertyChanged;
 
             IsExpanded = true;
         }
@@ -136,7 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         (Crit as CriteriaGroup).CriteriaChanged -= nested_ICrit_Changed;
                     }
-                    (Crit as INotifyPropertyChanged).PropertyChanged -= crit_PropertyChanged;
+                    Crit.PropertyChanged -= crit_PropertyChanged;
                 }
             }
             finally

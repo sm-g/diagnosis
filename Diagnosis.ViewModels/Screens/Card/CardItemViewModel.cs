@@ -49,7 +49,7 @@ namespace Diagnosis.ViewModels.Screens
                 course.AppointmentsChanged += nested_IHrsHolders_Changed;
             }
 
-            (holder as INotifyPropertyChanged).PropertyChanged += holder_PropertyChanged;
+            holder.PropertyChanged += holder_PropertyChanged;
         }
 
         public IHrsHolder Holder { get { return holder; } }
@@ -107,7 +107,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         (Holder as Course).AppointmentsChanged -= nested_IHrsHolders_Changed;
                     }
-                    (Holder as INotifyPropertyChanged).PropertyChanged -= holder_PropertyChanged;
+                    Holder.PropertyChanged -= holder_PropertyChanged;
 
                     HolderVm.Dispose();
                 }

@@ -8,6 +8,11 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    public enum OpeningAction
+    {
+        Open, Close
+    }
+
     /// <summary>
     /// Хранит последние открытые сущности иерархии.
     ///
@@ -23,7 +28,9 @@ namespace Diagnosis.ViewModels.Screens
         where T1 : class, I
         where T2 : class, I
         where T3 : class, I
+        where I : class
     {
+        private static List<T1> rootsOpenOrder = new List<T1>();
         private T1 _openedRoot;
         private T2 _openedMiddle;
         private T3 _openedleaf;
@@ -33,9 +40,6 @@ namespace Diagnosis.ViewModels.Screens
         private Func<T3, T2> middleOf;
         private Dictionary<T1, T2> rootMiddleMap;
         private Dictionary<T2, T3> middleLeafMap;
-        private static List<T1> rootsOpenOrder = new List<T1>();
-
-        public event EventHandler<OpeningEventArgs<I>> OpenedChanged;
 
         public HierViewer(Func<T2, T1> rootOf, Func<T3, T2> middleOf, Func<T1, IEnumerable<T2>> middlesOf, Func<T2, IEnumerable<T3>> leavesOf)
         {
@@ -53,6 +57,10 @@ namespace Diagnosis.ViewModels.Screens
             middleLeafMap = new Dictionary<T2, T3>();
             rootsOpenOrder = new List<T1>(); // reset
         }
+
+        public event EventHandler<OpeningEventArgs<I>> OpenedChanged;
+
+        public static T1 LastOpenedRoot { get { return rootsOpenOrder.LastOrDefault(); } }
 
         public T1 OpenedRoot
         {
@@ -137,24 +145,6 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public bool AutoOpenChild { get; set; }
 
-        public static T1 LastOpenedRoot { get { return rootsOpenOrder.LastOrDefault(); } }
-
-        public T3 GetLastOpenedFor(T2 middle)
-        {
-            T3 leaf;
-            if (middleLeafMap.TryGetValue(middle, out leaf))
-                return leaf;
-            return null;
-        }
-
-        public T2 GetLastOpenedFor(T1 root)
-        {
-            T2 middle;
-            if (rootMiddleMap.TryGetValue(root, out middle))
-                return middle;
-            return null;
-        }
-
         public I GetLastOpenedFor(I node)
         {
             if (node is T1)
@@ -164,43 +154,29 @@ namespace Diagnosis.ViewModels.Screens
             return default(I);
         }
 
-        internal void Close(I node)
+        public void Close(I node)
         {
-            if (OpenedRoot.Equals(node))
+            if (OpenedRoot == node)
                 OpenedRoot = null;
-            else if (OpenedMiddle.Equals(node))
+            else if (OpenedMiddle == node)
                 OpenedMiddle = null;
-            else if (OpenedLeaf.Equals(node))
+            else if (OpenedLeaf == node)
                 OpenedLeaf = null;
-            else
-                throw new NotImplementedException();
         }
 
-        internal void CloseAll()
+        public void CloseAll()
         {
+            Contract.Ensures(OpenedRoot == null);
+            Contract.Ensures(OpenedMiddle == null);
+            Contract.Ensures(OpenedLeaf == null);
+
             OpenedRoot = null;
         }
 
-        internal void OpenRoot(T1 T1)
+        public void Open(I node)
         {
-            OpenedRoot = T1;
-        }
+            Contract.Requires(node != null);
 
-        internal void OpenMiddle(T2 T2)
-        {
-            OpenedRoot = rootOf(T2);
-            OpenedMiddle = T2;
-        }
-
-        internal void OpenLeaf(T3 leaf)
-        {
-            OpenedRoot = rootOf(middleOf(leaf));
-            OpenedMiddle = middleOf(leaf);
-            OpenedLeaf = leaf;
-        }
-
-        internal void Open(I node)
-        {
             if (node is T1)
                 OpenRoot(node as T1);
             else if (node is T2)
@@ -211,7 +187,7 @@ namespace Diagnosis.ViewModels.Screens
                 throw new NotImplementedException();
         }
 
-        internal void RemoveFromHistory(I node)
+        public void RemoveFromHistory(I node)
         {
             if (node is T1)
             {
@@ -233,6 +209,60 @@ namespace Diagnosis.ViewModels.Screens
             }
             else
                 throw new NotImplementedException();
+        }
+
+        protected virtual void OnOpenedChanged(OpeningEventArgs<I> e)
+        {
+            var h = OpenedChanged;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
+
+        private T3 GetLastOpenedFor(T2 middle)
+        {
+            T3 leaf;
+            if (middleLeafMap.TryGetValue(middle, out leaf))
+                return leaf;
+            return null;
+        }
+
+        private T2 GetLastOpenedFor(T1 root)
+        {
+            T2 middle;
+            if (rootMiddleMap.TryGetValue(root, out middle))
+                return middle;
+            return null;
+        }
+        private void OpenRoot(T1 T1)
+        {
+            OpenedRoot = T1;
+        }
+
+        private void OpenMiddle(T2 T2)
+        {
+            Contract.Ensures(OpenedRoot != null);
+
+            OpenedRoot = rootOf(T2);
+            OpenedMiddle = T2;
+        }
+
+        private void OpenLeaf(T3 leaf)
+        {
+            Contract.Ensures(OpenedRoot != null);
+            Contract.Ensures(OpenedMiddle != null);
+
+            var middle = middleOf(leaf);
+            if (middle == null)
+                throw new ArgumentException("Can not open detached leaf");
+            var root = rootOf(middle);
+            if (root == null)
+                throw new ArgumentException("Can not open detached middle");
+
+            OpenedRoot = root;
+            OpenedMiddle = middle;
+            OpenedLeaf = leaf;
         }
 
         private void OnRootOpened(T1 root)
@@ -260,6 +290,7 @@ namespace Diagnosis.ViewModels.Screens
         private void OnMiddleOpened(T2 middle)
         {
             Contract.Requires(OpenedRoot == rootOf(middle));
+
             var e = new OpeningEventArgs<I>(middle, OpeningAction.Open);
             OnOpenedChanged(e);
 
@@ -283,6 +314,7 @@ namespace Diagnosis.ViewModels.Screens
         private void OnLeafOpened(T3 leaf)
         {
             Contract.Requires(OpenedMiddle == middleOf(leaf));
+
             var e = new OpeningEventArgs<I>(leaf, OpeningAction.Open);
             OnOpenedChanged(e);
 
@@ -293,15 +325,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             var e = new OpeningEventArgs<I>(leaf, OpeningAction.Close);
             OnOpenedChanged(e);
-        }
-
-        protected virtual void OnOpenedChanged(OpeningEventArgs<I> e)
-        {
-            var h = OpenedChanged;
-            if (h != null)
-            {
-                h(this, e);
-            }
         }
     }
 
@@ -317,10 +340,5 @@ namespace Diagnosis.ViewModels.Screens
             this.action = action;
             this.entity = entity;
         }
-    }
-
-    public enum OpeningAction
-    {
-        Open, Close
     }
 }

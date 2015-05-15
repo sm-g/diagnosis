@@ -15,15 +15,17 @@ namespace Diagnosis.ViewModels.Screens
             : base(viewer)
         {
             this.beforeInsert = beforeInsert;
+            NavigateUpperOnRemoved = false;
         }
 
         public override void AddRootItemFor(ICrit crit)
         {
-            var p = crit.GetEstimator();
-            if (!roots.Contains(p))
+            var est = crit.GetEstimator();
+            if (!roots.Contains(est))
             {
-                roots.Add(p);
-                var itemVm = new CriteriaItemViewModel(p, beforeInsert);
+                // first create ItemVm
+                var itemVm = new CriteriaItemViewModel(est, beforeInsert);
+                roots.Add(est);
                 TopItems.Add(itemVm);
             }
         }
@@ -53,6 +55,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             return sb.ToString();
         }
+
         protected override void CurrentChanging()
         {
             // close nested
@@ -68,16 +71,7 @@ namespace Diagnosis.ViewModels.Screens
             return TopItems.FindCritKeeperOf(crit);
         }
 
-        protected override void OnRootClosed(Estimator est)
-        {
-            est.CriteriaGroupsChanged -= est_GroupsChanged;
-            foreach (var item in est.CriteriaGroups)
-            {
-                item.CriteriaChanged -= crGr_CriteriaChanged;
-            }
-        }
-
-        protected override void OnRootOpened(Estimator est)
+        protected override void OnRootAdded(Estimator est)
         {
             est.CriteriaGroupsChanged += est_GroupsChanged;
             foreach (var item in est.CriteriaGroups)
@@ -86,25 +80,39 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        protected override void OnRootRemoved(Estimator est)
+        {
+            est.CriteriaGroupsChanged -= est_GroupsChanged;
+            foreach (var item in est.CriteriaGroups)
+            {
+                item.CriteriaChanged -= crGr_CriteriaChanged;
+            }
+        }
+
         private void est_GroupsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            CriteriaGroup crGr;
+            switch (e.Action)
             {
-                var crGr = (CriteriaGroup)e.NewItems[0];
-                crGr.CriteriaChanged += crGr_CriteriaChanged;
-                NavigateTo(crGr);
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var crGr = (CriteriaGroup)e.OldItems[0];
-                crGr.CriteriaChanged -= crGr_CriteriaChanged;
+                case NotifyCollectionChangedAction.Add:
+                    crGr = (CriteriaGroup)e.NewItems[0];
+                    crGr.CriteriaChanged += crGr_CriteriaChanged;
+                    OnAdded(crGr);
+                    break;
 
-                if (viewer.OpenedMiddle == crGr)
-                {
-                    viewer.Close(crGr);
-                    ICrit near = viewer.OpenedRoot.CriteriaGroups.ElementNear(e.OldStartingIndex);
-                    NavigateTo(near ?? viewer.OpenedRoot);
-                }
+                case NotifyCollectionChangedAction.Remove:
+                    crGr = (CriteriaGroup)e.OldItems[0];
+                    crGr.CriteriaChanged -= crGr_CriteriaChanged;
+                    if (viewer.OpenedMiddle == crGr)
+                    {
+                        viewer.Close(crGr);
+                        if (NavigateUpperOnRemoved)
+                        {
+                            ICrit near = viewer.OpenedRoot.CriteriaGroups.ElementNear(e.OldStartingIndex);
+                            NavigateTo(near ?? viewer.OpenedRoot);
+                        }
+                    }
+                    break;
             }
         }
 
@@ -112,19 +120,26 @@ namespace Diagnosis.ViewModels.Screens
         // при удалении открытого открываем рядом или выше, если это был последний
         private void crGr_CriteriaChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            Criterion cr;
+            switch (e.Action)
             {
-                NavigateTo((Criterion)e.NewItems[0]);
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var criterion = (Criterion)e.OldItems[0];
-                if (viewer.OpenedLeaf == criterion)
-                {
-                    viewer.Close(criterion);
-                    ICrit near = viewer.OpenedMiddle.Criteria.ElementNear(e.OldStartingIndex);
-                    NavigateTo(near ?? viewer.OpenedMiddle);
-                }
+                case NotifyCollectionChangedAction.Add:
+                    cr = (Criterion)e.NewItems[0];
+                    OnAdded(cr);
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    cr = (Criterion)e.OldItems[0];
+                    if (viewer.OpenedLeaf == cr)
+                    {
+                        viewer.Close(cr);
+                        if (NavigateUpperOnRemoved)
+                        {
+                            ICrit near = viewer.OpenedMiddle.Criteria.ElementNear(e.OldStartingIndex);
+                            NavigateTo(near ?? viewer.OpenedMiddle);
+                        }
+                    }
+                    break;
             }
         }
     }

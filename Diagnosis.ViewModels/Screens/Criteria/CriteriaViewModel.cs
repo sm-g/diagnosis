@@ -31,8 +31,8 @@ namespace Diagnosis.ViewModels.Screens
             Navigator = new CritNavigator(viewer, CloseEditor);
             Navigator.CurrentChanged += (s, e) =>
             {
-                var c = e.arg as CriteriaItemViewModel;
-                ShowEditor(c.Crit as ICrit);
+                var c = e.arg != null ? (e.arg as CriteriaItemViewModel).Crit : null;
+                ShowEditor(c);
             };
             Navigator.PropertyChanged += (s, e) =>
             {

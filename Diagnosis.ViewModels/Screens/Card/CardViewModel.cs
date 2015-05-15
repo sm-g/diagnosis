@@ -230,7 +230,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Открывает держателя или выделяет записи.
         /// </summary>
-        internal void Open(object toOpen, bool lastAppOrCourse = false)
+        public void Open(object toOpen, bool lastAppOrCourse = false)
         {
             Contract.Requires(toOpen != null);
 
