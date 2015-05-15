@@ -102,20 +102,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         public static Word GetWordFromCreated(Word word)
         {
             Contract.Requires(word != null);
+            Contract.Requires(word.IsTransient);
 
-            // при вставке создается другой объект
+            // несохраненное слово
+            // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
+            // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
+            var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
 
-            if (word.IsTransient)
-            {
-                // несохраненное слово
-                // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
-                // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
-                var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
-
-                if (same != null)
-                    return same;
-            }
-            return word;
+            return same; // null if transient but not in created 
         }
 
         /// <summary>

@@ -25,7 +25,8 @@ namespace Diagnosis.ViewModels.Screens
 
             Word = new WordViewModel(word);
             //Нельзя ввести слово, которое уже есть в словарях врача.
-            tester = new ExistanceTester<Word>(word, Word, Session, extraTest: w => AuthorityController.CurrentDoctor.Words.Contains(w));
+            tester = new ExistanceTester<Word>(word, Word, Session,
+                extraTest: w => AuthorityController.CurrentDoctor.Words.Contains(w));
             tester.Test();
 
             Title = "Редактирование слова";

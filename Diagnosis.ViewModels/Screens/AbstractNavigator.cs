@@ -94,20 +94,21 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<TItem> TopItems { get; private set; }
 
-        public void NavigateTo(I holder)
+        public void NavigateTo(I node)
         {
-            OnNavigating(new DomainEntityEventArgs(holder));
-            if (holder == null)
+            OnNavigating(new DomainEntityEventArgs(node));
+            if (node == null)
             {
                 viewer.CloseAll();
                 Current = null;
                 return;
             }
 
-            AddRootItemFor(holder);
-            viewer.Open(holder);
+            AddRootItemFor(node);
 
-            Contract.Assume(holder == lastOpened || viewer.AutoOpenChild);
+            lastOpened = node;
+            viewer.Open(node);
+            Contract.Assume(node == lastOpened || viewer.AutoOpenChild);
 
             Current = FindItemVmOf(lastOpened);
         }

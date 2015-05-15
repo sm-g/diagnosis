@@ -322,15 +322,18 @@ namespace Diagnosis.ViewModels.Tests
         public void CopyPasteNewWordToOtherAutocomplete()
         {
             var w = new Word("11");
+
             a.AddTag(w);
             a.SelectedTag = a.Tags.First();
+
+            // copy to clipboard with true, save before
+            session.SaveOrUpdate(w);
             a.Copy();
 
             var r2 = new SuggestionsMaker(session);
             var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
 
-            session.SaveOrUpdate(w);
-            a2.Paste();
+            a2.Paste(); // достаем из БД
 
             Assert.AreEqual(w, a2.Tags[0].Blank);
         }

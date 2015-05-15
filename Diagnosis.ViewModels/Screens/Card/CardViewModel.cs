@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
                 // add to history
                 HrEditor.Unload(); // закрываем редактор при смене активной сущности
 
-                var holder = (e.arg as CardItemViewModel).Holder;
+                var holder = e.arg != null ? (e.arg as CardItemViewModel).Holder : null;
 
                 ShowHrsList(holder);
                 ShowHeader(holder);

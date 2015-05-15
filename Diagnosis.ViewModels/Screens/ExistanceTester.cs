@@ -11,6 +11,10 @@ using System.Linq.Expressions;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// При изменении сущности проверяет, что в БД есть другая с таким же значением.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal class ExistanceTester<T> : IDisposable
          where T : IEntity
     {
@@ -20,6 +24,14 @@ namespace Diagnosis.ViewModels.Screens
         private ISession session;
         private Expression<Func<T, bool>> expr;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="vm"></param>
+        /// <param name="session"></param>
+        /// <param name="customEqTest"></param>
+        /// <param name="extraTest">Для сущности с таким же значением также верно это.</param>
         public ExistanceTester(T e, IExistTestable vm, ISession session, Expression<Func<T, bool>> customEqTest = null, Func<T, bool> extraTest = null)
         {
             Contract.Requires(e != null);

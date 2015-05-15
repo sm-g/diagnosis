@@ -267,7 +267,7 @@ namespace Diagnosis.Data.Sync
         public override Expression<Func<Word, bool>> EqualsByVal(Word x)
         {
             return (y) =>
-                     x.Title == y.Title;
+                     x.Title.ToLower() == y.Title.ToLower();
         }
     }
     class RHDummy : RH<IEntity>

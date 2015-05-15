@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Extensions));
         /// <summary>
-        /// После вставки десериализованных hio
+        /// После вставки десериализованных hio создается другой объект,
         /// нужно использовать существующие сущности (Word, IcdDisease),
         /// Comment - valueobject, в Measure меняем Word, а Uom не может быть удален между копированием и вставкой
         /// </summary>
@@ -29,12 +29,10 @@ namespace Diagnosis.ViewModels
                 Word res = null;
                 if (word.IsTransient) // новое может быть в автокомплите
                     res = SuggestionsMaker.GetWordFromCreated(word);
-
-                if (res == null) // пробуем достать из БД
+                else // пробуем достать из БД
                     using (var tr = session.BeginTransaction())
-                    {
                         res = session.Get<Word>(word.Id);
-                    }
+
                 if (res == null)
                 {
                     logger.WarnFormat("Word not synced: {0}, recreate", word);
