@@ -67,10 +67,10 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TreeView ItemsSource="{Binding Navigator.TopItems}"
-                  Grid.RowSpan="3">
+        <TreeView ItemsSource="{Binding Navigator.TopItems}">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
                        BasedOn="{StaticResource {x:Type TreeViewItem}}">
@@ -113,8 +113,13 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>
-        
-        <DockPanel>
+
+        <Button Command="{Binding AddCommand}"
+                Content="Добавить приказ"
+                VerticalAlignment="Bottom"
+                Grid.Row="1" />
+
+        <DockPanel Grid.Column="1">
             <DockPanel.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="FontSize"
@@ -139,7 +144,7 @@
         <ContentPresenter Content="{Binding CurrentEditor}"
                           Grid.Column="1"
                           Margin="10"
-                          Grid.Row="1" />
+                          Grid.RowSpan="2" />
 
         <Button Grid.Column="1"
                 Style="{StaticResource HelpButton}"
