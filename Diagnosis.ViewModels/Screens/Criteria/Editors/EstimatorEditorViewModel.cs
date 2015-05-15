@@ -75,10 +75,15 @@ namespace Diagnosis.ViewModels.Screens
         }
         protected override void OnOk()
         {
-            estimator.HeaderHrsOptions = loader.WriteOptions(QueryEditor.GetOptions());
+            var opt = QueryEditor.GetOptions();
+            estimator.HeaderHrsOptions = loader.WriteOptions(opt);
+
             (estimator as IEditableObject).EndEdit();
 
-            new Saver(Session).Save(estimator);
+            var words = opt.GetAllWords().ToArray();
+            var s = new Saver(Session);
+            s.Save(words);
+            s.Save(estimator);
         }
 
         protected override void OnCancel()

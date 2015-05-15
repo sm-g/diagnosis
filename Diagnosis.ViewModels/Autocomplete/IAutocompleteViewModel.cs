@@ -65,6 +65,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         bool IsEmpty { get; }
         bool IsPopupOpen { get; }
         void ReplaceTagsWith(IEnumerable<object> items);
+        TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false);
     }
     public interface ITagsTrackableAutocomplete
     {

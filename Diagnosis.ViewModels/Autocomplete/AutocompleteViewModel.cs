@@ -512,7 +512,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Создает тег.
         /// </summary>
-        public TagViewModel CreateTag(object content = null)
+        private TagViewModel CreateTag(object content = null)
         {
             Contract.Requires(content == null || content is string || content is ConfWithHio || content is IHrItemObject);
 

@@ -46,10 +46,15 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void OnOk()
         {
-            criterion.Options = loader.WriteOptions(QueryEditor.GetOptions());
+            var opt = QueryEditor.GetOptions();
+            criterion.Options = loader.WriteOptions(opt);
+
             (criterion as IEditableObject).EndEdit();
 
-            new Saver(Session).Save(criterion);
+            var words = opt.GetAllWords().ToArray();
+            var s = new Saver(Session);
+            s.Save(words);
+            s.Save(criterion);
         }
 
         protected override void OnCancel()

@@ -79,6 +79,14 @@ namespace Diagnosis.Models
         }
     }
 
+    public static class SearchOptionsExtensions
+    {
+        public static IEnumerable<Word> GetAllWords(this SearchOptions o)
+        {
+            return o.Children.Aggregate(o.WordsAll.Union(o.WordsAny).Union(o.WordsNot), (acc, opt) => acc.Union(opt.GetAllWords()));
+        }
+    }
+
     public static class ICritExtensions
     {
         [Pure]

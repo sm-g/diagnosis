@@ -108,6 +108,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             throw new NotImplementedException();
         }
 
+        public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

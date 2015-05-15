@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -39,7 +38,6 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(est[1], crit.Navigator.Current.Crit);
             Assert.AreEqual(est[1], (crit.CurrentEditor as ICritKeeper).Crit);
         }
-
 
         [TestMethod]
         public void OpenCrGr()
@@ -89,6 +87,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(cgr[1], crit.Navigator.Current.Crit);
             Assert.AreEqual(cgr[1], (crit.CurrentEditor as ICritKeeper).Crit);
         }
+
         #endregion Opening
 
         #region Saving
@@ -107,12 +106,30 @@ namespace Diagnosis.ViewModels.Tests
             // open near
             Assert.AreEqual(cr[1], crit.Navigator.Current.Crit);
             Assert.IsFalse(cgr[1].Criteria.Contains(newCrit));
-
         }
 
+        [TestMethod]
+        public void SaveNewWordsFromCriterionQueryEditor()
+        {
+            crit.Open(cr[1]);
+            var w = new Word("1");
+            (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w);
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            Assert.IsTrue(!w.IsTransient);
+        }
+
+        [TestMethod]
+        public void SaveNewWordsFromEstimatorQueryEditor()
+        {
+            crit.Open(est[1]);
+            var w = new Word("1");
+            (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w);
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            Assert.IsTrue(!w.IsTransient);
+        }
 
         #endregion Saving
-
-
     }
 }
