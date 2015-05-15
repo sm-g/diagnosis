@@ -54,7 +54,7 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TreeView ItemsSource="{Binding Navigator.TopCardItems}"
+        <TreeView ItemsSource="{Binding Navigator.TopItems}"
                   Grid.RowSpan="3">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem"
