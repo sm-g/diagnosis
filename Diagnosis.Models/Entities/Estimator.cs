@@ -19,7 +19,7 @@ namespace Diagnosis.Models
 
         public Estimator()
         {
-
+            Description = "";
         }
 
         public virtual event NotifyCollectionChangedEventHandler CriteriaGroupsChanged;

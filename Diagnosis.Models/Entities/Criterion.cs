@@ -23,6 +23,9 @@ namespace Diagnosis.Models
         {
             Contract.Requires(gr != null);
             Group = gr;
+            Description = "";
+            Code = "";
+            Value= "";
         }
 
         protected internal Criterion()

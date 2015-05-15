@@ -20,6 +20,7 @@ namespace Diagnosis.Models
         {
             Contract.Requires(est != null);
             Estimator = est;
+            Description = "";
         }
 
         protected internal CriteriaGroup()
