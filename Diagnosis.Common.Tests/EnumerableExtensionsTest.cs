@@ -160,5 +160,23 @@ namespace Diagnosis.Common.Tests
             var list2 = new List<string> { "2", "1" };
             Assert.IsTrue(!list.ScrambledEquals(list2));
         }
+
+        [TestMethod]
+        public void IsUniqueByTitleIgnoreCase()
+        {
+            var word1 = new { Title = "Q" };
+            var word2 = new { Title = "q" };
+            var words = new[] { word1, word2 };
+            Assert.IsFalse(words.IsUnique(x => x.Title, StringComparer.OrdinalIgnoreCase));
+        }
+
+        [TestMethod]
+        public void IsUnique()
+        {
+            var word1 = new { Title = "Q" };
+            var word2 = new { Title = "q" };
+            var words = new[] { word1, word2 };
+            Assert.IsTrue(words.IsUnique(x => x.Title));
+        }
     }
 }

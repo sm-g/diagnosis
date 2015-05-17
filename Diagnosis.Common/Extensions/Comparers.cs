@@ -29,29 +29,31 @@ namespace Diagnosis.Common
     }
     public static class Compare
     {
-        public static IEqualityComparer<TSource> By<TSource, TIdentity>(Func<TSource, TIdentity> identitySelector)
+        public static IEqualityComparer<TSource> By<TSource, TKey>(Func<TSource, TKey> identitySelector, IEqualityComparer<TKey> comparer = null)
         {
-            return new KeyEqualityComparer<TSource, TIdentity>(identitySelector);
+            return new KeyEqualityComparer<TSource, TKey>(identitySelector, comparer);
         }
     }
 
     public class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
     {
         protected readonly Func<T, TKey> keyExtractor;
+        protected readonly IEqualityComparer<TKey> comparer;
 
-        public KeyEqualityComparer(Func<T, TKey> keyExtractor)
+        public KeyEqualityComparer(Func<T, TKey> keyExtractor, IEqualityComparer<TKey> comparer = null)
         {
             this.keyExtractor = keyExtractor;
+            this.comparer = comparer ?? EqualityComparer<TKey>.Default;
         }
 
         public virtual bool Equals(T x, T y)
         {
-            return this.keyExtractor(x).Equals(this.keyExtractor(y));
+            return comparer.Equals(this.keyExtractor(x), this.keyExtractor(y));
         }
 
         public int GetHashCode(T obj)
         {
-            return this.keyExtractor(obj).GetHashCode();
+            return comparer.GetHashCode(this.keyExtractor(obj));
         }
     }
 

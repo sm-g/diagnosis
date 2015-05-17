@@ -883,7 +883,7 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
 
             // без повторов
-            Contract.Invariant(selectedOrder.Distinct().Count() == selectedOrder.Count());
+            Contract.Invariant(selectedOrder.IsUnique());
 
             //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
         }

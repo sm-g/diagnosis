@@ -291,7 +291,7 @@ namespace Diagnosis.Models
             Contract.Ensures(HrItems.Count() == willChios.Count);
             Contract.Ensures(HrItems.Select(x => x.Entity)
                 .ScrambledEquals(willChios.Select(x => x.HIO))); // same HIOs
-            Contract.Ensures(HrItems.Select(x => x.Ord).Distinct().Count() == HrItems.Count()); // Order is unique
+            Contract.Ensures(HrItems.IsUnique(x => x.Ord));
             Contract.Ensures(HrItems.Select(x => x.Word).Where(x => x != null).All(x => x.HealthRecords.Contains(this))); // word2hr relation
 
             var hrItems = HrItems.ToList();

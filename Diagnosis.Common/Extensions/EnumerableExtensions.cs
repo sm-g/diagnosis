@@ -259,7 +259,17 @@ namespace Diagnosis.Common
         {
             return numbers.Zip(numbers.Skip(1), (a, b) => (a + 1) == b).All(x => x);
         }
-
+        [Pure]
+        public static bool IsUnique<T>(this IEnumerable<T> collection)
+        {
+            return collection.Distinct().Count() == collection.Count();
+        }
+        [Pure]
+        public static bool IsUnique<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> keyExtractor, IEqualityComparer<TKey> comparer = null)
+        {
+            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            return collection.DistinctBy(keyExtractor, comparer).Count() == collection.Count();
+        }
         /// <summary>
         /// True if two lists contain same items.
         /// from http://stackoverflow.com/questions/3669970/compare-two-listt-objects-for-equality-ignoring-order
@@ -297,9 +307,9 @@ namespace Diagnosis.Common
             return cnt.Values.All(c => c == 0);
         }
 
-        public static IEnumerable<T> DistinctBy<T, TIdentity>(this IEnumerable<T> source, Func<T, TIdentity> identitySelector)
+        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> source, Func<T, TKey> identitySelector, IEqualityComparer<TKey> comparer = null)
         {
-            return source.Distinct(Compare.By(identitySelector));
+            return source.Distinct(Compare.By(identitySelector, comparer));
         }
         /// <summary>
         /// Мода. Только классы, для value надо тоже вернуть null.
