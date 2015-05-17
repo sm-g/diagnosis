@@ -129,7 +129,26 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.IsTrue(!w.IsTransient);
         }
+        [TestMethod]
+        public void DoctorCanUseNewWordsFromCritQueryEditor()
+        {
+            Load<Doctor>();
+            AuthorityController.TryLogIn(d1);
 
+            crit.Open(cr[1]);
+            var w = new Word("1");
+            (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w);
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            Assert.IsTrue(d1.Words.Contains(w));
+
+            crit.Open(est[1]);
+            var w2 = new Word("2");
+            (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w2);
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            Assert.IsTrue(d1.Words.Contains(w2));
+        }
         #endregion Saving
     }
 }

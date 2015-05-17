@@ -81,6 +81,7 @@ namespace Diagnosis.ViewModels.Screens
             (estimator as IEditableObject).EndEdit();
 
             var words = opt.GetAllWords().ToArray();
+            AuthorityController.CurrentDoctor.AddWords(words);
             var s = new Saver(Session);
             s.Save(words);
             s.Save(estimator);

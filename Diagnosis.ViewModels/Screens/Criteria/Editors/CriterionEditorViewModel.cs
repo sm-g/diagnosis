@@ -52,6 +52,7 @@ namespace Diagnosis.ViewModels.Screens
             (criterion as IEditableObject).EndEdit();
 
             var words = opt.GetAllWords().ToArray();
+            AuthorityController.CurrentDoctor.AddWords(words);
             var s = new Saver(Session);
             s.Save(words);
             s.Save(criterion);
