@@ -54,7 +54,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         bool AddQueryToSuggestions { get; set; }
 
-        void CompleteTypings();
         void StartEdit();
         void AddFromEditor(BlankType type, int index = -1);
     }
@@ -77,5 +76,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         IEnumerable<ConfWithHio> GetCHIOs();
         IEnumerable<ConfWithHio> GetCHIOsOfCompleted();
+        void CompleteTypings();
+
     }
 }

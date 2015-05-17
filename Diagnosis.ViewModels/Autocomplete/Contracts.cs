@@ -112,6 +112,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             throw new NotImplementedException();
         }
+
+
+        public void CompleteTypings()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

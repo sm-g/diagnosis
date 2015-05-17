@@ -375,6 +375,9 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var options = new SearchOptions(IsRoot);
 
+                    AutocompleteAll.CompleteTypings();
+                    AutocompleteAny.CompleteTypings();
+                    AutocompleteNot.CompleteTypings();
                     options.CWordsAll = AutocompleteAll.GetCWords().ToList();
                     options.CWordsAny = AutocompleteAny.GetCWords().ToList();
                     options.CWordsNot = AutocompleteNot.GetCWords().ToList();
@@ -409,6 +412,7 @@ namespace Diagnosis.ViewModels.Screens
                     return options;
                 }
 
+            Contract.Assume(_options != null); // можем вернуть готовые опции
             return Options;
         }
 
@@ -557,7 +561,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private void RefreshDescription()
         {
-            if (DescriptionVisible)
+            if (DescriptionVisible && inMakingOptions.CanEnter)
                 Options = MakeOptions();
         }
 

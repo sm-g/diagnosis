@@ -544,6 +544,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 if (e.PropertyName == "Query")
                 {
+                    if (EditingTag == null) // non user change
+                        return;
                     MakeSuggestions(EditingTag);
                     RefreshPopup();
                     OnPropertyChanged(() => IsEmpty);

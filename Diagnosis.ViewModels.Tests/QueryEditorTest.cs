@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -39,6 +40,18 @@ namespace Diagnosis.ViewModels.Tests
 
             var forSearch = e.GetOptions();
             Assert.AreEqual(opt, forSearch);
+        }
+
+        [TestMethod]
+        public void GetOptions_WithTypingTags()
+        {
+            var a = e.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel;
+            var t = a.AddTag("q");
+            t.Query = "1";
+
+            Assert.AreEqual(State.Typing, t.State);
+
+            e.GetOptions();
         }
     }
 }
