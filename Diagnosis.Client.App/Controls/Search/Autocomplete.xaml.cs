@@ -57,6 +57,7 @@ namespace Diagnosis.Client.App.Controls.Search
             else if (e.Key == Key.Escape)
             {
                 popup.IsOpen = false;
+                e.Handled = true;
             }
             else if (e.Key == Key.LeftShift)
             {
