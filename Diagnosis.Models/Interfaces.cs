@@ -67,7 +67,7 @@ namespace Diagnosis.Models
 
     public interface ICrit : IEntity, IDomainObject
     {
-
+        string Description { get; }
     }
 
     internal interface IHaveAuditInformation : IEntity

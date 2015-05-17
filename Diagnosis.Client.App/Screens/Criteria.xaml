@@ -34,7 +34,7 @@
                       TextElement.FontWeight="Bold"
                       Visibility="{Binding OpenCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Command="{Binding OpenCommand}" />
-            
+
             <MenuItem Header="Добавить группу"
                       InputGestureText="Insert"
                       Visibility="{Binding AddCritGroupCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -43,7 +43,7 @@
                       InputGestureText="Insert"
                       Visibility="{Binding AddCriterionCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Command="{Binding AddCriterionCommand}" />
-                             
+
             <MenuItem Header="Удалить"
                       Style="{StaticResource deleteMenuItem}"
                       Command="{Binding DeleteCommand}" />
@@ -105,7 +105,9 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Crit, StringFormat={}{0}}" TextTrimming="WordEllipsis" />
+                    <TextBlock Text="{Binding Crit, StringFormat={}{0}}"
+                               TextTrimming="WordEllipsis"
+                               ToolTip="{Binding Crit.Description}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
             <TreeView.ContextMenu>
@@ -140,7 +142,7 @@
                     </Hyperlink.Style>добавьте приказ</Hyperlink><Run>.</Run>
             </TextBlock>
         </DockPanel>
-        
+
         <ContentPresenter Content="{Binding CurrentEditor}"
                           Grid.Column="1"
                           Margin="10"

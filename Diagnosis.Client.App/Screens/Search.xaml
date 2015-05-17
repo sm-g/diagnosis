@@ -109,7 +109,15 @@
                             <ComboBox ItemsSource="{Binding Estimators}"
                                       Margin="20 0"
                                       MinWidth="150"
-                                      SelectedItem="{Binding SelectedEstimator}" />
+                                      SelectedItem="{Binding SelectedEstimator}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Description}" 
+                                                   MaxWidth="250"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                             <Button Command="{Binding EditEstimatorCommand}"
                                     DockPanel.Dock="Right"
                                     Content="edit" />

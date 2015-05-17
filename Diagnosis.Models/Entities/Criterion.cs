@@ -61,7 +61,7 @@ namespace Diagnosis.Models
         }
         public override string ToString()
         {
-            return "{0} {1}".FormatStr(Code, Description.Truncate(20));
+            return "{0} {1}".FormatStr(Code, Description.Truncate(20)).Replace(Environment.NewLine, " ");
         }
 
         public override ValidationResult SelfValidate()

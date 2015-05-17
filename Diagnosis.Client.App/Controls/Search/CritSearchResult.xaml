@@ -12,7 +12,7 @@
              d:DataContext="{d:DesignInstance design:SamplePatResultViewModel,
                                               IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
-             d:DesignWidth="250">
+             d:DesignWidth="200">
     <UserControl.Resources>        
         <InputBindingCollection x:Shared="False"
                                 x:Key="CritInputBindings">
@@ -58,7 +58,8 @@
             </DockPanel>
         </Border>
         <ListBox ItemsSource="{Binding Criteria}"
-                 Background="Transparent"
+                 Background="Transparent"                 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Grid.Row="1"
                  Grid.IsSharedSizeScope="True"
                  Grid.ColumnSpan="2">
@@ -86,10 +87,9 @@
                         <TextBlock Text="{Binding Code}"
                                    Grid.Column="0" />
                         <TextBlock Text="{Binding Description}"
-                                   MaxHeight="50"
-                                   Width="auto"
-                                   TextTrimming="WordEllipsis"
-                                   Margin="10 0"
+                                   ToolTip="{Binding Description}"                                   
+                                   TextTrimming="CharacterEllipsis"
+                                   Margin="10 0"                                   
                                    Grid.Column="1" />
                         <TextBlock Text="{Binding Value}"
                                    Grid.Column="2" />

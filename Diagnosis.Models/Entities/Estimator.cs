@@ -76,7 +76,7 @@ namespace Diagnosis.Models
         }
         public override string ToString()
         {
-            return "{0}".FormatStr(Description.Truncate(100));
+            return "{0}".FormatStr(Description.Truncate(20)).Replace(Environment.NewLine, " ");
         }
 
         public override FluentValidation.Results.ValidationResult SelfValidate()

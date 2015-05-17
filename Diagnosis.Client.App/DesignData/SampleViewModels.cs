@@ -230,9 +230,9 @@ namespace Diagnosis.Client.App.DesignData
         public static Vocabulary voc = new Vocabulary("словарь");
         public static Vocabulary voc2 = new Vocabulary("словарь 2");
 
-        public static Estimator est = new Estimator() { Description = "est" };
-        public static CriteriaGroup crg = new CriteriaGroup(est) { Description = "crgr" };
-        public static Criterion crit = new Criterion(crg) { Description = "crit", Code = "1", Value = "10", Options = "opts" };
+        public static Estimator est = new Estimator() { Description = "est with very long description" };
+        public static CriteriaGroup crg = new CriteriaGroup(est) { Description = "crgr with very long description" };
+        public static Criterion crit = new Criterion(crg) { Description = "crit with very long description", Code = "1", Value = "10", Options = "opts" };
 
         public static HrCategory[] cats = new[] {
             new HrCategory("Жалоба",1),
