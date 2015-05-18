@@ -352,7 +352,15 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    AddChildQb();
+                    SearchOptions opt = null;
+                    if (Children.Count == 0)
+                    {
+                        // copy info when making group
+                        opt = new SearchOptions();
+                        FillToOptions(opt);
+                    }
+
+                    AddChildQb(opt);
                 });
             }
         }
@@ -379,21 +387,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     var options = new SearchOptions(IsRoot);
 
-                    AutocompleteAll.CompleteTypings();
-                    AutocompleteAny.CompleteTypings();
-                    AutocompleteNot.CompleteTypings();
-                    options.CWordsAll = AutocompleteAll.GetCWords().ToList();
-                    options.CWordsAny = AutocompleteAny.GetCWords().ToList();
-                    options.CWordsNot = AutocompleteNot.GetCWords().ToList();
-
-                    options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-                    options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
-
-                    options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
-                    options.MinAny = MinAny;
-                    options.WithConf = WithConfidence;
-                    options.GroupOperator = GroupOperator;
-                    options.SearchScope = SearchScope;
+                    FillToOptions(options);
 
                     if (_options != null)
                     {
@@ -557,7 +551,25 @@ namespace Diagnosis.ViewModels.Screens
                 AddChildQb(opt);
             inFilling = false;
         }
+        private void FillToOptions(SearchOptions options)
+        {
+            AutocompleteAll.CompleteTypings();
+            AutocompleteAny.CompleteTypings();
+            AutocompleteNot.CompleteTypings();
 
+            options.CWordsAll = AutocompleteAll.GetCWords().ToList();
+            options.CWordsAny = AutocompleteAny.GetCWords().ToList();
+            options.CWordsNot = AutocompleteNot.GetCWords().ToList();
+
+            options.MeasuresAll = AutocompleteAll.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+            options.MeasuresAny = AutocompleteAny.GetCHIOs().Where(x => x.HIO is MeasureOp).Select(x => x.HIO).Cast<MeasureOp>().ToList();
+
+            options.Categories = SelectedCategories.Select(cat => cat.category).ToList();
+            options.MinAny = MinAny;
+            options.WithConf = WithConfidence;
+            options.GroupOperator = GroupOperator;
+            options.SearchScope = SearchScope;
+        }
         /// <summary>
         /// Обновляем описание блока при каждом изменении запроса, если оно видно.
         /// Изменения: MinAny, QueryScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
