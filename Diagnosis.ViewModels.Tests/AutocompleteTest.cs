@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -34,6 +33,13 @@ namespace Diagnosis.ViewModels.Tests
             qFull = word.Title;
 
             a.SelectedTag = a.Tags.Last();
+        }
+
+        [TestCleanup]
+        public void Clean()
+        {
+            if (a != null)
+                a.Dispose();
         }
 
         [TestMethod]
@@ -105,6 +111,7 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(1, other.Suggestions.Count);
             Assert.IsTrue(other.IsPopupOpen);
+            other.Dispose();
         }
 
         /// <summary>
@@ -226,11 +233,13 @@ namespace Diagnosis.ViewModels.Tests
         public void AddTagWhenSingleTag()
         {
             var a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.MeasureEditor, null);
+
             Assert.IsTrue(a.Tags.Count == 1);
 
             a.AddTag(word);
             Assert.AreEqual(word, a.LastTag.Blank);
             Assert.IsTrue(a.Tags.Count == 1);
+            a.Dispose();
         }
 
         [TestMethod]
@@ -239,15 +248,17 @@ namespace Diagnosis.ViewModels.Tests
             Load<Doctor>();
             AuthorityController.TryLogIn(d1);
 
-            var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session);
-            hre.Load(session.Get<HealthRecord>(IntToGuid<HealthRecord>(1)));
-            var a = hre.Autocomplete as AutocompleteViewModel;
+            using (var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session))
+            {
+                hre.Load(session.Get<HealthRecord>(IntToGuid<HealthRecord>(1)));
+                var a = hre.Autocomplete as AutocompleteViewModel;
 
-            a.StartEdit(a.Tags.First());
-            a.SelectedTag.Query = "123";
+                a.StartEdit(a.Tags.First());
+                a.SelectedTag.Query = "123";
 
-            // from measureEditor
-            a.AddTag(new Measure(5));
+                // from measureEditor
+                a.AddTag(new Measure(5));
+            }
         }
 
         [TestMethod]
@@ -316,6 +327,7 @@ namespace Diagnosis.ViewModels.Tests
             a2.Paste();
 
             Assert.AreEqual(word, a2.Tags[0].Blank);
+            a2.Dispose();
         }
 
         [TestMethod]
@@ -334,7 +346,9 @@ namespace Diagnosis.ViewModels.Tests
             a2.Paste(); // достаем из БД по id
 
             Assert.AreEqual(w, a2.Tags[0].Blank);
+            a2.Dispose();
         }
+
         [TestMethod]
         public void CopyNewWord_Save_PasteToOtherAutocomplete2()
         {
@@ -351,7 +365,7 @@ namespace Diagnosis.ViewModels.Tests
             a2.Paste(); // достаем из БД по тексту
 
             Assert.AreEqual(0, w.CompareTo(a2.Tags[0].Blank));
+            a2.Dispose();
         }
-
     }
 }
