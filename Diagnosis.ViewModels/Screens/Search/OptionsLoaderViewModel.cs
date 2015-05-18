@@ -36,7 +36,7 @@ namespace Diagnosis.ViewModels.Screens
                     string str = GetStringToLoad();
                     var opt = loader.ReadOptions(str);
                     master.SetOptions(opt);
-                    PartialLoaded = opt.PartialLoaded;
+                    PartialLoaded = opt == null || opt.PartialLoaded;
 
                 }, () => CanLoad());
             }

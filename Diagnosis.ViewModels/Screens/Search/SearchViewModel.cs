@@ -226,7 +226,8 @@ namespace Diagnosis.ViewModels.Screens
 
                 var crOpts = est.CriteriaGroups
                     .SelectMany(x => x.Criteria)
-                    .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options) });
+                    .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options) })
+                    .Where(x => x.Opt != null);
 
                 var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));
                 var hOpt = loader.ReadOptions(est.HeaderHrsOptions);
