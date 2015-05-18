@@ -105,7 +105,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.IcdDisease" Collapsed="true">
-    <Position X="3.5" Y="10.5" Width="1.5" />
+    <Position X="3.5" Y="10.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -141,7 +141,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Diagnosis.Models.Word" Collapsed="true">
-    <Position X="11.5" Y="8.75" Width="1.5" />
+    <Position X="11.5" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAIAAIEQEIBAGUAQSAgIkAgAEAAggAAAAAAA=</HashCode>
       <FileName>Entities\Word.cs</FileName>
@@ -187,7 +187,7 @@
   <Class Name="Diagnosis.Models.Uom" Collapsed="true">
     <Position X="6.75" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAABQAAAgEAREABAAAAAAAAZAAAAAAQMAAAAAAAA=</HashCode>
+      <HashCode>AAAAAABQEAAgEAREABAAAAAAAAZAAAAgAQOAAAAAAAA=</HashCode>
       <FileName>Entities\Uom.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -274,7 +274,7 @@
   <Class Name="Diagnosis.Models.UomFormat" Collapsed="true">
     <Position X="8.75" Y="13" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABAAAAAAAAAABAAEQAAAAAAAAAIEAAAAAAAAAAEAAAA=</HashCode>
+      <HashCode>ABAAAAAAAAAABAAEQBAAAAAAAAIEAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Entities\UomFormat.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -313,7 +313,7 @@
         <Point X="13.513" Y="7.816" Type="JumpStart" />
         <Point X="13.346" Y="7.816" Type="JumpEnd" />
         <Point X="12.562" Y="7.816" />
-        <Point X="12.562" Y="8.75" />
+        <Point X="12.562" Y="9" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -358,7 +358,7 @@
   <Class Name="Diagnosis.Models.SearchOptions" Collapsed="true">
     <Position X="19.75" Y="11.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>RAAoAAAAAAAAAAgMgAAEAAEACAAQEICAAQKAIQAIAKA=</HashCode>
+      <HashCode>RAAoAAAAAAAAAAgMkAAEAAEACAAQEICAAQKAIQAIAqA=</HashCode>
       <FileName>Domain\SearchOptions.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -380,6 +380,44 @@
       <Property Name="Speciality" />
       <Property Name="Vocabulary" />
     </ShowAsAssociation>
+  </Class>
+  <Class Name="Diagnosis.Models.Comment" Collapsed="true">
+    <Position X="9.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQEwAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Comment.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.Estimator" Collapsed="true">
+    <Position X="21.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIEAAAARAgAAEEABAAAACAAAAAAAAIAAAAEAAAAAA=</HashCode>
+      <FileName>Entities\Estimator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.Criterion" Collapsed="true">
+    <Position X="17" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAEAAAQAgAAAEABAgAAAAAAAAAAABAAAgAABgAAA=</HashCode>
+      <FileName>Entities\Criterion.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Group" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.Models.CriteriaGroup" Collapsed="true">
+    <Position X="19.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAEAAAABgAAAEABAAAAAAAIAACAAAABIAAAAAAAA=</HashCode>
+      <FileName>Entities\CriteriaGroup.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Estimator" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Diagnosis.Models.IHrItemObject" Collapsed="true">
     <Position X="17.75" Y="11.25" Width="1.5" />
