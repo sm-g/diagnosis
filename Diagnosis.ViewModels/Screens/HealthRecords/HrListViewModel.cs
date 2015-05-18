@@ -376,7 +376,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                         {
                             this.Send(Event.SendToSearch, hrManager.GetSelectedHrs()
-                                .AsParams(MessageKeys.HealthRecords));
+                                .AsParams(MessageKeys.ToSearchPackage));
                         }, () => CheckedHrCount > 0);
             }
         }

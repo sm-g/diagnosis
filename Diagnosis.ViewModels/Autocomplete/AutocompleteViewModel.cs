@@ -347,7 +347,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         entities = new ConfWithHio(t.Blank, t.Confidence).ToEnumerable();
                     else
                         entities = GetCHIOsOfSelectedCompleted();
-                    this.Send(Event.SendToSearch, entities.ToList().AsParams(MessageKeys.Chios));
+                    this.Send(Event.SendToSearch, entities.ToList().AsParams(MessageKeys.ToSearchPackage));
                 }, (t) => WithSendToSearch)
                 {
                     IsVisible = WithSendToSearch

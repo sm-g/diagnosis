@@ -136,7 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             this.Send(Event.SendToSearch, Words.Where(w => w.IsChecked)
                                 .Select(w => w.word.AsConfidencable())
-                                .AsParams(MessageKeys.Chios));
+                                .AsParams(MessageKeys.ToSearchPackage));
                         }, () => CheckedWordsCount > 0);
             }
         }

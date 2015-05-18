@@ -6,6 +6,7 @@
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:con="http://schemas.kent.boogaart.com/converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance design:SampleQueryEditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
@@ -19,10 +20,21 @@
             <StackPanel Orientation="Horizontal">
                 <Button Command="{Binding History.PrevOptionsCommand}">←</Button>
                 <Button Command="{Binding History.NextOptionsCommand}">→</Button>
+                <Separator Width="20"
+                           Height="0" />
                 <Button Command="{Binding Loader.OpenBufferCommand}"
                         Visibility="{Binding Loader.OpenBufferCommand.IsVisible, Converter={con:BooleanToVisibilityConverter}}">OpenBuffer</Button>
                 <Button Command="{Binding Loader.LoadOptionsCommand}">Load</Button>
                 <Button Command="{Binding Loader.SaveOptionsCommand}">Save</Button>
+                <Separator Width="20" 
+                           Height="0" />
+                <Button Command="{Binding SendToSearchCommand}"
+                        Visibility="{Binding SendToSearchCommand.IsVisible, Converter={con:BooleanToVisibilityConverter}}"
+                        ToolTip="Искать по запросу">
+                    <DockPanel>
+                        <diag:AutoGreyableImage Source="{StaticResource findImage}" />
+                    </DockPanel>
+                </Button>
             </StackPanel>
 
             <TextBox Text="{Binding Loader.Buffer}"

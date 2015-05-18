@@ -141,7 +141,7 @@ namespace Diagnosis.ViewModels.Tests
         public void RecieveChios()
         {
             var chios = new[] { w[1].AsConfidencable(), w[2].AsConfidencable(Confidence.Absent) };
-            this.Send(Event.SendToSearch, chios.AsParams(MessageKeys.Chios));
+            this.Send(Event.SendToSearch, chios.AsParams(MessageKeys.ToSearchPackage));
 
             Assert.IsTrue(s.LastRecieverQueryBlock.Options.CWordsAll.ScrambledEquals(chios));
         }
@@ -149,7 +149,7 @@ namespace Diagnosis.ViewModels.Tests
         public void RecieveHr()
         {
             var hrs = new[] { hr[70] };
-            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.HealthRecords));
+            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.ToSearchPackage));
 
             Assert.IsTrue(s.LastRecieverQueryBlock.Options.CWordsAll.ScrambledEquals(hr[70].GetCWords()));
             Assert.IsTrue(s.LastRecieverQueryBlock.Options.Categories.Single() == hr[70].Category);
@@ -159,7 +159,7 @@ namespace Diagnosis.ViewModels.Tests
         public void RecieveHrs()
         {
             var hrs = new[] { hr[1], hr[2] };
-            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.HealthRecords));
+            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.ToSearchPackage));
 
             var cats = hrs.Select(x => x.Category).Distinct();
             var words = hrs.SelectMany(x => x.Words).Distinct();
@@ -172,11 +172,24 @@ namespace Diagnosis.ViewModels.Tests
         public void RecieveMeasure()
         {
             var hrs = new[] { hr[20] };
-            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.HealthRecords));
+            this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.ToSearchPackage));
 
             var ms = hrs.SelectMany(x => x.Measures).Distinct();
 
             Assert.IsTrue(s.LastRecieverQueryBlock.Options.MeasuresAll.Select(x => x.AsMeasure()).ScrambledEquals(ms));
+
+        }
+
+        [TestMethod]
+        public void RecieveOptions_DoSearch()
+        {
+            var options = new SearchOptions(true);
+            options.MinAny = 5;
+            this.Send(Event.SendToSearch, options.AsParams(MessageKeys.ToSearchPackage));
+
+            Assert.AreEqual(options, s.LastRecieverQueryBlock.Options);
+            Assert.IsTrue(s.Result != null);
+            Assert.IsTrue(!s.ControlsVisible);
 
         }
     }

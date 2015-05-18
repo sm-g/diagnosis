@@ -17,6 +17,7 @@ namespace Diagnosis.ViewModels.Search
     {
         private ISession Session;
         private Action onQbEnter;
+        private VisibleRelayCommand _send;
         public QueryEditorViewModel() { }
         public QueryEditorViewModel(ISession session, Action onQbEnter = null)
         {
@@ -61,6 +62,19 @@ namespace Diagnosis.ViewModels.Search
             }
         }
 
+        public VisibleRelayCommand SendToSearchCommand
+        {
+            get
+            {
+                return _send ?? (_send = new VisibleRelayCommand(() =>
+                {
+                    this.Send(Event.SendToSearch, GetOptions().AsParams(MessageKeys.ToSearchPackage));
+                }, () => !AllEmpty)
+                {
+                    IsVisible = true
+                });
+            }
+        }
         public SearchOptions GetOptions()
         {
             var options = QueryBlocks[0].GetSearchOptions();

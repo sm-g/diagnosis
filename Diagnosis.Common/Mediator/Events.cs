@@ -10,29 +10,33 @@ namespace Diagnosis.Common
     /// </summary>
     public static class MessageKeys
     {
+        // domain
         public static string Word = "word";
         public static string Patient = "patient";
         public static string Doctor = "doctor";
         public static string User = "user";
-        public static string Diagnosis = "diagnosis";
         public static string Course = "course";
         public static string Appointment = "appointment";
         public static string HealthRecord = "healthRecord";
         public static string HealthRecords = "healthRecords";
         public static string Category = "category";
-        public static string Boolean = "bool";
-        public static string Settings = "settings";
+        public static string Holder = "holder";
+        public static string Uom = "uom";
+        public static string Crit = "crit";
+
+        // other
+        public static string ToSearchPackage = "package";
         public static string UndoDoActions = "undooverlay";
         public static string Type = "type";
-        public static string Holder = "holder";
+
         public static string Dialog = "dialog";
-        public static string Chios = "entity";
         public static string Window = "window";
-        public static string Uom = "uom";
+
         public static string String = "string";
+        public static string Boolean = "bool";
+
         public static string Name = "name";
         public static string Value = "value";
-        public static string Crit = "crit";
     }
 
     public enum Event

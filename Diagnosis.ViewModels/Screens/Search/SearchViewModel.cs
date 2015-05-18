@@ -38,6 +38,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (SearchCommand.CanExecute(null))
                     SearchCommand.Execute(null);
             });
+            QueryEditor.SendToSearchCommand.IsVisible = false;
 
             var ests = Session.QueryOver<Estimator>().List();
             Estimators = new ObservableCollection<Estimator>(ests);
@@ -45,30 +46,28 @@ namespace Diagnosis.ViewModels.Screens
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
                 {
-                    IEnumerable<HealthRecord> hrs = null;
+                    object pack = null;
                     try
                     {
-                        hrs = e.GetValue<IEnumerable<HealthRecord>>(MessageKeys.HealthRecords);
+                        pack = e.GetValue<object>(MessageKeys.ToSearchPackage);
                     }
-                    catch { }
-                    if (hrs != null && hrs.Any())
+                    catch
                     {
-                        RecieveHealthRecords(hrs);
-                    }
-                    else
-                    {
-                        IEnumerable<ConfWithHio> hios = null;
-                        try
-                        {
-                            hios = e.GetValue<IEnumerable<ConfWithHio>>(MessageKeys.Chios);
-                        }
-                        catch { }
-                        if (hios != null && hios.Any())
-                        {
-                            RecieveHrItemObjects(hios);
-                        }
+                        return;
                     }
 
+                    var hrs = pack as IEnumerable<HealthRecord>;
+                    var hios = pack as IEnumerable<ConfWithHio>;
+                    var opt = pack as SearchOptions;
+
+                    if (hrs != null && hrs.Any())
+                        RecieveHealthRecords(hrs);
+                    else if (hios != null && hios.Any())
+                        RecieveHrItemObjects(hios);
+                    else if (opt != null)
+                        RecieveOptions(opt);
+
+                    Contract.Assume(LastRecieverQueryBlock != null);
                     Activate();
                 })
 
@@ -307,6 +306,15 @@ namespace Diagnosis.ViewModels.Screens
             qb.AutocompleteAll.ReplaceTagsWith(chios);
 
             RemoveLastResults();
+        }
+
+        private void RecieveOptions(SearchOptions opt)
+        {
+            QueryEditor.SetOptions(opt);
+            LastRecieverQueryBlock = RootQueryBlock;
+
+            Search();
+            ControlsVisible = false; // не надо поправлять запрос в поиске, редактируем критерии
         }
 
         private QueryBlockViewModel GetRecieverQb()

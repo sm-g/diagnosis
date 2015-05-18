@@ -192,7 +192,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Event.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.HealthRecords));
+                            this.Send(Event.SendToSearch, healthRecord.ToEnumerable().AsParams(MessageKeys.ToSearchPackage));
                         });
             }
         }
