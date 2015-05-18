@@ -65,7 +65,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     beforeInsert();
                     (Crit as CriteriaGroup).AddCriterion();
-                })
+                }, () => Crit is CriteriaGroup)
                 {
                     IsVisible = Crit is CriteriaGroup
                 });
@@ -80,7 +80,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     beforeInsert();
                     (Crit as Estimator).AddCriteriaGroup();
-                })
+                }, () => Crit is Estimator)
                 {
                     IsVisible = Crit is Estimator
                 });

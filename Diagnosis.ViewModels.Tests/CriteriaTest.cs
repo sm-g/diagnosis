@@ -120,7 +120,7 @@ namespace Diagnosis.ViewModels.Tests
         #region Saving
 
         [TestMethod]
-        public void Cancel_DeleteInvalid()
+        public void Cancel_DeleteInvalid_Criterion()
         {
             crit.Open(cgr[1]);
             crit.Navigator.Current.AddCriterionCommand.Execute(null);
@@ -131,6 +131,30 @@ namespace Diagnosis.ViewModels.Tests
             crit.CurrentEditor.CancelCommand.Execute(null);
 
             Assert.IsFalse(cgr[1].Criteria.Contains(newCrit));
+        }
+
+        [TestMethod]
+        public void OpenOther_DeleteInvalid_Criterion()
+        {
+            crit.Open(cgr[1]);
+            crit.Navigator.Current.AddCriterionCommand.Execute(null);
+            var newCrit = cgr[1].Criteria.Last();
+
+            Assert.IsFalse(crit.CurrentEditor.CanOk);
+
+            crit.Open(est[1]);
+            Assert.IsFalse(cgr[1].Criteria.Contains(newCrit));
+        }
+
+        [TestMethod]
+        public void OpenOther_DeleteInvalid_Estimator()
+        {
+            crit.AddCommand.Execute(null);
+            var newCrit = (crit.CurrentEditor as ICritKeeper).Crit;
+
+            crit.Open(cgr[1]);
+
+            Assert.IsTrue(crit.Navigator.FindItemVmOf(newCrit) == null);
         }
 
         [TestMethod]
