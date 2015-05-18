@@ -90,6 +90,7 @@
     <Compile Include="DateOffsetFormatterTest.cs" />
     <Compile Include="DateOffsetVMTest.cs" />
     <Compile Include="FilterTest.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="QueryEditorTest.cs" />
     <Compile Include="PatientEditorTest.cs" />
     <Compile Include="MeasureEditorTest.cs" />

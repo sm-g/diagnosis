@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels.Autocomplete;
@@ -27,21 +28,25 @@ namespace Diagnosis.ViewModels
             Func<Word, Word> syncWord = (word) =>
             {
                 Word res = null;
-                if (word.IsTransient) // новое может быть в автокомплите
-                    res = SuggestionsMaker.GetWordFromCreated(word);
-                else // пробуем достать из БД
+                if (word.IsTransient)
+                    // новое может быть в автокомплите
+                    res = SuggestionsMaker.GetSameWordFromCreated(word);
+
+                else  // не новое может быть в БД
                     using (var tr = session.BeginTransaction())
                         res = session.Get<Word>(word.Id);
 
                 if (res == null)
+                    // сохраненное после копирования будет в БД
+                    res = WordQuery.ByTitle(session)(word.Title);
+
+                if (res == null)
                 {
                     logger.WarnFormat("Word not synced: {0}, recreate", word);
-                    // новое было сохранено после копирования / сменился доктор - нет в автокомплите
-                    // или сохраненое было удалено из БД
+                    // сменился доктор - нет в автокомплите (почему?) 
+                    // сохраненое было удалено из БД
 
-                    // вставили запись/тег с этим словом - которого нет нигде
-
-                    // если вставлено в редактор записи - будет сохранено
+                    // вставили запись/тег с этим словом - которого нет в БД и в created
                     res = new Word(word.Title);
                 }
                 return res;

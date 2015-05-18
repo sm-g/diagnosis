@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -113,7 +114,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             crit.Open(cr[1]);
             var w = new Word("1");
-            (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w);
+            (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.AddTag(w);
             crit.CurrentEditor.OkCommand.Execute(null);
 
             Assert.IsTrue(!w.IsTransient);
@@ -124,11 +125,13 @@ namespace Diagnosis.ViewModels.Tests
         {
             crit.Open(est[1]);
             var w = new Word("1");
-            (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w);
+            (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.AddTag(w);
             crit.CurrentEditor.OkCommand.Execute(null);
 
             Assert.IsTrue(!w.IsTransient);
         }
+
+
         [TestMethod]
         public void DoctorCanUseNewWordsFromCritQueryEditor()
         {
@@ -137,17 +140,52 @@ namespace Diagnosis.ViewModels.Tests
 
             crit.Open(cr[1]);
             var w = new Word("1");
-            (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w);
+            (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.AddTag(w);
             crit.CurrentEditor.OkCommand.Execute(null);
 
             Assert.IsTrue(d1.Words.Contains(w));
 
             crit.Open(est[1]);
             var w2 = new Word("2");
-            (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll.AddTag(w2);
+            (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.AddTag(w2);
             crit.CurrentEditor.OkCommand.Execute(null);
 
             Assert.IsTrue(d1.Words.Contains(w2));
+        }
+
+
+        [TestMethod]
+        public void CopyNewWord_Save_Remove_PasteTransient_GetFromDb()
+        {
+            Load<Doctor>();
+            AuthorityController.TryLogIn(d1);
+
+            var w = new Word("11");
+            crit.Open(cr[1]);
+            var auto = (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel;
+
+            // copy
+            auto.SelectedTag = auto.AddTag(w);
+            auto.Copy();
+
+            // save
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            // remove (необязательно)
+            crit.Open(cr[1]);
+            auto = (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel;
+            auto.LastTag.DeleteCommand.Execute(null);
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            // paste
+            crit.Open(cr[1]);
+            auto = (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel;
+            auto.Paste(); // достаем из БД по тексту
+
+            // can save
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            Assert.AreEqual(w, auto.Tags[0].Blank);
         }
         #endregion Saving
     }

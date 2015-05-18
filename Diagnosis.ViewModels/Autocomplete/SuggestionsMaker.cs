@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// несохраненные слова, созданные через автокомплит
         /// </summary>
-        private static List<Word> created = new List<Word>();
+        private static HashSet<Word> created = new HashSet<Word>(Compare.By<Word, string>(x => x.Title, StringComparer.OrdinalIgnoreCase));
 
         private readonly ISession session;
         private Doctor doctor;
@@ -99,14 +99,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public bool AddNotPersistedToSuggestions { get; set; }
 
-        public static Word GetWordFromCreated(Word word)
+        public static Word GetSameWordFromCreated(Word word)
         {
             Contract.Requires(word != null);
             Contract.Requires(word.IsTransient);
+            Contract.Ensures(Contract.Result<Word>() == null || Contract.Result<Word>().CompareTo(word) == 0);
 
             // несохраненное слово
-            // word1.Equals(word2) == false, but word1.CompareTo(word2) == 0
-            // willSet in SetOrderedHrItems будет с первым совпадающим элементом в entitiesToBe
             var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
 
             return same; // null if transient but not in created 
@@ -122,9 +121,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         public List<Word> SearchForSuggesstions(string query, object prevEntityBlank, IEnumerable<object> exclude = null)
         {
             Contract.Requires(query != null);
+            Contract.Ensures(Contract.Result<List<Word>>().IsUnique(x => x.Title, StringComparer.OrdinalIgnoreCase));
 
             // слова, доступные для ввода
-            var wordsForDoctor = QueryWords(query, prevEntityBlank)
+            var wordsForDoctor = QueryWords(query, prevEntityBlank, AddNotPersistedToSuggestions)
                     .Where(x => created.Contains(x) || doctor.Words.Contains(x));
 
             // кроме исключенных
@@ -179,7 +179,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <returns></returns>
         internal Word FirstMatchingOrNewWord(string q)
         {
-            var existing = QueryWords(q, null).FirstOrDefault();
+            var existing = QueryWords(q, null, true).FirstOrDefault();
             if (existing != null && Matches(existing, q))
                 return existing; // берем слово из словаря
             else
@@ -203,14 +203,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="query"></param>
         /// <param name="prev"></param>
         /// <returns></returns>
-        private IEnumerable<Word> QueryWords(string query, object prev)
+        private IEnumerable<Word> QueryWords(string query, object prev, bool withNotPersisted)
         {
             if (query.IsNullOrEmpty() && !ShowAllWordsOnEmptyQuery)
                 return Enumerable.Empty<Word>();
 
             Word parent = prev as Word;
 
-            var unsaved = AddNotPersistedToSuggestions
+            var unsaved = withNotPersisted
                 ? created.Where(w => w.Title.StartsWith(query, StringComparison.OrdinalIgnoreCase))
                 : Enumerable.Empty<Word>();
 
@@ -227,6 +227,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             // все несохраннные слова - не в словаре
             Contract.Invariant(created.All(x => x.Vocabularies.Count() == 0));
+            Contract.Invariant(created.IsUnique(x => x.Title, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

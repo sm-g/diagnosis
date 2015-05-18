@@ -319,23 +319,39 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void CopyPasteNewWordToOtherAutocomplete()
+        public void SaveNewWord_Copy_PasteToOtherAutocomplete()
         {
             var w = new Word("11");
+            a.SelectedTag = a.AddTag(w);
 
-            a.AddTag(w);
-            a.SelectedTag = a.Tags.First();
-
-            // copy to clipboard with true, save before
+            // save before
             session.SaveOrUpdate(w);
             a.Copy();
 
             var r2 = new SuggestionsMaker(session);
             var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
 
-            a2.Paste(); // достаем из БД
+            a2.Paste(); // достаем из БД по id
 
             Assert.AreEqual(w, a2.Tags[0].Blank);
         }
+        [TestMethod]
+        public void CopyNewWord_Save_PasteToOtherAutocomplete2()
+        {
+            var w = new Word("11");
+            a.SelectedTag = a.AddTag(w);
+
+            // save after
+            a.Copy();
+            session.SaveOrUpdate(w);
+
+            var r2 = new SuggestionsMaker(session);
+            var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
+
+            a2.Paste(); // достаем из БД по тексту
+
+            Assert.AreEqual(0, w.CompareTo(a2.Tags[0].Blank));
+        }
+
     }
 }

@@ -2,16 +2,17 @@
 using Diagnosis.Models;
 using Diagnosis.Tests;
 using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Screens;
+using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Tests
 {
     [TestClass]
-    public class SuggestionsMakerTest : InMemoryDatabaseTest
+    public class SuggestionsMakerTest : ViewModelTest
     {
         private SuggestionsMaker r;
 
@@ -57,8 +58,38 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(word2.IsTransient);
             Assert.AreNotEqual(word, word2);
 
-            var tryToGetWordBut = SuggestionsMaker.GetWordFromCreated(word2);
+            var tryToGetWordBut = SuggestionsMaker.GetSameWordFromCreated(word2);
             Assert.AreEqual(word2, tryToGetWordBut);
+        }
+
+        [TestMethod]
+        public void CreateWordInQueryEditor_ThanInWordList()
+        {
+            var qe = new QueryEditorViewModel(session);
+            var wl = new WordsListViewModel();
+
+            var auto = (qe.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel);
+            var w = auto.CompleteWord("1");
+
+            var fromList = wl.AddWord("1");
+
+            Assert.AreEqual(w, fromList);
+        }
+
+        [TestMethod]
+        public void CreateSameWordInQueryEditors()
+        {
+            var qe = new QueryEditorViewModel(session);
+            var auto = (qe.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel);
+            var w1 = auto.CompleteWord("1");
+            var w2 = auto.CompleteWord("1");
+
+            var auto2 = (qe.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel);
+            var qe2 = new QueryEditorViewModel(session);
+            var w3 = auto2.CompleteWord("1");
+
+            Assert.AreEqual(w1, w2);
+            Assert.AreEqual(w1, w3);
         }
     }
 }

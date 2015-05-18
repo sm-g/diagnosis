@@ -2,6 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Search;
 using EventAggregator;
@@ -9,6 +10,7 @@ using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -98,10 +100,21 @@ namespace Diagnosis.ViewModels.Screens
                             if (SelectedWord != null)
                                 title = SelectedWord.Title;
 
-                            var word = new Word(title);
-                            this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
+                            AddWord(title);
                         });
             }
+        }
+
+        internal Word AddWord(string title)
+        {
+            Contract.Requires(title != null);
+
+            var word = new Word(title);
+            // use created word if possible
+            word = SuggestionsMaker.GetSameWordFromCreated(word) ?? word;
+
+            this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
+            return word;
         }
 
         public ICommand EditCommand

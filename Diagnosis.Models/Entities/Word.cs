@@ -137,8 +137,10 @@ namespace Diagnosis.Models
 
         public virtual int CompareTo(Word other)
         {
+            if (other == null) return 1;
+
             // несохраненные могут быть с одним заголовком, !equals, but 0 == CompareTo()
-            return this.Title.CompareTo(other.Title);
+            return StringComparer.OrdinalIgnoreCase.Compare(this.Title, other.Title);
         }
 
         public override ValidationResult SelfValidate()
