@@ -50,6 +50,6 @@ Source: "{#ClientBuildOutputFolder}\bin\MahApps.Metro.dll"; DestDir: "{app}\bin\
 Source: "{#ClientBuildOutputFolder}\bin\System.Windows.Interactivity.dll"; DestDir: "{app}\bin\"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\Microsoft.Data.ConnectionUI.Dialog.dll"; DestDir: "{app}\bin\"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\Microsoft.Data.ConnectionUI.dll"; DestDir: "{app}\bin\"; Flags: sharedfile
-Source: "{#ClientBuildOutputFolder}\bin\Kent.Boogaart.Converters.dll"; DestDir: "{app}\bin"; Flags: sharedfile
-Source: "{#ClientBuildOutputFolder}\bin\Kent.Boogaart.HelperTrinity.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\bin\CalcBinding.dll"; DestDir: "{app}\bin"; Flags: sharedfile
+Source: "{#ClientBuildOutputFolder}\bin\DynamicExpresso.Core.dll"; DestDir: "{app}\bin"; Flags: sharedfile
 Source: "{#ClientBuildOutputFolder}\bin\GongSolutions.Wpf.DragDrop.dll"; DestDir: "{app}\bin"; Flags: sharedfile

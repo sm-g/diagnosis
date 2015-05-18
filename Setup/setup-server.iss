@@ -53,3 +53,5 @@ Name: "{app}\bin\ru"
 
 #include "code.iss"
 
+[InstallDelete]
+#include "common-installdelete.iss"

@@ -59,3 +59,6 @@ Name: "{localappdata}\{#LogsSubFolder}"; Flags: uninsneveruninstall
 Name: "{localappdata}\{#ClientDbSubFolder}"; Flags: uninsneveruninstall
 
 #include "code.iss"
+
+[InstallDelete]
+#include "common-installdelete.iss"
