@@ -140,7 +140,7 @@
                            Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
-                                     Visual="{DynamicResource appbar_chevron_left}" />
+                                     Visual="{DynamicResource appbar_navigate_previous}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
@@ -163,7 +163,7 @@
                            Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform"
-                                     Visual="{DynamicResource appbar_chevron_right}" />
+                                     Visual="{DynamicResource appbar_navigate_next}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>

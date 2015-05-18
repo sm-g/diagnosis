@@ -38,6 +38,7 @@
         <Label Content="Код"
                Grid.Row="1" />
         <TextBox Grid.Column="1"
+                 TabIndex="0"
                  Text="{Binding Criterion.Code,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"
@@ -51,6 +52,7 @@
 
         <TextBox Grid.Column="1"
                  Grid.Row="3"
+                 TabIndex="1"
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
                  Text="{Binding Criterion.Description,
@@ -59,11 +61,13 @@
                  ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
         <search:QueryEditor DataContext="{Binding QueryEditor}"
+                            TabIndex="3"
                             Grid.Column="3"
                             Grid.Row="3" />
         <Label Content="Процент"
                Grid.Row="5" />
         <TextBox Grid.Column="1"
+                 TabIndex="2"
                  Text="{Binding Criterion.Value,
                                 UpdateSourceTrigger=PropertyChanged,
                                 ValidatesOnDataErrors=True}"

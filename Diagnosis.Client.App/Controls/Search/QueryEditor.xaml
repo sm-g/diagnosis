@@ -18,14 +18,51 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding History.PrevOptionsCommand}">←</Button>
-                <Button Command="{Binding History.NextOptionsCommand}">→</Button>
+                <Button  DockPanel.Dock="Left"
+                         Command="{Binding History.PrevOptionsCommand}"
+                         ToolTip="Предыдущий запрос"
+                         Style="{StaticResource metroCircleButton}">
+                    <Rectangle Width="12"
+                               Height="12"
+                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{DynamicResource appbar_navigate_previous}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button  DockPanel.Dock="Left"
+                         Command="{Binding History.NextOptionsCommand}"
+                         ToolTip="Следующий запрос"
+                         Style="{StaticResource metroCircleButton}">
+                    <Rectangle Width="12"
+                               Height="12"
+                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{DynamicResource appbar_navigate_next}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                
                 <Separator Width="20"
                            Height="0" />
                 <Button Command="{Binding Loader.OpenBufferCommand}"
                         Visibility="{Binding Loader.OpenBufferCommand.IsVisible, Converter={con:BooleanToVisibilityConverter}}">OpenBuffer</Button>
-                <Button Command="{Binding Loader.LoadOptionsCommand}">Load</Button>
-                <Button Command="{Binding Loader.SaveOptionsCommand}">Save</Button>
+
+                <Button Command="{Binding Loader.SaveOptionsCommand}"
+                        ToolTip="Копировать запрос">
+                    <DockPanel>
+                        <diag:AutoGreyableImage Source="{StaticResource copyImage}" />
+                    </DockPanel>
+                </Button>
+
+                <Button Command="{Binding Loader.LoadOptionsCommand}"
+                        ToolTip="Вставить запрос">
+                    <DockPanel>
+                        <diag:AutoGreyableImage Source="{StaticResource pasteImage}" />
+                    </DockPanel>
+                </Button>
                 <Separator Width="20" 
                            Height="0" />
                 <Button Command="{Binding SendToSearchCommand}"

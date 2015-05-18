@@ -18,21 +18,11 @@ namespace Diagnosis.ViewModels.Search
         private ISession Session;
         private Action onQbEnter;
         private VisibleRelayCommand _send;
-        public QueryEditorViewModel() { }
-        public QueryEditorViewModel(ISession session, Action onQbEnter = null)
+        public QueryEditorViewModel()
         {
-            Contract.Requires(session != null);
-
-            this.Session = session;
-            this.onQbEnter = onQbEnter ?? (Action)(() => { });
-
-            var loader = new JsonOptionsLoader(Session);
             var hist = new History<SearchOptions>();
-            Loader = new OptionsLoaderViewModel(this, loader);
             History = new SearchHistoryViewModel(hist);
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
-            SetRootOptions();
-
 
             QueryBlocks.CollectionChanged += (s, e) =>
             {
@@ -45,8 +35,21 @@ namespace Diagnosis.ViewModels.Search
                     SetOptions(hist.CurrentState);
                 }
             };
+        }
+
+        public QueryEditorViewModel(ISession session, Action onQbEnter = null)
+            : this()
+        {
+            Contract.Requires(session != null);
+
+            this.Session = session;
+            this.onQbEnter = onQbEnter ?? (Action)(() => { });
+
+            var loader = new JsonOptionsLoader(Session);
+            Loader = new OptionsLoaderViewModel(this, loader);
 
 
+            SetRootOptions();
         }
         public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; private set; }
 
