@@ -152,7 +152,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                             n = Math.Max(n, 0); // when single n == -1
 
                             if (old != n) // prevent deselecting
-                                master.Tags.Move(old, n);
+                                master.tagsWritable.Move(old, n);
                         }
                         //foreach (var tag in tags)
                         //{

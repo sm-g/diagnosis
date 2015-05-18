@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Models;
 using log4net;
 using System;
@@ -15,13 +16,14 @@ namespace Diagnosis.ViewModels.Autocomplete
     public partial class AutocompleteViewModel : ViewModelBase, ITagParentAutocomplete, IHrEditorAutocomplete, IQbAutocompleteViewModel, IViewAutocompleteViewModel, ITagsTrackableAutocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
-        private readonly SuggestionsMaker recognizer;
+        private readonly SuggestionsMaker sugMaker;
         private readonly bool allowSendToSearch;
         private readonly bool allowConfidenceToggle;
         private readonly bool singleTag;
         private readonly bool measureEditorWithCompare;
         private readonly IEnumerable<BlankType> convertTo;
 
+        private ObservableCollection<TagViewModel> tagsWritable;
         private TagViewModel _selTag;
         private bool _popupOpened;
         private SuggestionViewModel prevSelectedSuggestion;
@@ -62,15 +64,16 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Requires(initItems != null);
             Contract.Requires(convertTo != null);
 
-            this.recognizer = recognizer;
+            this.sugMaker = recognizer;
             this.convertTo = convertTo;
             this.allowSendToSearch = allowSendToSearch;
             this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
             this.measureEditorWithCompare = measureEditorWithCompare;
 
-            Tags = new ObservableCollection<TagViewModel>();
-            Tags.CollectionChanged += (s, e) =>
+            tagsWritable = new ObservableCollection<TagViewModel>();
+            Tags = new INCCReadOnlyObservableCollection<TagViewModel>(tagsWritable);
+            Tags.CollectionChangedWrapper += (s, e) =>
             {
                 if (inDispose) return;
 
@@ -169,11 +172,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public ObservableCollection<SuggestionViewModel> Suggestions
-        {
-            get;
-            private set;
-        }
+        public ObservableCollection<SuggestionViewModel> Suggestions { get; private set; }
 
         public SuggestionViewModel SelectedSuggestion
         {
@@ -195,11 +194,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public ObservableCollection<TagViewModel> Tags
-        {
-            get;
-            private set;
-        }
+        public INCCReadOnlyObservableCollection<TagViewModel> Tags { get; private set; }
 
         public TagViewModel SelectedTag
         {
@@ -334,7 +329,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    recognizer.AddQueryToSuggestions = !recognizer.AddQueryToSuggestions;
+                    sugMaker.AddQueryToSuggestions = !sugMaker.AddQueryToSuggestions;
                     MakeSuggestions(SelectedTag);
                     RefreshPopup();
                 }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
@@ -468,10 +463,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public bool AddQueryToSuggestions
         {
-            get { return recognizer.AddQueryToSuggestions; }
+            get { return sugMaker.AddQueryToSuggestions; }
             set
             {
-                recognizer.AddQueryToSuggestions = value;
+                sugMaker.AddQueryToSuggestions = value;
                 OnPropertyChanged(() => AddQueryToSuggestions);
             }
         }
@@ -536,7 +531,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             tag.Deleted += (s, e) =>
             {
                 Contract.Requires(!tag.IsLast);
-                Tags.Remove(tag);
+                tagsWritable.Remove(tag);
                 StartEdit(LastTag);
             };
             tag.Converting += CompleteOnConvert;
@@ -643,9 +638,9 @@ namespace Diagnosis.ViewModels.Autocomplete
                 .ForEach(t => CompleteOnLostFocus(t));
 
             if (SingleTag && Tags.Count > 0)
-                Tags[0] = tag;
+                tagsWritable[0] = tag;
             else
-                Tags.Insert(index, tag);
+                tagsWritable.Insert(index, tag);
             return tag;
         }
 
@@ -675,7 +670,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             // оставляем последний тег
             while (Tags.Count != 1)
             {
-                Tags.RemoveAt(Tags.Count - 2);
+                tagsWritable.RemoveAt(Tags.Count - 2);
             }
 
             foreach (var item in items)
@@ -809,7 +804,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             else // inverse, no suggestion
             {
                 Contract.Assume(!tag.Query.IsNullOrEmpty());
-                tag.Blank = recognizer.FirstMatchingOrNewWord(tag.Query);
+                tag.Blank = sugMaker.FirstMatchingOrNewWord(tag.Query);
             }
         }
 
@@ -843,14 +838,14 @@ namespace Diagnosis.ViewModels.Autocomplete
                 case BlankType.Word: // новое или существующее
                     Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
 
-                    tag.Blank = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
+                    tag.Blank = sugMaker.FirstMatchingOrNewWord(queryOrMeasureWord);
                     onConverted();
                     break;
 
                 case BlankType.Measure: // слово
                     Word w = null;
                     if (!queryOrMeasureWord.IsNullOrEmpty())
-                        w = recognizer.FirstMatchingOrNewWord(queryOrMeasureWord);
+                        w = sugMaker.FirstMatchingOrNewWord(queryOrMeasureWord);
                     OpenMeasureEditor(null, w, (m) =>
                     {
                         tag.Blank = m;
@@ -949,7 +944,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             RefreshPopup();
             tag.Validate();
 
-            recognizer.AfterCompleteTag(tag);
+            sugMaker.AfterCompleteTag(tag);
 
             // добавляем пустое поле
             if (LastTag.State == State.Completed
@@ -968,7 +963,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             // все сущности кроме сущности редактируемого тега
             var tagBlanksExceptEditing = Tags.Select((t, i) => i != tagIndex ? t.Blank : null);
 
-            var results = recognizer.SearchForSuggesstions(
+            var results = sugMaker.SearchForSuggesstions(
                 query: tag.Query,
                 prevEntityBlank: tagIndex > 0 ? Tags[tagIndex - 1].Blank : null,
                 exclude: null);
@@ -1050,7 +1045,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             inDispose = true;
             if (disposing)
             {
-                Tags.Clear();
+                tagsWritable.Clear();
                 hanlder.Dispose();
             }
             base.Dispose(disposing);
@@ -1070,7 +1065,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 foreach (var str in strings)
                 {
                     var tag = CreateTag(str);
-                    var sugg = recognizer.SearchForSuggesstions(str, null).FirstOrDefault();
+                    var sugg = sugMaker.SearchForSuggesstions(str, null).FirstOrDefault();
                     CompleteCommon(tag, sugg, true);
                     AddTag(tag);
                 }
