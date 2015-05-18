@@ -10,6 +10,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:con="http://schemas.kent.boogaart.com/converters"
+             xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance design:SampleQueryBlockViewModel, IsDesignTimeCreatable=False}"
@@ -135,13 +136,21 @@
                             Grid.Row="2">
                     <Label Content="Всё из" />
                     <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
-                    <Label>
+                    <Label Padding="1">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="И хотя бы " />
-                            <diag:HyperlinkContextMenu Value="{Binding MinAny}"
-                                                       Width="20"
-                                                       MenuItemsSource="{Binding MinAnyMenuItems}" />
-                            <TextBlock Text=" из: " />
+                            <TextBlock  VerticalAlignment="Center"
+                                        Text="И хотя бы " />
+                            <ComboBox ItemsSource="{Binding MinAnyMenuItems}"
+                                      VerticalAlignment="Center"
+                                      SelectedIndex="{calc:Binding MinAny - 1, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Text}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock  VerticalAlignment="Center"
+                                        Text=" из: " />
                         </StackPanel>
                     </Label>
                     <search:Autocomplete DataContext="{Binding AutocompleteAny}" />

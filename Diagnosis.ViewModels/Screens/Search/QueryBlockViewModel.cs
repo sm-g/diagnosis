@@ -90,6 +90,8 @@ namespace Diagnosis.ViewModels.Screens
 
         public ObservableCollection<MenuItem> SearchScopeMenuItems { get; private set; }
 
+        public string MinAnyString { get { return MinAnyMenuItems[MinAny - 1].Text; } }
+
         #region Options bindings
 
         public SearchScope SearchScope
@@ -184,9 +186,11 @@ namespace Diagnosis.ViewModels.Screens
                     _minAny = value;
                     RefreshDescription();
                     OnPropertyChanged(() => MinAny);
+                    OnPropertyChanged(() => MinAnyString);
                 }
             }
         }
+
 
         public bool WithConfidence
         {
@@ -519,8 +523,8 @@ namespace Diagnosis.ViewModels.Screens
             MinAnyMenuItems = new ObservableCollection<MenuItem>()
             {
                 new MenuItem("один", new RelayCommand(()=>MinAny = 1)),
-                new MenuItem("два", new RelayCommand(()=>MinAny = 2)),
-                new MenuItem("три", new RelayCommand(()=>MinAny = 3)),
+                new MenuItem("два", new RelayCommand(()=> MinAny = 2)),
+                new MenuItem("три", new RelayCommand(()=> MinAny = 3)),
             };
             GroupOperatorMenuItems = new ObservableCollection<MenuItem>()
             {
