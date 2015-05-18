@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        protected override string GetCurrentPathDescription(HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer, CriteriaItemViewModel current)
+        protected override string GetCurrentPathDescription(CriteriaItemViewModel current)
         {
             if (current == null) return null;
 
@@ -39,7 +39,9 @@ namespace Diagnosis.ViewModels.Screens
 
             var crit = current.Crit;
             var est = crit.GetEstimator();
+
             sb.Append(est);
+
             if (crit is CriteriaGroup)
             {
                 sb.AppendFormat("{0}группа {1}", delim, crit as CriteriaGroup);

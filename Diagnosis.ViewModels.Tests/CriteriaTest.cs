@@ -62,8 +62,8 @@ namespace Diagnosis.ViewModels.Tests
             crit.Open(est[1]);
 
             crit.Navigator.Current.AddCritGroupCommand.Execute(null);
-            var newCrit = cgr[1].Criteria.Last();
-            Assert.AreEqual(newCrit, crit.Navigator.Current.Crit);
+            var crg = est[1].CriteriaGroups.Last();
+            Assert.AreEqual(crg, crit.Navigator.Current.Crit);
         }
 
         [TestMethod]
@@ -88,7 +88,33 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(cgr[1], crit.Navigator.Current.Crit);
             Assert.AreEqual(cgr[1], (crit.CurrentEditor as ICritKeeper).Crit);
         }
+        [TestMethod]
+        public void Close_CurrentNull()
+        {
+            crit.Open(cgr[1]);
+            crit.CurrentEditor.CancelCommand.Execute(null);
 
+            Assert.AreEqual(null, crit.Navigator.Current);
+            Assert.AreEqual(null, crit.CurrentEditor);
+        }
+        [TestMethod]
+        public void Close_TitleEmpty()
+        {
+            crit.Open(cgr[1]);
+            crit.CurrentEditor.CancelCommand.Execute(null);
+            Assert.IsTrue(crit.Title.IsNullOrEmpty());
+
+        }
+
+        [TestMethod]
+        public void OpenOther_TitleNotEmpty()
+        {
+            crit.Open(cgr[1]);
+            crit.Open(est[1]);
+
+            Assert.IsTrue(!crit.Title.IsNullOrEmpty());
+
+        }
         #endregion Opening
 
         #region Saving
@@ -104,8 +130,6 @@ namespace Diagnosis.ViewModels.Tests
 
             crit.CurrentEditor.CancelCommand.Execute(null);
 
-            // open near
-            Assert.AreEqual(cr[1], crit.Navigator.Current.Crit);
             Assert.IsFalse(cgr[1].Criteria.Contains(newCrit));
         }
 

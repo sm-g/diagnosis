@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -13,24 +14,32 @@ namespace Diagnosis.ViewModels.Screens
         {
         }
 
-        protected override string GetCurrentPathDescription(HierViewer<Patient, Course, Appointment, IHrsHolder> viewer, CardItemViewModel current)
+        protected override string GetCurrentPathDescription(CardItemViewModel current)
         {
             if (current == null) return null;
 
             string delim = " \\ ";
-            string result = NameFormatter.GetFullName(viewer.OpenedRoot) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", viewer.OpenedRoot.CreatedAt);
+            var sb = new StringBuilder();
 
             var h = current.Holder;
+            var p = h.GetPatient();
+
+            sb.Append(NameFormatter.GetFullName(p) ?? string.Format("Пациент ({0:dd.MM.yy hh:mm})", p.CreatedAt));
+
             if (h is Course)
             {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedMiddle.Start, viewer.OpenedMiddle.End);
+                var c = h as Course;
+                sb.AppendFormat("{0}курс {1}", delim, DateFormatter.GetIntervalString(c.Start, c.End));
             }
             else if (h is Appointment)
             {
-                result += delim + "курс " + DateFormatter.GetIntervalString(viewer.OpenedMiddle.Start, viewer.OpenedMiddle.End);
-                result += delim + "осмотр " + DateFormatter.GetDateString(viewer.OpenedLeaf.DateAndTime);
+                var a = h as Appointment;
+                sb.AppendFormat("{0}курс {1}{2}осмотр {3}", delim,
+                    DateFormatter.GetIntervalString(a.Course.Start, a.Course.End),
+                    delim,
+                    DateFormatter.GetDateString(a.DateAndTime));
             }
-            return result;
+            return sb.ToString();
         }
 
         public override void AddRootItemFor(IHrsHolder holder)

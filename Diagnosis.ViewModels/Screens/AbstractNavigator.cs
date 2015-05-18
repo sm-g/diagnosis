@@ -90,10 +90,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                if (Current == null)
-                    return "";
-
-                return GetCurrentPathDescription(viewer, Current);
+                return GetCurrentPathDescription(Current);
             }
         }
 
@@ -138,7 +135,7 @@ namespace Diagnosis.ViewModels.Screens
 
         protected internal abstract TItem FindItemVmOf(I node);
 
-        protected abstract string GetCurrentPathDescription(HierViewer<T1, T2, T3, I> viewer, TItem current);
+        protected abstract string GetCurrentPathDescription(TItem current);
         protected abstract void CurrentChanging();
         protected abstract void OnRootRemoved(T1 root);
 

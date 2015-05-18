@@ -18,6 +18,7 @@ namespace Diagnosis.ViewModels.Screens
         private static HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer;
         private DialogViewModel _curEditor;
         private EventMessageHandler handler;
+        private bool naviagationExpected;
 
         public CriteriaViewModel()
         {
@@ -28,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
                 e => e.CriteriaGroups,
                 cg => cg.Criteria
                 );
-            Navigator = new CritNavigator(viewer, CloseEditor);
+            Navigator = new CritNavigator(viewer, beforeInsert: CloseEditor); // first save editing crit
             Navigator.CurrentChanged += (s, e) =>
             {
                 var c = e.arg != null ? (e.arg as CriteriaItemViewModel).Crit : null;
@@ -74,7 +75,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    CloseEditor();
                     var est = new Estimator();
                     Navigator.NavigateTo(est);
                 });
@@ -145,57 +145,48 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Close opened editor.
-        /// </summary>
         private void CloseEditor()
         {
+            Contract.Ensures(CurrentEditor == null);
+
             if (CurrentEditor == null)
                 return;
 
             if (CurrentEditor.DialogResult == null)
             {
+                // сначала сохраним открытое, чтобы не сохранять инвалидное новое (а в карточке так можно)
                 if (CurrentEditor.CanOk)
                     CurrentEditor.OkCommand.Execute(null);
                 else
                     CurrentEditor.CancelCommand.Execute(null);
             }
-
-            if (CurrentEditor == null)
-                // если закрыли выше
-                return;
-
-            CurrentEditor.Dispose();
-            CurrentEditor = null;
-        }
-        /// <summary>
-        /// Close opened editor by setting dialog result.
-        /// </summary>
-        private void CloseEditor(bool result)
-        {
-            Contract.Requires(CurrentEditor != null);
-
-
-            var crit = (CurrentEditor as ICritKeeper).Crit;
-            //viewer.Close(crit);
-            CurrentEditor.Dispose();
-            CurrentEditor = null;
-
-            if (result == false)
+            else
             {
-                // удаляем новую сущность, если ее нельзя сохранять
-                if (crit.IsTransient)
-                    OnDeleteCrit(crit);
-            }
+                if (CurrentEditor.DialogResult == false)
+                {
+                    var crit = (CurrentEditor as ICritKeeper).Crit;
+                    // удаляем новую сущность, если ее нельзя сохранять
+                    if (crit.IsTransient)
+                        OnDeleteCrit(crit);
+                }
 
-            Navigator.NavigateTo(null);
+                CurrentEditor.Dispose();
+                CurrentEditor = null;
+                if (!naviagationExpected)
+                {
+                    // если закрываем редактор перед открытием нового, не обнулять current
+                    Navigator.NavigateTo(null);
+                }
+            }
         }
         private void ShowEditor(ICrit crit)
         {
             if (CurrentEditor != null && (CurrentEditor as ICritKeeper).Crit == crit)
                 return; // уже открыт
 
+            naviagationExpected = crit != null;
             CloseEditor();
+            naviagationExpected = false;
 
             if (crit is Estimator)
             {
@@ -209,9 +200,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 CurrentEditor = new CriterionEditorViewModel(crit as Criterion);
             }
+
             if (CurrentEditor != null)
             {
-                CurrentEditor.OnDialogResult((r) => CloseEditor(r));
+                CurrentEditor.OnDialogResult((r) => CloseEditor());
             }
         }
     }
