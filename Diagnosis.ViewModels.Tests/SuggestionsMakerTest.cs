@@ -46,7 +46,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void CreateWordSaveDeleteCreateAgain()
+        public void CreateWord_Save_Delete_CreateAgain()
         {
             var word = r.FirstMatchingOrNewWord(notExistQ);
             // слово удаляется из created при сохранении
@@ -58,15 +58,19 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(word2.IsTransient);
             Assert.AreNotEqual(word, word2);
 
-            var tryToGetWordBut = SuggestionsMaker.GetSameWordFromCreated(word2);
-            Assert.AreEqual(word2, tryToGetWordBut);
+            var wordInCreated = SuggestionsMaker.GetSameWordFromCreated(word2);
+            Assert.AreEqual(null, wordInCreated);
         }
 
         [TestMethod]
         public void CreateWordInQueryEditor_ThanInWordList()
         {
+            // внутри используется SuggestionsMaker.GetSameWordFromCreated
+
             var qe = new QueryEditorViewModel(session);
             var wl = new WordsListViewModel();
+
+            qe.QueryBlocks[0].IsSelected = true; // prevent making options on AllEmpty changes after typing in autocomplete
 
             var auto = (qe.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel);
             var w = auto.CompleteWord("1");
@@ -74,6 +78,8 @@ namespace Diagnosis.ViewModels.Tests
             var fromList = wl.AddWord("1");
 
             Assert.AreEqual(w, fromList);
+            qe.Dispose();
+            wl.Dispose();
         }
 
         [TestMethod]
@@ -90,6 +96,8 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(w1, w2);
             Assert.AreEqual(w1, w3);
+            qe.Dispose();
+            qe2.Dispose();
         }
     }
 }

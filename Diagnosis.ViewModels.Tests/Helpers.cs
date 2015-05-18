@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Tests
             var tag = auto.LastTag;
             auto.SelectedTag = tag;
             tag.Query = title;
-            auto.CompleteOnEnter(tag);
+            auto.CompleteOnEnter(tag, inverse: true);
             return tag.Blank as Word;
         }
     }
