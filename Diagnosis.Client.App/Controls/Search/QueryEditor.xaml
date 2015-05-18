@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:search="clr-namespace:Diagnosis.Client.App.Controls.Search"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
-             xmlns:con="http://schemas.kent.boogaart.com/converters"
+             xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
@@ -48,7 +48,7 @@
                 <Separator Width="20"
                            Height="0" />
                 <Button Command="{Binding Loader.OpenBufferCommand}"
-                        Visibility="{Binding Loader.OpenBufferCommand.IsVisible, Converter={con:BooleanToVisibilityConverter}}">OpenBuffer</Button>
+                        Visibility="{calc:Binding Loader.OpenBufferCommand.IsVisible}">OpenBuffer</Button>
 
                 <Button Command="{Binding Loader.SaveOptionsCommand}"
                         ToolTip="Копировать запрос">
@@ -66,7 +66,7 @@
                 <Separator Width="20" 
                            Height="0" />
                 <Button Command="{Binding SendToSearchCommand}"
-                        Visibility="{Binding SendToSearchCommand.IsVisible, Converter={con:BooleanToVisibilityConverter}}"
+                        Visibility="{calc:Binding SendToSearchCommand.IsVisible}"
                         ToolTip="Искать по запросу">
                     <DockPanel>
                         <diag:AutoGreyableImage Source="{StaticResource findImage}" />
@@ -78,7 +78,7 @@
                      Height="50"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      AcceptsReturn="True"
-                     Visibility="{Binding Loader.ShowBuffer, Converter={con:BooleanToVisibilityConverter}}" />
+                     Visibility="{calc:Binding Loader.ShowBuffer}" />
         </StackPanel>
 
         <TreeView ItemsSource="{Binding QueryBlocks}"

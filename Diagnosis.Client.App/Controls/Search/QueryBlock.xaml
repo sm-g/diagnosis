@@ -8,8 +8,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
-             xmlns:con="http://schemas.kent.boogaart.com/converters"
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"             
              xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
@@ -70,7 +69,7 @@
                             VerticalAlignment="Top"
                             DockPanel.Dock="Right">
                     <Button Command="{Binding AddSyblingQbCommand}"
-                            Visibility="{Binding AddSyblingQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
+                            Visibility="{calc:Binding AddSyblingQbCommand.IsVisible, FalseToVisibility=Hidden}"
                             ToolTip="Добавить блок">
                         <Rectangle Width="12"
                                    Height="12"
@@ -93,7 +92,7 @@
                         </Rectangle>
                     </Button>
                     <Button Command="{Binding RemoveQbCommand}"
-                            Visibility="{Binding RemoveQbCommand.IsVisible, Converter={con:BooleanToVisibilityConverter UseHidden=True}}"
+                            Visibility="{calc:Binding RemoveQbCommand.IsVisible, FalseToVisibility=Hidden}"
                             ToolTip="Убрать блок">
                         <Rectangle Width="12"
                                    Height="12"
@@ -112,7 +111,7 @@
                           Content="отрицания" />
             </DockPanel>
 
-            <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}"
+            <StackPanel Visibility="{calc:Binding DescriptionVisible, Mode=OneWay}"
                         Grid.Row="1">
                 <StackPanel.Resources>
                     <Style TargetType="TextBlock">
@@ -121,7 +120,7 @@
                     </Style>
                 </StackPanel.Resources>
                 <!--описание запроса, видно когда блок неактивен-->
-                <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter}}">
+                <StackPanel Visibility="{calc:Binding DescriptionVisible, Mode=OneWay}">
                     <StackPanel DataContext="{Binding Options}">
                         <TextBlock Text="{Binding}"
                                    TextWrapping="Wrap" />
@@ -132,7 +131,7 @@
             </StackPanel>
             <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                         Grid.Row="2">
-                <StackPanel Visibility="{Binding DescriptionVisible, Converter={con:BooleanToVisibilityConverter IsReversed=True}}"
+                <StackPanel Visibility="{calc:Binding !DescriptionVisible, Mode=OneWay}"
                             Grid.Row="2">
                     <Label Content="Всё из" />
                     <search:Autocomplete DataContext="{Binding AutocompleteAll}" />

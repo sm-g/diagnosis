@@ -10,7 +10,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:diag="http://schemas.smg.com/diagnosis"
-             xmlns:con="http://schemas.kent.boogaart.com/converters"
+             xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              x:Name="search"
              xmlns:headers="clr-namespace:Diagnosis.Client.App.Controls.Headers"
@@ -65,7 +65,7 @@
 
         <Expander x:Name="searchControls"
                   Style="{StaticResource SplitExpanderStyle}"
-                  MaxHeight="{Binding ActualHeight, ElementName=search, Converter={con:ExpressionConverter {}{0} * 8/10}}"
+                  MaxHeight="{calc:Binding ActualHeight * 0.8, ElementName=search, Mode=OneWay}"
                   Grid.Row="1"
                   IsExpanded="{Binding ControlsVisible}"
                   ExpandDirection="Up">
