@@ -13,7 +13,7 @@ namespace Diagnosis.Models
     [Serializable]
     public class Uom : ValidatableEntity<Guid>, IDomainObject
     {
-        public static Uom Null = new Uom("—", 1, new UomType("", int.MinValue));  // для измерения без единицы
+        public readonly static Uom Null = new NullUom();  // для измерения без единицы
 
         private ISet<UomFormat> formats = new HashSet<UomFormat>();
 
@@ -148,6 +148,14 @@ namespace Diagnosis.Models
         public override ValidationResult SelfValidate()
         {
             return new UomValidator().Validate(this);
+        }
+
+        private sealed class NullUom : Uom
+        {
+            public NullUom()
+                : base("без единицы", 1, new UomType("", int.MinValue))
+            {
+            }
         }
     }
 }

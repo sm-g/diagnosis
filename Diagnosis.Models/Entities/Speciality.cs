@@ -10,7 +10,7 @@ namespace Diagnosis.Models
 {
     public class Speciality : ValidatableEntity<Guid>, IDomainObject
     {
-        public static Speciality Null = new Speciality("—");  // для врача без специальности
+        public readonly static Speciality Null = new NullSpeciality();  // для врача без специальности
 
         private ISet<Doctor> doctors = new HashSet<Doctor>();
         private ISet<SpecialityIcdBlocks> specialityIcdBlocks = new HashSet<SpecialityIcdBlocks>();
@@ -164,6 +164,13 @@ namespace Diagnosis.Models
             if (h != null)
             {
                 h(this, e);
+            }
+        }
+        private sealed class NullSpeciality : Speciality
+        {
+            public NullSpeciality()
+                : base("—")
+            {
             }
         }
     }

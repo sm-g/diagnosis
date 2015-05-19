@@ -6,7 +6,8 @@ namespace Diagnosis.Models
     [Serializable]
     public class HrCategory : EntityBase<Guid>, IDomainObject, IComparable, IEquatable<HrCategory>
     {
-        public static HrCategory Null = new HrCategory("Не задано", int.MaxValue); // upper case to show in checkbox
+        public readonly static HrCategory Null = new NullHrCategory();
+
         [NonSerialized]
         private int _ord;
 
@@ -32,11 +33,6 @@ namespace Diagnosis.Models
             set { _ord = value; }
         }
 
-        public static bool ConsideredNull(HrCategory x)
-        {
-            return x == null || object.Equals(x, HrCategory.Null);
-        }
-
         public override string ToString()
         {
             return Title;
@@ -60,6 +56,14 @@ namespace Diagnosis.Models
                 return true;
 
             return Equals(other as object);
+        }
+
+        private sealed class NullHrCategory : HrCategory
+        {
+            public NullHrCategory()
+                : base("Не задано", int.MaxValue)
+            {
+            }
         }
     }
 }

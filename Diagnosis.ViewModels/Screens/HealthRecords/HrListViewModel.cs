@@ -797,7 +797,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 case HrViewColumn.Category:
                     if (Grouping != HrViewColumn.Category)
-                        setter = (vm) => vm.SortingExtraInfo = !HrCategory.ConsideredNull(vm.Category)
+                        setter = (vm) => vm.SortingExtraInfo = vm.Category == HrCategory.Null
                             ? vm.Category.ToString()
                             : "";
                     break;
