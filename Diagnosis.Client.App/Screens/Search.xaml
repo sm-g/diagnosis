@@ -98,14 +98,14 @@
                 <TabControl SelectedIndex="{Binding SearchTabIndex}"
                             mah:TabControlHelper.Transition="Down"
                             mah:TabControlHelper.IsUnderlined="True">
-                    <TabItem Header="Редактор запросов"
-                             mah:ControlsHelper.HeaderFontSize="{StaticResource ScreenTitleFontSize}">
+                    <TabItem Header="Редактор"
+                             mah:ControlsHelper.HeaderFontSize="{DynamicResource ScreenTitleFontSize}">
                         <search:QueryEditor DataContext="{Binding QueryEditor}" />
                     </TabItem>
-                    <TabItem Header="Сохраненный запрос"
-                             mah:ControlsHelper.HeaderFontSize="{StaticResource ScreenTitleFontSize}">
+                    <TabItem Header="Критерии"
+                             mah:ControlsHelper.HeaderFontSize="{DynamicResource ScreenTitleFontSize}">
                         <DockPanel LastChildFill="False">
-                            <Label>Запрос</Label>
+                            <Label>Приказ</Label>
                             <ComboBox ItemsSource="{Binding Estimators}"
                                       Margin="20 0"
                                       MinWidth="150"
