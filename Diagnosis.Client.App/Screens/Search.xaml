@@ -104,11 +104,11 @@
                     </TabItem>
                     <TabItem Header="Критерии"
                              mah:ControlsHelper.HeaderFontSize="{DynamicResource ScreenTitleFontSize}">
-                        <DockPanel LastChildFill="False">
+                        <DockPanel >
                             <Label>Приказ</Label>
                             <ComboBox ItemsSource="{Binding Estimators}"
-                                      Margin="20 0"
-                                      MinWidth="150"
+                                      Margin="20 0 0 0"
+                                      MaxWidth="150"
                                       SelectedItem="{Binding SelectedEstimator}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
@@ -118,9 +118,8 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button  Command="{Binding EditEstimatorCommand}"                                     
+                            <Button  Command="{Binding EditEstimatorCommand}" 
                                      Style="{StaticResource metroCircleButton}"
-                                     DockPanel.Dock="Right"
                                      Visibility="{calc:Binding SelectedEstimator, Mode=OneWay}">
                                 <Rectangle Width="12"
                                            Height="12"

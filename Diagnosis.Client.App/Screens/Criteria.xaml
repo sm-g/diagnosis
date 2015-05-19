@@ -119,6 +119,7 @@
         <Button Command="{Binding AddCommand}"
                 Content="Добавить приказ"
                 VerticalAlignment="Bottom"
+                Margin="10"
                 Grid.Row="1" />
 
         <DockPanel Grid.Column="1">

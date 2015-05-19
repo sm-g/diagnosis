@@ -12,7 +12,7 @@
              d:DataContext="{d:DesignInstance design:SampleCriterionEditorViewModel,
                                               IsDesignTimeCreatable=True}"
              d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="36" />
@@ -25,7 +25,8 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*"
+                              MaxWidth="200" />
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
