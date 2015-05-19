@@ -60,20 +60,20 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
         {
-            Contract.Requires(tag.BlankType != toType);
-            Contract.Requires(toType != BlankType.None);
+            Contract.Requires<ArgumentException>(tag.BlankType != toType);
+            Contract.Requires<ArgumentException>(toType != BlankType.None);
+            Contract.Requires<ArgumentNullException>(onConverted != null);
             Contract.Ensures(tag.BlankType == toType || tag.BlankType == Contract.OldValue(tag.BlankType));
 
-            // if queryOrMeasureWord == null - initial or after clear query
-            string queryOrMeasureWord = null;
+            string queryOrMeasureWordTitle;
             if (tag.BlankType == BlankType.Measure)
             {
                 var w = (tag.Blank as Measure).Word;
-                if (w != null)
-                    queryOrMeasureWord = w.Title;
+                Contract.Assume(w != null); // измерение без слова в теге не бывает                
+                queryOrMeasureWordTitle = w.Title;
             }
             else
-                queryOrMeasureWord = tag.Query;
+                queryOrMeasureWordTitle = tag.Query; // == "" if initial or after clear query
 
             switch (toType)
             {
@@ -82,17 +82,15 @@ namespace Diagnosis.ViewModels.Autocomplete
                     onConverted();
                     break;
 
-                case BlankType.Word: // новое или существующее
-                    Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
-
-                    tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWord);
+                case BlankType.Word:
+                    tag.Blank = FirstMatchingOrNewWord(queryOrMeasureWordTitle);
                     onConverted();
                     break;
 
                 case BlankType.Measure: // слово
                     Word w = null;
-                    if (!queryOrMeasureWord.IsNullOrEmpty())
-                        w = FirstMatchingOrNewWord(queryOrMeasureWord);
+                    if (!queryOrMeasureWordTitle.IsNullOrEmpty())
+                        w = FirstMatchingOrNewWord(queryOrMeasureWordTitle);
                     OpenMeasureEditor(null, w, (m) =>
                     {
                         tag.Blank = m;
@@ -101,7 +99,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     break;
 
                 case BlankType.Icd: // слово/коммент в поисковый запрос
-                    OpenIcdSelector(null, queryOrMeasureWord, (i) =>
+                    OpenIcdSelector(null, queryOrMeasureWordTitle, (i) =>
                     {
                         tag.Blank = i;
                         onConverted();

@@ -562,9 +562,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Invariant(State != State.Completed || BlankType != BlankType.None
                 || Signalization == null || Signalization == Signalizations.Forbidden); // завершенный тег → есть бланк (тег завершается после смены бланка) в поиске бланк мб пустой
+
             Contract.Invariant(State != State.Init || (BlankType == BlankType.None)); // в начальном состоянии → нет бланка
 
             Contract.Invariant((IsLast && Query.IsNullOrEmpty()) != IsDraggable || autocomplete.SingleTag); // последний пустой без маркера переноса
+
+            Contract.Invariant(!(Blank is Measure) || (Blank as Measure).Word != null); // измерение → со словом
         }
     }
 

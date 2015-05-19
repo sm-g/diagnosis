@@ -35,6 +35,7 @@ namespace Diagnosis.ViewModels.Tests
         public void Clean()
         {
         }
+
         #region SetBlank
 
         [TestMethod]
@@ -141,13 +142,73 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(tag.BlankType == BlankType.Comment);
             Assert.AreEqual(q, (tag.Blank as Comment).String);
         }
-        #endregion
-        #region ConvertBlank
-        [TestMethod]
-        public void MyTestMethod()
-        {
 
+        #endregion SetBlank
+
+        #region ConvertBlank
+
+        [TestMethod]
+        public void WithWord_CovertToComment()
+        {
+            tag.Blank = word;
+            bs.ConvertBlank(tag, BlankType.Comment, () => { });
+            Assert.IsTrue(tag.BlankType == BlankType.Comment);
+            Assert.AreEqual(word.Title, (tag.Blank as Comment).String);
         }
-        #endregion
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void WithWord_CovertToSameType_Fails()
+        {
+            tag.Blank = word;
+            bs.ConvertBlank(tag, BlankType.Word, () => { });
+        }
+
+        [TestMethod]
+        public void WithMeasure_CovertToWord_ThisWord()
+        {
+            tag.Blank = new Measure(1, word: word); // измерение без слова в теге не бывает
+            bs.ConvertBlank(tag, BlankType.Word, () => { });
+
+            Assert.AreEqual(word, tag.Blank);
+        }
+
+        [TestMethod]
+        public void WithMeasure_CovertToComment_()
+        {
+            var m = new Measure(1, word: word);
+            tag.Blank = m;// измерение без слова в теге не бывает
+            bs.ConvertBlank(tag, BlankType.Comment, () => { });
+
+            Assert.AreEqual(m.ToString(), (tag.Blank as Comment).String);
+        }
+
+        [TestMethod]
+        public void Empty_CovertToComment()
+        {
+            bs.ConvertBlank(tag, BlankType.Comment, () => { });
+            Assert.IsTrue(tag.BlankType == BlankType.Comment);
+            Assert.AreEqual("", (tag.Blank as Comment).String);
+        }
+
+        [TestMethod]
+        public void Empty_CovertToWord()
+        {
+            bs.ConvertBlank(tag, BlankType.Word, () => { });
+            Assert.IsTrue(tag.BlankType == BlankType.Word);
+            Assert.AreEqual("", (tag.Blank as Word).Title);
+        }
+
+        [TestMethod]
+        public void WithQuery_CovertToWord()
+        {
+            tag.Query = q;
+
+            bs.ConvertBlank(tag, BlankType.Word, () => { });
+            Assert.IsTrue(tag.BlankType == BlankType.Word);
+            Assert.AreEqual(q, (tag.Blank as Word).Title);
+        }
+
+        #endregion ConvertBlank
     }
 }

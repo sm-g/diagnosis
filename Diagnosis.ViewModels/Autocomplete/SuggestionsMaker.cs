@@ -177,8 +177,11 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         /// <param name="q"></param>
         /// <returns></returns>
-        internal Word FirstMatchingOrNewWord(string q)
+        public Word FirstMatchingOrNewWord(string q)
         {
+            Contract.Requires(q != null);
+            Contract.Ensures(Contract.Result<Word>().Title.Equals(q, StringComparison.OrdinalIgnoreCase));
+
             var existing = QueryWords(q, null, true).FirstOrDefault();
             if (existing != null && Matches(existing, q))
                 return existing; // берем слово из словаря
