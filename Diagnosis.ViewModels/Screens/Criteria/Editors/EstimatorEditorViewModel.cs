@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels.Screens
 
             CriteriaGroups = new ObservableCollection<CriteriaGroupEditorViewModel>();
 
-            QueryEditor = new QueryEditorViewModel(Session, () => { });
+            QueryEditor = new QueryEditorViewModel(Session);
 
             var opt = loader.ReadOptions(estimator.HeaderHrsOptions);
             QueryEditor.SetOptions(opt);

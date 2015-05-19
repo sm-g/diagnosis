@@ -15,6 +15,8 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class SearchViewModel : ToolViewModel
     {
+        public const string ToolContentId = "Search";
+
         private bool _controlsVisible;
         private AbstractSearchResultViewModel _res;
         private bool _mode;
@@ -24,13 +26,10 @@ namespace Diagnosis.ViewModels.Screens
         private OptionsLoader loader;
         private EventMessageHandlersManager msgManager;
 
-        public const string ToolContentId = "Search";
-
         public SearchViewModel()
         {
             ContentId = ToolContentId;
 
-            var hist = new History<SearchOptions>();
             loader = new JsonOptionsLoader(Session);
 
             QueryEditor = new QueryEditorViewModel(Session, () =>
@@ -248,8 +247,8 @@ namespace Diagnosis.ViewModels.Screens
                     shrs = Searcher.GetResult(Session, options);
                 }
 
-                //hist.Memorize(options);
                 Result = new HrsSearchResultViewModel(shrs, options);
+                QueryEditor.History.Memo(options);
             }
 #if !DEBUG
             ControlsVisible = false;

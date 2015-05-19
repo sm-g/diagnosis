@@ -19,7 +19,7 @@ namespace Diagnosis.ViewModels.Screens
             this.criterion = cr;
             loader = new JsonOptionsLoader(Session);
 
-            QueryEditor = new QueryEditorViewModel(Session, () => { });
+            QueryEditor = new QueryEditorViewModel(Session);
 
             Criterion = new CriterionViewModel(criterion);
             tester = new ExistanceTester<Criterion>(cr, Criterion, Session);

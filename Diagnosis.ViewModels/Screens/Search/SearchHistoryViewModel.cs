@@ -50,5 +50,10 @@ namespace Diagnosis.ViewModels.Screens
                 return history.CurrentState;
             }
         }
+
+        public void Memo(SearchOptions opt)
+        {
+            history.Memorize(opt);
+        }
     }
 }

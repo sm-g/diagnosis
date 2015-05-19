@@ -109,6 +109,7 @@ namespace Diagnosis.Common
             Contract.Invariant(current >= -1);
             Contract.Invariant(current <= list.Count - 1);
             Contract.Invariant(CurrentVersion <= LastVersion);
+            Contract.Invariant(list.Count < 2 || Enumerable.Range(0, list.Count - 2).All(x => list[x] != list[x + 1])); // Без подряд идущих одинаковых состояний
         }
     }
 }
