@@ -245,13 +245,12 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         private void CreateAutocomplete()
         {
-            Autocomplete = new AutocompleteViewModel(
+            Autocomplete = new MeasureAutocomplete(
                 new SuggestionsMaker(Session)
                 {
                     AddQueryToSuggestions = true,
                     CanChangeAddQueryToSuggstions = false
                 },
-                AutocompleteViewModel.OptionsMode.MeasureEditor,
                 Word == null ? null : new[] { new ConfWithHio(Word, Confidence.Present) })
             {
                 IsDragSourceEnabled = false,

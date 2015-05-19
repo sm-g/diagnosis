@@ -282,9 +282,8 @@ namespace Diagnosis.ViewModels.Screens
             // update button state
             OnPropertyChanged(() => AddQueryToSuggestions);
 
-            Autocomplete = new AutocompleteViewModel(
+            Autocomplete = new HrEditorAutocomplete(
                 recognizer,
-                AutocompleteViewModel.OptionsMode.HrEditor,
                 initials);
 
             Autocomplete.EntitiesChanged += (s, e) =>

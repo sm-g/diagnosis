@@ -26,7 +26,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<Doctor>();
             AuthorityController.TryLogIn(d1);
             r = new SuggestionsMaker(session, clearCreated: true);
-            a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
+            a = new HrEditorAutocomplete(r);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
             q = word.Title.Substring(0, word.Title.Length - 1);
@@ -48,6 +48,15 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(a.Tags.Count == 1);
             Assert.IsTrue(a.Tags.Last().State == State.Init);
             Assert.IsTrue(a.Tags.Last().IsLast);
+        }
+
+        [TestMethod]
+        public void AddTwoLastTag()
+        {
+            a.AddTag(isLast: true);
+            var last = a.AddTag(isLast: true);
+            Assert.AreEqual(3, a.Tags.Count);
+            Assert.AreEqual(last, a.LastTag);
         }
 
         [TestMethod]
@@ -105,7 +114,7 @@ namespace Diagnosis.ViewModels.Tests
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
             var r = new SuggestionsMaker(session);
-            var other = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
+            var other = new HrEditorAutocomplete(r);
             other.StartEdit();
             other.SelectedTag.Query = notExistQ;
 
@@ -232,7 +241,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AddTagWhenSingleTag()
         {
-            var a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.MeasureEditor, null);
+            var a = new MeasureAutocomplete(r);
 
             Assert.IsTrue(a.Tags.Count == 1);
 
@@ -257,7 +266,7 @@ namespace Diagnosis.ViewModels.Tests
                 a.SelectedTag.Query = "123";
 
                 // from measureEditor
-                a.AddTag(new Measure(5));
+                a.AddTag(new Measure(5, word: word));
             }
         }
 
@@ -323,7 +332,7 @@ namespace Diagnosis.ViewModels.Tests
             a.Copy();
 
             var r2 = new SuggestionsMaker(session);
-            var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
+            var a2 = new HrEditorAutocomplete(r2);
             a2.Paste();
 
             Assert.AreEqual(word, a2.Tags[0].Blank);
@@ -341,7 +350,7 @@ namespace Diagnosis.ViewModels.Tests
             a.Copy();
 
             var r2 = new SuggestionsMaker(session);
-            var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
+            var a2 = new HrEditorAutocomplete(r);
 
             a2.Paste(); // достаем из БД по id
 
@@ -360,7 +369,7 @@ namespace Diagnosis.ViewModels.Tests
             session.SaveOrUpdate(w);
 
             var r2 = new SuggestionsMaker(session);
-            var a2 = new AutocompleteViewModel(r2, AutocompleteViewModel.OptionsMode.HrEditor, null);
+            var a2 = new HrEditorAutocomplete(r);
 
             a2.Paste(); // достаем из БД по тексту
 

@@ -24,7 +24,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         PartialMeasure = 2,
 
         /// <summary>
-        /// Некорректный тег (новый без заготовки).
+        /// Некорректный тег.
         /// </summary>
         Forbidden = 4
     }
@@ -500,7 +500,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         #endregion ViewRelated
 
-        public void Validate(Func<TagViewModel, Signalizations> filter = null)
+        public void Validate()
         {
             Signalization = Signalizations.None;
             if (BlankType == BlankType.None && State != State.Init)
@@ -513,11 +513,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (word.IsTransient)
                     Signalization = Signalizations.NewWord;
             }
-            // если можно только слова
-            if (filter != null)
-            {
-                Signalization |= filter(this);
-            }
+
+            Signalization |= autocomplete.Validate(this.BlankType);
         }
 
         public override string ToString()

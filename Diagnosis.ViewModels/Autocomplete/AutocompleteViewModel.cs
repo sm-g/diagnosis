@@ -13,67 +13,102 @@ using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Autocomplete
 {
-    public partial class AutocompleteViewModel : ViewModelBase, ITagParentAutocomplete, IHrEditorAutocomplete, IQbAutocompleteViewModel, IViewAutocompleteViewModel, ITagsTrackableAutocomplete
+    public class HrEditorAutocomplete : AutocompleteViewModel, IHrEditorAutocomplete
+    {
+        public HrEditorAutocomplete(SuggestionsMaker sugMaker, IEnumerable<object> initItems = null)
+            : base(sugMaker, initItems)
+        {
+            allowSendToSearch = true;
+            allowConfidenceToggle = true;
+            convertTo = new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure };
+
+            ReplaceTagsWith(initItems);
+
+        }
+        ICommand IHrEditorAutocomplete.DeleteCommand
+        {
+            get { return DeleteCommand; }
+        }
+
+        ICommand IHrEditorAutocomplete.SendToSearchCommand
+        {
+            get { return SendToSearchCommand; }
+        }
+
+        ICommand IHrEditorAutocomplete.ToggleSuggestionModeCommand
+        {
+            get { return ToggleSuggestionModeCommand; }
+        }
+    }
+
+    public class MeasureAutocomplete : AutocompleteViewModel
+    {
+        public MeasureAutocomplete(SuggestionsMaker sugMaker, IEnumerable<object> initItems = null)
+            : base(sugMaker, initItems)
+        {
+            singleTag = true;
+            convertTo = Enumerable.Empty<BlankType>();
+
+            ReplaceTagsWith(initItems);
+        }
+    }
+
+    public class QueryBlockAutocomplete : AutocompleteViewModel, IQbAutocompleteViewModel
+    {
+        public QueryBlockAutocomplete(SuggestionsMaker sugMaker, IEnumerable<BlankType> convertTo = null)
+            : base(sugMaker)
+        {
+            allowConfidenceToggle = true;
+            measureEditorWithCompare = true;
+            convertTo = convertTo ?? new[] { BlankType.Word, BlankType.Measure };
+
+            ReplaceTagsWith(null);
+        }
+        public override Signalizations Validate(BlankType tagBt)
+        {
+            return !convertTo.Contains(tagBt)
+                ? Signalizations.Forbidden
+                : Signalizations.None;
+        }
+        INotifyCollectionChanged IQbAutocompleteViewModel.Tags
+        {
+            get { return Tags; }
+        }
+    }
+
+    public abstract partial class AutocompleteViewModel : ViewModelBase, ITagParentAutocomplete, IViewAutocompleteViewModel, ITagsTrackableAutocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(AutocompleteViewModel));
         private readonly SuggestionsMaker sugMaker;
-        private readonly bool allowSendToSearch;
-        private readonly bool allowConfidenceToggle;
-        private readonly bool singleTag;
-        private readonly bool measureEditorWithCompare;
-        private readonly IEnumerable<BlankType> convertTo;
+        private readonly BlankSetter blankSetter;
+        protected bool allowSendToSearch;
+        protected bool allowConfidenceToggle;
+        protected bool singleTag;
+        protected bool measureEditorWithCompare;
+        protected IEnumerable<BlankType> convertTo;
 
         private ObservableCollection<TagViewModel> tagsWritable;
         private TagViewModel _selTag;
-        private bool _popupOpened;
-        private SuggestionViewModel prevSelectedSuggestion;
         private TagViewModel _editingTag;
+        private bool _popupOpened;
         private bool _supressCompletion;
-        private SuggestionViewModel _selectedSuggestion;
         private bool _showALt;
+        private SuggestionViewModel prevSelectedSuggestion;
+        private SuggestionViewModel _selectedSuggestion;
         private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
         private VisibleRelayCommand toggleConfidence;
-        private OptionsMode mode;
-        private BlankSetter blankSetter;
 
-        public AutocompleteViewModel(SuggestionsMaker sugMaker, OptionsMode mode, IEnumerable<object> initItems)
-            : this(sugMaker,
-                allowSendToSearch: mode == OptionsMode.HrEditor,
-                allowConfidenceToggle: mode != OptionsMode.MeasureEditor,
-                singleTag: mode == OptionsMode.MeasureEditor,
-                measureEditorWithCompare: mode == OptionsMode.Search,
-                initItems: initItems ?? Enumerable.Empty<object>(),
-                convertTo: mode == OptionsMode.HrEditor ? new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure } :
-                            mode == OptionsMode.Search ? new[] { BlankType.Word, BlankType.Measure } :
-                            Enumerable.Empty<BlankType>()
-            )
-        {
-            this.mode = mode;
-        }
-
-        private AutocompleteViewModel(SuggestionsMaker sugMaker,
-            bool allowSendToSearch,
-            bool allowConfidenceToggle,
-            bool singleTag,
-            bool measureEditorWithCompare,
-            IEnumerable<object> initItems,
-            IEnumerable<BlankType> convertTo)
+        public AutocompleteViewModel(SuggestionsMaker sugMaker, IEnumerable<object> initItems = null)
         {
             Contract.Requires(sugMaker != null);
-            Contract.Requires(initItems != null);
-            Contract.Requires(convertTo != null);
 
             this.sugMaker = sugMaker;
-            this.convertTo = convertTo;
-            this.allowSendToSearch = allowSendToSearch;
-            this.allowConfidenceToggle = allowConfidenceToggle;
-            this.singleTag = singleTag;
-            this.measureEditorWithCompare = measureEditorWithCompare;
             this.blankSetter = new BlankSetter(sugMaker.FirstMatchingOrNewWord, OpenMeasureEditor, OpenIcdSelector);
+            this.tagsWritable = new ObservableCollection<TagViewModel>();
 
-            tagsWritable = new ObservableCollection<TagViewModel>();
+            Suggestions = new ObservableCollection<SuggestionViewModel>();
             Tags = new INCCReadOnlyObservableCollection<TagViewModel>(tagsWritable);
             Tags.CollectionChangedWrapper += (s, e) =>
             {
@@ -89,21 +124,13 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             };
             hanlder = this.Subscribe(Event.WordPersisted, (e) =>
-            {// TODO двжды здесь?
+            {
+                // TODO двжды здесь?
                 // созданные слова можно искать из поиска, убираем сигнал "новое" после сохранения слова
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 Tags.Where(t => (t.Blank as Word) == word)
                     .ForAll(t => t.Validate());
             });
-
-            AddTag(isLast: true);
-
-            foreach (var item in initItems)
-            {
-                AddTag(item);
-            }
-
-            Suggestions = new ObservableCollection<SuggestionViewModel>();
 
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
             DragHandler = new AutocompleteViewModel.DragSourceHandler(this);
@@ -136,13 +163,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Возникает, когда меняется набор сущностей или уверенность.
         /// </summary>
         public event EventHandler CHiosChanged;
-
-        public enum OptionsMode
-        {
-            HrEditor,
-            MeasureEditor,
-            Search
-        }
 
         public RelayCommand<TagViewModel> EnterCommand
         {
@@ -223,28 +243,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         private List<TagViewModel> SelectedTags
         {
             get { return Tags.Where(t => t.IsSelected).ToList(); }
-        }
-
-        public RelayCommand AddIcdCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    AddFromEditor(BlankType.Icd);
-                });
-            }
-        }
-
-        public RelayCommand AddMeasureCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    AddFromEditor(BlankType.Measure);
-                });
-            }
         }
 
         public RelayCommand EditCommand
@@ -388,24 +386,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public TagViewModel LastTag
-        {
-            get
-            {
-                return Tags.LastOrDefault();
-            }
-        }
+        public TagViewModel LastTag { get { return Tags.LastOrDefault(); } }
 
         /// <summary>
         /// Ни в одном теге нет текста.
         /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return !Tags.Any(x => !x.Query.IsNullOrEmpty());
-            }
-        }
+        public bool IsEmpty { get { return !Tags.Any(x => !x.Query.IsNullOrEmpty()); } }
 
         public bool IsPopupOpen
         {
@@ -476,35 +462,17 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Автокомплит с единственным тегом (не IsLast). Добавление новых заменяет его.
         /// </summary>
-        public bool SingleTag
-        {
-            get { return singleTag; }
-        }
+        public bool SingleTag { get { return singleTag; } }
 
-        public bool WithSendToSearch
-        {
-            get { return allowSendToSearch; }
-        }
+        public bool WithSendToSearch { get { return allowSendToSearch; } }
 
-        public bool WithConvertTo(BlankType type)
-        {
-            return convertTo.Contains(type);
-        }
+        public bool WithConvertTo(BlankType type) { return convertTo.Contains(type); }
 
-        public bool WithConvert
-        {
-            get { return convertTo.Any(); }
-        }
+        public bool WithConvert { get { return convertTo.Any(); } }
 
-        public bool WithConfidence
-        {
-            get { return allowConfidenceToggle; }
-        }
+        public bool WithConfidence { get { return allowConfidenceToggle; } }
 
-        public bool InDispose
-        {
-            get { return inDispose; }
-        }
+        public bool InDispose { get { return inDispose; } }
 
         /// <summary>
         /// Создает тег.
@@ -591,6 +559,28 @@ namespace Diagnosis.ViewModels.Autocomplete
             return tag;
         }
 
+        public RelayCommand AddIcdCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AddFromEditor(BlankType.Icd);
+                }, () => WithConvertTo(BlankType.Icd));
+            }
+        }
+
+        public RelayCommand AddMeasureCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AddFromEditor(BlankType.Measure);
+                }, () => WithConvertTo(BlankType.Measure));
+            }
+        }
+
         public void AddFromEditor(BlankType type, int index = -1)
         {
             if (type == BlankType.Measure)
@@ -617,17 +607,15 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfWithHio || tagOrContent is IHrItemObject);
 
-            var tag = tagOrContent as TagViewModel;
-            if (tag == null)
-            {
-                tag = CreateTag(tagOrContent);
-            }
+            CompleteTypings();
+
+            var tag = tagOrContent as TagViewModel ?? CreateTag(tagOrContent);
 
             if (isLast)
             {
                 if (LastTag != null)
                     LastTag.IsLast = false;
-                tag.IsLast = true && !SingleTag;
+                tag.IsLast = !SingleTag;
             }
 
             if (index < 0 || index > Tags.Count - 1)
@@ -635,9 +623,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             if (isLast)
                 index = Tags.Count;
 
-            // complete editing tags before add new
-            Tags.Where(t => t.State == State.Typing)
-                .ForEach(t => CompleteOnLostFocus(t));
 
             if (SingleTag && Tags.Count > 0)
                 tagsWritable[0] = tag;
@@ -669,16 +654,16 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void ReplaceTagsWith(IEnumerable<object> items)
         {
+            if (Tags.Count == 0)
+                AddTag(isLast: true);
+
             // оставляем последний тег
             while (Tags.Count != 1)
-            {
-                tagsWritable.RemoveAt(Tags.Count - 2);
-            }
+                tagsWritable.RemoveAt(0);
 
-            foreach (var item in items)
-            {
-                AddTag(item).Validate(Validator);
-            }
+            if (items != null)
+                foreach (var item in items)
+                    AddTag(item).Validate();
         }
 
         /// <summary>
@@ -696,6 +681,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 .Where(x => x.BlankType != BlankType.None)
                 .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
+
         /// <summary>
         /// Возвращает сущности из завершенных тегов по порядку.
         /// </summary>
@@ -716,12 +702,9 @@ namespace Diagnosis.ViewModels.Autocomplete
                 .Where(t => t.State == State.Completed)
                 .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
-
-        private Signalizations Validator(TagViewModel tag)
+        public virtual Signalizations Validate(BlankType tagBt)
         {
-            return mode == OptionsMode.Search && (tag.BlankType == BlankType.None || tag.BlankType == BlankType.Comment)
-                ? Signalizations.Forbidden
-                : Signalizations.None;
+            return Signalizations.None;
         }
 
         /// <summary>
@@ -733,7 +716,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CompleteCommon(TagViewModel tag, object sugOrHio, bool exactMatchRequired, bool inverse = false)
         {
             Contract.Requires(sugOrHio is SuggestionViewModel || sugOrHio is IHrItemObject || sugOrHio == null);
-            Contract.Ensures(tag.State == State.Completed);
+            Contract.Ensures(tag.State == State.Completed); //
 
             var hio = sugOrHio as IHrItemObject;
             var vm = sugOrHio as SuggestionViewModel;
@@ -777,7 +760,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             blankSetter.ConvertBlank(tag, e.type, onConverted);
         }
 
-        private void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)
+        protected void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)
         {
             var vm = new MeasureEditorViewModel(m, w, measureEditorWithCompare);
             vm.OnDialogResult(() => onOk(vm.Measure));
@@ -787,7 +770,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             });
         }
 
-        private void OpenIcdSelector(IcdDisease i, string q, Action<IcdDisease> onOk)
+        protected void OpenIcdSelector(IcdDisease i, string q, Action<IcdDisease> onOk)
         {
             var vm = new IcdSelectorViewModel(i, q);
             vm.OnDialogResult(() => onOk(vm.SelectedIcd));
@@ -935,6 +918,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             OnChiosChanged();
         }
+
         protected virtual void OnChiosChanged()
         {
             var h = CHiosChanged;
@@ -951,7 +935,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Contract.Invariant(inDispose || LastTag.IsLast || SingleTag); // поле ввода по умолчанию
             Contract.Invariant(inDispose || LastTag.IsLast != SingleTag); // единственный тег не IsLast
             Contract.Invariant(Tags.Count(t => t.State == State.Typing) <= 1); // только один тег редактируется
-            Contract.Invariant(Tags.Count == 1 || !SingleTag); // единственный тег
+            Contract.Invariant(!SingleTag || Tags.Count == 1); // единственный тег
         }
 
         protected override void Dispose(bool disposing)
@@ -1020,24 +1004,8 @@ namespace Diagnosis.ViewModels.Autocomplete
             get { return ToggleConfidenceCommand; }
         }
 
-        ICommand IHrEditorAutocomplete.DeleteCommand
-        {
-            get { return DeleteCommand; }
-        }
 
-        ICommand IHrEditorAutocomplete.SendToSearchCommand
-        {
-            get { return SendToSearchCommand; }
-        }
 
-        ICommand IHrEditorAutocomplete.ToggleSuggestionModeCommand
-        {
-            get { return ToggleSuggestionModeCommand; }
-        }
 
-        INotifyCollectionChanged IQbAutocompleteViewModel.Tags
-        {
-            get { return Tags; }
-        }
     }
 }

@@ -86,7 +86,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 var tag = AddTag(item, index++);
                 tag.IsSelected = true;
 
-                tag.Validate(Validator);
+                tag.Validate();
             }
             logger.LogHrItemObjects("paste", data.ItemObjects);
         }

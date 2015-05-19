@@ -42,6 +42,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         void AddTagNearAndEdit(TagViewModel tag, bool up);
         bool WithConvertTo(BlankType type);
         void OnDrop(DragEventArgs e);
+        Signalizations Validate(BlankType tagBt);
     }
 
     public interface IHrEditorAutocomplete : ITagsTrackableAutocomplete, IClipboardTarget, IDisposable

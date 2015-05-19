@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Tests
             r = new SuggestionsMaker(session, clearCreated: true);
             bs = new BlankSetter(r.FirstMatchingOrNewWord, null, null);
 
-            var a = new AutocompleteViewModel(r, AutocompleteViewModel.OptionsMode.HrEditor, null);
+            var a = new HrEditorAutocomplete(r);
             tag = new TagViewModel(a);
 
             word = session.Get<Word>(IntToGuid<Word>(1));
