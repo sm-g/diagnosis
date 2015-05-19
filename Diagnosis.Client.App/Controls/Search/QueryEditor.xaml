@@ -56,11 +56,24 @@
                 </Button>
 
                 <Button Command="{Binding Loader.LoadOptionsCommand}"
+                        Name="loadBtn"
                         ToolTip="Вставить запрос">
                     <DockPanel>
                         <diag:AutoGreyableImage Source="{StaticResource pasteImage}" />
                     </DockPanel>
                 </Button>
+                <Popup PlacementTarget="{Binding ElementName=loadBtn}"
+                       Placement="Bottom"
+                       StaysOpen="False"
+                       AllowsTransparency="True"
+                       IsOpen="{Binding Loader.LoadFailed}">
+                    <Border Background="{StaticResource overlayBackgroundBrush}"
+                            BorderBrush="{StaticResource AccentColorBrush3}"
+                            BorderThickness="3"
+                            CornerRadius="10">
+                        <TextBlock Margin="3">Запрос не вставлен<LineBreak />Сначала скопируйте запрос.</TextBlock>
+                    </Border>
+                </Popup>
                 <Button  Command="{Binding Loader.HidePartialLoadedWarningCommand}"
                          ToolTip="Запрос загружен частично"
                          Style="{StaticResource metroCircleButton}"

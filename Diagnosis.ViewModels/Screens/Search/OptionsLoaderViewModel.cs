@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Diagnosis.Common;
+﻿using Diagnosis.Common;
 using Diagnosis.Data;
-using Diagnosis.Models;
-using Diagnosis.ViewModels.DataTransfer;
 using Diagnosis.ViewModels.Search;
 using System;
 using System.Linq;
@@ -15,9 +12,10 @@ namespace Diagnosis.ViewModels.Screens
         private string _buffer;
         private bool _part;
         private bool _showB;
+        private bool _failed;
         private QueryEditorViewModel master;
         private OptionsLoader loader;
-        bool useBuffer;
+        private bool useBuffer;
         private VisibleRelayCommand _openBufferCommand;
 
         public OptionsLoaderViewModel(QueryEditorViewModel s, OptionsLoader loader, bool useBuffer = false)
@@ -35,9 +33,13 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     string str = GetStringToLoad();
                     var opt = loader.ReadOptions(str);
-                    master.SetOptions(opt);
-                    PartialLoaded = opt == null || opt.PartialLoaded;
 
+                    LoadFailed = opt == null;
+                    if (opt != null)
+                    {
+                        master.SetOptions(opt);
+                        PartialLoaded = opt.PartialLoaded;
+                    }
                 }, () => CanLoad());
             }
         }
@@ -134,6 +136,22 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public bool LoadFailed
+        {
+            get
+            {
+                return _failed;
+            }
+            set
+            {
+                if (_failed != value)
+                {
+                    _failed = value;
+                    OnPropertyChanged(() => LoadFailed);
+                }
+            }
+        }
+
         private bool CanLoad()
         {
             if (useBuffer)
@@ -142,6 +160,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             return Clipboard.ContainsText();
         }
+
         private string GetStringToLoad()
         {
             string str = null;
@@ -161,6 +180,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             return str;
         }
+
         private void ShowSavedString(string str)
         {
             if (useBuffer)
