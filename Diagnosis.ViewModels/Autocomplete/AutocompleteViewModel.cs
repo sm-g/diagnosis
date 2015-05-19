@@ -36,9 +36,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         private VisibleRelayCommand<TagViewModel> sendToSearch;
         private VisibleRelayCommand toggleConfidence;
         private OptionsMode mode;
+        private BlankSetter blankSetter;
 
-        public AutocompleteViewModel(SuggestionsMaker recognizer, OptionsMode mode, IEnumerable<object> initItems)
-            : this(recognizer,
+        public AutocompleteViewModel(SuggestionsMaker sugMaker, OptionsMode mode, IEnumerable<object> initItems)
+            : this(sugMaker,
                 allowSendToSearch: mode == OptionsMode.HrEditor,
                 allowConfidenceToggle: mode != OptionsMode.MeasureEditor,
                 singleTag: mode == OptionsMode.MeasureEditor,
@@ -52,7 +53,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.mode = mode;
         }
 
-        private AutocompleteViewModel(SuggestionsMaker recognizer,
+        private AutocompleteViewModel(SuggestionsMaker sugMaker,
             bool allowSendToSearch,
             bool allowConfidenceToggle,
             bool singleTag,
@@ -60,16 +61,17 @@ namespace Diagnosis.ViewModels.Autocomplete
             IEnumerable<object> initItems,
             IEnumerable<BlankType> convertTo)
         {
-            Contract.Requires(recognizer != null);
+            Contract.Requires(sugMaker != null);
             Contract.Requires(initItems != null);
             Contract.Requires(convertTo != null);
 
-            this.sugMaker = recognizer;
+            this.sugMaker = sugMaker;
             this.convertTo = convertTo;
             this.allowSendToSearch = allowSendToSearch;
             this.allowConfidenceToggle = allowConfidenceToggle;
             this.singleTag = singleTag;
             this.measureEditorWithCompare = measureEditorWithCompare;
+            this.blankSetter = new BlankSetter(sugMaker.FirstMatchingOrNewWord, OpenMeasureEditor, OpenIcdSelector);
 
             tagsWritable = new ObservableCollection<TagViewModel>();
             Tags = new INCCReadOnlyObservableCollection<TagViewModel>(tagsWritable);
@@ -726,19 +728,19 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// Завершает тег.
         /// </summary>
         /// <param name="tag"></param>
-        /// <param name="suggestion">Предложение или hio</param>
+        /// <param name="sugOrHio">Предложение или hio</param>
         /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
-        private void CompleteCommon(TagViewModel tag, object suggestion, bool exactMatchRequired, bool inverse = false)
+        private void CompleteCommon(TagViewModel tag, object sugOrHio, bool exactMatchRequired, bool inverse = false)
         {
-            Contract.Requires(suggestion is SuggestionViewModel || suggestion is IHrItemObject || suggestion == null);
+            Contract.Requires(sugOrHio is SuggestionViewModel || sugOrHio is IHrItemObject || sugOrHio == null);
             Contract.Ensures(tag.State == State.Completed);
 
-            var hio = suggestion as IHrItemObject;
-            var vm = suggestion as SuggestionViewModel;
+            var hio = sugOrHio as IHrItemObject;
+            var vm = sugOrHio as SuggestionViewModel;
             if (vm != null)
                 hio = vm.Hio;
 
-            SetBlank(tag, hio, exactMatchRequired, inverse);
+            blankSetter.SetBlank(tag, hio, exactMatchRequired, inverse);
 
             CompleteEnding(tag);
 
@@ -772,95 +774,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                     StartEdit();
                 }
             };
-            ConvertBlank(tag, e.type, onConverted);
-        }
-
-        private void SetBlank(TagViewModel tag, IHrItemObject suggestion, bool exactMatchRequired, bool inverse)
-        {
-            Contract.Requires(tag != null);
-
-            if (suggestion == null ^ inverse) // direct no suggestion or inverse with suggestion
-            {
-                if (!tag.Query.IsNullOrEmpty())
-                {
-                    tag.Blank = new Comment(tag.Query);
-                }
-                else
-                {
-                    tag.Blank = null; // для поиска или ентер в пустом непоследнем
-                }
-            }
-            else if (!inverse) // direct with suggestion
-            {
-                if (!exactMatchRequired || tag.Query.MatchesAsStrings(suggestion))
-                {
-                    tag.Blank = suggestion; // main
-                }
-                else
-                {
-                    tag.Blank = new Comment(tag.Query); // запрос не совпал с предположением (CompleteOnLostFocus)
-                }
-            }
-            else // inverse, no suggestion
-            {
-                Contract.Assume(!tag.Query.IsNullOrEmpty());
-                tag.Blank = sugMaker.FirstMatchingOrNewWord(tag.Query);
-            }
-        }
-
-        /// <summary>
-        /// Изменяет заготовку тега с одной сущности на другую.
-        /// Возвращает успешность конвертации.
-        /// </summary>
-        private void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
-        {
-            Contract.Requires(tag.BlankType != toType);
-            Contract.Requires(toType != BlankType.None);
-
-            // if queryOrMeasureWord == null - initial or after clear query
-            string queryOrMeasureWord = null;
-            if (tag.BlankType == BlankType.Measure)
-            {
-                var w = (tag.Blank as Measure).Word;
-                if (w != null)
-                    queryOrMeasureWord = w.Title;
-            }
-            else
-                queryOrMeasureWord = tag.Query;
-
-            switch (toType)
-            {
-                case BlankType.Comment:
-                    tag.Blank = new Comment(tag.Query);
-                    onConverted();
-                    break;
-
-                case BlankType.Word: // новое или существующее
-                    Contract.Assume(!queryOrMeasureWord.IsNullOrEmpty());
-
-                    tag.Blank = sugMaker.FirstMatchingOrNewWord(queryOrMeasureWord);
-                    onConverted();
-                    break;
-
-                case BlankType.Measure: // слово
-                    Word w = null;
-                    if (!queryOrMeasureWord.IsNullOrEmpty())
-                        w = sugMaker.FirstMatchingOrNewWord(queryOrMeasureWord);
-                    OpenMeasureEditor(null, w, (m) =>
-                    {
-                        tag.Blank = m;
-                        onConverted();
-                    });
-                    break;
-
-                case BlankType.Icd: // слово/коммент в поисковый запрос
-                    OpenIcdSelector(null, queryOrMeasureWord, (i) =>
-                    {
-                        tag.Blank = i;
-                        onConverted();
-                    });
-                    break;
-            }
+            blankSetter.ConvertBlank(tag, e.type, onConverted);
         }
 
         private void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)

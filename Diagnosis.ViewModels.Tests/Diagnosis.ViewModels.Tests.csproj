@@ -84,6 +84,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="BlankSetterTest.cs" />
     <Compile Include="AutocompleteTest.cs" />
     <Compile Include="CriteriaTest.cs" />
     <Compile Include="CardTest.cs" />
