@@ -759,8 +759,6 @@
     <Resource Include="Resources\Images\AddControl_371.png" />
     <Resource Include="Resources\Images\Close_16xLG.png" />
     <Resource Include="Resources\Images\Arrow_UndoRevertRestore_16xLG.png" />
-    <Resource Include="Resources\Images\126_Edit_24x24_72.png" />
-    <Resource Include="Resources\Images\Find_5650.png" />
     <Resource Include="Resources\Images\splash.png" />
     <Resource Include="Resources\Images\GroupBy.png" />
     <Resource Include="Resources\Images\SortAscending.png" />

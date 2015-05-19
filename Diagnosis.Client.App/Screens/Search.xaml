@@ -118,9 +118,19 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button Command="{Binding EditEstimatorCommand}"
-                                    DockPanel.Dock="Right"
-                                    Content="edit" />
+                            <Button  Command="{Binding EditEstimatorCommand}"                                     
+                                     Style="{StaticResource metroCircleButton}"
+                                     DockPanel.Dock="Right"
+                                     Visibility="{calc:Binding SelectedEstimator, Mode=OneWay}">
+                                <Rectangle Width="12"
+                                           Height="12"
+                                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Uniform"
+                                                     Visual="{DynamicResource appbar_edit}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
                         </DockPanel>
                     </TabItem>
                 </TabControl>

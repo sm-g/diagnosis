@@ -130,12 +130,6 @@
   <data name="save_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Images\save_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="_126_Edit_24x24_72" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Images\126_Edit_24x24_72.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Find_5650" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Images\Find_5650.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Sorting_Category" xml:space="preserve">
     <value>По разделу</value>
   </data>

@@ -42,6 +42,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var ests = Session.QueryOver<Estimator>().List();
             Estimators = new ObservableCollection<Estimator>(ests);
+            SelectedEstimator = ests.FirstOrDefault();
 
             msgManager = new EventMessageHandlersManager(
                 this.Subscribe(Event.SendToSearch, (e) =>
