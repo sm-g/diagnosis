@@ -256,14 +256,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return new RelayCommand(() =>
                 {
-                    if (!IsLast && !autocomplete.SingleTag)
-                    {
-                        OnDeleted();
-                    }
-                    else
-                    {
+                    if (IsLast || autocomplete.SingleTag)
                         Reset();
-                    }
+                    else
+                        OnDeleted();
                 });
             }
         }

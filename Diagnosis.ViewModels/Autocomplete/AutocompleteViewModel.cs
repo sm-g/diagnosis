@@ -817,7 +817,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CompleteCommon(TagViewModel tag, object sugOrHio, bool exactMatchRequired, bool inverse = false)
         {
             Contract.Requires(sugOrHio is SuggestionViewModel || sugOrHio is IHrItemObject || sugOrHio == null);
-            Contract.Ensures(tag.State == State.Completed); //
+            Contract.Ensures(tag.State == State.Completed || tag.Query == string.Empty); // if last was reset
 
             var hio = sugOrHio as IHrItemObject;
             var vm = sugOrHio as SuggestionViewModel;
@@ -829,9 +829,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             CompleteEnding(tag);
 
             if (tag.Query.IsNullOrEmpty())
-            {
                 tag.DeleteCommand.Execute(null);
-            }
         }
 
         private void CompleteEnding(TagViewModel tag)

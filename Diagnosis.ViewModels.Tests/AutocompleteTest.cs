@@ -67,6 +67,14 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
+        public void Type_Clear_CompleteOnLostFocus_CanDelete()
+        {
+            a.SelectedTag.Query = "123";
+            a.SelectedTag.Query = "";
+            a.CompleteOnLostFocus(a.SelectedTag);
+        }
+
+        [TestMethod]
         public void QueryExistingWordStart()
         {
             a.SelectedTag.Query = q;
