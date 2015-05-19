@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Common.Types;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using NHibernate;
@@ -108,7 +107,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             // несохраненное слово
             var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
 
-            return same; // null if transient but not in created 
+            return same; // null if transient but not in created
         }
 
         /// <summary>

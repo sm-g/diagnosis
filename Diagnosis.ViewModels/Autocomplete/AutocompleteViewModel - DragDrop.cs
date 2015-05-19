@@ -56,6 +56,45 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
+        public void OnDrop(DragEventArgs e)
+        {
+            logger.DebugFormat("drop {0}", e.Data.ToString());
+
+            string text = GetDroppedText(e);
+
+            if (text != null)
+            {
+                // drop strings - make tag with query and complete it
+
+                var strings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var str in strings)
+                {
+                    var tag = CreateTag(str);
+                    var sugg = sugMaker.SearchForSuggesstions(str, null).FirstOrDefault();
+                    CompleteCommon(tag, sugg, true);
+                    AddTag(tag);
+                }
+            }
+        }
+
+        private static string GetDroppedText(DragEventArgs e)
+        {
+            string text = null;
+            string unicodeText = null;
+
+            // prefer unicode format
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                text = (string)e.Data.GetData(DataFormats.Text);
+            }
+            if (e.Data.GetDataPresent(DataFormats.UnicodeText))
+            {
+                unicodeText = (string)e.Data.GetData(DataFormats.UnicodeText);
+            }
+            if (unicodeText != null)
+                text = unicodeText;
+            return text;
+        }
 
         public class DragSourceHandler : IDragSource
         {

@@ -95,7 +95,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void ReplaceTagsWith(IEnumerable<object> items)
         {
-            Contract.Requires(items != null);
         }
 
         public IEnumerable<ConfWithHio> GetCHIOsOfCompleted()

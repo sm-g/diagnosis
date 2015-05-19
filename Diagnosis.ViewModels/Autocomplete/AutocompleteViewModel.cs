@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Autocomplete
@@ -18,13 +17,13 @@ namespace Diagnosis.ViewModels.Autocomplete
         public HrEditorAutocomplete(SuggestionsMaker sugMaker, IEnumerable<object> initItems = null)
             : base(sugMaker, initItems)
         {
-            allowSendToSearch = true;
-            allowConfidenceToggle = true;
-            convertTo = new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure };
+            this.allowSendToSearch = true;
+            this.allowConfidenceToggle = true;
+            this.convertTo = new[] { BlankType.Word, BlankType.Comment, BlankType.Icd, BlankType.Measure };
 
             ReplaceTagsWith(initItems);
-
         }
+
         ICommand IHrEditorAutocomplete.DeleteCommand
         {
             get { return DeleteCommand; }
@@ -46,8 +45,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         public MeasureAutocomplete(SuggestionsMaker sugMaker, IEnumerable<object> initItems = null)
             : base(sugMaker, initItems)
         {
-            singleTag = true;
-            convertTo = Enumerable.Empty<BlankType>();
+            this.singleTag = true;
+            this.convertTo = Enumerable.Empty<BlankType>();
 
             ReplaceTagsWith(initItems);
         }
@@ -58,18 +57,20 @@ namespace Diagnosis.ViewModels.Autocomplete
         public QueryBlockAutocomplete(SuggestionsMaker sugMaker, IEnumerable<BlankType> convertTo = null)
             : base(sugMaker)
         {
-            allowConfidenceToggle = true;
-            measureEditorWithCompare = true;
-            convertTo = convertTo ?? new[] { BlankType.Word, BlankType.Measure };
+            this.allowConfidenceToggle = true;
+            this.measureEditorWithCompare = true;
+            this.convertTo = convertTo ?? new[] { BlankType.Word, BlankType.Measure };
 
             ReplaceTagsWith(null);
         }
+
         public override Signalizations Validate(BlankType tagBt)
         {
             return !convertTo.Contains(tagBt)
                 ? Signalizations.Forbidden
                 : Signalizations.None;
         }
+
         INotifyCollectionChanged IQbAutocompleteViewModel.Tags
         {
             get { return Tags; }
@@ -366,6 +367,21 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
+        ICommand ITagParentAutocomplete.EditCommand
+        {
+            get { return EditCommand; }
+        }
+
+        ICommand ITagParentAutocomplete.SendToSearchCommand
+        {
+            get { return SendToSearchCommand; }
+        }
+
+        ICommand ITagParentAutocomplete.ToggleConfidenceCommand
+        {
+            get { return ToggleConfidenceCommand; }
+        }
+
         /// <summary>
         /// Последний выбранный тег.
         /// При потере фокуса списком тегов SelectedTag будет null.
@@ -466,13 +482,130 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public bool WithSendToSearch { get { return allowSendToSearch; } }
 
-        public bool WithConvertTo(BlankType type) { return convertTo.Contains(type); }
+        public bool WithConvertTo(BlankType type)
+        {
+            return convertTo.Contains(type);
+        }
 
         public bool WithConvert { get { return convertTo.Any(); } }
 
         public bool WithConfidence { get { return allowConfidenceToggle; } }
 
         public bool InDispose { get { return inDispose; } }
+
+        public RelayCommand AddIcdCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AddFromEditor(BlankType.Icd);
+                }, () => WithConvertTo(BlankType.Icd));
+            }
+        }
+
+        public RelayCommand AddMeasureCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    AddFromEditor(BlankType.Measure);
+                }, () => WithConvertTo(BlankType.Measure));
+            }
+        }
+
+        public void AddFromEditor(BlankType type, int index = -1)
+        {
+            if (type == BlankType.Measure)
+            {
+                OpenMeasureEditor(null, null, (m) =>
+                {
+                    AddTag(m, index);
+                });
+            }
+            else if (type == BlankType.Icd)
+            {
+                OpenIcdSelector(null, null, (i) =>
+                {
+                    AddTag(i, index);
+                });
+            }
+        }
+
+        /// <summary>
+        /// Добавляет пустой тег рядом с другим.
+        /// </summary>
+        public void AddTagNearAndEdit(TagViewModel from, bool left)
+        {
+            var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
+            StartEdit(tag);
+        }
+
+        public void StartEdit(TagViewModel tag)
+        {
+            SelectedTag = tag;
+            tag.IsTextBoxFocused = true;
+        }
+
+        public void StartEdit()
+        {
+            SelectedTag = LastTag;
+            LastTag.IsTextBoxFocused = true;
+        }
+
+        public void ReplaceTagsWith(IEnumerable<object> items)
+        {
+            if (Tags.Count == 0)
+                AddTag(isLast: true);
+
+            // оставляем последний тег
+            while (Tags.Count != 1)
+                tagsWritable.RemoveAt(0);
+
+            if (items != null)
+                foreach (var item in items)
+                    AddTag(item).Validate();
+        }
+
+        /// <summary>
+        /// Добавляет тег в коллекцию.
+        /// <param name="tagOrContent">Созданный тег, строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
+        /// </summary>
+        public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
+        {
+            Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfWithHio || tagOrContent is IHrItemObject);
+
+            CompleteTypings();
+
+            var tag = tagOrContent as TagViewModel ?? CreateTag(tagOrContent);
+
+            if (isLast)
+            {
+                if (LastTag != null)
+                    LastTag.IsLast = false;
+                tag.IsLast = !SingleTag;
+            }
+
+            if (index < 0 || index > Tags.Count - 1)
+                index = Tags.Count - 1; // перед последним
+            if (isLast)
+                index = Tags.Count;
+
+            if (SingleTag && Tags.Count > 0)
+                tagsWritable[0] = tag;
+            else
+                tagsWritable.Insert(index, tag);
+            return tag;
+        }
+
+        public void CompleteTypings()
+        {
+            Contract.Ensures(Tags.All(t => t.State != State.Typing));
+
+            Tags.Where(t => t.State == State.Typing)
+                .ForEach(tag => CompleteOnLostFocus(tag));
+        }
 
         /// <summary>
         /// Создает тег.
@@ -559,113 +692,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             return tag;
         }
 
-        public RelayCommand AddIcdCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    AddFromEditor(BlankType.Icd);
-                }, () => WithConvertTo(BlankType.Icd));
-            }
-        }
-
-        public RelayCommand AddMeasureCommand
-        {
-            get
-            {
-                return new RelayCommand(() =>
-                {
-                    AddFromEditor(BlankType.Measure);
-                }, () => WithConvertTo(BlankType.Measure));
-            }
-        }
-
-        public void AddFromEditor(BlankType type, int index = -1)
-        {
-            if (type == BlankType.Measure)
-            {
-                OpenMeasureEditor(null, null, (m) =>
-                {
-                    AddTag(m, index);
-                });
-            }
-            else if (type == BlankType.Icd)
-            {
-                OpenIcdSelector(null, null, (i) =>
-                {
-                    AddTag(i, index);
-                });
-            }
-        }
-
-        /// <summary>
-        /// Добавляет тег в коллекцию.
-        /// <param name="tagOrContent">Созданный тег, строка запроса, ConfindenceHrItemObject или null для пустого тега.</param>
-        /// </summary>
-        public TagViewModel AddTag(object tagOrContent = null, int index = -1, bool isLast = false)
-        {
-            Contract.Requires(tagOrContent == null || tagOrContent is TagViewModel || tagOrContent is string || tagOrContent is ConfWithHio || tagOrContent is IHrItemObject);
-
-            CompleteTypings();
-
-            var tag = tagOrContent as TagViewModel ?? CreateTag(tagOrContent);
-
-            if (isLast)
-            {
-                if (LastTag != null)
-                    LastTag.IsLast = false;
-                tag.IsLast = !SingleTag;
-            }
-
-            if (index < 0 || index > Tags.Count - 1)
-                index = Tags.Count - 1; // перед последним
-            if (isLast)
-                index = Tags.Count;
-
-
-            if (SingleTag && Tags.Count > 0)
-                tagsWritable[0] = tag;
-            else
-                tagsWritable.Insert(index, tag);
-            return tag;
-        }
-
-        /// <summary>
-        /// Добавляет пустой тег рядом с другим.
-        /// </summary>
-        public void AddTagNearAndEdit(TagViewModel from, bool left)
-        {
-            var tag = AddTag(index: Tags.IndexOf(from) + (left ? 0 : 1));
-            StartEdit(tag);
-        }
-
-        public void StartEdit(TagViewModel tag)
-        {
-            SelectedTag = tag;
-            tag.IsTextBoxFocused = true;
-        }
-
-        public void StartEdit()
-        {
-            SelectedTag = LastTag;
-            LastTag.IsTextBoxFocused = true;
-        }
-
-        public void ReplaceTagsWith(IEnumerable<object> items)
-        {
-            if (Tags.Count == 0)
-                AddTag(isLast: true);
-
-            // оставляем последний тег
-            while (Tags.Count != 1)
-                tagsWritable.RemoveAt(0);
-
-            if (items != null)
-                foreach (var item in items)
-                    AddTag(item).Validate();
-        }
-
         /// <summary>
         /// Возвращает сущности из тегов по порядку.
         /// Не должен вызываться, если есть редактируемый тег.
@@ -702,82 +728,10 @@ namespace Diagnosis.ViewModels.Autocomplete
                 .Where(t => t.State == State.Completed)
                 .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
+
         public virtual Signalizations Validate(BlankType tagBt)
         {
             return Signalizations.None;
-        }
-
-        /// <summary>
-        /// Завершает тег.
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <param name="sugOrHio">Предложение или hio</param>
-        /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
-        private void CompleteCommon(TagViewModel tag, object sugOrHio, bool exactMatchRequired, bool inverse = false)
-        {
-            Contract.Requires(sugOrHio is SuggestionViewModel || sugOrHio is IHrItemObject || sugOrHio == null);
-            Contract.Ensures(tag.State == State.Completed); //
-
-            var hio = sugOrHio as IHrItemObject;
-            var vm = sugOrHio as SuggestionViewModel;
-            if (vm != null)
-                hio = vm.Hio;
-
-            blankSetter.SetBlank(tag, hio, exactMatchRequired, inverse);
-
-            CompleteEnding(tag);
-
-            if (tag.Query.IsNullOrEmpty())
-            {
-                tag.DeleteCommand.Execute(null);
-            }
-        }
-
-        private void CompleteOnConvert(object s, BlankTypeEventArgs e)
-        {
-            var tag = s as TagViewModel;
-            var measure = (tag.Blank as Measure);
-            var wasLast = tag.IsLast;
-            Action onConverted = () =>
-            {
-                if (measure != null && e.type != BlankType.Comment)
-                {
-                    // отдельный комментарий из числа измерения
-                    var comment = new Comment(measure.FormattedValueUom);
-                    AddTag(comment, Tags.IndexOf(tag) + 1);
-                }
-
-                CompleteEnding(tag);
-
-                OnEntitiesChanged(); // TODO повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
-
-                if (wasLast)
-                {
-                    // convert from Last - continue typing
-                    StartEdit();
-                }
-            };
-            blankSetter.ConvertBlank(tag, e.type, onConverted);
-        }
-
-        protected void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)
-        {
-            var vm = new MeasureEditorViewModel(m, w, measureEditorWithCompare);
-            vm.OnDialogResult(() => onOk(vm.Measure));
-            uiTaskFactory.StartNew(() =>
-            {
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
-        }
-
-        protected void OpenIcdSelector(IcdDisease i, string q, Action<IcdDisease> onOk)
-        {
-            var vm = new IcdSelectorViewModel(i, q);
-            vm.OnDialogResult(() => onOk(vm.SelectedIcd));
-            uiTaskFactory.StartNew(() =>
-            {
-                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
-            });
         }
 
         internal void CompleteOnEnter(TagViewModel tag, bool inverse = false, bool withControl = false)
@@ -827,12 +781,57 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
         }
 
-        public void CompleteTypings()
+        private void CompleteOnConvert(object s, BlankTypeEventArgs e)
         {
-            Contract.Ensures(Tags.All(t => t.State != State.Typing));
+            var tag = s as TagViewModel;
+            var measure = (tag.Blank as Measure);
+            var wasLast = tag.IsLast;
+            Action onConverted = () =>
+            {
+                if (measure != null && e.type != BlankType.Comment)
+                {
+                    // отдельный комментарий из числа измерения
+                    var comment = new Comment(measure.FormattedValueUom);
+                    AddTag(comment, Tags.IndexOf(tag) + 1);
+                }
 
-            Tags.Where(t => t.State == State.Typing)
-                .ForEach(tag => CompleteOnLostFocus(tag));
+                CompleteEnding(tag);
+
+                OnEntitiesChanged(); // TODO повторно, тк при конверте сначала меняется query, поэтому меняется state на completed
+
+                if (wasLast)
+                {
+                    // convert from Last - continue typing
+                    StartEdit();
+                }
+            };
+            blankSetter.ConvertBlank(tag, e.type, onConverted);
+        }
+
+        /// <summary>
+        /// Завершает тег.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="sugOrHio">Предложение или hio</param>
+        /// <param name="exactMatchRequired">Требуется совпадение запроса и текста выбранного предположения.</param>
+        private void CompleteCommon(TagViewModel tag, object sugOrHio, bool exactMatchRequired, bool inverse = false)
+        {
+            Contract.Requires(sugOrHio is SuggestionViewModel || sugOrHio is IHrItemObject || sugOrHio == null);
+            Contract.Ensures(tag.State == State.Completed); //
+
+            var hio = sugOrHio as IHrItemObject;
+            var vm = sugOrHio as SuggestionViewModel;
+            if (vm != null)
+                hio = vm.Hio;
+
+            blankSetter.SetBlank(tag, hio, exactMatchRequired, inverse);
+
+            CompleteEnding(tag);
+
+            if (tag.Query.IsNullOrEmpty())
+            {
+                tag.DeleteCommand.Execute(null);
+            }
         }
 
         private void CompleteEnding(TagViewModel tag)
@@ -849,6 +848,26 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 AddTag(isLast: true);
             }
+        }
+
+        protected void OpenMeasureEditor(Measure m, Word w, Action<Measure> onOk)
+        {
+            var vm = new MeasureEditorViewModel(m, w, measureEditorWithCompare);
+            vm.OnDialogResult(() => onOk(vm.Measure));
+            uiTaskFactory.StartNew(() =>
+            {
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
+        }
+
+        protected void OpenIcdSelector(IcdDisease i, string q, Action<IcdDisease> onOk)
+        {
+            var vm = new IcdSelectorViewModel(i, q);
+            vm.OnDialogResult(() => onOk(vm.SelectedIcd));
+            uiTaskFactory.StartNew(() =>
+            {
+                this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
+            });
         }
 
         private object MakeSuggestions(TagViewModel tag)
@@ -948,64 +967,5 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             base.Dispose(disposing);
         }
-
-        public void OnDrop(DragEventArgs e)
-        {
-            logger.DebugFormat("drop {0}", e.Data.ToString());
-
-            string text = GetDroppedText(e);
-
-            if (text != null)
-            {
-                // drop strings - make tag with query and complete it
-
-                var strings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var str in strings)
-                {
-                    var tag = CreateTag(str);
-                    var sugg = sugMaker.SearchForSuggesstions(str, null).FirstOrDefault();
-                    CompleteCommon(tag, sugg, true);
-                    AddTag(tag);
-                }
-            }
-        }
-
-        private static string GetDroppedText(DragEventArgs e)
-        {
-            string text = null;
-            string unicodeText = null;
-
-            // prefer unicode format
-            if (e.Data.GetDataPresent(DataFormats.Text))
-            {
-                text = (string)e.Data.GetData(DataFormats.Text);
-            }
-            if (e.Data.GetDataPresent(DataFormats.UnicodeText))
-            {
-                unicodeText = (string)e.Data.GetData(DataFormats.UnicodeText);
-            }
-            if (unicodeText != null)
-                text = unicodeText;
-            return text;
-        }
-
-        ICommand ITagParentAutocomplete.EditCommand
-        {
-            get { return EditCommand; }
-        }
-
-        ICommand ITagParentAutocomplete.SendToSearchCommand
-        {
-            get { return SendToSearchCommand; }
-        }
-
-        ICommand ITagParentAutocomplete.ToggleConfidenceCommand
-        {
-            get { return ToggleConfidenceCommand; }
-        }
-
-
-
-
     }
 }

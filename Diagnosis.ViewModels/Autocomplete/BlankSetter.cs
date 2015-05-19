@@ -2,7 +2,6 @@
 using Diagnosis.Models;
 using System;
 using System.Diagnostics.Contracts;
-
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Autocomplete
@@ -21,9 +20,10 @@ namespace Diagnosis.ViewModels.Autocomplete
             this.OpenMeasureEditor = OpenMeasureEditor;
             this.OpenIcdSelector = OpenIcdSelector;
         }
+
         /// <summary>
-        /// 
-        /// 
+        ///
+        ///
         /// Comment если нет hio или inverse, или hio не совпадает с запросом.
         /// </summary>
         /// <param name="tag"></param>
@@ -69,7 +69,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             if (tag.BlankType == BlankType.Measure)
             {
                 var w = (tag.Blank as Measure).Word;
-                Contract.Assume(w != null); // измерение без слова в теге не бывает                
+                Contract.Assume(w != null); // измерение без слова в теге не бывает
                 queryOrMeasureWordTitle = w.Title;
             }
             else
