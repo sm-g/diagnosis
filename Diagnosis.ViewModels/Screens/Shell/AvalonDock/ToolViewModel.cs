@@ -20,7 +20,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (_isVisible != value)
                 {
                     _isVisible = value;
-                    logger.DebugFormat("IsVisible {0} -> {1}", ContentId, value);
+                    //logger.DebugFormat("IsVisible {0} -> {1}", ContentId, value);
 
                     if (value)
                     {

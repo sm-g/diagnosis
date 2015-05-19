@@ -499,7 +499,7 @@ namespace Diagnosis.ViewModels
             else
                 RoundedOffset = from.RoundOffsetFor(RoundedUnit);
 
-            logger.DebugFormat("changed {2}\nfrom {0}\nto {1}", hr.FromDate, hr.ToDate, e.PropertyName);
+            //logger.DebugFormat("changed {2}\nfrom {0}\nto {1}", hr.FromDate, hr.ToDate, e.PropertyName);
         }
 
         private void healthRecord_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

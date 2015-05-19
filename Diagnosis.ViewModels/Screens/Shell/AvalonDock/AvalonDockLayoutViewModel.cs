@@ -102,7 +102,7 @@ namespace Diagnosis.ViewModels.Screens
 
         protected virtual void OnLayoutLoaded(EventArgs e)
         {
-            logger.DebugFormat("layout loaded");
+            //logger.DebugFormat("layout loaded");
 
             var h = LayoutLoaded;
             if (h != null)
@@ -113,7 +113,7 @@ namespace Diagnosis.ViewModels.Screens
 
         protected virtual void OnLayoutSaved(EventArgs e)
         {
-            logger.DebugFormat("layout saved");
+            //logger.DebugFormat("layout saved");
 
             var h = LayoutSaved;
             if (h != null)
@@ -124,7 +124,7 @@ namespace Diagnosis.ViewModels.Screens
 
         protected virtual void OnLayoutLoading(EventArgs e)
         {
-            logger.DebugFormat("layout loading");
+            //logger.DebugFormat("layout loading");
 
             var h = LayoutLoading;
             if (h != null)
@@ -147,7 +147,7 @@ namespace Diagnosis.ViewModels.Screens
             var layoutSerializer = new XmlLayoutSerializer(docManager);
             layoutSerializer.LayoutSerializationCallback += (s, args) =>
             {
-                logger.DebugFormat("deserialize {0}, content: {1}", args.Model.ContentId, args.Content);
+                //logger.DebugFormat("deserialize {0}, content: {1}", args.Model.ContentId, args.Content);
                 // This can happen if the previous session was loading a file
                 // but was unable to initialize the view ...
                 if (args.Model.ContentId == null)

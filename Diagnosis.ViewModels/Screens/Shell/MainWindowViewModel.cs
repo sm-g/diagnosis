@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
                     MenuBar.Visible = switcher.Screen != Screen.Login;
 
                     var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
-                    logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
+                    //logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
 
                     // показываем поиск на первом экране, где он может быть
                     //searchPanel.IsVisible = switcher.WithSearch && (searchVisByUser ?? true);

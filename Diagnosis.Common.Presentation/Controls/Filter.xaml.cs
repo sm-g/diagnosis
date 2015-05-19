@@ -49,7 +49,7 @@ namespace Diagnosis.Common.Presentation.Controls.Search
 
         private void input_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            logger.DebugFormat("filter got kb focus, to input={0}", e.NewFocus == input);
+            //logger.DebugFormat("filter got kb focus, to input={0}", e.NewFocus == input);
 
         }
 

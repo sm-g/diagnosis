@@ -56,7 +56,7 @@ namespace Diagnosis.Client.App.Screens
 
         private void dataGrid_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            logger.DebugFormat("patients got kb focus, to datagrid={0}", e.NewFocus == patients);
+            //logger.DebugFormat("patients got kb focus, to datagrid={0}", e.NewFocus == patients);
         }
     }
 }

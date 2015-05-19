@@ -120,14 +120,14 @@ namespace Diagnosis.Client.App.Controls.CardParts
                     var lbItem = records.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
                     if (lbItem != null && !Vm.inManualFocusSetting)
                     {
-                        logger.DebugFormat("end set focus to {0}", item);
+                        //logger.DebugFormat("end set focus to {0}", item);
                         var scope = FocusManager.GetFocusScope(this);
                         FocusManager.SetFocusedElement(scope, lbItem);
                     }
                     Vm.inManualFocusSetting = false;
                 };
 
-                logger.DebugFormat("begin set focus to {0}", item);
+                //logger.DebugFormat("begin set focus to {0}", item);
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, action);
             }
         }

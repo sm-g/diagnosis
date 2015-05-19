@@ -72,7 +72,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
             var newYear = (int?)baseValue;
             if (newYear.HasValue && newYear.Value < cdp.MinYear)
             {
-                logger.DebugFormat("coerce year {0}", baseValue);
+                //logger.DebugFormat("coerce year {0}", baseValue);
                 // cdp.Year = cdp.MinYear;
                 return cdp.MinYear;
             }

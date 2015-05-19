@@ -30,8 +30,6 @@ namespace Diagnosis.Data
 
             if (savingPatient == patient) return;
 
-            logger.DebugFormat("saving patient {0}", patient);
-
             savingPatient = patient;
 
             // удаляем пустые и удаленные

@@ -35,6 +35,7 @@ namespace Diagnosis.ViewModels.Tests
         public void Clean()
         {
         }
+        #region SetBlank
 
         [TestMethod]
         public void Empty_SetNull_Null()
@@ -140,5 +141,13 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(tag.BlankType == BlankType.Comment);
             Assert.AreEqual(q, (tag.Blank as Comment).String);
         }
+        #endregion
+        #region ConvertBlank
+        [TestMethod]
+        public void MyTestMethod()
+        {
+
+        }
+        #endregion
     }
 }

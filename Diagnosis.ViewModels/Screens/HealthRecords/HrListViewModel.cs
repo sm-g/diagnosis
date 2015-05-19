@@ -194,12 +194,12 @@ namespace Diagnosis.ViewModels.Screens
                             else
                                 SelectedHealthRecord = hrvm;
                         }
-                        logger.DebugFormat("select {0}", hrvm);
+                        //logger.DebugFormat("select {0}", hrvm);
                     }
                     else if (!inRemoveDup)
                     {
                         selectedOrder.Remove(hrvm);
-                        logger.DebugFormat("unselect {0}", hrvm);
+                        //logger.DebugFormat("unselect {0}", hrvm);
 
                         // Сняли выделение, фокус остался — enter будет открывать этот элемент, а выделен другой. Это ок.
                         // Выбранным становится последний.
@@ -213,14 +213,14 @@ namespace Diagnosis.ViewModels.Screens
                     if (doNotNotifyLastSelectedChanged.CanEnter)
                     {
                         OnPropertyChanged(() => LastSelected);
-                        logger.DebugFormat("selected in order\n{0}", string.Join("\n", selectedOrder));
+                        //logger.DebugFormat("selected in order\n{0}", string.Join("\n", selectedOrder));
                     }
                 }
 
                 if (Sorting.ToSortingProperty() == e.PropertyName ||
                     Grouping.ToGroupingProperty() == e.PropertyName)
                 {
-                    logger.DebugFormat("edit {0} in {1}", e.PropertyName, hrvm);
+                    //logger.DebugFormat("edit {0} in {1}", e.PropertyName, hrvm);
                     SimulateLiveshaping(hrvm);
                 }
 
@@ -296,7 +296,7 @@ namespace Diagnosis.ViewModels.Screens
                         _selectedHealthRecord.IsSelected = false;
                     }
                 }
-                logger.DebugFormat("hrList selected {0} -> {1}", _selectedHealthRecord, value);
+                //logger.DebugFormat("hrList selected {0} -> {1}", _selectedHealthRecord, value);
                 _selectedHealthRecord = value;
 #if DEBUG
                 SelectedCopy = value;

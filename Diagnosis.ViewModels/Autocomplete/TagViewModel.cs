@@ -404,7 +404,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_focused != value)
                 {
                     _focused = value;
-                    logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
+                    //logger.DebugFormat("{0} focusedTxt = {1}, focusedItem = {2}", this, value, _listItemFocused);
                     OnPropertyChanged("IsTextBoxFocused");
                 }
             }

@@ -123,7 +123,7 @@ namespace Diagnosis.ViewModels.Controls
                 if (_isResultsVisible != value)
                 {
                     _isResultsVisible = value;
-                    logger.DebugFormat("IsResultsVisible {0}", value);
+                    //logger.DebugFormat("IsResultsVisible {0}", value);
 
                     OnPropertyChanged(() => IsResultsVisible);
                 }

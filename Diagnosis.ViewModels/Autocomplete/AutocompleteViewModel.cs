@@ -418,7 +418,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_popupOpened != value)
                 {
                     _popupOpened = value;
-                    logger.DebugFormat("opened {0}", value);
+                    //logger.DebugFormat("opened {0}", value);
 
                     if (!value)
                     {
@@ -439,7 +439,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             set
             {
                 _supressCompletion = value;
-                logger.DebugFormat("CanCompleteOnLostFocus {0}", value);
+                //logger.DebugFormat("CanCompleteOnLostFocus {0}", value);
             }
         }
 

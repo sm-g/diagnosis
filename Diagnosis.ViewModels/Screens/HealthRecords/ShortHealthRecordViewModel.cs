@@ -108,7 +108,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_focused != value)
                 {
-                    logger.DebugFormat("focused {0} {1}", this, value);
+                    //logger.DebugFormat("focused {0} {1}", this, value);
                     _focused = value;
                     OnPropertyChanged(() => IsFocused);
                 }

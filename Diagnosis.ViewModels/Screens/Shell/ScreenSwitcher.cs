@@ -237,11 +237,6 @@ namespace Diagnosis.ViewModels.Screens
                 var hr = e.GetValue<HealthRecord>(MessageKeys.HealthRecord);
                 var goToEditor = e.GetValue<bool>(MessageKeys.Boolean);
 
-                if (goToEditor)
-                    logger.DebugFormat("goto editor for {0}", this);
-                else
-                    logger.DebugFormat("toggle editor for {0}", this);
-
                 OpenScreen(Screen.Card, hr);
 
                 var card = (CurrentView as CardViewModel);

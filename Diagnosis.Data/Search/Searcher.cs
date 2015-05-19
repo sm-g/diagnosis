@@ -91,7 +91,7 @@ namespace Diagnosis.Data.Search
         {
             // по исключающим блокам не ищем
             Contract.Assume(qb.IsRoot || !qb.IsExcluding);
-            logger.DebugFormat("{0}", qb);
+
             if (qb.IsGroup)
             {
                 var searcher = Searcher.Create(session, qb);
