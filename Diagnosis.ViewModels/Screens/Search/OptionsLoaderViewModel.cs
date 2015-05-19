@@ -75,6 +75,17 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        public RelayCommand HidePartialLoadedWarningCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    PartialLoaded = false;
+                });
+            }
+        }
+
         public bool ShowBuffer
         {
             get

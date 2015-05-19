@@ -18,8 +18,7 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Button  DockPanel.Dock="Left"
-                         Command="{Binding History.PrevOptionsCommand}"
+                <Button  Command="{Binding History.PrevOptionsCommand}"
                          ToolTip="Предыдущий запрос"
                          Style="{StaticResource metroCircleButton}">
                     <Rectangle Width="12"
@@ -31,8 +30,7 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
-                <Button  DockPanel.Dock="Left"
-                         Command="{Binding History.NextOptionsCommand}"
+                <Button  Command="{Binding History.NextOptionsCommand}"
                          ToolTip="Следующий запрос"
                          Style="{StaticResource metroCircleButton}">
                     <Rectangle Width="12"
@@ -44,7 +42,7 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
-                
+
                 <Separator Width="20"
                            Height="0" />
                 <Button Command="{Binding Loader.OpenBufferCommand}"
@@ -63,7 +61,21 @@
                         <diag:AutoGreyableImage Source="{StaticResource pasteImage}" />
                     </DockPanel>
                 </Button>
-                <Separator Width="20" 
+                <Button  Command="{Binding Loader.HidePartialLoadedWarningCommand}"
+                         ToolTip="Запрос загружен частично"
+                         Style="{StaticResource metroCircleButton}"
+                         BorderThickness="0"
+                         Visibility="{calc:Binding Loader.PartialLoaded, Mode=OneWay}">
+                    <Rectangle Width="20"
+                               Height="20"
+                               Fill="Orange">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{DynamicResource appbar_warning_circle}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Separator Width="20"
                            Height="0" />
                 <Button Command="{Binding SendToSearchCommand}"
                         Visibility="{calc:Binding SendToSearchCommand.IsVisible}"

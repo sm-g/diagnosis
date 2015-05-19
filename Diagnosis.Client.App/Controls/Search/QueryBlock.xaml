@@ -21,12 +21,12 @@
         <KeyBinding Key="Enter"
                     Command="{Binding SearchCommand}" />
     </UserControl.InputBindings>
-    <Grid>
+    <Grid ToolTip="Блок загружен частично"
+          ToolTipService.IsEnabled="{calc:Binding Options.PartialLoaded, Mode=OneWay}" >
         <Rectangle Width="3"
                    HorizontalAlignment="Left"
                    Fill="Orange"
-                   ToolTip="Блок загружен частично"
-                   Visibility="{Binding Options.PartialLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+                   Visibility="{calc:Binding Options.PartialLoaded, Mode=OneWay}">
         </Rectangle>
 
         <Grid  Margin="5 0">
