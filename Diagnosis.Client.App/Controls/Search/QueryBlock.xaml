@@ -8,21 +8,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"             
+             xmlns:design="clr-namespace:Diagnosis.Client.App.DesignData"
              xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance design:SampleQueryBlockViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="400"
-             d:DesignWidth="300"
+             d:DesignWidth="400"
              Background="Transparent"
              Focusable="False">
-    <UserControl.InputBindings>
-        <KeyBinding Key="Enter"
-                    Command="{Binding SearchCommand}" />
+    <UserControl.InputBindings>       
     </UserControl.InputBindings>
     <Grid ToolTip="Блок загружен частично"
-          ToolTipService.IsEnabled="{calc:Binding Options.PartialLoaded, Mode=OneWay}" >
+          ToolTipService.IsEnabled="{calc:Binding Options.PartialLoaded, Mode=OneWay}">
         <Rectangle Width="3"
                    HorizontalAlignment="Left"
                    Fill="Orange"
@@ -107,6 +105,7 @@
                 <CheckBox IsChecked="{Binding WithConfidence}"
                           Margin="5 0"
                           DockPanel.Dock="Right"
+                          Visibility="{calc:Binding !DescriptionVisible and !IsGroup, Mode=OneWay}"
                           ToolTip="Строгий фильтр, учитывающий уверенность слов"
                           Content="отрицания" />
             </DockPanel>
@@ -129,43 +128,40 @@
                                Visibility="{Binding AllEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </StackPanel>
-            <StackPanel Visibility="{Binding IsGroup, Converter={StaticResource NegBooleanToVisibilityConverter}}"
+            <StackPanel Visibility="{calc:Binding !DescriptionVisible and !IsGroup, Mode=OneWay}"
                         Grid.Row="2">
-                <StackPanel Visibility="{calc:Binding !DescriptionVisible, Mode=OneWay}"
-                            Grid.Row="2">
-                    <Label Content="Всё из" />
-                    <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
-                    <Label Padding="1">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock  VerticalAlignment="Center"
-                                        Text="И хотя бы " />
-                            <ComboBox ItemsSource="{Binding MinAnyMenuItems}"
-                                      VerticalAlignment="Center"
-                                      SelectedIndex="{calc:Binding MinAny - 1, Mode=TwoWay}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Text}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <TextBlock  VerticalAlignment="Center"
-                                        Text=" из: " />
-                        </StackPanel>
-                    </Label>
-                    <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
-                    <Label Content="И ни одиного из" />
-                    <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
+                <Label Content="Всё из" />
+                <search:Autocomplete DataContext="{Binding AutocompleteAll}" />
+                <Label Padding="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock  VerticalAlignment="Center"
+                                    Text="И хотя бы " />
+                        <ComboBox ItemsSource="{Binding MinAnyMenuItems}"
+                                  VerticalAlignment="Center"
+                                  SelectedIndex="{calc:Binding MinAny - 1, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Text}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock  VerticalAlignment="Center"
+                                    Text=" из: " />
+                    </StackPanel>
+                </Label>
+                <search:Autocomplete DataContext="{Binding AutocompleteAny}" />
+                <Label Content="И ни одиного из" />
+                <search:Autocomplete DataContext="{Binding AutocompleteNot}" />
 
-                    <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
-                    <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
-                        <forms:CategoryChooser.ItemsPanelTemplate>
-                            <ItemsPanelTemplate>
-                                <diag:UniformGridWithOrientation Orientation="Vertical"
-                                                                 Columns="2" />
-                            </ItemsPanelTemplate>
-                        </forms:CategoryChooser.ItemsPanelTemplate>
-                    </forms:CategoryChooser>
-                </StackPanel>
+                <Label Content="{Binding HrCategories, Source={StaticResource Resources}}" />
+                <forms:CategoryChooser CategoryMultiSelection="{StaticResource True}">
+                    <forms:CategoryChooser.ItemsPanelTemplate>
+                        <ItemsPanelTemplate>
+                            <diag:UniformGridWithOrientation Orientation="Vertical"
+                                                             Columns="2" />
+                        </ItemsPanelTemplate>
+                    </forms:CategoryChooser.ItemsPanelTemplate>
+                </forms:CategoryChooser>
             </StackPanel>
         </Grid>
     </Grid>
