@@ -1,5 +1,5 @@
 #define MyAppName "Diagnosis"
-#define MyAppVersion "1.7.1"
+#define MyAppVersion "1.8.0"
 #define MyAppPublisher "NBI KemSU"
 #define ClientAppName "Diagnosis"
 #define ServerAppName "Diagnosis on server"
