@@ -29,6 +29,7 @@ namespace Diagnosis.Data.Search
         /// </summary>
         public static IEnumerable<HealthRecord> GetResult(ISession session, SearchOptions qb)
         {
+            Contract.Requires(qb != null);
             Contract.Requires(qb.IsRoot);
 
             IEnumerable<HealthRecord> hrs;
@@ -44,6 +45,8 @@ namespace Diagnosis.Data.Search
 
         public static Searcher Create(ISession session, SearchOptions qb)
         {
+            Contract.Requires(qb != null);
+
             Searcher searcher;
             switch (qb.GroupOperator)
             {
@@ -70,6 +73,8 @@ namespace Diagnosis.Data.Search
         /// </summary>
         protected static Dictionary<IHrsHolder, IEnumerable<HealthRecord>> Intersect(IList<IEnumerable<HealthRecord>> results)
         {
+            Contract.Requires(results != null);
+
             if (results.Count == 0)
                 return new Dictionary<IHrsHolder, IEnumerable<HealthRecord>>();
 
@@ -89,8 +94,9 @@ namespace Diagnosis.Data.Search
         /// </summary>
         protected IEnumerable<HealthRecord> GetResultInner(SearchOptions qb)
         {
+            Contract.Requires(qb != null);
             // по исключающим блокам не ищем
-            Contract.Assume(qb.IsRoot || !qb.IsExcluding);
+            Contract.Requires(qb.IsRoot || !qb.IsExcluding);
 
             if (qb.IsGroup)
             {
@@ -110,6 +116,8 @@ namespace Diagnosis.Data.Search
 
         protected static string Log(IEnumerable<HealthRecord> hrs)
         {
+            Contract.Requires(hrs != null);
+
             return string.Join<HealthRecord>("\n", hrs.ToArray());
         }
     }

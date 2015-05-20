@@ -127,6 +127,8 @@ namespace Diagnosis.Data.Search
             if (logOn)
                 logger.DebugFormat("all, with non ex, scope {0}", qb.SearchScope);
 
+            Contract.Assume(beforeExclude != null);
+
             switch (qb.SearchScope)
             {
                 case SearchScope.HealthRecord:

@@ -48,6 +48,8 @@ namespace Diagnosis.Data
 
         public string WriteOptions(SearchOptions options)
         {
+            Contract.Requires(options != null);
+
             options.Minimize();
             var dto = MapToDto(options);
             return WriteOptionsInner(dto);
@@ -67,6 +69,7 @@ namespace Diagnosis.Data
         /// </summary>
         protected SearchOptions LoadFromDTO(SearchOptionsDTO dto)
         {
+            Contract.Requires(dto != null);
             Contract.Ensures(dto.GetAllChildrenCount() == Contract.Result<SearchOptions>().GetAllChildrenCount());
 
             var result = new SearchOptions();
@@ -195,11 +198,14 @@ namespace Diagnosis.Data
         [Pure]
         public static int GetAllChildrenCount(this SearchOptions o)
         {
+            Contract.Requires(o != null);
             return o.Children.Aggregate(o.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
         [Pure]
         public static int GetAllChildrenCount(this SearchOptionsDTO dto)
         {
+            Contract.Requires(dto != null);
+
             return dto.Children.Aggregate(dto.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
     }

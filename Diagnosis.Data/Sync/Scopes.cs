@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.Data.Sync
@@ -191,6 +192,7 @@ namespace Diagnosis.Data.Sync
 
         public static IEnumerable<Scope> OrderScopes(this IEnumerable<Scope> scopes)
         {
+            Contract.Requires(scopes != null);
             return scopes.OrderBy(x => x);
         }
 

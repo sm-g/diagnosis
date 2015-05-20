@@ -4,6 +4,7 @@ using NHibernate;
 using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.Data.Queries
@@ -17,6 +18,7 @@ namespace Diagnosis.Data.Queries
         {
             return () =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 using (var tr = session.BeginTransaction())
                 {
                     return session.Query<HealthRecord>().ToList();
@@ -31,6 +33,7 @@ namespace Diagnosis.Data.Queries
         {
             return (words) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
@@ -50,6 +53,7 @@ namespace Diagnosis.Data.Queries
         {
             return (words, mincount) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 mincount = mincount > 0 ? mincount : 1;
                 using (var tr = session.BeginTransaction())
                 {
@@ -97,6 +101,7 @@ namespace Diagnosis.Data.Queries
         {
             return (cwords) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = cwords.Select(w => w.HIO.Id).ToList();
@@ -120,6 +125,7 @@ namespace Diagnosis.Data.Queries
         {
             return (cwords, mincount) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = cwords.Select(w => w.HIO.Id).ToList();
@@ -146,6 +152,8 @@ namespace Diagnosis.Data.Queries
         {
             return (words) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
                 using (var tr = session.BeginTransaction())
                 {
                     // with help of http://stackoverflow.com/questions/8425232/sql-select-all-rows-where-subset-exists
@@ -182,6 +190,8 @@ namespace Diagnosis.Data.Queries
         {
             return (words) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
@@ -202,6 +212,8 @@ namespace Diagnosis.Data.Queries
         {
             return (cwords) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
                 using (var tr = session.BeginTransaction())
                 {
                     // записи без слов + со словами, но без этой уверенности
@@ -233,7 +245,8 @@ namespace Diagnosis.Data.Queries
         {
             return (words) =>
             {
-                // throw new NotImplementedException();
+                throw new NotImplementedException();
+
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
@@ -263,6 +276,7 @@ namespace Diagnosis.Data.Queries
         {
             return (words, scope) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 var withAny = WithAnyWord(session)(words);
                 switch (scope)
                 {
@@ -296,6 +310,7 @@ namespace Diagnosis.Data.Queries
         {
             return (all, any, not) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyWord(session)(any.Any() ? any : all);
@@ -313,6 +328,7 @@ namespace Diagnosis.Data.Queries
         {
             return (all, any, not, minAny) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyConfWords(session)(any.Any() ? any : all, minAny);
@@ -330,6 +346,7 @@ namespace Diagnosis.Data.Queries
         {
             return (all, any, not, minAny) =>
             {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyWords(session)(any.Any() ? any : all, minAny);

@@ -3,6 +3,7 @@ using Diagnosis.Models;
 using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.Data.Sync
@@ -24,6 +25,10 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public static Syncer OnlySelectedVocs(this Syncer s, ISession remote, IEnumerable<Vocabulary> vocsToLoad)
         {
+            Contract.Requires(s != null);
+            Contract.Requires(remote != null);
+            Contract.Requires(vocsToLoad != null);
+
             var selectedVocIds = vocsToLoad.Select(x => x.Id).ToList(); // for session
             var selectedWtIds = vocsToLoad.SelectMany(x => x.WordTemplates.Select(y => y.Id));
             var selectedSpecIds = vocsToLoad.SelectMany(x => x.Specialities.Select(y => y.Id));
@@ -60,6 +65,9 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public static Syncer WithInstalledVocs(this Syncer s, IEnumerable<Vocabulary> installedVocs)
         {
+            Contract.Requires(s != null);
+            Contract.Requires(installedVocs != null);
+
             var installedVocsIds = installedVocs.Select(x => x.Id).ToList().Cast<object>();
 
             foreach (var table in Scopes.GetVocOnlyTablesToDownload())
@@ -80,6 +88,8 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public static Syncer WithoutDoctors(this Syncer s)
         {
+            Contract.Requires(s != null);
+
             s.IgnoreAddingFilterPerType.Add(Names.tblToTypeMap[Names.Doctor], (row) => true);
 
             return s;
@@ -92,6 +102,8 @@ namespace Diagnosis.Data.Sync
         /// <returns></returns>
         public static Syncer WithoutCustomVocsInDoc(this Syncer s)
         {
+            Contract.Requires(s != null);
+
             s.ShaperPerType.Add(Names.tblToTypeMap[Names.Doctor], (row) =>
             {
                 row[Names.Col.DoctorCustomVocabulary] = DBNull.Value;

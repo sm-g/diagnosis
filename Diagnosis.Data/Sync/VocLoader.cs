@@ -34,6 +34,8 @@ namespace Diagnosis.Data.Sync
         /// <param name="voc"></param>
         public void LoadOrUpdateVocs(IEnumerable<Vocabulary> vocs)
         {
+            Contract.Requires(vocs != null);
+
             var wordsToSave = new List<Word>();
             foreach (var voc in vocs.Where(x => !x.IsCustom))
             {
@@ -69,6 +71,7 @@ namespace Diagnosis.Data.Sync
         public void DeleteVocs(IEnumerable<Vocabulary> vocs)
         {
             Contract.Requires(Constants.IsClient);
+            Contract.Requires(vocs != null);
 
             var wordsToSave = new List<Word>();
             var vocsToDel = vocs.Where(x => !x.IsCustom).ToArray();
@@ -96,6 +99,8 @@ namespace Diagnosis.Data.Sync
         /// <param name="mustBeDeletedIdsPerType"></param>
         public void AfterSyncVocs(Dictionary<Type, IEnumerable<object>> mustBeDeletedIdsPerType)
         {
+            Contract.Requires(mustBeDeletedIdsPerType != null);
+
             var vocs = session.Query<Vocabulary>().ToList();
 
             IEnumerable<object> ids;

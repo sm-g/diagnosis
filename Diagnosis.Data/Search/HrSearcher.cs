@@ -12,7 +12,6 @@ namespace Diagnosis.Data.Search
 {
     public class HrSearcher
     {
-        private static ISession session;
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HrSearcher));
 
         public static IEnumerable<HealthRecord> Search(ISession session, SearchOptions options)
@@ -71,6 +70,8 @@ namespace Diagnosis.Data.Search
                         hrs = FilterMinAny(options, hrs, hrW, options.WordsAny);
                 }
             }
+
+            Contract.Assume(hrs != null);
 
             // все измерения - просто фильтр
             if (options.MeasuresAll.Any())

@@ -50,6 +50,8 @@ namespace Diagnosis.Data
 
         public bool Delete(params IEntity[] entities)
         {
+            Contract.Requires(entities != null);
+
             if (entities.Length == 0) return true;
             logger.DebugFormat("deleting {0} IEntity", entities.Length);
             Debug.Assert(session.IsOpen);
@@ -81,6 +83,8 @@ namespace Diagnosis.Data
 
         public bool Save(params IEntity[] entities)
         {
+            Contract.Requires(entities != null);
+
             if (entities.Length == 0) return true;
             logger.DebugFormat("saving {0} IEntity", entities.Length);
             Debug.Assert(session.IsOpen);
