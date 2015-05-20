@@ -313,19 +313,6 @@ namespace Diagnosis.Models
             return byLast;
         }
 
-        protected internal virtual void AddCourse(Course course)
-        {
-            Contract.Requires(course.Patient == null);
-            //Contract.Requires(course.LeadDoctor != null);
-
-            if (!courses.Contains(course))
-            {
-                course.Patient = this;
-                courses.Add(course);
-                OnCoursesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, course));
-            }
-        }
-
         protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = CoursesChanged;

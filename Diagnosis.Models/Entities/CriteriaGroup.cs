@@ -42,6 +42,7 @@ namespace Diagnosis.Models
 
         protected internal virtual void AddCriterion(Criterion cr)
         {
+            Contract.Requires(cr != null);
             Contract.Requires(cr.Group == null);
             if (criteria.Add(cr))
             {

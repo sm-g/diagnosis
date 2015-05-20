@@ -127,6 +127,7 @@ namespace Diagnosis.Models
 
         protected internal virtual void AddAppointment(Appointment app)
         {
+            Contract.Requires(app != null);
             Contract.Requires(app.Course == null);
 
             if (appointments.Add(app))

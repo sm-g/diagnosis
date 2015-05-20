@@ -25,6 +25,7 @@ namespace Diagnosis.Models
         public Uom(string abbr, double factor, UomType type)
         {
             Contract.Requires(abbr != null);
+            Contract.Requires(type != null);
 
             this.Abbr = abbr;
             this.Factor = factor;

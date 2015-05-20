@@ -70,6 +70,7 @@ namespace Diagnosis.Models
         }
         public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
         {
+            Contract.Requires(hio != null);
             return new Confindencable<T>(hio, conf);
         }
         public static MeasureOp ToMeasureOp(this Measure m, MeasureOperator op = MeasureOperator.GreaterOrEqual)

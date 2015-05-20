@@ -42,6 +42,7 @@ namespace Diagnosis.Models
 
         protected internal virtual void AddCriteriaGroup(CriteriaGroup gr)
         {
+            Contract.Requires(gr != null);
             Contract.Requires(gr.Estimator == null);
 
             if (criteriaGroups.Add(gr))
