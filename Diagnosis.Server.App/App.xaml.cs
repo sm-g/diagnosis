@@ -124,12 +124,8 @@ namespace Diagnosis.Server.App
             }
 #endif
 
-            bool? migrateUp = null;
+            bool? migrateUp = true;
 
-            // migrate to last version in release
-#if !DEBUG
-            migrateUp = true;
-#endif
             if (migrateUp.HasValue)
             {
                 if (migrateUp.Value)

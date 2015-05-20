@@ -171,12 +171,8 @@ namespace Diagnosis.Client.App
             FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
 #endif
 
-            bool? migrateUp = null;
+            bool? migrateUp = true;
 
-            // migrate to last version in release
-#if !DEBUG
-            migrateUp = true;
-#endif
             if (migrateUp.HasValue)
             {
                 var sw = Stopwatch.StartNew();
