@@ -588,7 +588,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                Contract.Requires(Sortings.Contains(Sorting));
+                Contract.Requires(Sortings.Contains(value));
                 Contract.Ensures(Grouping == Contract.OldValue(Grouping));
                 if (_sort != value)
                 {
@@ -636,7 +636,7 @@ namespace Diagnosis.ViewModels.Screens
             }
             set
             {
-                Contract.Requires(Groupings.Contains(Grouping));
+                Contract.Requires(Groupings.Contains(value));
                 Contract.Ensures(Sorting == Contract.OldValue(Sorting));
                 if (_group != value)
                 {
