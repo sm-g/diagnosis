@@ -23,22 +23,22 @@ namespace Diagnosis.Data.Versions.Client
 
         public override void Up()
         {
-            Execute.Sql((@"CREATE TABLE {0} (
+            Execute.Sql(@"CREATE TABLE {0} (
                 Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,                
                 Description nvarchar(2000) NOT NULL,               
                 HeaderHrsOptions ntext NULL 
-                )")
+                )"
                 .FormatStr(Names.Estimator));
 
-            Execute.Sql((@"CREATE TABLE {0} (
+            Execute.Sql(@"CREATE TABLE {0} (
                 Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,
                 {1} uniqueidentifier NOT NULL,
                 Description nvarchar(2000) NOT NULL,
                 CONSTRAINT {2} FOREIGN KEY ({1}) REFERENCES {3} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION 
-                )")
+                )"
                 .FormatStr(Names.CriteriaGroup, Names.Id.Estimator, Names.FK.CrGr_Est, Names.Estimator));
 
-            Execute.Sql((@"CREATE TABLE {0} (
+            Execute.Sql(@"CREATE TABLE {0} (
                 Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,
                 {1} uniqueidentifier NOT NULL,
                 Description nvarchar(2000) NOT NULL,
@@ -46,7 +46,7 @@ namespace Diagnosis.Data.Versions.Client
                 Options ntext NOT NULL,
                 Value nvarchar(50) NOT NULL,
                 CONSTRAINT {2} FOREIGN KEY ({1}) REFERENCES {3} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION 
-                )")
+                )"
                 .FormatStr(Names.Criterion, Names.Id.CriteriaGroup, Names.FK.Criterion_CritGr, Names.CriteriaGroup));
 
         }
