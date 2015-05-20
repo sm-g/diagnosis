@@ -32,16 +32,6 @@ namespace Diagnosis.Common
             return string.IsNullOrEmpty(str);
         }
 
-        /// <summary>
-        /// "310" -> {0,1,3}
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static IEnumerable<int> ToDigits(this string str)
-        {
-            return str.ToCharArray().Select(ch => int.Parse(ch.ToString()));
-        }
-
         public static bool MatchesAsStrings(this string str, object obj)
         {
             if (str == null || obj == null)
@@ -72,6 +62,7 @@ namespace Diagnosis.Common
 
         public static string FormatStr(this string str, params object[] args)
         {
+            Contract.Requires(str != null);
             return string.Format(str, args);
         }
 

@@ -3,19 +3,28 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
+
 namespace Diagnosis.Common
 {
     public static class EnumerableExtensions
     {
         public static bool IsSubsetOf<T>(this IEnumerable<T> x, IEnumerable<T> y)
         {
+            Contract.Requires(x != null);
+            Contract.Requires(y != null);
+
             bool isSubset = !x.Except(y).Any();
             return isSubset;
         }
 
+        /// <summary>
+        /// As new Bag<T>(x).DifferenceWith(new Bag<T>(y));
+        /// </summary>
         public static bool IsSubmultisetOf<T>(this IEnumerable<T> x, IEnumerable<T> y)
         {
-            // as new Bag<T>(x).DifferenceWith(new Bag<T>(y));
+            Contract.Requires(x != null);
+            Contract.Requires(y != null);
+
             var cnt = new Dictionary<T, int>();
             foreach (T s in x)
             {
@@ -32,9 +41,11 @@ namespace Diagnosis.Common
             return cnt.Values.All(c => c <= 0);
         }
 
-
         public static void ForAll<T>(this IEnumerable<T> collection, Action<T> action)
         {
+            Contract.Requires(collection != null);
+            Contract.Requires(action != null);
+
             foreach (var item in collection)
             {
                 action(item);
@@ -43,6 +54,9 @@ namespace Diagnosis.Common
 
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
+            Contract.Requires(collection != null);
+            Contract.Requires(action != null);
+
             foreach (var item in collection.ToList())
             {
                 action(item);
@@ -53,13 +67,19 @@ namespace Diagnosis.Common
         {
             return new[] { item };
         }
+
         public static IEnumerable<T> Except<T>(this IEnumerable<T> collection, T item)
         {
+            Contract.Requires(collection != null);
+
             return collection.Except(item.ToEnumerable());
         }
 
         public static T[] Concat<T>(this T[] x, T[] y)
         {
+            Contract.Requires(x != null);
+            Contract.Requires(y != null);
+
             var z = new T[x.Length + y.Length];
             x.CopyTo(z, 0);
             y.CopyTo(z, x.Length);
@@ -71,6 +91,9 @@ namespace Diagnosis.Common
         /// </summary>
         public static void SyncWith<T>(this ObservableCollection<T> current, IEnumerable<T> toBe)
         {
+            Contract.Requires(current != null);
+            Contract.Requires(toBe != null);
+
             foreach (var item in current.Except(toBe).ToList())
             {
                 current.Remove(item);
@@ -87,6 +110,9 @@ namespace Diagnosis.Common
         public static void SyncWith<T, TKey>(this ObservableCollection<T> current, IEnumerable<T> toBe, Func<T, TKey> keyExtractor)
             where TKey : IComparable<TKey>
         {
+            Contract.Requires(current != null);
+            Contract.Requires(toBe != null);
+
             foreach (var item in current.Except(toBe).ToList())
             {
                 current.Remove(item);
@@ -104,6 +130,8 @@ namespace Diagnosis.Common
         /// </summary>
         public static T ElementNear<T>(this IEnumerable<T> collection, int i) where T : class
         {
+            Contract.Requires(collection != null);
+
             var count = collection.Count();
             if (count == 0)
                 return null;
@@ -131,6 +159,9 @@ namespace Diagnosis.Common
         /// <returns></returns>
         public static T FirstAfterAndNotIn<T>(this IList<T> first, IList<T> second, int startIndex = 0, bool forward = true) where T : class
         {
+            Contract.Requires(first != null);
+            Contract.Requires(second != null);
+
             if (second.Count == 0 || first.Count == 0 || second.Count - 1 < startIndex || startIndex < 0)
                 return first.FirstOrDefault();
 
@@ -164,10 +195,8 @@ namespace Diagnosis.Common
         /// </summary>
         public static IEnumerable<T> FindTriad<T>(this IEnumerable<T> items, Predicate<T> matchFilling)
         {
-            if (items == null)
-                throw new ArgumentNullException("items");
-            if (matchFilling == null)
-                throw new ArgumentNullException("matchFilling");
+            Contract.Requires(items != null);
+            Contract.Requires(matchFilling != null);
 
             using (var iter = items.GetEnumerator())
             {
@@ -199,6 +228,9 @@ namespace Diagnosis.Common
         public static void AddSorted<T, TKey>(this IList<T> list, T item, Func<T, TKey> keyExtractor, bool reverse = false, IComparer<TKey> comparer = null)
             where TKey : IComparable<TKey>
         {
+            Contract.Requires(list != null);
+            Contract.Requires(keyExtractor != null);
+
             comparer = comparer ?? Comparer<TKey>.Default;
 
             int i = 0;
@@ -218,6 +250,9 @@ namespace Diagnosis.Common
         public static void Sort<T, TKey>(this ObservableCollection<T> collection, Func<T, TKey> keyExtractor, bool reverse = false, IComparer<TKey> comparer = null)
             where TKey : IComparable<TKey>
         {
+            Contract.Requires(collection != null);
+            Contract.Requires(keyExtractor != null);
+
             comparer = comparer ?? Comparer<TKey>.Default;
 
             List<T> sorted = reverse
@@ -239,6 +274,9 @@ namespace Diagnosis.Common
         public static bool IsOrdered<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyExtractor)
             where TKey : IComparable<TKey>
         {
+            Contract.Requires(items != null);
+            Contract.Requires(keyExtractor != null);
+
             return items.Zip(items.Skip(1), (a, b) => new { a, b })
                 .All(x => !(keyExtractor(x.a).CompareTo(keyExtractor(x.b)) > 0));
         }
@@ -250,6 +288,9 @@ namespace Diagnosis.Common
         public static bool IsStrongOrdered<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyExtractor)
             where TKey : IComparable<TKey>
         {
+            Contract.Requires(items != null);
+            Contract.Requires(keyExtractor != null);
+
             return items.Zip(items.Skip(1), (a, b) => new { a, b })
                 .All(x => keyExtractor(x.a).CompareTo(keyExtractor(x.b)) < 0);
         }
@@ -257,19 +298,29 @@ namespace Diagnosis.Common
         [Pure]
         public static bool IsSequential(this IEnumerable<int> numbers)
         {
+            Contract.Requires(numbers != null);
+
             return numbers.Zip(numbers.Skip(1), (a, b) => (a + 1) == b).All(x => x);
         }
+
         [Pure]
         public static bool IsUnique<T>(this IEnumerable<T> collection)
         {
+            Contract.Requires(collection != null);
+
             return collection.Distinct().Count() == collection.Count();
         }
+
         [Pure]
         public static bool IsUnique<T, TKey>(this IEnumerable<T> collection, Func<T, TKey> keyExtractor, IEqualityComparer<TKey> comparer = null)
         {
+            Contract.Requires(collection != null);
+            Contract.Requires(keyExtractor != null);
+
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             return collection.DistinctBy(keyExtractor, comparer).Count() == collection.Count();
         }
+
         /// <summary>
         /// True if two lists contain same items.
         /// from http://stackoverflow.com/questions/3669970/compare-two-listt-objects-for-equality-ignoring-order
@@ -281,6 +332,9 @@ namespace Diagnosis.Common
         [Pure]
         public static bool ScrambledEquals<T>(this IEnumerable<T> list1, IEnumerable<T> list2)
         {
+            Contract.Requires(list1 != null);
+            Contract.Requires(list2 != null);
+
             var cnt = new Dictionary<T, int>();
             foreach (T s in list1)
             {
@@ -307,10 +361,14 @@ namespace Diagnosis.Common
             return cnt.Values.All(c => c == 0);
         }
 
-        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> source, Func<T, TKey> identitySelector, IEqualityComparer<TKey> comparer = null)
+        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keyExtractor, IEqualityComparer<TKey> comparer = null)
         {
-            return source.Distinct(Compare.By(identitySelector, comparer));
+            Contract.Requires(source != null);
+            Contract.Requires(keyExtractor != null);
+
+            return source.Distinct(Compare.By(keyExtractor, comparer));
         }
+
         /// <summary>
         /// Мода. Только классы, для value надо тоже вернуть null.
         /// </summary>
@@ -319,6 +377,8 @@ namespace Diagnosis.Common
         /// <returns></returns>
         public static T Mode<T>(this IEnumerable<T> source) where T : class
         {
+            Contract.Requires(source != null);
+
             if (!source.Any())
                 return default(T);
 
@@ -328,5 +388,4 @@ namespace Diagnosis.Common
                 .Key;
         }
     }
-
 }

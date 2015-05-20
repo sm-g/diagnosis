@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -14,6 +15,7 @@ namespace Diagnosis.Common
     {
         public static string SerializeXml<T>(this T toSerialize)
         {
+            Contract.Requires(toSerialize != null);
             var ser = new XmlSerializer(toSerialize.GetType());
 
             using (StringWriter textWriter = new StringWriter())
@@ -25,6 +27,7 @@ namespace Diagnosis.Common
 
         public static string SerializeDCXml<T>(this T toSerialize)
         {
+            Contract.Requires(toSerialize != null);
             var ser = new DataContractSerializer(toSerialize.GetType());
 
             using (var output = new StringWriter())
@@ -37,6 +40,7 @@ namespace Diagnosis.Common
 
         public static string SerializeDCJson<T>(this T toSerialize)
         {
+            Contract.Requires(toSerialize != null);
             var ser = new DataContractJsonSerializer(toSerialize.GetType());
 
             using (var stream = new MemoryStream())
@@ -50,8 +54,9 @@ namespace Diagnosis.Common
 
         public static T DeserializeDCJson<T>(this string jsonString)
         {
-            var ser = new DataContractJsonSerializer(typeof(T));
+            Contract.Requires(jsonString != null);
 
+            var ser = new DataContractJsonSerializer(typeof(T));
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString ?? "")))
             {
                 stream.Position = 0;
@@ -60,8 +65,9 @@ namespace Diagnosis.Common
         }
         public static T DeserializeDCXml<T>(this string xmlString)
         {
-            var ser = new DataContractSerializer(typeof(T));
+            Contract.Requires(xmlString != null);
 
+            var ser = new DataContractSerializer(typeof(T));
             using (var output = new StringReader(xmlString))
             using (var reader = new XmlTextReader(output))
             {
@@ -71,6 +77,8 @@ namespace Diagnosis.Common
 
         public static T DeserializeXml<T>(this string xmlString)
         {
+            Contract.Requires(xmlString != null);
+
             var ser = new XmlSerializer(typeof(T));
             using (var output = new StringReader(xmlString))
             using (var reader = new XmlTextReader(output))

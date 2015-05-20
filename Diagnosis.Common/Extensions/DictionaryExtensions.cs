@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace Diagnosis.Common
         /// </summary>
         public static TVal GetValueOrDefault<TKey, TVal>(this IDictionary<TKey, TVal> dict, TKey key) where TVal : new()
         {
-
+            Contract.Requires(dict != null);
             TVal result;
             if (dict.TryGetValue(key, out result))
                 return result;
@@ -31,19 +32,20 @@ namespace Diagnosis.Common
         /// </summary>
         public static string GetValueOrDefault<TKey>(this IDictionary<TKey, string> dict, TKey key)
         {
+            Contract.Requires(dict != null);
 
             string result;
             if (dict.TryGetValue(key, out result))
                 return result;
             else
-            {
                 return string.Empty;
-            }
         }
 
-        public static Dictionary<T1, IEnumerable<T2>> ReverseManyToMany<T1, T2>(this Dictionary<T2, IEnumerable<T1>> crps)
+        public static Dictionary<T1, IEnumerable<T2>> ReverseManyToMany<T1, T2>(this Dictionary<T2, IEnumerable<T1>> dict)
         {
-            var table = crps
+            Contract.Requires(dict != null);
+
+            var table = dict
                 .SelectMany(
                     x => x.Value,
                     (key, entry) => new

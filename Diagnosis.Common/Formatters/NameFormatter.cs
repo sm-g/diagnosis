@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -20,6 +21,7 @@ namespace Diagnosis.Common
         /// <returns></returns>
         public static string GetShortName(IMan man)
         {
+            Contract.Requires(man != null);
             string ln = man.LastName ?? "";
             string mn = man.MiddleName ?? "";
             string fn = man.FirstName ?? "";
@@ -46,6 +48,7 @@ namespace Diagnosis.Common
         /// <returns></returns>
         public static string GetFullName(IMan man)
         {
+            Contract.Requires(man != null);
             var res = string.Join(" ", new[] { man.LastName, man.FirstName, man.MiddleName }.Where(x => !x.IsNullOrEmpty()));
             return res.Length > 0 ? res : null;
         }

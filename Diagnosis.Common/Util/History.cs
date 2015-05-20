@@ -46,7 +46,7 @@ namespace Diagnosis.Common
         {
             get
             {
-                return list.Any() ? list[current] : null;
+                return current >= 0 ? list[current] : null;
             }
         }
 
