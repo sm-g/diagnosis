@@ -60,7 +60,7 @@ namespace Diagnosis.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
         {
-            Contract.Invariant(Code.Length >= 3);
+            Contract.Invariant(Code == null || Code.Length >= 3);
         }
 
     }
