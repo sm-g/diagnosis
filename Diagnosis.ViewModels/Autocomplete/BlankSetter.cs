@@ -32,8 +32,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="inverse"></param>
         public void SetBlank(TagViewModel tag, IHrItemObject hio, bool exactMatchRequired, bool inverse)
         {
-            Contract.Requires(tag != null);
-            Contract.Requires<ArgumentException>(!(inverse && hio == null && tag.Query.IsNullOrEmpty())); // делаем слово по запросу
+            Contract.Requires(tag != null);            
+            if(inverse && hio == null && tag.Query.IsNullOrEmpty()) // делаем слово по запросу
+                throw new ArgumentException();
+            Contract.EndContractBlock();
 
             if (hio == null ^ inverse) // direct no suggestion or inverse with suggestion
             {
@@ -60,10 +62,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
         {
-            Contract.Requires<ArgumentException>(tag.BlankType != toType);
-            Contract.Requires<ArgumentException>(toType != BlankType.None);
-            Contract.Requires<ArgumentNullException>(onConverted != null);
+            if (tag.BlankType == toType)
+                throw new ArgumentException();
+            if (toType == BlankType.None)
+                throw new ArgumentException();
+            if (onConverted == null)
+                throw new ArgumentException();
             Contract.Ensures(tag.BlankType == toType || tag.BlankType == Contract.OldValue(tag.BlankType));
+            Contract.EndContractBlock();
 
             string queryOrMeasureWordTitle;
             if (tag.BlankType == BlankType.Measure)

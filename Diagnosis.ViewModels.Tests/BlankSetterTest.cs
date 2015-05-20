@@ -2,7 +2,8 @@
 using Diagnosis.ViewModels.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-
+using System.Diagnostics.Contracts;
+using System.Diagnostics.Contracts.Internal;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Tests
@@ -29,6 +30,12 @@ namespace Diagnosis.ViewModels.Tests
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
             q = "123";
+
+            //Contract.ContractFailed += (sender, e) =>
+            //{
+            //    e.SetUnwind(); // cause code to abort after event
+            //    Assert.Fail(e.FailureKind.ToString() + ":" + e.Message);
+            //};
         }
 
         [TestCleanup]
@@ -154,14 +161,6 @@ namespace Diagnosis.ViewModels.Tests
             bs.ConvertBlank(tag, BlankType.Comment, () => { });
             Assert.IsTrue(tag.BlankType == BlankType.Comment);
             Assert.AreEqual(word.Title, (tag.Blank as Comment).String);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void WithWord_CovertToSameType_Fails()
-        {
-            tag.Blank = word;
-            bs.ConvertBlank(tag, BlankType.Word, () => { });
         }
 
         [TestMethod]
