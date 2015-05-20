@@ -91,6 +91,8 @@ namespace Diagnosis.Models
         public Confindencable(T hio, Confidence conf = Models.Confidence.Present)
             : base(hio, conf)
         {
+            Contract.Requires(hio != null);
+
             Confidence = conf;
             HIO = hio;
         }

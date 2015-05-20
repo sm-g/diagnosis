@@ -43,6 +43,8 @@ namespace Diagnosis.Models
             get { return _abbr; }
             set
             {
+                Contract.Requires(value != null);
+
                 var filtered = value.Trim();
                 SetProperty(ref _abbr, filtered, () => Abbr);
             }

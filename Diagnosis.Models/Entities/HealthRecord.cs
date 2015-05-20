@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Wintellect.PowerCollections;
@@ -93,7 +94,7 @@ namespace Diagnosis.Models
         {
             get
             {
-                return (IHrsHolder)Patient ?? (IHrsHolder)Course ?? Appointment;
+                return (Patient as IHrsHolder) ?? (Course as IHrsHolder) ?? Appointment;
             }
         }
 

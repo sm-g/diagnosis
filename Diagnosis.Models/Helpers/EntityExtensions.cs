@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.Models
 {
@@ -21,6 +22,7 @@ namespace Diagnosis.Models
 
         public static string ShortId<TId>(this EntityBase<TId> entity)
         {
+            Contract.Requires(entity != null);
             if (entity.Id is Guid)
                 return string.Format("#{0}..", entity.Id.ToString().Substring(ShortIdsFromEnd ? 33 : 0, 3));
             else

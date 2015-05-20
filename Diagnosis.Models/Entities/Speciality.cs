@@ -37,6 +37,8 @@ namespace Diagnosis.Models
             get { return _title; }
             set
             {
+                Contract.Requires(value != null);
+
                 var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
                 SetProperty(ref _title, filtered, () => Title);
             }

@@ -168,6 +168,7 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual void CacheSpecialityVocs(IEnumerable<Vocabulary> vocs)
         {
+            Contract.Requires(vocs != null);
             Contract.Requires(vocs.All(x => !x.IsCustom));
 
             cachedVocs = new List<Vocabulary>(vocs);
@@ -181,6 +182,7 @@ namespace Diagnosis.Models
         /// <param name="words"></param>
         public virtual void AddWords(IEnumerable<Word> words)
         {
+            Contract.Requires(words != null);
             Contract.Ensures(words.All(x => Words.Contains(x)));
 
             words.Where(x => !Words.Contains(x))
@@ -216,36 +218,42 @@ namespace Diagnosis.Models
 
         protected internal virtual void AddApp(Appointment app)
         {
+            Contract.Requires(app != null);
             Contract.Requires(app.Doctor == this);
             appointments.Add(app);
         }
 
         protected internal virtual void RemoveApp(Appointment app)
         {
+            Contract.Requires(app != null);
             Contract.Requires(app.Doctor == this);
             appointments.Remove(app);
         }
 
         protected internal virtual void AddCourse(Course c)
         {
+            Contract.Requires(c != null);
             Contract.Requires(c.LeadDoctor == this);
             courses.Add(c);
         }
 
         protected internal virtual void RemoveCourse(Course c)
         {
+            Contract.Requires(c != null);
             Contract.Requires(c.LeadDoctor == this);
             courses.Remove(c);
         }
 
         protected internal virtual void AddHr(HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             Contract.Requires(hr.Doctor == this);
             healthRecords.Add(hr);
         }
 
         protected internal virtual void RemoveHr(HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             Contract.Requires(hr.Doctor == this);
             healthRecords.Remove(hr);
         }

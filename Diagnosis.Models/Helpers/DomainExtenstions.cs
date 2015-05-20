@@ -17,6 +17,7 @@ namespace Diagnosis.Models
         [Pure]
         public static Patient GetPatient(this HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             return hr.Patient ?? (hr.Course != null ? hr.Course.Patient : hr.Appointment.Course.Patient);
         }
         /// <summary>
@@ -27,11 +28,13 @@ namespace Diagnosis.Models
         [Pure]
         public static Course GetCourse(this HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);
         }
         [Pure]
         public static IEnumerable<IHrItemObject> GetOrderedEntities(this HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             return from item in hr.HrItems
                    orderby item.Ord
                    select item.Entity;
@@ -39,6 +42,7 @@ namespace Diagnosis.Models
         [Pure]
         public static IEnumerable<ConfWithHio> GetOrderedCHIOs(this HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             return from item in hr.HrItems
                    orderby item.Ord
                    select item.GetConfindenceHrItemObject();
@@ -46,11 +50,13 @@ namespace Diagnosis.Models
         [Pure]
         public static IEnumerable<ConfWithHio> GetCHIOs(this HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             return hr.HrItems.Select(x => x.GetConfindenceHrItemObject());
         }
         [Pure]
         public static IEnumerable<Confindencable<Word>> GetCWords(this HealthRecord hr)
         {
+            Contract.Requires(hr != null);
             return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable(x.Confidence));
         }
     }
@@ -59,6 +65,7 @@ namespace Diagnosis.Models
     {
         public static ConfWithHio AsConfWithHio(this IHrItemObject hio, Confidence conf = Confidence.Present)
         {
+            Contract.Requires(hio != null);
             return new ConfWithHio(hio, conf);
         }
         public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
@@ -67,14 +74,17 @@ namespace Diagnosis.Models
         }
         public static MeasureOp ToMeasureOp(this Measure m, MeasureOperator op = MeasureOperator.GreaterOrEqual)
         {
+            Contract.Requires(m != null);
             return new MeasureOp(op, m.Value, m.Uom, m.Word);
         }
         public static Measure AsMeasure(this MeasureOp mop)
         {
+            Contract.Requires(mop != null);
             return new Measure(mop.Value, mop.Uom, mop.Word);
         }
         public static ConfWithHio GetConfindenceHrItemObject(this HrItem hi)
         {
+            Contract.Requires(hi != null);
             return new ConfWithHio(hi.Entity, hi.Confidence);
         }
     }
@@ -83,6 +93,7 @@ namespace Diagnosis.Models
     {
         public static IEnumerable<Word> GetAllWords(this SearchOptions o)
         {
+            Contract.Requires(o != null);
             return o.Children.Aggregate(o.WordsAll.Union(o.WordsAny).Union(o.WordsNot), (acc, opt) => acc.Union(opt.GetAllWords()));
         }
     }
@@ -145,6 +156,7 @@ namespace Diagnosis.Models
         /// <param name="holder"></param>
         public static void DeleteEmptyHrs(this IHrsHolder holder)
         {
+            Contract.Requires(holder != null);
             var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
             emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
         }
@@ -297,6 +309,8 @@ namespace Diagnosis.Models
         /// </summary>
         public static string FlattenString(this IEnumerable<object> mayBeEntities)
         {
+            Contract.Requires(mayBeEntities != null);
+
             var str = mayBeEntities.Select(item =>
             {
                 var pre = "";
@@ -336,6 +350,7 @@ namespace Diagnosis.Models
         /// </summary>
         public static int? RoundOffsetFor(this DateOffset d, DateUnit unit)
         {
+            Contract.Requires(d != null);
             Contract.Ensures(d.Equals(Contract.OldValue(d)));
             Contract.Ensures(!d.IsEmpty || Contract.Result<int?>() == null);
 

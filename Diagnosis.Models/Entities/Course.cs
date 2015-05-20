@@ -175,7 +175,7 @@ namespace Diagnosis.Models
         public virtual void Finish()
         {
             Contract.Requires(!IsEnded);
-            Contract.Ensures(IsEnded);
+            Contract.Ensures(End.HasValue);
             Contract.Ensures(appointments.Count == 0 && End == DateTime.Today ||
                 End >= GetOrderedAppointments().Last().DateAndTime.Date);
 

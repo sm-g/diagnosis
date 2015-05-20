@@ -36,31 +36,31 @@ namespace Diagnosis.Models
         public string HrListGrouping
         {
             get { return Get(HrListGroupingSetting); }
-            set { Set(HrListGroupingSetting, value.ToString()); }
+            set { Set(HrListGroupingSetting, value); }
         }
 
         public string HrListSorting
         {
             get { return Get(HrListSortingSetting); }
-            set { Set(HrListSortingSetting, value.ToString()); }
+            set { Set(HrListSortingSetting, value); }
         }
 
         public string PatientsListSorting
         {
             get { return Get(PatientsListSortingSetting); }
-            set { Set(PatientsListSortingSetting, value.ToString()); }
+            set { Set(PatientsListSortingSetting, value); }
         }
 
         public string PatientsListSortingDirection
         {
             get { return Get(PatientsListSortingDirectionSetting); }
-            set { Set(PatientsListSortingDirectionSetting, value.ToString()); }
+            set { Set(PatientsListSortingDirectionSetting, value); }
         }
 
         public string PatientsListVisibleColumns
         {
             get { return Get(PatientsListVisibleColumnsSetting); }
-            set { Set(PatientsListVisibleColumnsSetting, value.ToString()); }
+            set { Set(PatientsListVisibleColumnsSetting, value); }
         }
 
         public string SexSigns

@@ -223,6 +223,7 @@ namespace Diagnosis.Models
         }
         protected internal virtual void AddSpecVoc(SpecialityVocabularies sv)
         {
+            Contract.Requires(sv != null);
             Contract.Requires(sv.Speciality.Vocabularies.Contains(this));
             if (SvHelper.Add(sv))
                 OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, sv));
@@ -230,6 +231,7 @@ namespace Diagnosis.Models
 
         protected internal virtual void RemoveSpec(Speciality spec)
         {
+            Contract.Requires(spec != null);
             Contract.Requires(!spec.Vocabularies.Contains(this));
             if (SvHelper.Remove(spec))
                 OnSpecialitiesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, spec));

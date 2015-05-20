@@ -68,6 +68,7 @@ namespace Diagnosis.Models
         public DateOffset(DateOffset d)
             : this(d.Year, d.Month, d.Day, () => d.Now)
         {
+            Contract.Requires(d != null);
         }
 
         protected DateOffset()
@@ -95,6 +96,7 @@ namespace Diagnosis.Models
         {
             get
             {
+                Contract.Ensures(Contract.Result<int?>() == null || Contract.Result<int?>() >= 1);
                 return _year;
             }
             set
@@ -118,6 +120,7 @@ namespace Diagnosis.Models
         {
             get
             {
+                Contract.Ensures(Contract.Result<int?>() == null || (Contract.Result<int?>() >= 1 && Contract.Result<int?>() <= 12));
                 return _month;
             }
             set
@@ -141,6 +144,7 @@ namespace Diagnosis.Models
         {
             get
             {
+                Contract.Ensures(Contract.Result<int?>() == null || Contract.Result<int?>() >= 1);
                 return _day;
             }
             set
@@ -622,8 +626,10 @@ namespace Diagnosis.Models
 
         public static explicit operator DateTime(DateOffset d)
         {
+            Contract.Requires(d != null);
             if (d.Day == null || d.Month == null || d.Year == null)
-                throw new NotSupportedException();
+                throw new ArgumentException();
+            Contract.EndContractBlock();
 
             return new DateTime(d.Year.Value, d.Month.Value, d.Day.Value);
         }

@@ -87,6 +87,7 @@ namespace Diagnosis.Models
         }
         protected internal virtual void AddUom(Uom uom)
         {
+            Contract.Requires(uom != null);
             Contract.Requires(uom.Type == this);
             uoms.Add(uom);
         }
