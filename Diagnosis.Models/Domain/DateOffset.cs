@@ -575,11 +575,19 @@ namespace Diagnosis.Models
 
         public static bool operator <(DateOffset do1, DateOffset do2)
         {
+            if (do1 == null && do2 == null) return false;
+            if (do1 == null) return true;
+            if (do2 == null) return false;
+
             return do1.CompareTo(do2) == -1;
         }
 
         public static bool operator >(DateOffset do1, DateOffset do2)
         {
+            if (do1 == null && do2 == null) return false;
+            if (do1 == null) return false;
+            if (do2 == null) return true;
+
             return do1.CompareTo(do2) == 1;
         }
 

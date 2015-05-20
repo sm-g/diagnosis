@@ -586,6 +586,37 @@ namespace Diagnosis.Models.Tests
             Assert.AreEqual(date1, date2);
         }
 
+        [TestMethod]
+        public void GtNull()
+        {
+            var date1 = new DateOffset(2013, 5, 5);
+            Assert.IsTrue(date1 > null);
+        }
+        [TestMethod]
+        public void GrOrEqNull()
+        {
+            var date1 = new DateOffset(2013, 5, 5);
+            Assert.IsTrue(date1 >= null);
+        }
+        [TestMethod]
+        public void LtNull()
+        {
+            var date1 = new DateOffset(2013, 5, 5);
+            Assert.IsFalse(date1 < null);
+        }
+        [TestMethod]
+        public void LtOrEqNull()
+        {
+            var date1 = new DateOffset(2013, 5, 5);
+            Assert.IsFalse(date1 <= null);
+        }
+
+        [TestMethod]
+        public void NullGt()
+        {
+            var date1 = new DateOffset(2013, 5, 5);
+            Assert.IsFalse(null > date1);
+        }
         #endregion compare
 
         #region Add
