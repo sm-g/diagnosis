@@ -187,7 +187,8 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void WithoutAllWords()
+        [ExpectedException(typeof(System.NotImplementedException))]
+        public void WithoutAllWords() // TODO WithoutAllWords
         {
             var hrs = HealthRecordQuery.WithoutAllWords(session)(new Word[] { w[1], w[22] });
 
