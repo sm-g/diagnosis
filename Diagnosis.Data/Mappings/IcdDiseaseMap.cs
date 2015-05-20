@@ -17,10 +17,12 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
                 m.UniqueKey(Names.Unique.DiseaseCode);
+                m.Length(200);
             });
             Property(x => x.Code, m =>
             {
                 m.NotNullable(true);
+                m.Length(10);
             });
 
             ManyToOne(x => x.IcdBlock, m =>

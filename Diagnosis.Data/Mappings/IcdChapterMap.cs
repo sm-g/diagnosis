@@ -17,10 +17,12 @@ namespace Diagnosis.Data.Mappings
             {
                 m.NotNullable(true);
                 m.UniqueKey(Names.Unique.ChpaterCode);
+                m.Length(150);
             });
             Property(x => x.Code, m =>
             {
                 m.NotNullable(true);
+                m.Length(10);
             });
             Set(x => x.IclBlocks, s =>
             {
