@@ -971,7 +971,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void NotAnyInHolder_NotAnyHr()
         {
-            // списки без 4 и с любым из (94, кат 1)
+            // списки без 4 и без записей (без 94 или не кат 1)
+            // похоже на AllInHolder_AnyHr
             Load<HrCategory>();
 
             var hrs = o
@@ -985,14 +986,14 @@ namespace Diagnosis.ViewModels.Tests
                 .AddChild(x => x.SetAll(w[4]))
                 .Search(session);
 
-            Assert.AreEqual(3, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[20]));
-            Assert.IsTrue(hrs.Contains(hr[70])); // только 70 71
+            Assert.AreEqual(2, hrs.Count());
+            // 20 нет, потому что в списке есть записи (без 94 или не кат 1) - 21 и 22
+            Assert.IsTrue(hrs.Contains(hr[70]));
             Assert.IsTrue(hrs.Contains(hr[71]));
         }
 
         [TestMethod]
-        public void NotAnyInHolder_NotAnyHr_Same()
+        public void AllInHolder_AnyHr()
         {
             // списки без 4 и с любым из (94, кат 1)
             Load<HrCategory>();
