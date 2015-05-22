@@ -146,6 +146,7 @@ namespace Diagnosis.Data
             public static string CreatedAt = "CreatedAt";
             public static string UomFValue = "MeasureValue";
             public static string UomFStr = "String";
+            public static string HrItemTextRepr = "TextRepr";
         }
 
         public static class Unique

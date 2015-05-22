@@ -22,10 +22,16 @@ namespace Diagnosis.Data.Mappings
                 });
                 m.NotNullable(true);
             });
-            Property(x => x.TextRepr, m =>
+
+            Component(x => x.Comment, x =>
             {
-                m.Length(255);
+                x.Property(y => y.String, m =>
+                {
+                    m.Column(Names.Col.HrItemTextRepr);
+                    m.Length(255);
+                });
             });
+
             Property(x => x.Confidence, m => m.Type<EnumStringType<Confidence>>());
             ManyToOne(x => x.Word, m =>
             {

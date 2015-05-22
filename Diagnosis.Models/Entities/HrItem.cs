@@ -10,32 +10,30 @@ namespace Diagnosis.Models
     /// </summary>
     public class HrItem : EntityBase<Guid>, IDomainObject
     {
-        private Comment comment;
-
+        private Comment _comment;
         private IcdDisease _disease;
         private Word _word;
         private Measure _measure;
 
-        public HrItem(HealthRecord hr, IHrItemObject obj)
+        public HrItem(HealthRecord hr, IHrItemObject hio)
         {
             Contract.Requires(hr != null);
-            Contract.Requires(obj != null);
+            Contract.Requires(hio != null);
 
             HealthRecord = hr;
 
-            if (obj is Word)
-                Word = obj as Word;
-            else if (obj is Measure)
+            if (hio is Word)
+                Word = hio as Word;
+            else if (hio is Measure)
             {
-                Measure = obj as Measure;
+                Measure = hio as Measure;
                 Word = Measure.Word;
             }
-            else if (obj is IcdDisease)
-                Disease = obj as IcdDisease;
-            else if (obj is Comment)
+            else if (hio is IcdDisease)
+                Disease = hio as IcdDisease;
+            else if (hio is Comment)
             {
-                comment = obj as Comment;
-                TextRepr = (obj as Comment).String;
+                Comment = hio as Comment;
             }
             else throw new NotImplementedException();
         }
@@ -51,67 +49,43 @@ namespace Diagnosis.Models
         /// </summary>
         public virtual Confidence Confidence { get; set; }
 
-        public virtual string TextRepr { get; protected set; }
-
         public virtual IcdDisease Disease
         {
             get { return _disease; }
-            protected set
-            {
-                if (_disease == value)
-                    return;
-                EditHelper.Edit<IcdDisease, Guid>(() => Disease);
-                _disease = value;
-                OnPropertyChanged("Disease");
-            }
+            protected set { SetProperty(ref _disease, value, () => Disease); }
         }
 
         public virtual Word Word
         {
-            get
-            {
-                return _word;
-            }
-            protected set
-            {
-                if (_word != value)
-                {
-                    _word = value;
-                    OnPropertyChanged(() => Word);
-                }
-            }
+            get { return _word; }
+            protected set { SetProperty(ref _word, value, () => Word); }
         }
-
+        public virtual Comment Comment
+        {
+            get { return _comment; }
+            protected set { SetProperty(ref _comment, value, () => Comment); }
+        }
         public virtual Measure Measure
         {
             get
             {
                 if (_measure != null && _word != null)
-                {
-                    _measure.Word = _word;
-                }
+                    _measure.Word = _word; // when get from db, set up Word
+
                 return _measure;
             }
-            protected set
-            {
-                if (_measure != value)
-                {
-                    _measure = value;
-
-                    OnPropertyChanged(() => Measure);
-                }
-            }
+            protected set { SetProperty(ref _measure, value, () => Measure); }
         }
 
         public virtual IHrItemObject Entity
         {
             get
             {
-                // measure and word in one Hri
+                // measure and word in one Hri, first check measure
                 if (Measure != null) return Measure;
                 if (Word != null) return Word;
                 if (Disease != null) return Disease;
-                if (TextRepr != null) return comment ?? (comment = new Comment(TextRepr));
+                if (Comment != null) return Comment;
 
                 return null; // still not initialized
             }
@@ -123,6 +97,14 @@ namespace Diagnosis.Models
         {
             return string.Format("{0} {1}{2}", this.ShortId(), Confidence == Models.Confidence.Absent ? "!" : "", Entity);
         }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(Measure == null || Measure.Word == Word);
+        }
+
     }
 
 
