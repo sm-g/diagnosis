@@ -84,26 +84,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[2]));
         }
 
-        [TestMethod]
-        public void WordsFromHrsInStat()
-        {
-            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[5]);
-            s.SearchCommand.Execute(null);
-
-            Assert.AreEqual(3, (s.Result.Statistic as HrsStatistic).Words.Count); // 10 - все слова пациента
-            Assert.AreEqual(0, (s.Result.Statistic as HrsStatistic).WordsWithMeasure.Count);
-        }
-
-        [TestMethod]
-        public void WordsWithMeasureInStat()
-        {
-            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[1]);
-            s.SearchCommand.Execute(null);
-
-            Assert.AreEqual(1, (s.Result.Statistic as HrsStatistic).WordsWithMeasure.Count);
-            Assert.AreEqual(w[3], (s.Result.Statistic as HrsStatistic).WordsWithMeasure[0]);
-        }
-
+       
         [TestMethod]
         public void FoundHrs()
         {

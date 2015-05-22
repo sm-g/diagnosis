@@ -6,6 +6,7 @@ namespace Diagnosis.Common
 {
     public static class FileHelper
     {
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(FileHelper));
         /// <summary>
         /// Make a numbered backup copy of the specified file. 
         /// Backup files have the name yymmdd-##-filename, where yymmdd is the date
@@ -111,5 +112,28 @@ namespace Diagnosis.Common
             if (!directory.IsNullOrEmpty() && !Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
         }
+
+        public static FileInfo CreateNewFile(string filename)
+        {
+            FileInfo newFile = new FileInfo(filename);
+            for (int i = 0; i < 5; i++)
+            {
+                if (newFile.Exists)
+                {
+                    try
+                    {
+                        newFile.Delete();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        logger.WarnFormat("Error when delete {0}: {1}", filename, e);
+                    }
+                }
+            }
+            newFile = new FileInfo(filename);
+            return newFile;
+        }
+
     }
 }

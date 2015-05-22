@@ -42,27 +42,29 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return PatientsCount == 0 ? -1 : Patients.Where(p => p.Age.HasValue).Min(p => p.Age); }
         }
-
     }
+
     public class CritStatistic : StatisticBase
     {
-        ReadOnlyCollection<Patient> _pats;
+        private ReadOnlyCollection<Patient> _pats;
         private Dictionary<Patient, IEnumerable<Criterion>> patCrs;
-
 
         public CritStatistic(Dictionary<Patient, IEnumerable<Criterion>> patCrs)
         {
             this.patCrs = patCrs;
             _pats = patCrs.Keys.ToList().AsReadOnly();
         }
+
         public override ReadOnlyCollection<Patient> Patients
         {
             get { return _pats; }
         }
     }
+
     public class HrsStatistic : StatisticBase
     {
-        ReadOnlyCollection<Patient> _pats;
+        private ReadOnlyCollection<Patient> _pats;
+
         public HrsStatistic(IEnumerable<HealthRecord> hrs)
         {
             HealthRecords = hrs
@@ -84,6 +86,13 @@ namespace Diagnosis.ViewModels.Screens
                 .ToList()
                 .AsReadOnly();
 
+            Icds = hrs
+                .SelectMany(x => x.Diseases)
+                .Distinct()
+                .OrderBy(x => x.Code)
+                .ToList()
+                .AsReadOnly();
+
             WordsWithMeasure = hrs
                 .SelectMany(x => x.Measures)
                 .Select(x => x.Word)
@@ -92,38 +101,20 @@ namespace Diagnosis.ViewModels.Screens
                 .ToList()
                 .AsReadOnly();
 
-            GridValues = new Dictionary<HealthRecord, Dictionary<Word, GridValue>>();
-            foreach (var hr in HealthRecords)
-            {
-                foreach (var word in Words)
-                {
-                    var values = ItemsWithWord(word, hr).SelectMany(item => ValuesFor(item));
-                    // обычно в записи только один элемент с данным словом.
-                    // если больше, выводим наиболее важное значение, порядок - числа, наличие слова, отрицание
+            GridValues = new Dictionary<HealthRecord, Dictionary<IHrItemObject, GridValue>>();
 
-                    GridValue val;
-                    if (values.OfType<Measure>().Any())
-                        val = new GridValue(values.OfType<Measure>());
-                    else if (values.Any(x => x.Equals(true)))
-                        val = new GridValue(true);
-                    else if (values.Any(x => x.Equals(false)))
-                        val = new GridValue(false);
-                    else
-                        val = new GridValue();
-
-                    if (!GridValues.Keys.Contains(hr))
-                        GridValues[hr] = new Dictionary<Word, GridValue>();
-                    GridValues[hr][word] = val;
-                }
-            }
+            FillGridValues();
         }
-
-
 
         /// <summary>
         /// Все слова из записей, по алфавиту
         /// </summary>
         public ReadOnlyCollection<Word> Words { get; private set; }
+
+        /// <summary>
+        /// Все диагнозы из записей, по коду
+        /// </summary>
+        public ReadOnlyCollection<IcdDisease> Icds { get; private set; }
 
         /// <summary>
         /// Слова для которых есть измерение, по алфавиту
@@ -135,38 +126,84 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public ReadOnlyCollection<HealthRecord> HealthRecords { get; private set; }
 
-        public Dictionary<HealthRecord, Dictionary<Word, GridValue>> GridValues { get; private set; }
+        public Dictionary<HealthRecord, Dictionary<IHrItemObject, GridValue>> GridValues { get; private set; }
 
-
-        internal int MaxMeasuresFor(Word word)
+        public override ReadOnlyCollection<Patient> Patients
         {
-            return GridValues.Values.Max(y => y[word].Measures != null ? y[word].Measures.Count() : 0);
+            get { return _pats; }
         }
 
-        internal bool HasMeasuresFor(Word word)
+        private void FillGridValues()
         {
-            return GridValues.Values.Any(y => y[word].Measures != null);
+            foreach (var hr in HealthRecords)
+            {
+                foreach (var hio in Icds.Union<IHrItemObject>(Words))
+                {
+                    var values = ItemsWith(hio, hr)
+                        .Select(item => ValueOf(item))
+                        .Where(x => x != null)
+                        .ToList();
+
+                    // обычно в записи только один элемент с данным словом
+                    // если больше, выводим наиболее важное значение, порядок - числа, наличие слова, отрицание
+
+                    GridValue val;
+                    if (values.OfType<Measure>().Any())
+                    {
+                        Contract.Assume(hio is Word);
+                        val = new GridValue(values.OfType<Measure>());
+                    }
+                    else if (values.Any(x => x.Equals(true)))
+                        val = new GridValue(true);
+                    else if (values.Any(x => x.Equals(false)))
+                        val = new GridValue(false);
+                    else
+                        val = new GridValue();
+
+                    if (!GridValues.Keys.Contains(hr))
+                        GridValues[hr] = new Dictionary<IHrItemObject, GridValue>();
+                    GridValues[hr][hio] = val;
+                }
+            }
         }
 
-        private IEnumerable<object> ValuesFor(HrItem item)
+        /// <summary>
+        /// Значение элемента, по приоритету - числа, наличие, отрицание.
+        /// </summary>
+        private object ValueOf(HrItem item)
         {
             if (item.Measure != null)
-            {
-                yield return item.Measure;
-            }
+                return item.Measure;
             else if (item.Confidence == Models.Confidence.Present)
-            {
-                yield return true;
-            }
+                return true;
             else if (item.Confidence == Models.Confidence.Absent)
-            {
-                yield return false;
-            }
+                return false;
+            return null;
         }
 
-        private IEnumerable<HrItem> ItemsWithWord(Word w, HealthRecord hr)
+        /// <summary>
+        /// Элементы записи со словом / диагнозом.
+        /// </summary>
+        private IEnumerable<HrItem> ItemsWith(IHrItemObject hio, HealthRecord hr)
         {
-            return hr.HrItems.Where(x => x.Word == w);
+            Contract.Requires(hio is Word || hio is IcdDisease);
+
+            var w = hio as Word;
+            var icd = hio as IcdDisease;
+            if (w != null)
+                return hr.HrItems.Where(x => x.Word == w);
+            else if (icd != null)
+                return hr.HrItems.Where(x => x.Disease == icd);
+            return Enumerable.Empty<HrItem>();
+        }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(GridValues.Values.All(x => x.Keys.All(hio => hio is Word || hio is IcdDisease)));
+            Contract.Invariant(GridValues.Keys.Count == HealthRecords.Count);
+            Contract.Invariant(GridValues.Values.All(x => x.Keys.Count == Words.Count + Icds.Count));
         }
 
         /// <summary>
@@ -194,11 +231,6 @@ namespace Diagnosis.ViewModels.Screens
             public bool? Bool { get; private set; }
 
             public IEnumerable<Measure> Measures { get; private set; }
-        }
-
-        public override ReadOnlyCollection<Patient> Patients
-        {
-            get { return _pats; }
         }
     }
 }

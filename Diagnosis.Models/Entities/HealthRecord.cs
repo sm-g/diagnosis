@@ -247,6 +247,11 @@ namespace Diagnosis.Models
             get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
         }
 
+        public virtual IEnumerable<IcdDisease> Diseases
+        {
+            get { return hrItems.Where(x => x.Disease != null).Select(x => x.Disease); }
+        }
+
         /// <summary>
         /// Добавляет сущности к элементам записи.
         /// </summary>

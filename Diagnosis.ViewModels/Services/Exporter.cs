@@ -19,6 +19,12 @@ namespace Diagnosis.ViewModels
         private static double hrIdColWidth = 13;
         private static string uomHeader = "ед. изм.";
 
+        // колонок на заголовок строки
+        private static int patientCols = 4;
+
+        // строк на заголовок колонок
+        private static int headerRows = 1;
+
         public void ExportToXlsx(HrsStatistic stats)
         {
             var result = new FileDialogService().ShowSaveFileDialog(null,
@@ -28,7 +34,7 @@ namespace Diagnosis.ViewModels
 
             if (result.IsValid)
             {
-                var newFile = CreateNewFile(result.FileName);
+                var newFile = FileHelper.CreateNewFile(result.FileName);
                 ExcelPackage package = MakeExcelPackage(stats);
                 SaveTo(package, newFile);
             }
@@ -39,18 +45,34 @@ namespace Diagnosis.ViewModels
             ExcelPackage package = new ExcelPackage();
             ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Матрица");
 
-            // колонок на заголовок строки
-            var patientCols = 4;
-            // строк на заголовок колонок
-            var headerRows = 1;
+            // доп. строки на запись
+            var additionalRows = new Dictionary<HealthRecord, int>();
 
+            SetValues(stats, worksheet, additionalRows);
+
+            SetHeaders(stats, worksheet, additionalRows);
+
+            FormatSheet(stats, worksheet, additionalRows);
+
+            // set some document properties
+            package.Workbook.Properties.Title = "Diagnosis Эскпорт";
+
+            return package;
+        }
+
+        private static void SetValues(HrsStatistic stats, ExcelWorksheet worksheet, Dictionary<HealthRecord, int> additionalRows)
+        {
             int cIndex = 1, rIndex = 1; // индексация с 1
 
-            // добавляем значения
-            Dictionary<HealthRecord, int> additionalRows = new Dictionary<HealthRecord, int>();
             foreach (var hr in stats.HealthRecords)
             {
                 cIndex = 1;
+                foreach (var icd in stats.Icds)
+                {
+                    if (stats.GridValues[hr][icd].Bool.HasValue)
+                        worksheet.Cells[rIndex, cIndex].Value = stats.GridValues[hr][icd].Bool;
+                    cIndex++;
+                }
                 foreach (var word in stats.Words)
                 {
                     int additionalRow = 0;
@@ -59,7 +81,7 @@ namespace Diagnosis.ViewModels
                         worksheet.Cells[rIndex, cIndex].Value = stats.GridValues[hr][word].Bool;
                     else if (stats.GridValues[hr][word].Measures != null)
                     {
-                        Debug.Assert(stats.HasMeasuresFor(word));
+                        Debug.Assert(HasMeasuresFor(stats.GridValues, word));
                         foreach (var measure in stats.GridValues[hr][word].Measures)
                         {
                             // При повторе слова с числом в одной записи — только это число в дополнительной строке.
@@ -70,7 +92,7 @@ namespace Diagnosis.ViewModels
                     }
 
                     // есть измерение со словом - доп. колонка
-                    if (stats.HasMeasuresFor(word))
+                    if (HasMeasuresFor(stats.GridValues, word))
                         cIndex++;
 
                     cIndex++;
@@ -78,11 +100,14 @@ namespace Diagnosis.ViewModels
                 }
                 rIndex = rIndex + 1 + additionalRows[hr];
             }
+        }
 
+        private static void SetHeaders(HrsStatistic stats, ExcelWorksheet worksheet, Dictionary<HealthRecord, int> additionalRows)
+        {
             // заголовки строк
             worksheet.InsertColumn(1, patientCols);
 
-            rIndex = 1;
+            var rIndex = 1;
             foreach (var hr in stats.HealthRecords)
             {
                 var pat = hr.GetPatient();
@@ -100,20 +125,27 @@ namespace Diagnosis.ViewModels
             worksheet.Cells[1, 3].Value = "Возраст";
             worksheet.Cells[1, 4].Value = "Дата создания записи";
 
-            cIndex = patientCols + 1;
+            var cIndex = patientCols + 1;
             // заголовки колонок со значениями
+            foreach (var icd in stats.Icds)
+            {
+                worksheet.Cells[1, cIndex++].Value = icd.Code;
+            }
             foreach (var word in stats.Words)
             {
-                worksheet.Cells[1, cIndex++].Value = word;
+                worksheet.Cells[1, cIndex++].Value = word.Title;
 
                 // есть измерение со словом - доп. колонка
-                if (stats.HasMeasuresFor(word))
+                if (HasMeasuresFor(stats.GridValues, word))
                     worksheet.Cells[1, cIndex++].Value = uomHeader;
             }
+        }
 
+        private static void FormatSheet(HrsStatistic stats, ExcelWorksheet worksheet, Dictionary<HealthRecord, int> additionalRows)
+        {
             // область значений
             var rangeColStart = patientCols + 1;
-            var rangeColEnd = patientCols + stats.Words.Count + stats.WordsWithMeasure.Count;
+            var rangeColEnd = patientCols + stats.Icds.Count + stats.Words.Count + stats.WordsWithMeasure.Count;
             var rangeRowStart = headerRows + 1;
             var rangeRowEnd = headerRows + stats.HealthRecords.Count + additionalRows.Values.Sum();
 
@@ -130,8 +162,6 @@ namespace Diagnosis.ViewModels
             worksheet.Cells[rangeRowStart, 4, rangeRowEnd, 4].Style.Numberformat.Format = "dd/mm/yy h:mm";
             worksheet.Column(4).Width = hrIdColWidth;
 
-            //worksheet.Cells[5, 3, 5, 5].Formula = string.Format("SUBTOTAL(9,{0})", new ExcelAddress(2, 3, 4, 3).Address);
-
             // format page
             worksheet.HeaderFooter.OddHeader.CenteredText = "Эскпорт";
 
@@ -142,32 +172,13 @@ namespace Diagnosis.ViewModels
 
             //worksheet.PrinterSettings.RepeatRows = worksheet.Cells[1, 1, headerRows, rangeColEnd];
             //worksheet.PrinterSettings.RepeatColumns = worksheet.Cells[1, 1, rangeRowEnd, patientCols];
-
-            // set some document properties
-            package.Workbook.Properties.Title = "Diagnosis Эскпорт";
-            return package;
         }
 
-        private static FileInfo CreateNewFile(string filename)
+        private static bool HasMeasuresFor(
+            Dictionary<HealthRecord, Dictionary<IHrItemObject, Diagnosis.ViewModels.Screens.HrsStatistic.GridValue>> GridValues,
+            Word word)
         {
-            FileInfo newFile = new FileInfo(filename);
-            for (int i = 0; i < 5; i++)
-            {
-                if (newFile.Exists)
-                {
-                    try
-                    {
-                        newFile.Delete();
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        logger.WarnFormat("Error when delete {0}: {1}", filename, e);
-                    }
-                }
-            }
-            newFile = new FileInfo(filename);
-            return newFile;
+            return GridValues.Values.Any(y => y[word].Measures != null);
         }
 
         private static void SaveTo(ExcelPackage package, FileInfo file)
