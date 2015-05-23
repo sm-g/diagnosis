@@ -140,7 +140,7 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Все слова из записей держателя и его вложенных держателей. С повторами.
+        /// Все слова из записей держателя и его вложенных держателей. С повторами. Со словами измерений.
         /// </summary>
         /// <param name="holder"></param>
         /// <returns></returns>
@@ -201,14 +201,14 @@ namespace Diagnosis.Models
         {
             var pWords = patient.HealthRecords.SelectMany(hr => hr.Words);
             var cWords = patient.Courses.SelectMany(c => c.GetAllWords());
-            return pWords.Union(cWords);
+            return pWords.Concat(cWords);
         }
         [Pure]
         static IEnumerable<Word> GetAllWords(this Course course)
         {
             var cWords = course.HealthRecords.SelectMany(hr => hr.Words);
             var appsWords = course.Appointments.SelectMany(app => app.GetAllWords());
-            return cWords.Union(appsWords);
+            return cWords.Concat(appsWords);
         }
         [Pure]
         static IEnumerable<Word> GetAllWords(this Appointment app)

@@ -118,6 +118,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         /// <summary>
         /// Возвращает записи с хотя бы N из слов учитывая уверенность (c повторами).
         /// </summary>
@@ -145,6 +146,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         /// <summary>
         /// Возвращает записи со всеми из слов.
         /// </summary>
@@ -203,6 +205,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         /// <summary>
         /// Возвращает записи где нет ни одного из слов учитывая уверенность.
         /// </summary>
@@ -238,6 +241,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         /// <summary>
         /// Возвращает записи кроме тех, где есть все слова.
         /// </summary>
@@ -267,43 +271,6 @@ namespace Diagnosis.Data.Queries
                     return hrs.Distinct().ToList();
                 }
             };
-        }
-        /// <summary>
-        /// Возвращает записи со всеми словами в области поиска.
-        /// Повторы слов должны быть в записи минимум столько раз, сколько передано.
-        /// </summary>
-        public static Func<IEnumerable<Word>, HealthRecordQueryAndScope, IEnumerable<HealthRecord>> WithAllWordsInScope(ISession session)
-        {
-            return (words, scope) =>
-            {
-                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
-                var withAny = WithAnyWord(session)(words);
-                switch (scope)
-                {
-                    case HealthRecordQueryAndScope.Appointment:
-                        return GetHrsInScope(words, withAny, (hr) => hr.Appointment);
-
-                    case HealthRecordQueryAndScope.Course:
-                        return GetHrsInScope(words, withAny, (hr) => hr.GetCourse());
-
-                    case HealthRecordQueryAndScope.Patient:
-                        return GetHrsInScope(words, withAny, (hr) => hr.GetPatient());
-
-                    default:
-                    case HealthRecordQueryAndScope.HealthRecord:
-                        return withAny.Where(hr => words.IsSubmultisetOf(hr.Words)).ToList();
-                }
-            };
-        }
-
-        private static IEnumerable<HealthRecord> GetHrsInScope(IEnumerable<Word> words, IEnumerable<HealthRecord> hrs, Func<HealthRecord, IHrsHolder> holderOf)
-        {
-            return (from hr in hrs
-                    group hr by holderOf(hr) into g
-                    where g.Key != null
-                    let allWords = g.Key.GetAllWords()
-                    where words.IsSubmultisetOf(allWords)
-                    select g).SelectMany(x => x).ToList();
         }
 
         public static Func<IEnumerable<Word>, IEnumerable<Word>, IEnumerable<Word>, IEnumerable<HealthRecord>> WithAllAnyNotWords(ISession session)
@@ -359,5 +326,47 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
+        #region QueryScope
+
+        /// <summary>
+        /// Возвращает записи со всеми словами в области поиска.
+        /// Повторы слов должны быть в записи минимум столько раз, сколько передано.
+        /// </summary>
+        public static Func<IEnumerable<Word>, HealthRecordQueryAndScope, IEnumerable<HealthRecord>> WithAllWordsInScope(ISession session)
+        {
+            return (words, scope) =>
+            {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+                var withAny = WithAnyWord(session)(words);
+                switch (scope)
+                {
+                    case HealthRecordQueryAndScope.Appointment:
+                        return GetHrsInScope(words, withAny, (hr) => hr.Appointment);
+
+                    case HealthRecordQueryAndScope.Course:
+                        return GetHrsInScope(words, withAny, (hr) => hr.GetCourse());
+
+                    case HealthRecordQueryAndScope.Patient:
+                        return GetHrsInScope(words, withAny, (hr) => hr.GetPatient());
+
+                    default:
+                    case HealthRecordQueryAndScope.HealthRecord:
+                        return withAny.Where(hr => words.IsSubmultisetOf(hr.Words)).ToList();
+                }
+            };
+        }
+
+        private static IEnumerable<HealthRecord> GetHrsInScope(IEnumerable<Word> words, IEnumerable<HealthRecord> hrs, Func<HealthRecord, IHrsHolder> holderOf)
+        {
+            return (from hr in hrs
+                    group hr by holderOf(hr) into g
+                    where g.Key != null
+                    let allWords = g.Key.GetAllWords()
+                    where words.IsSubmultisetOf(allWords)
+                    select g).SelectMany(x => x).ToList();
+        }
+
+        #endregion QueryScope
     }
 }

@@ -55,7 +55,17 @@ namespace Diagnosis.Data.Tests
             Assert.AreEqual(1, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[70]));
         }
+        [TestMethod]
+        public void WithAllWordsRepeatInPat()
+        {
+            var hrs = HealthRecordQuery.WithAllWordsInScope(session)(new Word[] { w[22], w[22], w[22] }, HealthRecordQueryAndScope.Patient);
 
+            Assert.AreEqual(4, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+        }
         [TestMethod]
         public void WithAllWordsInApp()
         {
