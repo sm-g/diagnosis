@@ -259,20 +259,23 @@ namespace Diagnosis.ViewModels.Screens
         {
             var qb = GetRecieverQb();
 
-            // все слова из записей
+            // все слова из записей (кроме слов измерений)
             var allCWords = hrs.Aggregate(
                 new HashSet<Confindencable<Word>>(),
                 (words, hr) =>
                 {
-                    hr.GetCWords().ForAll(w => words.Add(w));
+                    hr.GetCWordsNotFromMeasure().ForAll(w => words.Add(w));
                     return words;
                 });
             // все измерения с оператором
             var allMops = hrs.Aggregate(
-                new HashSet<MeasureOp>(),
+                new HashSet<Confindencable<MeasureOp>>(),
                 (mops, hr) =>
                 {
-                    hr.Measures.ForAll(m => mops.Add(m.ToMeasureOp()));
+                    hr.HrItems
+                        .Where(x => x.Measure != null)
+                        .Select(x => x.Measure.ToMeasureOp().AsConfidencable(x.Confidence))
+                        .ForAll(x => mops.Add(x));
                     return mops;
                 });
 
@@ -304,6 +307,8 @@ namespace Diagnosis.ViewModels.Screens
         private void RecieveHrItemObjects(IEnumerable<ConfWithHio> chios)
         {
             var qb = GetRecieverQb();
+            // измерения с оператором
+            chios = chios.Select(x => x.HIO is Measure ? (x.HIO as Measure).ToMeasureOp().AsConfWithHio(x.Confidence) : x);
             qb.AutocompleteAll.ReplaceTagsWith(chios);
 
             RemoveLastResults();

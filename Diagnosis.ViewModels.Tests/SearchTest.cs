@@ -84,7 +84,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(s.Contains(hr[2]));
         }
 
-       
+
         [TestMethod]
         public void FoundHrs()
         {
@@ -152,13 +152,14 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void RecieveMeasure()
         {
-            var hrs = new[] { hr[20] };
+            var hrs = new[] { hr[22] };
             this.Send(Event.SendToSearch, hrs.AsParams(MessageKeys.ToSearchPackage));
 
-            var ms = hrs.SelectMany(x => x.Measures).Distinct();
+            var ms = hrs.SelectMany(x => x.Measures);
+            var cwordsNotInMeasure = hrs.SelectMany(x => x.GetCWordsNotFromMeasure());
 
             Assert.IsTrue(s.LastRecieverQueryBlock.Options.MeasuresAll.Select(x => x.AsMeasure()).ScrambledEquals(ms));
-
+            Assert.IsTrue(s.LastRecieverQueryBlock.Options.CWordsAll.ScrambledEquals(cwordsNotInMeasure));
         }
 
         [TestMethod]

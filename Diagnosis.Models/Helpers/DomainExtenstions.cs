@@ -59,6 +59,12 @@ namespace Diagnosis.Models
             Contract.Requires(hr != null);
             return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable(x.Confidence));
         }
+        [Pure]
+        public static IEnumerable<Confindencable<Word>> GetCWordsNotFromMeasure(this HealthRecord hr)
+        {
+            Contract.Requires(hr != null);
+            return hr.HrItems.Where(x => x.Entity is Word).Select(x => x.Word.AsConfidencable(x.Confidence));
+        }
     }
 
     public static class IHrItemObjectExtensions
@@ -68,7 +74,7 @@ namespace Diagnosis.Models
             Contract.Requires(hio != null);
             return new ConfWithHio(hio, conf);
         }
-        public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : Word
+        public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : IHrItemObject
         {
             Contract.Requires(hio != null);
             return new Confindencable<T>(hio, conf);
