@@ -75,6 +75,14 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return Tags; }
         }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(Tags.Where(x => x.BlankType == BlankType.Measure).All(x => x.Blank is MeasureOp));
+        }
+
     }
 
     public abstract partial class AutocompleteViewModel : ViewModelBase, ITagParentAutocomplete, IViewAutocompleteViewModel, ITagsTrackableAutocomplete

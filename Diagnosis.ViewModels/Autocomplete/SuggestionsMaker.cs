@@ -156,7 +156,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="tag"></param>
         public void AfterCompleteTag(TagViewModel tag)
         {
-            if (tag.BlankType == BlankType.Word)
+            if (tag.Blank is Word)
             {
                 var w = tag.Blank as Word;
                 if (w.IsTransient)

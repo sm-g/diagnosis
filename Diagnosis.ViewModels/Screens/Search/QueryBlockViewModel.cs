@@ -191,7 +191,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-
         public bool WithConfidence
         {
             get
@@ -266,6 +265,14 @@ namespace Diagnosis.ViewModels.Screens
                 if (_group != value)
                 {
                     _group = value;
+                    if (!_group)
+                    {
+                        // invariant
+                        _sscope = SearchScope.HealthRecord;
+                        _operator = QueryGroupOperator.All;
+                        OnPropertyChanged(() => SearchScope);
+                        OnPropertyChanged(() => GroupOperator);
+                    }
                     OnPropertyChanged(() => IsGroup);
                 }
             }
@@ -542,6 +549,7 @@ namespace Diagnosis.ViewModels.Screens
                 AddChildQb(opt);
             inFilling = false;
         }
+
         private void FillToOptions(SearchOptions options)
         {
             AutocompleteAll.CompleteTypings();
@@ -561,9 +569,10 @@ namespace Diagnosis.ViewModels.Screens
             options.GroupOperator = GroupOperator;
             options.SearchScope = SearchScope;
         }
+
         /// <summary>
         /// Обновляем описание блока при каждом изменении запроса, если оно видно.
-        /// Изменения: MinAny, QueryScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
+        /// Изменения: MinAny, SearchScope, WithConf, Сущности в автокомплитах, SelectedCats, GroupOperator, удаление ребенка, изменения у детей.
         /// Хотя при изменениях у детей описания не видно.
         /// </summary>
         private void RefreshDescription()
@@ -652,7 +661,7 @@ namespace Diagnosis.ViewModels.Screens
         private void ObjectInvariant()
         {
             // листовой блок - все в записи
-            //Contract.Invariant(IsGroup || SearchScope == SearchScope.HealthRecord && All);
+            Contract.Invariant(IsGroup || SearchScope == SearchScope.HealthRecord && GroupOperator == QueryGroupOperator.All);
         }
     }
 }
