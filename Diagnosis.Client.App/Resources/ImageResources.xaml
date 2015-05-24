@@ -4,8 +4,6 @@
         <ResourceDictionary Source="pack://application:,,,/Diagnosis.Common.Presentation;component/Resources/ImageResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <BitmapImage x:Key="closeImage"
-                 UriSource="/Resources/Images/Close_16xLG.png" />
     <BitmapImage x:Key="addImage"
                  UriSource="/Resources/Images/AddControl_371.png" />
     <BitmapImage x:Key="saveImage"

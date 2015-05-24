@@ -806,7 +806,6 @@
   <ItemGroup>
     <Resource Include="Resources\Images\save_16xLG.png" />
     <Resource Include="Resources\Images\AddControl_371.png" />
-    <Resource Include="Resources\Images\Close_16xLG.png" />
     <Resource Include="Resources\Images\Arrow_UndoRevertRestore_16xLG.png" />
     <Resource Include="Resources\Images\splash.png" />
     <Resource Include="Resources\Images\GroupBy.png" />
