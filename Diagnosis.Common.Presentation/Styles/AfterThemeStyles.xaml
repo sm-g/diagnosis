@@ -159,7 +159,7 @@
         <Setter Property="Height"
                 Value="16" />
         <Setter Property="Fill"
-                Value="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+                Value="{Binding Foreground, RelativeSource={RelativeSource Self}}" />
     </Style>
     <Style x:Key="HelpButton"
            x:Shared="False"

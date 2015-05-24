@@ -69,14 +69,14 @@
                         </DataTrigger>
 
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:BlankType.Comment}">
-                            <Setter Property="FontStyle"
-                                    Value="Italic" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:BlankType.Word}">
                             <Setter Property="FontStyle"
                                     Value="Normal" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding BlankType}"
+                                     Value="{x:Static diag:BlankType.Comment}">
+                            <Setter Property="FontStyle"
+                                    Value="Italic" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:BlankType.Icd}">
@@ -171,28 +171,14 @@
                                                Style="{StaticResource MetroMenuItemIcon}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="commentMenu" Header="Комментарий"
+                    <MenuItem x:Name="commentMenu"
+                              Header="Комментарий"
                               InputGestureText="Ctrl+Alt+2"
-                              CommandParameter="{x:Static diag:BlankType.Comment}"
-                              Style="{StaticResource convert}">
+                              Style="{StaticResource convert}"
+                              CommandParameter="{x:Static diag:BlankType.Comment}">
                         <MenuItem.Icon>
                             <diag:MenuItemIcon Source="{StaticResource appbar_message}"
-                                               Style="{StaticResource MetroMenuItemIcon}">
-                                <!--<diag:MenuItemIcon.Style>
-                                    <Style TargetType="diag:MenuItemIcon"
-                                           BasedOn="{StaticResource MetroMenuItemIcon}">
-                                        <Setter Property="Fill"
-                                                Value="Black" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsEnbaled, ElementName=commentMenu}"
-                                                         Value="False">
-                                                <Setter Property="Fill"
-                                                        Value="Black" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </diag:MenuItemIcon.Style>-->
-                            </diag:MenuItemIcon>
+                                               Style="{StaticResource MetroMenuItemIcon}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="МКБ..."
