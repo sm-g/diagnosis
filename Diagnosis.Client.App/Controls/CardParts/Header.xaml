@@ -135,14 +135,8 @@
             <Button  DockPanel.Dock="Left"
                      Command="{Binding OpenPrevCommand}"
                      Style="{StaticResource metroCircleButton}">
-                <Rectangle Width="12"
-                           Height="12"
-                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                    <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Uniform"
-                                     Visual="{DynamicResource appbar_navigate_previous}" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
+                <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                   Source="{DynamicResource appbar_navigate_previous}" />
             </Button>
             <headers:Holder DockPanel.Dock="Top"
                             DataContext="{Binding PrevHolder}"
@@ -158,14 +152,8 @@
             <Button  DockPanel.Dock="Right"
                      Command="{Binding OpenNextCommand}"
                      Style="{StaticResource metroCircleButton}">
-                <Rectangle Width="12"
-                           Height="12"
-                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                    <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Uniform"
-                                     Visual="{DynamicResource appbar_navigate_next}" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
+                <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                   Source="{DynamicResource appbar_navigate_next}" />
             </Button>
             <headers:Holder HorizontalAlignment="Right"
                             DockPanel.Dock="Top"

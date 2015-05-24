@@ -69,37 +69,19 @@
                     <Button Command="{Binding AddSyblingQbCommand}"
                             Visibility="{calc:Binding AddSyblingQbCommand.IsVisible, FalseToVisibility=Hidden}"
                             ToolTip="Добавить блок">
-                        <Rectangle Width="12"
-                                   Height="12"
-                                   Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform"
-                                             Visual="{DynamicResource appbar_add}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                           Source="{StaticResource appbar_add}" />
                     </Button>
                     <Button Command="{Binding AddChildQbCommand}"
                             ToolTip="Добавить дочерний блок">
-                        <Rectangle Width="12"
-                                   Height="12"
-                                   Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform"
-                                             Visual="{DynamicResource appbar_add_multiple}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                           Source="{StaticResource appbar_add_multiple}" />
                     </Button>
                     <Button Command="{Binding RemoveQbCommand}"
                             Visibility="{calc:Binding RemoveQbCommand.IsVisible, FalseToVisibility=Hidden}"
                             ToolTip="Убрать блок">
-                        <Rectangle Width="12"
-                                   Height="12"
-                                   Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform"
-                                             Visual="{DynamicResource appbar_close}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                           Source="{StaticResource appbar_close}" />
                     </Button>
                 </StackPanel>
                 <CheckBox IsChecked="{Binding WithConfidence}"

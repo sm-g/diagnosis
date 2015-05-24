@@ -21,26 +21,14 @@
                 <Button  Command="{Binding History.PrevOptionsCommand}"
                          ToolTip="Предыдущий запрос"
                          Style="{StaticResource metroCircleButton}">
-                    <Rectangle Width="12"
-                               Height="12"
-                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                         Visual="{DynamicResource appbar_navigate_previous}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
+                    <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                       Source="{StaticResource appbar_navigate_previous}" />
                 </Button>
                 <Button  Command="{Binding History.NextOptionsCommand}"
                          ToolTip="Следующий запрос"
                          Style="{StaticResource metroCircleButton}">
-                    <Rectangle Width="12"
-                               Height="12"
-                               Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                         Visual="{DynamicResource appbar_navigate_next}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
+                    <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                       Source="{StaticResource appbar_navigate_next}" />
                 </Button>
 
                 <Separator Width="20"
@@ -79,14 +67,10 @@
                          Style="{StaticResource metroCircleButton}"
                          BorderThickness="0"
                          Visibility="{calc:Binding Loader.PartialLoaded, Mode=OneWay}">
-                    <Rectangle Width="20"
-                               Height="20"
-                               Fill="Orange">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                         Visual="{DynamicResource appbar_warning_circle}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
+                    <diag:MenuItemIcon  Width="20"
+                                        Height="20"
+                                        Fill="Orange"
+                                        Source="{StaticResource appbar_warning_circle}" />
                 </Button>
                 <Separator Width="20"
                            Height="0" />

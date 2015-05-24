@@ -62,7 +62,7 @@
             <DataTemplate DataType="{x:Type diag:CriteriaViewModel}">
                 <screen:Criteria />
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
                 <diag:UndoOverlay />
             </DataTemplate>
@@ -127,42 +127,27 @@
                 <MenuItem Style="{StaticResource topMenuItem}"
                           IsEnabled="{Binding Modal, Converter={StaticResource IsNullToBoolean}}">
                     <MenuItem.Header>
-                        <Rectangle Width="16"
-                                   Height="16"
-                                   Fill="{Binding Foreground, ElementName=helpButton}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform"
-                                             Visual="{DynamicResource appbar_settings}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <diag:MenuItemIcon   Source="{StaticResource appbar_settings}"
+                                             diag:Square.Size="16"
+                                             Fill="{Binding Foreground, ElementName=helpButton}" />
                     </MenuItem.Header>
 
                     <MenuItem Header="_Настройка..."
                               Command="{Binding MenuBar.OpenSettingsCommand}"
                               Visibility="{Binding MenuBar.OpenSettingsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <MenuItem.Icon>
-                            <Rectangle Width="16"
-                                       Height="16"
-                                       Fill="{DynamicResource AccentColorBrush}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform"
-                                                 Visual="{DynamicResource appbar_settings}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
+                            <diag:MenuItemIcon  Source="{StaticResource appbar_settings}"
+                                                diag:Square.Size="16"
+                                                Fill="{DynamicResource AccentColorBrush}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <MenuItem Header="Открыть папку с _базой данных"
                               Command="{Binding MenuBar.OpenDBFolderCommand}">
                         <MenuItem.Icon>
-                            <Rectangle Width="16"
-                                       Height="16"
-                                       Fill="{DynamicResource AccentColorBrush}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform"
-                                                 Visual="{DynamicResource appbar_database}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
+                            <diag:MenuItemIcon Fill="{StaticResource AccentColorBrush}"
+                                               diag:Square.Size="16"
+                                               Source="{DynamicResource appbar_database}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -183,14 +168,9 @@
                     Style="{StaticResource MetroBaseWindowButtonStyle}"
                     Width="34"
                     ToolTip="Помощь (F1)">
-                <Rectangle Width="16"
-                           Height="16"
-                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                    <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Uniform"
-                                     Visual="{DynamicResource appbar_question}" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
+                <diag:MenuItemIcon   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                     diag:Square.Size="16"
+                                     Source="{DynamicResource appbar_question}" />
             </Button>
             <Button Width="10" />
         </mahapps:WindowCommands>
@@ -257,7 +237,7 @@
                                     Value="False" />
                             <Setter Property="CanHide"
                                     Value="False" />
-                            
+
                             <Setter Property="Visibility"
                                     Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
                             <Setter Property="DockAsDocumentCommand"
@@ -344,6 +324,7 @@
                       IsTabStop="False"
                       Grid.RowSpan="2">
         </ItemsControl>
+
         <Menu x:Name="debugMenu"
               Visibility="Collapsed"
               Grid.Row="2">

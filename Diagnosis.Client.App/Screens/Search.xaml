@@ -121,14 +121,8 @@
                             <Button  Command="{Binding EditEstimatorCommand}" 
                                      Style="{StaticResource metroCircleButton}"
                                      Visibility="{calc:Binding SelectedEstimator, Mode=OneWay}">
-                                <Rectangle Width="12"
-                                           Height="12"
-                                           Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                    <Rectangle.OpacityMask>
-                                        <VisualBrush Stretch="Uniform"
-                                                     Visual="{DynamicResource appbar_edit}" />
-                                    </Rectangle.OpacityMask>
-                                </Rectangle>
+                                <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
+                                                   Source="{StaticResource appbar_edit}" />
                             </Button>
                         </DockPanel>
                     </TabItem>

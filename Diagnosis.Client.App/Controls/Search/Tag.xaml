@@ -13,18 +13,16 @@
              d:DesignWidth="300">
     <UserControl.Resources>
     </UserControl.Resources>
-    
+
     <DockPanel>
         <DockPanel.Style>
             <!--restore style-->
             <Style TargetType="DockPanel" />
         </DockPanel.Style>
-
         <diag:DragControl DockPanel.Dock="Left"
                           Width="15"
                           Foreground="Gray"
                           IsCircle="True" />
-
         <TextBox x:Name="query"
                  diag:FocusExtension.IsFocused="{Binding IsTextBoxFocused, Mode=TwoWay}"
                  dd:DragDrop.IsDropTarget="{Binding DataContext.IsDropTargetEnabled, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2} }"
@@ -65,12 +63,11 @@
                             <Setter Property="ToolTip"
                                     Value="{Binding ForbiddenTagToolTip, Source={StaticResource Resources}}" />
                         </DataTrigger>
-                        
+
                         <DataTrigger Binding="{Binding BlankType}"
-                                     Value="{x:Static diag:BlankType.None}">   
-                            
+                                     Value="{x:Static diag:BlankType.None}">
                         </DataTrigger>
-                        
+
                         <DataTrigger Binding="{Binding BlankType}"
                                      Value="{x:Static diag:BlankType.Comment}">
                             <Setter Property="FontStyle"
@@ -168,19 +165,50 @@
                     <MenuItem Header="Ключевое слово"
                               InputGestureText="Ctrl+Alt+1"
                               CommandParameter="{x:Static diag:BlankType.Word}"
-                              Style="{StaticResource convert}" />
-                    <MenuItem Header="Комментарий"
+                              Style="{StaticResource convert}">
+                        <MenuItem.Icon>
+                            <diag:MenuItemIcon Source="{StaticResource appbar_markup}"
+                                               Style="{StaticResource MetroMenuItemIcon}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="commentMenu" Header="Комментарий"
                               InputGestureText="Ctrl+Alt+2"
                               CommandParameter="{x:Static diag:BlankType.Comment}"
-                              Style="{StaticResource convert}" />
+                              Style="{StaticResource convert}">
+                        <MenuItem.Icon>
+                            <diag:MenuItemIcon Source="{StaticResource appbar_message}"
+                                               Style="{StaticResource MetroMenuItemIcon}">
+                                <!--<diag:MenuItemIcon.Style>
+                                    <Style TargetType="diag:MenuItemIcon"
+                                           BasedOn="{StaticResource MetroMenuItemIcon}">
+                                        <Setter Property="Fill"
+                                                Value="Black" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsEnbaled, ElementName=commentMenu}"
+                                                         Value="False">
+                                                <Setter Property="Fill"
+                                                        Value="Black" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </diag:MenuItemIcon.Style>-->
+                            </diag:MenuItemIcon>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <MenuItem Header="МКБ..."
                               InputGestureText="Ctrl+Alt+3"
                               CommandParameter="{x:Static diag:BlankType.Icd}"
-                              Style="{StaticResource convert}" />
+                              Style="{StaticResource convert}">
+                    </MenuItem>
                     <MenuItem Header="Измерение..."
                               InputGestureText="Ctrl+Alt+4"
                               CommandParameter="{x:Static diag:BlankType.Measure}"
-                              Style="{StaticResource convert}" />
+                              Style="{StaticResource convert}">
+                        <MenuItem.Icon>
+                            <diag:MenuItemIcon Source="{StaticResource appbar_measure_celcius}"
+                                               Style="{StaticResource MetroMenuItemIcon}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                     <Separator Visibility="{Binding AddLeftCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
 

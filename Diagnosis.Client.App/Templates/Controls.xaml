@@ -6,10 +6,10 @@
                    Height="Auto"
                    Margin="0"
                    VerticalAlignment="Center" />
-
     </DataTemplate>
 
-    <DrawingBrush x:Key="squareDotsBrush" TileMode="Tile"
+    <DrawingBrush x:Key="squareDotsBrush"
+                  TileMode="Tile"
                   Viewbox="0,0,4,4"
                   Viewport="0,0,4,4"
                   ViewportUnits="Absolute"
@@ -59,7 +59,7 @@
                              Width="8" />
         </Border>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="DragCircleThumbTemplate"
                      TargetType="{x:Type Thumb}">
         <Border Cursor="SizeAll"
@@ -70,15 +70,15 @@
                              Width="8" />
         </Border>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="ToolbarThumbTemplate"
                      TargetType="{x:Type Thumb}">
         <Border Cursor="SizeAll"
                 SnapsToDevicePixels="True"
                 Background="Transparent"
                 Height="17"
-                    Width="5">
-                <Rectangle Fill="{StaticResource vsLikeDotsBrush}" />
+                Width="5">
+            <Rectangle Fill="{StaticResource vsLikeDotsBrush}" />
         </Border>
     </ControlTemplate>
 </ResourceDictionary>
