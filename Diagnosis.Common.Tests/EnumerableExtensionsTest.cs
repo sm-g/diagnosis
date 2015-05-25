@@ -131,6 +131,37 @@ namespace Diagnosis.Common.Tests
         }
 
         [TestMethod]
+        public void DifferenceWith()
+        {
+            var list = new List<int> { 1, 1, 1, 2 };
+            var list2 = new List<int> { 1, 1 };
+
+            var exp = new[] { 1, 2 };
+
+            Assert.IsTrue(exp.ScrambledEquals(list.DifferenceWith(list2)));
+        }
+
+        [TestMethod]
+        public void DifferenceWith()
+        {
+            var list = new List<int> { 1, 1, 1, 2 };
+            var list2 = new List<int> { };
+
+            var exp = new[] { 1, 1, 1, 2 };
+
+            Assert.IsTrue(exp.ScrambledEquals(list.DifferenceWith(list2)));
+        }
+        [TestMethod]
+        public void DifferenceWith3()
+        {
+            var list = new List<int> { 1, 1, 1, 2 };
+            var list2 = new List<int> { 1, 3 };
+
+            var exp = new[] { 1, 1, 2 };
+
+            Assert.IsTrue(exp.ScrambledEquals(list.DifferenceWith(list2)));
+        }
+        [TestMethod]
         public void Mode()
         {
             var list = new List<string> { "1", "1", "2" };

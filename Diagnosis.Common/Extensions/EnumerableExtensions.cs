@@ -13,12 +13,11 @@ namespace Diagnosis.Common
             Contract.Requires(x != null);
             Contract.Requires(y != null);
 
-            bool isSubset = !x.Except(y).Any();
-            return isSubset;
+            return !x.Except(y).Any();
         }
 
         /// <summary>
-        /// As new Bag<T>(x).DifferenceWith(new Bag<T>(y));
+        /// 
         /// </summary>
         public static bool IsSubmultisetOf<T>(this IEnumerable<T> x, IEnumerable<T> y)
         {
@@ -39,6 +38,23 @@ namespace Diagnosis.Common
                     cnt[s]--;
             }
             return cnt.Values.All(c => c <= 0);
+        }
+        /// <summary>
+        /// As new Bag<T>(x).DifferenceWith(new Bag<T>(y))
+        /// Leaves items not in y.
+        /// </summary>
+        public static IEnumerable<T> DifferenceWith<T>(this IEnumerable<T> x, IEnumerable<T> y)
+        {
+            Contract.Requires(x != null);
+            Contract.Requires(y != null);
+
+            var yl = new List<T>(y);
+            using (var iter = x.GetEnumerator())
+            {
+                while (iter.MoveNext())
+                    if (!yl.Remove(iter.Current))
+                        yield return iter.Current;
+            }
         }
 
         public static void ForAll<T>(this IEnumerable<T> collection, Action<T> action)
