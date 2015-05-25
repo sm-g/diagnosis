@@ -17,13 +17,17 @@ namespace Diagnosis.Common
         public static string TrimedOrNull(this string str)
         {
             if (string.IsNullOrWhiteSpace(str))
-            {
                 return null;
-            }
             else
-            {
                 return str.Trim();
-            }
+        }
+        /// <summary>
+        /// Removes \t \n, trims spaces. Null values ok.
+        /// </summary>        
+        public static string Prettify(this string str)
+        {
+            if (str == null) return null;
+            return str.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
         }
 
         [Pure]

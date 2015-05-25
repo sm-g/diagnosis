@@ -43,7 +43,7 @@ namespace Diagnosis.Models
             get { return _title; }
             set
             {
-                SetProperty(ref _title, value, () => Title);
+                SetProperty(ref _title, value.Prettify(), () => Title);
             }
         }
 

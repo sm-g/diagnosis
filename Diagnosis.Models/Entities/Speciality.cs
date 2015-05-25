@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models.Validators;
+﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace Diagnosis.Models
             {
                 Contract.Requires(value != null);
 
-                var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
+                var filtered = value.Prettify();
                 SetProperty(ref _title, filtered, () => Title);
             }
         }

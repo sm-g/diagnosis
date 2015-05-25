@@ -48,7 +48,7 @@ namespace Diagnosis.Models
             set
             {
                 Contract.Requires(value != null);
-                var filtered = value.Replace(Environment.NewLine, " ").Replace('\t', ' ').Trim();
+                var filtered = value.Prettify();
                 SetProperty(ref _title, filtered, () => Title);
             }
         }
@@ -160,14 +160,14 @@ namespace Diagnosis.Models
         }
         protected internal virtual void AddVocWords(VocabularyWords vw)
         {
-            Contract.Requires(vw!= null);
+            Contract.Requires(vw != null);
             Contract.Requires(vw.Vocabulary.Words.Contains(this));
             VwHelper.Add(vw);
         }
 
         protected internal virtual void AddHr(HealthRecord hr)
         {
-            Contract.Requires(hr!= null);
+            Contract.Requires(hr != null);
             Contract.Requires(hr.Words.Contains(this));
             healthRecords.Add(hr);
         }

@@ -29,7 +29,7 @@ namespace Diagnosis.Models
             get { return _title; }
             protected internal set
             {
-                SetProperty(ref _title, value.TrimedOrNull() ?? "", () => Title);
+                SetProperty(ref _title, value.Prettify(), () => Title);
             }
         }
         /// <summary>

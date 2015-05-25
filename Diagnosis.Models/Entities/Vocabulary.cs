@@ -1,4 +1,5 @@
-﻿using Diagnosis.Models.Validators;
+﻿using Diagnosis.Common;
+using Diagnosis.Models.Validators;
 using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace Diagnosis.Models
             get { return _title; }
             set
             {
-                SetProperty(ref _title, value ?? "", () => Title);
+                SetProperty(ref _title, value.Prettify(), () => Title);
             }
         }
 
