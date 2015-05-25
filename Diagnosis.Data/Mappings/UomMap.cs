@@ -16,12 +16,12 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Abbr, m =>
             {
                 m.NotNullable(true);
-                m.Length(20);
+                m.Length(Length.UomAbbr);
             });
             Property(x => x.Description, m =>
             {
                 m.NotNullable(true);
-                m.Length(100);
+                m.Length(Length.UomDescr);
             });
             Property(x => x.Factor, m =>
             {

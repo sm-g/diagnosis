@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.String, m =>
             {
                 m.NotNullable(true);
-                m.Length(50);
+                m.Length(Length.LongTitle);
             });
             Property(x => x.MeasureValue, m =>
             {

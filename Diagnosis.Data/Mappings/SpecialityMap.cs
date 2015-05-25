@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(50);
+                m.Length(Length.LongTitle);
             });
 
             Set(x => x.Doctors, s =>

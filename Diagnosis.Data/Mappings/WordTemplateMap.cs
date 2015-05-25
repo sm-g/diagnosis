@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(100);
+                m.Length(Length.WordTitle);
             });
 
             ManyToOne(x => x.Vocabulary, m =>

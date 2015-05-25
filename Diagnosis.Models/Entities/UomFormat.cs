@@ -41,7 +41,7 @@ namespace Diagnosis.Models
             get { return _str; }
             set
             {
-                SetProperty(ref _str, value, () => String);
+                SetProperty(ref _str, value.Truncate(Length.UomFormat), () => String);
             }
         }
         public virtual double MeasureValue

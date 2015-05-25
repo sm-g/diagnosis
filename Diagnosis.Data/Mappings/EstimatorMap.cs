@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Description, m =>
             {
                 m.NotNullable(true);
-                m.Length(2000);
+                m.Length(Length.EstimatorDescr);
             });
             Property(x => x.HeaderHrsOptions, m =>
             {

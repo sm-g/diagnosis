@@ -478,6 +478,7 @@ namespace Diagnosis.Models
         private void ObjectInvariant()
         {
             Contract.Invariant(!loaded || ToDate.Now == FromDate.Now);
+            Contract.Invariant(!loaded || Holder != null);
         }
     }
 }

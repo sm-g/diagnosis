@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings.Client
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(50);
+                m.Length(Length.LongTitle);
             });
 
             OneToOne(x => x.Doctor, m =>
@@ -85,7 +85,7 @@ namespace Diagnosis.Data.Mappings.Server
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(50);
+                m.Length(Length.LongTitle);
             });
 
             Set(x => x.WordTemplates, s =>

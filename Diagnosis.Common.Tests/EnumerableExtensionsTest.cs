@@ -142,7 +142,7 @@ namespace Diagnosis.Common.Tests
         }
 
         [TestMethod]
-        public void DifferenceWith()
+        public void DifferenceWith2()
         {
             var list = new List<int> { 1, 1, 1, 2 };
             var list2 = new List<int> { };

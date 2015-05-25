@@ -9,9 +9,9 @@ namespace Diagnosis.Models.Validators
     {
         public DoctorValidator()
         {
-            RuleFor(p => p.LastName).NotNull().Length(1, 20);
-            RuleFor(p => p.MiddleName).Length(0, 20);
-            RuleFor(p => p.FirstName).Length(0, 20);
+            RuleFor(p => p.LastName).NotNull().Length(1, Length.DoctorLn);
+            RuleFor(p => p.MiddleName).Length(0, Length.DoctorMn);
+            RuleFor(p => p.FirstName).Length(0, Length.DoctorFn);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using Diagnosis.Common;
 
 namespace Diagnosis.Models
 {
@@ -10,6 +11,7 @@ namespace Diagnosis.Models
 
         [NonSerialized]
         private int _ord;
+        private string _title;
 
         public HrCategory(string title, int ord)
         {
@@ -22,7 +24,14 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual string Title { get; set; }
+        public virtual string Title
+        {
+            get { return _title; }
+            protected internal set
+            {
+                SetProperty(ref _title, value.Prettify().Truncate(Length.Title), () => Title);
+            }
+        }
 
         /// <summary>
         /// Порядок, уникальный.

@@ -10,9 +10,9 @@ namespace Diagnosis.Models.Validators
     {
         public PatientValidator()
         {
-            RuleFor(p => p.LastName).Length(0, 20);
-            RuleFor(p => p.MiddleName).Length(0, 20);
-            RuleFor(p => p.FirstName).Length(0, 20);
+            RuleFor(p => p.LastName).Length(0, Length.PatientLn);
+            RuleFor(p => p.MiddleName).Length(0, Length.PatientMn);
+            RuleFor(p => p.FirstName).Length(0, Length.PatientFn);
             RuleFor(p => p.Age).GreaterThanOrEqualTo(0);
 
             Custom(p =>

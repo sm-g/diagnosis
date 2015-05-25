@@ -88,7 +88,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public int MaxLength { get { return WordTemplate.MaxLength; } }
+        public int MaxLength { get { return Length.WordTitle; } }
 
         public override bool CanOk
         {
@@ -104,9 +104,9 @@ namespace Diagnosis.ViewModels.Screens
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
-            var tooLong = temps.Where(x => x.Length > WordTemplate.MaxLength);
+            var tooLong = temps.Where(x => x.Length > MaxLength);
 
-            Templates.SyncWith(temps.Select(x => x.Truncate(WordTemplate.MaxLength)));
+            Templates.SyncWith(temps.Select(x => x.Truncate(MaxLength)));
             TooLongTemplates.SyncWith(tooLong);
 
             TemplatesCount = Templates.Count;

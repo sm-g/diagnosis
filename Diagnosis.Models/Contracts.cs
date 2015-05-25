@@ -70,7 +70,7 @@ namespace Diagnosis.Models
             {
                 Contract.Ensures(Contract.Result<string>() != null);
                 Contract.Ensures(Contract.Result<string>().Length > 0);
-                Contract.Ensures(Contract.Result<string>().Length <= 9); // block (A00-A05)
+                Contract.Ensures(Contract.Result<string>().Length <= Length.IcdCode); // block (A00-A05)
                 return "A00.1";
             }
         }

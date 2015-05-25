@@ -48,7 +48,7 @@ namespace Diagnosis.Models
             set
             {
                 Contract.Requires(value != null);
-                var filtered = value.Prettify();
+                var filtered = value.Prettify().Truncate(Length.WordTitle);
                 SetProperty(ref _title, filtered, () => Title);
             }
         }

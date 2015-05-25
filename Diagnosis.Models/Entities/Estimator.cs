@@ -33,7 +33,7 @@ namespace Diagnosis.Models
         public virtual string Description
         {
             get { return _description; }
-            set { SetProperty(ref _description, value, () => Description); }
+            set { SetProperty(ref _description, value.Truncate(Length.EstimatorDescr), () => Description); }
         }
         public virtual IEnumerable<CriteriaGroup> CriteriaGroups
         {

@@ -6,8 +6,6 @@ namespace Diagnosis.Models
 {
     public class WordTemplate : EntityBase<Guid>
     {
-        public const int MaxLength = 100;
-
         private string _title;
         private Vocabulary _voc;
 
@@ -29,7 +27,7 @@ namespace Diagnosis.Models
             get { return _title; }
             protected internal set
             {
-                SetProperty(ref _title, value.Prettify(), () => Title);
+                SetProperty(ref _title, value.Prettify().Truncate(Length.WordTitle), () => Title);
             }
         }
         /// <summary>

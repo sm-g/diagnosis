@@ -70,6 +70,9 @@ namespace Diagnosis.Common
             return string.Format(str, args);
         }
 
+        /// <summary>
+        /// Leaves not more than maxLength chars in string. Null values ok.
+        /// </summary>
         public static string Truncate(this string str, int maxLength)
         {
             if (str != null && str.Length > maxLength)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace Diagnosis.Models
     [Serializable]
     public class Comment : IHrItemObject, IComparable<Comment>
     {
+        private string _text;
+
         public Comment(string text)
         {
             Contract.Requires(text != null);
@@ -18,7 +21,14 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual string String { get; set; }
+        public virtual string String
+        {
+            get { return _text; }
+            set
+            {
+                _text = value.Prettify().Truncate(Length.Comment);
+            }
+        }
 
         public override string ToString()
         {
@@ -40,7 +50,7 @@ namespace Diagnosis.Models
             if (other == null)
                 return false;
             else
-                return String == other.String;
+                return StringComparer.OrdinalIgnoreCase.Equals(other.String, this.String);
         }
 
         public override int GetHashCode()

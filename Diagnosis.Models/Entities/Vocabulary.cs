@@ -58,7 +58,7 @@ namespace Diagnosis.Models
             get { return _title; }
             set
             {
-                SetProperty(ref _title, value.Prettify(), () => Title);
+                SetProperty(ref _title, value.Prettify().Truncate(Length.LongTitle), () => Title);
             }
         }
 

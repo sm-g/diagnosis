@@ -8,9 +8,6 @@ using System.Linq.Expressions;
 
 namespace Diagnosis.Models
 {
-    /// <summary>
-    /// Не в Common для unproxy
-    /// </summary>
     public class EditableObjectHelper
     {
         private object _syncRoot = new object();
@@ -104,7 +101,7 @@ namespace Diagnosis.Models
 
                     if (propValuePair.Item2 is EntityBase<TId>)
                     {
-                        value = (propValuePair.Item2 as EntityBase<TId>).As<T, TId>();  // unproxy
+                        value = (T)(propValuePair.Item2 as EntityBase<TId>).Actual;  // unproxy
                     }
                     else
                     {

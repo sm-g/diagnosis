@@ -126,7 +126,7 @@ namespace Diagnosis.Data
             public static string Setting_Doctor = string.Format("FK_{0}_{1}", Setting, Doctor);
             public static string Criterion_CritGr = string.Format("FK_{0}_{1}", Criterion, CriteriaGroup);
             public static string Word_Uom = string.Format("FK_{0}_{1}", Word, Uom);
-            public static string CrGr_Est =string.Format("FK_{0}_{1}", CriteriaGroup, Estimator);
+            public static string CrGr_Est = string.Format("FK_{0}_{1}", CriteriaGroup, Estimator);
         }
 
         public static class Col
@@ -168,4 +168,6 @@ namespace Diagnosis.Data
 
         }
     }
+
+
 }

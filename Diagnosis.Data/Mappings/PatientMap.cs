@@ -15,15 +15,15 @@ namespace Diagnosis.Data.Mappings
 
             Property(x => x.FirstName, m =>
             {
-                m.Length(20);
+                m.Length(Length.PatientFn);
             });
             Property(x => x.MiddleName, m =>
             {
-                m.Length(20);
+                m.Length(Length.PatientMn);
             });
             Property(x => x.LastName, m =>
             {
-                m.Length(20);
+                m.Length(Length.PatientLn);
             });
             Property(x => x.IsMale);
             Property(x => x.BirthYear);

@@ -16,12 +16,12 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Description, m =>
             {
                 m.NotNullable(true);
-                m.Length(2000);
+                m.Length(Length.CriterionDescr);
             });
             Property(x => x.Code, m =>
             {
                 m.NotNullable(true);
-                m.Length(50);
+                m.Length(Length.CriterionCode);
             });
             Property(x => x.Options, m =>
             {
@@ -31,7 +31,7 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Value, m =>
             {
                 m.NotNullable(true);
-                m.Length(50);
+                m.Length(Length.CriterionValue);
             });
 
             ManyToOne(x => x.Group, m =>

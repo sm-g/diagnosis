@@ -28,7 +28,7 @@ namespace Diagnosis.Data.Mappings
                 x.Property(y => y.String, m =>
                 {
                     m.Column(Names.Col.HrItemTextRepr);
-                    m.Length(255);
+                    m.Length(Length.Comment);
                 });
             });
 

@@ -9,8 +9,8 @@ namespace Diagnosis.Models.Validators
     {
         public UomValidator()
         {
-            RuleFor(w => w.Description).NotNull().Length(1, 100);
-            RuleFor(w => w.Abbr).NotNull().Length(1, 20);
+            RuleFor(w => w.Description).NotNull().Length(1, Length.UomDescr);
+            RuleFor(w => w.Abbr).NotNull().Length(1, Length.UomAbbr);
             RuleFor(w => w.Type).NotNull();
         }
     }

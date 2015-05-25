@@ -47,7 +47,7 @@ namespace Diagnosis.Models
             get { return _fn; }
             set
             {
-                SetProperty(ref _fn, value.TrimedOrNull(), "FirstName");
+                SetProperty(ref _fn, value.TrimedOrNull().Truncate(Length.DoctorFn), "FirstName");
             }
         }
 
@@ -56,7 +56,7 @@ namespace Diagnosis.Models
             get { return _mn; }
             set
             {
-                SetProperty(ref _mn, value.TrimedOrNull(), "MiddleName");
+                SetProperty(ref _mn, value.TrimedOrNull().Truncate(Length.DoctorMn), "MiddleName");
             }
         }
 
@@ -66,7 +66,7 @@ namespace Diagnosis.Models
             set
             {
                 if (value == null) return;
-                SetProperty(ref _ln, value.Trim(), "LastName");
+                SetProperty(ref _ln, value.Trim().Truncate(Length.DoctorLn), "LastName");
             }
         }
 

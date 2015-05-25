@@ -16,7 +16,7 @@ namespace Diagnosis.Data.Mappings.Client
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(100);
+                m.Length(Length.WordTitle);
                 m.UniqueKey(Names.Unique.WordTitle);
             });
 
@@ -95,7 +95,7 @@ namespace Diagnosis.Data.Mappings.Server
             Property(x => x.Title, m =>
             {
                 m.NotNullable(true);
-                m.Length(100);
+                m.Length(Length.WordTitle);
                 m.UniqueKey(Names.Unique.WordTitle);
             });
 

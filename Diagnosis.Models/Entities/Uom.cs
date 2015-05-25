@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Diagnosis.Common;
 
 namespace Diagnosis.Models
 {
@@ -46,7 +47,7 @@ namespace Diagnosis.Models
             {
                 Contract.Requires(value != null);
 
-                var filtered = value.Trim();
+                var filtered = value.Trim().Truncate(Length.UomAbbr);
                 SetProperty(ref _abbr, filtered, () => Abbr);
             }
         }
@@ -56,7 +57,7 @@ namespace Diagnosis.Models
             get { return _description; }
             set
             {
-                var filtered = (value ?? "").Trim();
+                var filtered = (value ?? "").Trim().Truncate(Length.UomDescr);
                 SetProperty(ref _description, filtered, () => Description);
             }
         }

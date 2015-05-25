@@ -25,7 +25,7 @@ namespace Diagnosis.Models
             Group = gr;
             Description = "";
             Code = "";
-            Value= "";
+            Value = "";
         }
 
         protected internal Criterion()
@@ -41,18 +41,18 @@ namespace Diagnosis.Models
         public virtual string Description
         {
             get { return _description; }
-            set { SetProperty(ref _description, value, () => Description); }
+            set { SetProperty(ref _description, value.Truncate(Length.CriterionDescr), () => Description); }
         }
         public virtual string Code
         {
             get { return _code; }
-            set { SetProperty(ref _code, value, () => Code); }
+            set { SetProperty(ref _code, value.Truncate(Length.CriterionCode), () => Code); }
         }
 
         public virtual string Value
         {
             get { return _value; }
-            set { SetProperty(ref _value, value, () => Value); }
+            set { SetProperty(ref _value, value.Truncate(Length.CriterionValue), () => Value); }
         }
         public virtual string Options
         {

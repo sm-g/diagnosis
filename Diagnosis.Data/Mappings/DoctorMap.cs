@@ -29,16 +29,16 @@ namespace Diagnosis.Data.Mappings.Client
 
             Property(x => x.FirstName, m =>
             {
-                m.Length(20);
+                m.Length(Length.DoctorFn);
             });
             Property(x => x.MiddleName, m =>
             {
-                m.Length(20);
+                m.Length(Length.DoctorMn);
             });
             Property(x => x.LastName, m =>
             {
                 m.NotNullable(true);
-                m.Length(20);
+                m.Length(Length.DoctorLn);
             });
             Property(x => x.IsMale);
 
@@ -112,16 +112,16 @@ namespace Diagnosis.Data.Mappings.Server
 
             Property(x => x.FirstName, m =>
             {
-                m.Length(20);
+                m.Length(Length.DoctorFn);
             });
             Property(x => x.MiddleName, m =>
             {
-                m.Length(20);
+                m.Length(Length.DoctorMn);
             });
             Property(x => x.LastName, m =>
             {
                 m.NotNullable(true);
-                m.Length(20);
+                m.Length(Length.DoctorLn);
             });
             Property(x => x.IsMale);
 

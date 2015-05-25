@@ -57,7 +57,7 @@ namespace Diagnosis.Models
             get { return _fn; }
             set
             {
-                if (SetProperty(ref _fn, value.TrimedOrNull(), () => FirstName))
+                if (SetProperty(ref _fn, value.TrimedOrNull().Truncate(Length.PatientFn), () => FirstName))
                 {
                     OnPropertyChanged(() => FullName);
                     OnPropertyChanged(() => FullNameOrCreatedAt);
@@ -70,7 +70,7 @@ namespace Diagnosis.Models
             get { return _mn; }
             set
             {
-                if (SetProperty(ref _mn, value.TrimedOrNull(), () => MiddleName))
+                if (SetProperty(ref _mn, value.TrimedOrNull().Truncate(Length.PatientMn), () => MiddleName))
                 {
                     OnPropertyChanged(() => FullName);
                     OnPropertyChanged(() => FullNameOrCreatedAt);
@@ -83,7 +83,7 @@ namespace Diagnosis.Models
             get { return _ln; }
             set
             {
-                if (SetProperty(ref _ln, value.TrimedOrNull(), () => LastName))
+                if (SetProperty(ref _ln, value.TrimedOrNull().Truncate(Length.PatientLn), () => LastName))
                 {
                     OnPropertyChanged(() => FullName);
                     OnPropertyChanged(() => FullNameOrCreatedAt);
