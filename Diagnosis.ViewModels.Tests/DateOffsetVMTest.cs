@@ -17,6 +17,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void Init()
         {
+            EventDateViewModel.ClearDict();
             h = session.Load<HealthRecord>(IntToGuid<HealthRecord>(1));
             emptyH = session.Load<HealthRecord>(IntToGuid<HealthRecord>(71));
             vm = EventDateViewModel.FromHr(h);
@@ -25,6 +26,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestCleanup]
         public void Clean()
         {
+            EventDateViewModel.ClearDict();
             if (vm != null)
                 vm.Dispose();
         }
@@ -245,7 +247,6 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetMonth()
         {
-            EventDateViewModel.ClearDict();
             var vm = EventDateViewModel.FromHr(emptyH);
             vm.From.Month = 5;
 
@@ -255,7 +256,6 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetToMonth()
         {
-            EventDateViewModel.ClearDict();
             var vm = EventDateViewModel.FromHr(emptyH);
             vm.to.Month = 5;
 
@@ -265,7 +265,6 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetUnit()
         {
-            EventDateViewModel.ClearDict();
             var vm = EventDateViewModel.FromHr(emptyH);
             vm.Unit = DateUnit.Month;
 
@@ -276,7 +275,6 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetOffset()
         {
-            EventDateViewModel.ClearDict();
             var vm = EventDateViewModel.FromHr(emptyH);
             vm.Offset = 5;
 
@@ -286,7 +284,6 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void EmptySetAge()
         {
-            EventDateViewModel.ClearDict();
             var vm = EventDateViewModel.FromHr(emptyH);
             vm.AtAge = 5;
 

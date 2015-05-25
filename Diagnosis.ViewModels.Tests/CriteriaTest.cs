@@ -160,6 +160,9 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SaveNewWordsFromCriterionQueryEditor()
         {
+            Load<Doctor>();
+            AuthorityController.TryLogIn(d1);
+
             crit.Open(cr[1]);
             var w = new Word("1");
             (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.AddTag(w);
@@ -171,6 +174,9 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SaveNewWordsFromEstimatorQueryEditor()
         {
+            Load<Doctor>();
+            AuthorityController.TryLogIn(d1);
+
             crit.Open(est[1]);
             var w = new Word("1");
             (crit.CurrentEditor as EstimatorEditorViewModel).QueryEditor.AddTag(w);
