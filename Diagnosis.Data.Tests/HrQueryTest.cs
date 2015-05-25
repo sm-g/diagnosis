@@ -55,6 +55,7 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Count() == 0);
         }
 
+
         [TestMethod]
         public void WithAnyWordsAtLeastTwoWords()
         {
@@ -100,23 +101,22 @@ namespace Diagnosis.Data.Tests
 
         [TestMethod]
         [ExpectedException(typeof(System.NotImplementedException))]
-        public void WithoutAllWords() // TODO WithoutAllWords
+        public void WithoutAllWords()
         {
             var hrs = HealthRecordQuery.WithoutAllWords(session)(new Word[] { w[1], w[22] });
 
             Assert.AreEqual(12, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[1]));
-            Assert.IsTrue(hrs.Contains(hr[2]));
-            Assert.IsTrue(hrs.Contains(hr[20]));
-            Assert.IsTrue(hrs.Contains(hr[21]));
-            Assert.IsTrue(hrs.Contains(hr[70]));
-            Assert.IsTrue(hrs.Contains(hr[30]));
-            Assert.IsTrue(hrs.Contains(hr[31]));
-            Assert.IsTrue(hrs.Contains(hr[32]));
-            Assert.IsTrue(hrs.Contains(hr[40]));
-            Assert.IsTrue(hrs.Contains(hr[71]));
-            Assert.IsTrue(hrs.Contains(hr[73]));
-            Assert.IsTrue(hrs.Contains(hr[74]));
+            Assert.IsTrue(!hrs.Contains(hr[22]));
+            Assert.IsTrue(!hrs.Contains(hr[72]));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.NotImplementedException))]
+        public void WithoutAllWords2()
+        {
+            var hrs = HealthRecordQuery.WithoutAllWords(session)(new Word[] { w[22], w[22] });
+            Assert.AreEqual(13, hrs.Count());
+            Assert.IsTrue(!hrs.Contains(hr[70]));
         }
 
         [TestMethod]
