@@ -47,16 +47,15 @@ namespace Diagnosis.ViewModels.Autocomplete
 
     public interface IHrEditorAutocomplete : ITagsTrackableAutocomplete, IClipboardTarget, IDisposable
     {
+        ICommand AddCommand { get; }
         ICommand DeleteCommand { get; }
-
         ICommand SendToSearchCommand { get; }
-
         ICommand ToggleSuggestionModeCommand { get; }
 
         bool AddQueryToSuggestions { get; set; }
 
         void StartEdit();
-        void AddFromEditor(BlankType type, int index = -1);
+        void AddFromEditor(BlankType type);
     }
     [ContractClass(typeof(ContractForIQbAutocompleteViewModel))]
     public interface IQbAutocompleteViewModel : ITagsTrackableAutocomplete, IDisposable, INotifyPropertyChanged
@@ -80,4 +79,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         void CompleteTypings();
 
     }
+
+
 }

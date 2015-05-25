@@ -60,6 +60,24 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
+        public void AddWord_StartsEditLastTag()
+        {
+            a.AddFromEditor(BlankType.Word);
+
+            Assert.IsTrue(a.LastTag.IsTextBoxFocused);
+        }
+
+        [TestMethod]
+        public void DoNotRetrunInvalidChios()
+        {
+            a.AddTag(new Word(""));
+            a.AddTag(new Comment(""));
+            var chios = a.GetCHIOs();
+
+            Assert.IsTrue(chios.Count() == 0);
+        }
+
+        [TestMethod]
         public void TypeQuery()
         {
             a.SelectedTag.Query = "123";
@@ -69,9 +87,14 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void Type_Clear_CompleteOnLostFocus_CanDelete()
         {
+            var tag = a.SelectedTag;
             a.SelectedTag.Query = "123";
             a.SelectedTag.Query = "";
             a.CompleteOnLostFocus(a.SelectedTag);
+
+            // tag deleted
+            Assert.AreNotEqual(tag, First);
+
         }
 
         [TestMethod]

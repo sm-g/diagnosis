@@ -288,7 +288,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                     OnConverting(t);
                     OnPropertyChanged(() => BlankType);
                 },
-                (t) => autocomplete.WithConvertTo(t) && t != BlankType)
+                (t) => autocomplete.WithConvertTo(t) && t != BlankType &&
+                    (!Query.IsNullOrEmpty() || t != BlankType.Word && t != BlankType.Comment)) // пустой → нельзя решить, что будет слово/коммент
                 {
                     IsVisible = autocomplete.WithConvert
                 });
@@ -375,7 +376,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             {
                 return _signal;
             }
-            set
+            private set
             {
                 if (_signal != value)
                 {
@@ -496,7 +497,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         #endregion ViewRelated
 
-        public void Validate()
+        public void SetSignalization()
         {
             Signalization = Signalizations.None;
             if (BlankType == BlankType.None && State != State.Init)

@@ -205,7 +205,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                         foreach (var tag in tags)
                         {
                             Contract.Assume(tag.State == State.Completed);
-                            master.AddTag(tag.ToChio(), insertIndex).Validate();
+                            master.AddTag(tag.ToChio(), insertIndex).SetSignalization();
                         }
                     }
                     master.LastTag.IsSelected = false;

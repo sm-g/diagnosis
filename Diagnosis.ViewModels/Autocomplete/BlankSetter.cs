@@ -32,8 +32,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <param name="inverse"></param>
         public void SetBlank(TagViewModel tag, IHrItemObject hio, bool exactMatchRequired, bool inverse)
         {
-            Contract.Requires(tag != null);            
-            if(inverse && hio == null && tag.Query.IsNullOrEmpty()) // делаем слово по запросу
+            Contract.Requires(tag != null);
+            if (inverse && hio == null && tag.Query.IsNullOrEmpty()) // делаем слово по запросу
                 throw new ArgumentException();
             Contract.EndContractBlock();
 
@@ -53,12 +53,14 @@ namespace Diagnosis.ViewModels.Autocomplete
             }
             else // inverse, no hio
             {
+                Contract.Assume(!tag.Query.IsNullOrEmpty());
                 tag.Blank = FirstMatchingOrNewWord(tag.Query);
             }
         }
 
         /// <summary>
         /// Изменяет сущность тега с одной на другую.
+        /// Может быть создан пустой коммент/слово, которые не должны сохраняться.
         /// </summary>
         public void ConvertBlank(TagViewModel tag, BlankType toType, Action onConverted)
         {
@@ -68,7 +70,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 throw new ArgumentException();
             if (onConverted == null)
                 throw new ArgumentException();
-            Contract.Ensures(tag.BlankType == toType || tag.BlankType == Contract.OldValue(tag.BlankType));
+            Contract.Ensures(tag.BlankType == toType || tag.BlankType == Contract.OldValue(tag.BlankType)); // можно отменить to icd/measure
             Contract.EndContractBlock();
 
             string queryOrMeasureWordTitle;
@@ -81,9 +83,12 @@ namespace Diagnosis.ViewModels.Autocomplete
             else
                 queryOrMeasureWordTitle = tag.Query; // == "" if initial or after clear query
 
+            Contract.Assume(queryOrMeasureWordTitle != null);
+
             switch (toType)
             {
                 case BlankType.Comment:
+                    Contract.Assume(tag.Query != null);
                     tag.Blank = new Comment(tag.Query);
                     onConverted();
                     break;

@@ -38,6 +38,10 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             get { return ToggleSuggestionModeCommand; }
         }
+        ICommand IHrEditorAutocomplete.AddCommand
+        {
+            get { return AddCommand; }
+        }
     }
 
     public class MeasureAutocomplete : AutocompleteViewModel
@@ -138,7 +142,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 // созданные слова можно искать из поиска, убираем сигнал "новое" после сохранения слова
                 var word = e.GetValue<Word>(MessageKeys.Word);
                 Tags.Where(t => (t.Blank as Word) == word)
-                    .ForAll(t => t.Validate());
+                    .ForAll(t => t.SetSignalization());
             });
 
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
@@ -501,44 +505,38 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public bool InDispose { get { return inDispose; } }
 
-        public RelayCommand AddIcdCommand
+        public RelayCommand<BlankType> AddCommand
         {
             get
             {
-                return new RelayCommand(() =>
+                return new RelayCommand<BlankType>(p =>
                 {
-                    AddFromEditor(BlankType.Icd);
-                }, () => WithConvertTo(BlankType.Icd));
+                    AddFromEditor(p);
+                }, (p) => WithConvertTo(p));
             }
         }
 
-        public RelayCommand AddMeasureCommand
+        public void AddFromEditor(BlankType type)
         {
-            get
+            switch (type)
             {
-                return new RelayCommand(() =>
-                {
-                    AddFromEditor(BlankType.Measure);
-                }, () => WithConvertTo(BlankType.Measure));
+                case BlankType.Measure:
+                    OpenMeasureEditor(null, null, (m) =>
+                    {
+                        AddTag(m);
+                    });
+                    break;
+                case BlankType.Icd:
+                    OpenIcdSelector(null, null, (i) =>
+                    {
+                        AddTag(i);
+                    });
+                    break;
+                default:
+                    AddLastTag();
+                    break;
             }
-        }
-
-        public void AddFromEditor(BlankType type, int index = -1)
-        {
-            if (type == BlankType.Measure)
-            {
-                OpenMeasureEditor(null, null, (m) =>
-                {
-                    AddTag(m, index);
-                });
-            }
-            else if (type == BlankType.Icd)
-            {
-                OpenIcdSelector(null, null, (i) =>
-                {
-                    AddTag(i, index);
-                });
-            }
+            StartEdit();
         }
 
         /// <summary>
@@ -564,8 +562,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         public void ReplaceTagsWith(IEnumerable<object> items)
         {
-            if (Tags.Count == 0)
-                AddTag(isLast: true);
+            AddLastTag();
 
             // оставляем последний тег
             while (Tags.Count != 1)
@@ -573,7 +570,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             if (items != null)
                 foreach (var item in items)
-                    AddTag(item).Validate();
+                    AddTag(item).SetSignalization();
         }
 
         /// <summary>
@@ -701,7 +698,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
 
         /// <summary>
-        /// Возвращает сущности из тегов по порядку.
+        /// Возвращает валидные сущности из тегов по порядку.
         /// Не должен вызываться, если есть редактируемый тег.
         /// </summary>
         public IEnumerable<ConfWithHio> GetCHIOs()
@@ -712,28 +709,31 @@ namespace Diagnosis.ViewModels.Autocomplete
                  .ForAll((x) => logger.WarnFormat("{0} without entity blank, skip", x));
 
             return Tags
-                .Where(x => x.BlankType != BlankType.None)
+                .Where(t => t.BlankType != BlankType.None)
+                .Where(t => t.Blank.IsValid())
                 .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
 
         /// <summary>
-        /// Возвращает сущности из завершенных тегов по порядку.
+        /// Возвращает валидные сущности из завершенных тегов по порядку.
         /// </summary>
         public IEnumerable<ConfWithHio> GetCHIOsOfCompleted()
         {
             return Tags
                 .Where(t => t.State == State.Completed)
+                .Where(t => t.Blank.IsValid())
                 .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
 
         /// <summary>
-        /// Возвращает сущности из выделенных завершенных тегов по порядку.
+        /// Возвращает валидные сущности из выделенных завершенных тегов по порядку.
         /// </summary>
         /// <returns></returns>
         private IEnumerable<ConfWithHio> GetCHIOsOfSelectedCompleted()
         {
             return SelectedTags
                 .Where(t => t.State == State.Completed)
+                .Where(t => t.Blank.IsValid())
                 .Select(t => new ConfWithHio(t.Blank, t.Confidence));
         }
 
@@ -844,13 +844,17 @@ namespace Diagnosis.ViewModels.Autocomplete
         {
             Suggestions.Clear();
             RefreshPopup();
-            tag.Validate();
+            tag.SetSignalization();
 
             sugMaker.AfterCompleteTag(tag);
 
-            // добавляем пустое поле
-            if (LastTag.State == State.Completed
-                && !SingleTag)
+            AddLastTag();
+        }
+
+        private void AddLastTag()
+        {
+            if (Tags.Count == 0 ||
+                LastTag.State == State.Completed && !SingleTag)
             {
                 AddTag(isLast: true);
             }

@@ -69,6 +69,13 @@ namespace Diagnosis.Models
 
     public static class IHrItemObjectExtensions
     {
+        public static bool IsValid(this IHrItemObject hio)
+        {
+            Contract.Requires(hio != null);
+            if (hio is Comment) return !(hio as Comment).String.IsNullOrEmpty();
+            if (hio is IValidatable) return (hio as IValidatable).IsValid();
+            return true;
+        }
         public static ConfWithHio AsConfWithHio(this IHrItemObject hio, Confidence conf = Confidence.Present)
         {
             Contract.Requires(hio != null);

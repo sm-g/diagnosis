@@ -299,6 +299,7 @@ namespace Diagnosis.ViewModels.Tests
             a.SelectedTag = a.Tags.First();
             var word = a.SelectedTag.Blank as Word;
             a.SelectedTag.ConvertToCommand.Execute(BlankType.Comment);
+            e.Unload();
 
             Assert.AreEqual(word.Title, hr.GetOrderedEntities().OfType<Comment>().Single().String);
             Assert.IsTrue(!hr.GetOrderedEntities().Contains(word));

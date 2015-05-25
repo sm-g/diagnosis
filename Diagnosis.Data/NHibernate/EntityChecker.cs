@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using System;
+using System.Diagnostics;
 
 namespace Diagnosis.Data
 {
@@ -13,6 +14,11 @@ namespace Diagnosis.Data
 
         public void Insert(IEntity entity)
         {
+            if (entity is IValidatable)
+            {
+                Debug.Assert((entity as IValidatable).IsValid());
+            }
+
             entity.IsDirty = false;
             if (entity is Word)
             {
