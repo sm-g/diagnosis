@@ -23,10 +23,18 @@
                     Command="{Binding EditCommand}" />
         <KeyBinding Key="F8"
                     Command="{Binding ToggleConfidenceCommand}" />
+        <KeyBinding Gesture="Control+1"
+                    Command="{Binding AddCommand}"
+                    CommandParameter="{x:Static diag:BlankType.Word}" />
+        <KeyBinding Gesture="Control+2"
+                    Command="{Binding AddCommand}"
+                    CommandParameter="{x:Static diag:BlankType.Comment}" />
         <KeyBinding Gesture="Control+3"
-                    Command="{Binding AddIcdCommand}" />
+                    Command="{Binding AddCommand}"
+                    CommandParameter="{x:Static diag:BlankType.Icd}" />
         <KeyBinding Gesture="Control+4"
-                    Command="{Binding AddMeasureCommand}" />
+                    Command="{Binding AddCommand}"
+                    CommandParameter="{x:Static diag:BlankType.Measure}" />
     </UserControl.InputBindings>
     <UserControl.Resources>
         <InputBindingCollection x:Shared="False"

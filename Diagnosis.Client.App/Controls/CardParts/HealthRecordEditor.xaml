@@ -140,14 +140,26 @@
                     </DockPanel>
                 </ToggleButton>
                 <Separator />
-                <Button Command="{Binding Autocomplete.AddIcdCommand}"
-                        ToolTip="Добавить МКБ (Ctrl+3)">
-                    <DockPanel>
-                        <TextBlock Text="МКБ"
-                                   FontWeight="Bold" />
-                    </DockPanel>
+                <Button Command="{Binding Autocomplete.AddCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Word}"
+                        ToolTip="Добавить слово (Ctrl+1)">
+                    <diag:MenuItemIcon Source="{StaticResource appbar_markup}"
+                                       Style="{StaticResource MetroMenuItemIcon}" />
                 </Button>
-                <Button Command="{Binding Autocomplete.AddMeasureCommand}"
+                <Button Command="{Binding Autocomplete.AddCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Comment}"
+                        ToolTip="Добавить комментарий (Ctrl+2)">
+                    <diag:MenuItemIcon Source="{StaticResource appbar_message}"
+                                       Style="{StaticResource MetroMenuItemIcon}" />
+                </Button>
+                <Button Command="{Binding Autocomplete.AddCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Icd}"
+                        ToolTip="Добавить МКБ (Ctrl+3)">
+                    <TextBlock Text="МКБ"
+                               FontWeight="Bold" />
+                </Button>
+                <Button Command="{Binding Autocomplete.AddCommand}"
+                        CommandParameter="{x:Static diag:BlankType.Measure}"
                         ToolTip="Добавить измерение (Ctrl+4)">
                     <diag:MenuItemIcon Source="{StaticResource appbar_measure_celcius}"
                                        Style="{StaticResource MetroMenuItemIcon}" />
