@@ -54,7 +54,6 @@ namespace Diagnosis.Data.Queries
             return (words, mincount) =>
             {
                 Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
-                mincount = mincount > 0 ? mincount : 1;
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
@@ -163,24 +162,52 @@ namespace Diagnosis.Data.Queries
                     // also http://sqlfiddle.com/#!2/327514/1 and http://johnreilly.me/2009/12/sql-contains-all-query/
                     var wordsIds = words.Select(w => w.Id).ToList();
 
-                    var hriWithAnyWords = (from hr in session.Query<HealthRecord>()
-                                           join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
-                                           where hri.Word != null
-                                           join w in session.Query<Word>() on hri.Word.Id equals w.Id
-                                           where wordsIds.Contains(w.Id)
-                                           select hri).ToList();
+                    var hrWithAnyWord = (from hr in session.Query<HealthRecord>()
+                                         join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                                         join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                                         where wordsIds.Contains(w.Id)
+                                         select hr).ToList();
+
+                    var h = from hr in hrWithAnyWord
+                            where words.IsSubmultisetOf(hr.Words)
+                            select hr;
 
                     // one query - nhib Query Source could not be identified.
+                    //var hrIds = (from hri in hriWithAnyWords
+                    //             group hri by hri.HealthRecord.Id into g
+                    //             where g.Select(x => x.Word.Id).Count() == wordsIds.Count // те hr, где кол-во слов в hri == переданному - неверно
+                    //             select g.Key).ToList();
 
-                    var hrIds = (from hri in hriWithAnyWords
-                                 group hri by hri.HealthRecord.Id into g
-                                 where g.Select(x => x.Word.Id).Count() == wordsIds.Count // те hr, где кол-во слов в hri == переданному
-                                 select g.Key).ToList();
+                    //var qq = from hr in session.Query<HealthRecord>()
+                    //         where hrIds.Contains(hr.Id)
+                    //         select hr;
+                    return h.Distinct().ToList();
+                }
+            };
+        }
 
-                    var qq = from hr in session.Query<HealthRecord>()
-                             where hrIds.Contains(hr.Id)
-                             select hr;
-                    return qq.ToList();
+        /// <summary>
+        /// Возвращает записи со всеми из слов c учетом уверенности.
+        /// </summary>
+        public static Func<IEnumerable<Confindencable<Word>>, IEnumerable<HealthRecord>> WithAllConfWords(ISession session)
+        {
+            return (cwords) =>
+            {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
+                using (var tr = session.BeginTransaction())
+                {
+                    var wordsIds = cwords.Select(w => w.HIO.Id).ToList();
+
+                    var hriWithAnyWord = (from hr in session.Query<HealthRecord>()
+                                          join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
+                                          join w in session.Query<Word>() on hri.Word.Id equals w.Id
+                                          where wordsIds.Contains(w.Id)
+                                          select hr).ToList();
+                    var h = from hr in hriWithAnyWord
+                            where cwords.IsSubmultisetOf(hr.GetCWords())
+                            select hr;
+                    return h.Distinct().ToList();
                 }
             };
         }
