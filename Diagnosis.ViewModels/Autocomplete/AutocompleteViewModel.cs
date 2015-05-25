@@ -345,6 +345,8 @@ namespace Diagnosis.ViewModels.Autocomplete
                     sugMaker.AddQueryToSuggestions = !sugMaker.AddQueryToSuggestions;
                     MakeSuggestions(SelectedTag);
                     RefreshPopup();
+
+                    OnPropertyChanged(() => AddQueryToSuggestions);
                 }, () => SelectedTag != null && SelectedTag.IsTextBoxFocused);
             }
         }

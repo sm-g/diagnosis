@@ -133,7 +133,7 @@
                     </DockPanel>
                 </Button>
                 <Separator />
-                <ToggleButton IsChecked="{Binding AddQueryToSuggestions}"
+                <ToggleButton IsChecked="{Binding Autocomplete.AddQueryToSuggestions}"
                               ToolTip="Переключить режим завершения слов (Ctrl+Alt+ПРОБЕЛ)">
                     <DockPanel>
                         <diag:AutoGreyableImage Source="{StaticResource completionModeImage}" />

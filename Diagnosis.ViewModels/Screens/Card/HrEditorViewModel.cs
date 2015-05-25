@@ -164,19 +164,6 @@ namespace Diagnosis.ViewModels.Screens
             get { return Autocomplete != null ? Autocomplete.ToggleSuggestionModeCommand : null; }
         }
 
-        public bool AddQueryToSuggestions
-        {
-            get
-            {
-                return Autocomplete != null ? Autocomplete.AddQueryToSuggestions : false;
-            }
-            set
-            {
-                if (Autocomplete != null)
-                    Autocomplete.AddQueryToSuggestions = value;
-            }
-        }
-
         public void Cut()
         {
             Autocomplete.Cut();
@@ -274,17 +261,13 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             var initials = HealthRecord.healthRecord.GetOrderedCHIOs();
-            var recognizer = new SuggestionsMaker(session)
+            var sugMaker = new SuggestionsMaker(session)
             {
                 ShowChildrenFirst = true,
                 AddQueryToSuggestions = doctor.Settings.AddQueryToSuggestions,
             };
-            // update button state
-            OnPropertyChanged(() => AddQueryToSuggestions);
 
-            Autocomplete = new HrEditorAutocomplete(
-                recognizer,
-                initials);
+            Autocomplete = new HrEditorAutocomplete(sugMaker, initials);
 
             Autocomplete.EntitiesChanged += (s, e) =>
             {
