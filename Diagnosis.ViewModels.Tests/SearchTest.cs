@@ -178,67 +178,6 @@ namespace Diagnosis.ViewModels.Tests
 
     public static class QbExtensions
     {
-        public static QueryBlockViewModel AddChild(this QueryBlockViewModel parent, Action<QueryBlockViewModel> onChild)
-        {
-            parent.AddChildQbCommand.Execute(null);
-            var child = parent.Children.Last();
-            onChild(child);
-            return parent;
-        }
-
-        public static QueryBlockViewModel All(this QueryBlockViewModel qb)
-        {
-            qb.GroupOperator = QueryGroupOperator.All;
-            return qb;
-        }
-
-        public static QueryBlockViewModel Any(this QueryBlockViewModel qb)
-        {
-            qb.GroupOperator = QueryGroupOperator.Any;
-            return qb;
-        }
-        public static QueryBlockViewModel NotAny(this QueryBlockViewModel qb)
-        {
-            qb.GroupOperator = QueryGroupOperator.NotAny;
-            return qb;
-        }
-
-        public static QueryBlockViewModel Scope(this QueryBlockViewModel qb, SearchScope scope)
-        {
-            qb.SearchScope = scope;
-            return qb;
-        }
-
-        public static QueryBlockViewModel SetAll(this QueryBlockViewModel qb, params IHrItemObject[] all)
-        {
-            qb.AutocompleteAll.ReplaceTagsWith(all);
-            return qb;
-        }
-
-        public static QueryBlockViewModel SetAny(this QueryBlockViewModel qb, params IHrItemObject[] any)
-        {
-            qb.AutocompleteAny.ReplaceTagsWith(any);
-            return qb;
-        }
-
-        public static QueryBlockViewModel SetNot(this QueryBlockViewModel qb, params IHrItemObject[] not)
-        {
-            qb.AutocompleteNot.ReplaceTagsWith(not);
-            return qb;
-        }
-
-        public static QueryBlockViewModel MinAny(this QueryBlockViewModel qb, int min)
-        {
-            qb.MinAny = min;
-            return qb;
-        }
-
-        public static QueryBlockViewModel Check(this QueryBlockViewModel qb, params HrCategory[] cats)
-        {
-            qb.SelectCategory(cats);
-            return qb;
-        }
-
         public static bool Contains(this SearchViewModel s, params HealthRecord[] hrs)
         {
             return hrs.All(x => (s.Result.Statistic as HrsStatistic).HealthRecords.Contains(x));

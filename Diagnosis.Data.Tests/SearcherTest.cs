@@ -2,14 +2,13 @@
 using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.Tests;
-using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Tests
+namespace Diagnosis.Data.Tests
 {
     [TestClass]
     public class SearcherTest : InMemoryDatabaseTest
@@ -33,104 +32,26 @@ namespace Diagnosis.ViewModels.Tests
         [TestCleanup]
         public void Clean()
         {
-        }
-
-        #region Measure
-
-        [TestMethod]
-        public void MeasureAndWord()
-        {
-            var hrs = o
-                .SetAll(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] }, w[1])
-                .Search(session);
-
-            Assert.AreEqual(hr[22], hrs.Single());
+            Searcher.logOn = false;
         }
 
         [TestMethod]
-        public void MeasureOrWord()
+        public void AllInHr_AllAnySame()
         {
+            // в записи 22 и еще (22 или 1)
             var hrs = o
-                .SetAny(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] }, w[5])
-                .Search(session);
+                  .Scope(SearchScope.HealthRecord)
+                  .All()
+                  .SetAll(w[22])
+                  .SetAny(w[22], w[1])
+                  .Search(session);
 
-            Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[22]));
-            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.AreEqual(3, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+               hr[22],
+               hr[70],
+               hr[72]));
         }
-        [TestMethod]
-        public void AnyMeasureWordsNot()
-        {
-            var hrs = o
-                .SetAny(new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] })
-                .SetNot(w[22])
-                .Search(session);
-
-            Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[20]));
-        }
-        [TestMethod]
-        public void MeasureAndWordOrWords()
-        {
-            var hrs = o
-                .SetAll(new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] }, w[1])
-                .SetAny(w[22], w[94])
-                .Search(session);
-
-            Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[22]));
-            Assert.IsTrue(hrs.Contains(hr[20]));
-        }
-
-        [TestMethod]
-        public void AnyMeasure()
-        {
-            var hrs = o
-                .SetAny(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
-                .Search(session);
-
-            Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[22]));
-        }
-
-        [TestMethod]
-        public void MeasureAndWordWhenSameWord()
-        {
-            var hrs = o
-               .SetAll(w[3], new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
-               .Search(session);
-
-            Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[22]));
-        }
-
-        [TestMethod]
-        public void MinAnyTwoMeasureAndWord()
-        {
-            var hrs = o
-                .SetAny(w[22], new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] })
-                .MinAny(2)
-                .Search(session);
-
-            Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[22]));
-        }
-
-        [TestMethod]
-        public void AllMeasure_AnyMeasure()
-        {
-            var hrs = o
-                .SetAll(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
-                .SetAny(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
-                .Search(session);
-
-            Assert.AreEqual(1, hrs.Count());
-            Assert.IsTrue(hrs.Contains(hr[22]));
-        }
-
-        #endregion Measure
-
-        #region Scope
 
         [TestMethod]
         public void AllInHr()
@@ -1148,214 +1069,11 @@ namespace Diagnosis.ViewModels.Tests
 
         #endregion AllAny_WithSingleChild_SameResults
 
-        #endregion Scope
-
-        #region Conf
-        [TestMethod]
-        public void AllInHr_Conf()
-        {
-            var hrs = o
-           .Scope(SearchScope.HealthRecord)
-           .All()
-           .AddChild(x => x
-               .WithConf()
-               .SetAll(w[22])
-               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
-           .Search(session);
-
-            // нет 22
-            Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSetOf(
-                hr[40],
-                hr[70],
-                hr[72],
-                hr[73],
-                hr[74]));
-        }
-
-        [TestMethod]
-        public void AnyInHr_Conf()
-        {
-            var hrs = o
-           .Scope(SearchScope.HealthRecord)
-           .Any()
-           .AddChild(x => x
-               .WithConf()
-               .SetAll(w[22])
-               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
-           .Search(session);
-
-            // нет 22
-            Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSetOf(
-                hr[40],
-                hr[70],
-                hr[72],
-                hr[73],
-                hr[74]));
-        }
-
-        [TestMethod]
-        public void AllInHr_WithExcluding_Conf()
-        {
-            var hrs = o
-           .Scope(SearchScope.HealthRecord)
-           .All()
-           .AddChild(x => x
-               .SetAll(w[22]))
-           .AddChild(x => x
-               .WithConf()
-               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
-           .Search(session);
-
-            // нет 22
-            Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSetOf(
-                hr[40],
-                hr[70],
-                hr[72],
-                hr[73],
-                hr[74]));
-        }
-
-        [TestMethod]
-        public void AllInHolder_WithExcluding_Conf()
-        {
-            var hrs = o
-           .Scope(SearchScope.Holder)
-           .All()
-           .AddChild(x => x
-               .SetAll(w[22]))
-           .AddChild(x => x
-               .WithConf()
-               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
-           .Search(session);
-
-            // нет 22
-            Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSetOf(
-                hr[40],
-                hr[70],
-                hr[72],
-                hr[73],
-                hr[74]));
-        }
-
-        [TestMethod]
-        public void AllInPatient_WithExcluding_Conf()
-        {
-            var hrs = o
-           .Scope(SearchScope.Patient)
-           .All()
-           .AddChild(x => x
-               .SetAll(w[22]))
-           .AddChild(x => x
-               .WithConf()
-               .SetNot(w[1].AsConfidencable(Confidence.Absent)))
-           .Search(session);
-
-            // из-за 22
-            Assert.AreEqual(2, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSetOf(
-                hr[73],
-                hr[74]));
-        }
-        #endregion
-
         private System.Collections.Generic.IEnumerable<HrCategory> AllCats()
         {
             return cat.Values.Union(HrCategory.Null.ToEnumerable());
         }
     }
 
-    public static class OptExtensions
-    {
-        public static SearchOptions AddChild(this SearchOptions parent, Action<SearchOptions> onChild)
-        {
-            var child = new SearchOptions();
-            parent.Children.Add(child);
-            onChild(child);
-            return parent;
-        }
 
-        public static SearchOptions All(this SearchOptions qb)
-        {
-            qb.GroupOperator = QueryGroupOperator.All;
-            return qb;
-        }
-
-        public static SearchOptions Any(this SearchOptions qb)
-        {
-            qb.GroupOperator = QueryGroupOperator.Any;
-            return qb;
-        }
-
-        public static SearchOptions NotAny(this SearchOptions qb)
-        {
-            qb.GroupOperator = QueryGroupOperator.NotAny;
-            return qb;
-        }
-        public static SearchOptions WithConf(this SearchOptions qb)
-        {
-            qb.WithConf = true;
-            return qb;
-        }
-        public static SearchOptions Scope(this SearchOptions qb, SearchScope scope)
-        {
-            qb.SearchScope = scope;
-            return qb;
-        }
-
-        public static SearchOptions SetAll(this SearchOptions qb, params IDomainObject[] all)
-        {
-            qb.CWordsAll = new List<Confindencable<Word>>(
-                all.OfType<Word>().Select(x => x.AsConfidencable())
-                .Union(all.OfType<Confindencable<Word>>()));
-            qb.MeasuresAll = new List<MeasureOp>(all.OfType<MeasureOp>());
-            return qb;
-        }
-
-        public static SearchOptions SetAny(this SearchOptions qb, params IDomainObject[] any)
-        {
-            qb.CWordsAny = new List<Confindencable<Word>>(
-                any.OfType<Word>().Select(x => x.AsConfidencable())
-                .Union(any.OfType<Confindencable<Word>>()));
-            qb.MeasuresAny = new List<MeasureOp>(any.OfType<MeasureOp>());
-            return qb;
-        }
-
-        public static SearchOptions SetNot(this SearchOptions qb, params IDomainObject[] not)
-        {
-            qb.CWordsNot = new List<Confindencable<Word>>(
-                not.OfType<Word>().Select(x => x.AsConfidencable())
-                .Union(not.OfType<Confindencable<Word>>()));
-            return qb;
-        }
-        public static SearchOptions MinAny(this SearchOptions qb, int min)
-        {
-            qb.MinAny = min;
-            return qb;
-        }
-
-        public static SearchOptions Check(this SearchOptions qb, params HrCategory[] cats)
-        {
-            qb.Categories.AddRange(cats);
-            return qb;
-        }
-
-        public static IEnumerable<HealthRecord> Search(this SearchOptions qb, ISession session)
-        {
-            return Searcher.GetResult(session, qb);
-        }
-
-        public static bool IsSuperSetOf(this IEnumerable<HealthRecord> s, params HealthRecord[] hrs)
-        {
-            return hrs.All(x => s.Contains(x));
-        }
-
-        public static bool NotContains(this IEnumerable<HealthRecord> s, params HealthRecord[] hrs)
-        {
-            return hrs.All(x => !s.Contains(x));
-        }
-    }
 }

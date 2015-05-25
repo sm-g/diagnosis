@@ -85,6 +85,9 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="HrQueryAllInScopeTest.cs" />
+    <Compile Include="HrQueryAllAnyNotTest.cs" />
     <Compile Include="HrQueryTest.cs" />
     <Compile Include="OptionsLoaderTest.cs" />
     <Compile Include="BagTest.cs" />
@@ -92,6 +95,8 @@
     <Compile Include="QueryTest.cs" />
     <Compile Include="RelationHelperTest.cs" />
     <Compile Include="ScopesTest.cs" />
+    <Compile Include="SearcherMeasureTest.cs" />
+    <Compile Include="SearcherConfTest.cs" />
     <Compile Include="SearcherTest.cs" />
     <Compile Include="SyncerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
