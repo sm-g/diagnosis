@@ -206,7 +206,7 @@ namespace Diagnosis.Client.App.DesignData
 
     public class Mocks
     {
-        public static Patient pat = new Patient("Иванов", "Иван", year: 2000);
+        public static Patient pat = new Patient("Иванов", "Иван") { BirthYear = 2000 };
         public static Doctor doc = new Doctor("Ivanov", "Ivan");
         public static Admin admin = new Admin(new Passport(doc));
 

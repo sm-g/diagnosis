@@ -13,7 +13,7 @@ namespace Diagnosis.Models.Tests
         [TestMethod]
         public void TestAge()
         {
-            var p = new Patient(year: 2000, month: 1, day: 5);
+            var p = new Patient() { BirthYear = 2000, BirthMonth = 5, BirthDay = 1 };
             var age = DateTime.Today.Year - p.BirthYear.Value;
             if (new DateTime(p.BirthYear.Value, p.BirthMonth.Value, p.BirthDay.Value) > DateTime.Today.AddYears(-age))
                 age--;

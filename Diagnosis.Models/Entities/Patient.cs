@@ -24,22 +24,11 @@ namespace Diagnosis.Models
         private DateTime _updatedAt;
         private DateTime _createdAt;
 
-        public Patient(string lastName = null,
-            string firstName = null,
-            string middleName = null,
-            int? year = null,
-            int? month = null,
-            int? day = null,
-            bool? isMale = null)
+        public Patient(string lastName = null, string firstName = null)
             : this()
         {
             LastName = lastName;
             FirstName = firstName;
-            MiddleName = middleName;
-            BirthYear = year;
-            BirthMonth = month;
-            BirthDay = day;
-            IsMale = isMale;
         }
 
         protected Patient()

@@ -457,23 +457,23 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void MoveToEnd()
         {
-            //OpenEmptyCard();
+            OpenEmptyCard();
 
-            //l.Sorting = HrViewColumn.Ord;
-            //l.Grouping = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Ord;
+            l.Grouping = HrViewColumn.None;
 
-          //  var hr0 = AddHrToCard(card, "a");
-        //    var hr1 = AddHrToCard(card, "b");
-       //     var hr3 = AddHrToCard(card, "c");
+            var hr0 = AddHrToCard(card, "a");
+            var hr1 = AddHrToCard(card, "b");
+            var hr3 = AddHrToCard(card, "c");
 
-        //    l.SelectHealthRecord(hr0);
+            l.SelectHealthRecord(hr0);
 
-      //      l.MoveHrCommand.Execute(false); //down
-       //     l.MoveHrCommand.Execute(false); //down
+            l.MoveHrCommand.Execute(false); //down
+            l.MoveHrCommand.Execute(false); //down
 
-        //    var lastHr = l.view.Cast<ShortHealthRecordViewModel>().Last().healthRecord;
+            var lastHr = l.view.Cast<ShortHealthRecordViewModel>().Last().healthRecord;
 
-        //    Assert.AreEqual(hr0, lastHr);
+            Assert.AreEqual(hr0, lastHr);
         }
 
         [TestMethod]

@@ -25,7 +25,12 @@ namespace Diagnosis.ViewModels.Tests
 
             s = new SearchViewModel();
         }
-
+        [TestCleanup]
+        public void Clean()
+        {
+            if (s != null)
+                s.Dispose();
+        }
         [TestMethod]
         public void AllWordsFromFoundHrs()
         {
