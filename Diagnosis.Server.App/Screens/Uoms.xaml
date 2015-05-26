@@ -20,7 +20,7 @@
                     Command="{Binding DeleteCommand}" />
     </UserControl.InputBindings>
 
-    <Grid MaxWidth="700">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
