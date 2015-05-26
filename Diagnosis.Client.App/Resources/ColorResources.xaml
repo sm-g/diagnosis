@@ -12,9 +12,9 @@
                      Color="#FFFF8A16" />
     
     <SolidColorBrush x:Key="newWordBrush"
-                     Color="#FFEFFFD8" />
+                     Color="#FFdaffa5" />
     <SolidColorBrush x:Key="forbiddenTagBrush"
-                     Color="#FFFFD8D8" />
+                     Color="#FFffa5a5" />
     <SolidColorBrush x:Key="partialMeasureBrush"
-                     Color="#FFFFFDD8" />
+                     Color="#FFfffaa5" />
 </ResourceDictionary>
