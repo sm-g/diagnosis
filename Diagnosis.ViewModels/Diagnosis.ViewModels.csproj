@@ -379,9 +379,7 @@
     <Compile Include="Screens\Patients\PatientEditorViewModel.cs" />
     <Compile Include="Screens\Shell\MainWindowViewModel.cs" />
     <Compile Include="Screens\Patients\PatientsListViewModel.cs" />
-    <Compile Include="Screens\Shell\AsideViewModel.cs" />
     <Compile Include="Screens\Shell\MenuBarViewModel.cs" />
-    <Compile Include="Screens\Shell\PanelViewModel.cs" />
     <Compile Include="Screens\Shell\ScreenSwitcher.cs" />
     <Compile Include="Screens\Search\SearchViewModel.cs" />
     <Compile Include="Screens\Settings\SettingsViewModel.cs" />
