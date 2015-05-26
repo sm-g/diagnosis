@@ -1,9 +1,11 @@
-﻿<UserControl x:Class="Diagnosis.Common.Presentation.Controls.UndoOverlay"
+﻿<UserControl x:Class="Diagnosis.Common.Presentation.Controls.Overlay"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance diag:OverlayViewModel, IsDesignTimeCreatable=False}"
              MinWidth="200"
              MaxWidth="300">
     <Border Background="{StaticResource overlayBackgroundBrush}"
@@ -19,8 +21,8 @@
             </DockPanel.Resources>
             <TextBlock TextWrapping="Wrap"
                        Margin="0,0,30,0">
-                <Run Text="{Binding Message, Mode=OneWay}" />.
-                <Hyperlink Command="{Binding UndoCommand}">Отменить?</Hyperlink>
+                <Run Text="{Binding Message, Mode=OneWay}" />
+                <Hyperlink Command="{Binding ActionCommand}"><Run Text="{Binding ActionText, Mode=OneWay}" /></Hyperlink>
             </TextBlock>
             <Button Command="{Binding CloseCommand}"
                     CommandParameter="{StaticResource True}"

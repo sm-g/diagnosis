@@ -63,8 +63,8 @@
                 <screen:Criteria />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type diag:UndoOverlayViewModel}">
-                <diag:UndoOverlay />
+            <DataTemplate DataType="{x:Type diag:OverlayViewModel}">
+                <diag:Overlay Margin="0 0 0 3"/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type diag:SearchViewModel}">

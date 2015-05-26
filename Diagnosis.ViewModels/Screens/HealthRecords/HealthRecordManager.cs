@@ -270,7 +270,7 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     // just close without execute OnDo
-                    this.Send(Event.HideOverlay, new object[] { typeof(HealthRecord), true }.AsParams(MessageKeys.Type, MessageKeys.Boolean));
+                    this.Send(Event.HideOverlay, new object[] { typeof(HealthRecord), false }.AsParams(MessageKeys.Type, MessageKeys.Boolean));
 
                     holder.HealthRecordsChanged -= holder_HealthRecordsChanged;
                     foreach (var shortHrVm in inner)

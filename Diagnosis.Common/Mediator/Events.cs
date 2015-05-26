@@ -64,6 +64,7 @@ namespace Diagnosis.Common
         // card logic
         SendToSearch,
         ShowUndoOverlay,
+        ShowMessageOverlay,
         HideOverlay,
         DeleteHolder,
         AddHr,

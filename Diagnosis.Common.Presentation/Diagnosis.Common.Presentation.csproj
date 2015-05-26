@@ -234,8 +234,8 @@
     <Compile Include="Controls\Common\TextBoxInfo.xaml.cs">
       <DependentUpon>TextBoxInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Common\UndoOverlay.xaml.cs">
-      <DependentUpon>UndoOverlay.xaml</DependentUpon>
+    <Compile Include="Controls\Common\Overlay.xaml.cs">
+      <DependentUpon>Overlay.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Common\UniformGridWithOrientation.cs" />
     <Compile Include="Controls\Common\HyperlinkContextMenu.xaml.cs">
@@ -309,7 +309,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\Common\UndoOverlay.xaml">
+    <Page Include="Controls\Common\Overlay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

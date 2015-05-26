@@ -252,12 +252,10 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void DontSaveEditingHr()
         {
-            var OverlayService = new OverlayServiceViewModel();
-
-            // удалили несколько записей
-
             card.Open(a[2]);
             var hrsBefore = a[2].HealthRecords.Count();
+
+            // удалили несколько записей
             card.HrList.SelectHealthRecord(hr[20]);
             card.HrList.DeleteCommand.Execute(null);
 
@@ -267,7 +265,7 @@ namespace Diagnosis.ViewModels.Tests
             hr[21].FromDate.Year = 2010;
 
             // завершили удаление
-            OverlayService.Overlays[0].CloseCommand.Execute(true);
+            a[2].RemoveHealthRecord(hr[20]);
 
             // не сохраненяем открытую запись
             Assert.IsTrue(!hr[20].IsDirty);

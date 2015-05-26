@@ -346,7 +346,7 @@
     <Compile Include="Screens\Shell\OverlayServiceViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\PaneViewModel.cs" />
     <Compile Include="Screens\Shell\AvalonDock\ToolViewModel.cs" />
-    <Compile Include="Screens\Shell\UndoOverlayViewModel.cs" />
+    <Compile Include="Screens\Shell\OverlayViewModel.cs" />
     <Compile Include="Screens\Uoms\UomsListViewModel.cs" />
     <Compile Include="Screens\Uoms\UomViewModel.cs" />
     <Compile Include="Screens\Vocabularies\VocabularyListViewModel.cs" />
