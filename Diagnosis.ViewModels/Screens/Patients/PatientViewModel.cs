@@ -1,17 +1,13 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using EventAggregator;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Windows.Input;
-using FluentValidation.Results;
-using System;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class PatientViewModel : ViewModelBase
+    public class PatientViewModel : CheckableBase
     {
         internal readonly Patient patient;
 
@@ -25,48 +21,28 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #region Model
+
         public string FirstName
         {
-            get
-            {
-                return patient.FirstName ?? "";
-            }
-            set
-            {
-                patient.FirstName = value;
-            }
+            get { return patient.FirstName ?? ""; }
+            set { patient.FirstName = value; }
         }
 
         public string MiddleName
         {
-            get
-            {
-                return patient.MiddleName ?? "";
-            }
-            set
-            {
-                patient.MiddleName = value;
-            }
+            get { return patient.MiddleName ?? ""; }
+            set { patient.MiddleName = value; }
         }
 
         public string LastName
         {
-            get
-            {
-                return patient.LastName ?? "";
-            }
-            set
-            {
-                patient.LastName = value;
-            }
+            get { return patient.LastName ?? ""; }
+            set { patient.LastName = value; }
         }
 
         public string FullName
         {
-            get
-            {
-                return NameFormatter.GetFullName(patient);
-            }
+            get { return NameFormatter.GetFullName(patient); }
             set
             {
                 if (null != value)
@@ -79,12 +55,10 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public string FullNameOrCreatedAt
         {
-            get
-            {
-                return patient.FullNameOrCreatedAt;
-            }
+            get { return patient.FullNameOrCreatedAt; }
         }
 
         public DateTime CreatedAt
@@ -92,93 +66,53 @@ namespace Diagnosis.ViewModels.Screens
             get { return patient.CreatedAt; }
         }
 
-
         public int? Age
         {
-            get
-            {
-                return patient.Age;
-            }
-            set
-            {
-                patient.Age = value;
-            }
+            get { return patient.Age; }
+            set { patient.Age = value; }
         }
 
         public int? BirthYear
         {
-            get
-            {
-                return patient.BirthYear;
-            }
-            set
-            {
-                patient.BirthYear = value;
-            }
+            get { return patient.BirthYear; }
+            set { patient.BirthYear = value; }
         }
 
         public int? BirthMonth
         {
-            get
-            {
-                return patient.BirthMonth;
-            }
-            set
-            {
-                patient.BirthMonth = value;
-            }
+            get { return patient.BirthMonth; }
+            set { patient.BirthMonth = value; }
         }
 
         public int? BirthDay
         {
-            get
-            {
-                return patient.BirthDay;
-            }
-            set
-            {
-                patient.BirthDay = value;
-            }
+            get { return patient.BirthDay; }
+            set { patient.BirthDay = value; }
+        }
+
+        public DateTime LastHrUpdatedAt
+        {
+            get { return patient.LastHrUpdatedAt(); }
         }
 
         public bool IsMale
         {
-            get
-            {
-                return patient.IsMale.HasValue && patient.IsMale.Value;
-            }
-            set
-            {
-                if (value)
-                    patient.IsMale = true;
-            }
+            get { return patient.IsMale.HasValue && patient.IsMale.Value; }
+            set { if (value) patient.IsMale = true; }
         }
 
         public bool IsFemale
         {
-            get
-            {
-                return patient.IsMale.HasValue && !patient.IsMale.Value;
-            }
-            set
-            {
-                if (value)
-                    patient.IsMale = false;
-            }
+            get { return patient.IsMale.HasValue && !patient.IsMale.Value; }
+            set { if (value) patient.IsMale = false; }
         }
+
         public bool UnknownSex
         {
-            get
-            {
-                return patient.IsMale == null;
-            }
-            set
-            {
-                if (value)
-                    patient.IsMale = null;
-            }
+            get { return patient.IsMale == null; }
+            set { if (value) patient.IsMale = null; }
         }
-        #endregion Model related
+        #endregion Model
 
         public RelayCommand EditCommand
         {

@@ -4,10 +4,9 @@ using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
-using NHibernate.Linq;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -18,12 +17,11 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class PatientsListViewModel : ScreenBaseViewModel, IFilterableList, IFocusable
     {
-        private Patient _current;
+        private PatientViewModel _current;
         private bool _noPatients;
-        private EventMessageHandlersManager emhManager;
         private FilterViewModel<Patient> _filter;
         private bool _focused;
-        private ObservableCollection<Patient> _patients;
+        private ObservableCollection<PatientViewModel> _patients;
         private PatientsViewSortingColumn _sorting;
         private ListSortDirection _direction;
         private bool _ageVis;
@@ -32,79 +30,62 @@ namespace Diagnosis.ViewModels.Screens
         private Saver saver;
         private ListCollectionView view;
         private Doctor doctor;
+        private FilterableListHelper<Patient, PatientViewModel> filterHelper;
 
         public PatientsListViewModel()
         {
+            saver = new Saver(Session);
             doctor = AuthorityController.CurrentDoctor;
+            SelectedPatients = new ObservableCollection<PatientViewModel>();
 
             _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
-            saver = new Saver(Session);
-            SelectedPatients = new ObservableCollection<Patient>();
-
             Filter.Filtered += (s, e) =>
             {
-                Patients.SyncWith(Filter.Results);
+                MakeVms(Filter.Results);
             };
 
+            filterHelper = new FilterableListHelper<Patient, PatientViewModel>(this, (v) => v.patient);
+            filterHelper.AddSelectVmWithEntityOn(Event.PatientSaved, MessageKeys.Patient, () => NoPatients = false);
+
+            SetupSorting();
+            SetupColumnsVisibility();
+
             Title = "Пациенты";
-            NoPatients = !Session.Query<Patient>().Any();
-
-            emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Event.PatientSaved, (e) =>
-                {
-                    // выбираем нового пациента или изменившегося с учетом фильтра
-                    Filter.Filter();
-                    var saved = e.GetValue<Patient>(MessageKeys.Patient);
-                    var visible = Patients.Where(x => x == saved).FirstOrDefault();
-                    if (visible != null)
-                        SelectedPatient = saved;
-
-                    NoPatients = false;
-                })
-            });
-
-            PatientsViewSortingColumn sort;
-            if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListSorting, true, out sort))
-                Sorting = sort;
-            else
-                Sorting = PatientsViewSortingColumn.LastHrUpdatedAt;
-
-            ListSortDirection dir;
-            if (Enum.TryParse<ListSortDirection>(doctor.Settings.PatientsListSortingDirection, true, out dir))
-                SortDirection = dir;
-            else
-                SortDirection = ListSortDirection.Descending;
-
-            PatientsViewSortingColumn visCols;
-            if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListVisibleColumns, true, out visCols))
-            {
-                IsAgeColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.Age);
-                IsMaleColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.IsMale);
-                IsLastHrUpdatedAtColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.LastHrUpdatedAt);
-            }
-            else
-            {
-                IsAgeColumnVisible = true;
-                IsMaleColumnVisible = true;
-                IsLastHrUpdatedAtColumnVisible = true;
-            }
-
             Filter.Clear(); // показываем всех
+            NoPatients = !EntityQuery<Patient>.Any(Session)();
             SelectLastPatient();
         }
 
-        public ObservableCollection<Patient> Patients
+        public ObservableCollection<PatientViewModel> Patients
         {
             get
             {
                 if (_patients == null)
                 {
-                    _patients = new ObservableCollection<Patient>();
+                    _patients = new ObservableCollection<PatientViewModel>();
                     view = (ListCollectionView)CollectionViewSource.GetDefaultView(_patients);
                 }
                 return _patients;
             }
         }
+
+        public PatientViewModel SelectedPatient
+        {
+            get
+            {
+                return _current;
+            }
+            set
+            {
+                if (_current != value)
+                {
+                    _current = value;
+                    OnPropertyChanged(() => SelectedPatient);
+                }
+            }
+        }
+
+        public ObservableCollection<PatientViewModel> SelectedPatients { get; private set; }
 
         public FilterViewModel<Patient> Filter { get { return _filter; } }
 
@@ -210,24 +191,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public Patient SelectedPatient
-        {
-            get
-            {
-                return _current;
-            }
-            set
-            {
-                if (_current != value)
-                {
-                    _current = value;
-                    OnPropertyChanged(() => SelectedPatient);
-                }
-            }
-        }
-
-        public ObservableCollection<Patient> SelectedPatients { get; private set; }
-
         public ICommand AddCommand
         {
             get
@@ -248,19 +211,16 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var toDel = SelectedPatients
-                        .Where(p => p.IsEmpty())
+                        .Where(x => x.patient.IsEmpty())
+                        .Select(x => x.patient)
                         .ToArray();
                     saver.Delete(toDel);
 
                     // убираем удаленных из списка
                     Filter.Filter();
 
-                    // оставляем выделение тех, кто не удаляется
-                    //toDel.Where(p => Patients.Contains(p))
-                    //    .ForEach(p => SelectedPatients.Add(p));
-
-                    NoPatients = !Session.Query<Patient>().Any();
-                }, () => SelectedPatients.Any(p => p.IsEmpty()));
+                    NoPatients = !EntityQuery<Patient>.Any(Session)();
+                }, () => SelectedPatients.Any(x => x.patient.IsEmpty()));
             }
         }
 
@@ -270,7 +230,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Event.OpenPatient, SelectedPatient.AsParams(MessageKeys.Patient));
+                            this.Send(Event.OpenPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
                         }, () => SelectedPatient != null);
             }
         }
@@ -281,7 +241,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Event.EditPatient, SelectedPatient.AsParams(MessageKeys.Patient));
+                    this.Send(Event.EditPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
                 }, () => SelectedPatient != null);
             }
         }
@@ -321,12 +281,24 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        IFilter IFilterableList.Filter
+        {
+            get { return Filter; }
+        }
+
+        IEnumerable<CheckableBase> IFilterableList.Items
+        {
+            get { return Patients.Cast<CheckableBase>(); }
+        }
+
         public void SelectLastPatient()
         {
+            var lastOpened = HierViewer<Patient, Course, Appointment, IHrsHolder>.LastOpenedRoot;
+            var vm = Patients.Where(x => x.patient == lastOpened).FirstOrDefault();
+
             if (Patients.Count > 0)
             {
-                SelectedPatient = HierViewer<Patient, Course, Appointment, IHrsHolder>.LastOpenedRoot
-                    ?? (Patient)view.GetItemAt(0);
+                SelectedPatient = vm ?? (PatientViewModel)view.GetItemAt(0);
             }
         }
 
@@ -334,36 +306,76 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                emhManager.Dispose();
                 _filter.Dispose();
+                filterHelper.Dispose();
 
-                if (view.SortDescriptions.Count > 0)
-                {
-                    var sort = view.SortDescriptions.FirstOrDefault();
-                    doctor.Settings.PatientsListSorting = sort.PropertyName;
-                    doctor.Settings.PatientsListSortingDirection = sort.Direction.ToString();
-
-                }
-                else
-                {
-                    // no sort applied
-                    // sort cannot be removed, no need to remove setting
-                }
-                var visCols = PatientsViewSortingColumn.FullNameOrCreatedAt;
-                if (IsAgeColumnVisible) visCols |= PatientsViewSortingColumn.Age;
-                if (IsMaleColumnVisible) visCols |= PatientsViewSortingColumn.IsMale;
-                if (IsLastHrUpdatedAtColumnVisible) visCols |= PatientsViewSortingColumn.LastHrUpdatedAt;
-
-                doctor.Settings.PatientsListVisibleColumns = visCols.ToString();
-
-                new Saver(Session).Save(doctor);
+                SaveDoctorSettings();
             }
             base.Dispose(disposing);
         }
 
-        IFilter IFilterableList.Filter
+        private void MakeVms(IEnumerable<Patient> results)
         {
-            get { return Filter; }
+            var vms = results.Select(w => Patients
+                .Where(vm => vm.patient == w)
+                .FirstOrDefault() ?? new PatientViewModel(w));
+
+            Patients.SyncWith(vms);
+        }
+
+        private void SetupColumnsVisibility()
+        {
+            PatientsViewSortingColumn visCols;
+            if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListVisibleColumns, true, out visCols))
+            {
+                IsAgeColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.Age);
+                IsMaleColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.IsMale);
+                IsLastHrUpdatedAtColumnVisible = visCols.HasFlag(PatientsViewSortingColumn.LastHrUpdatedAt);
+            }
+            else
+            {
+                IsAgeColumnVisible = true;
+                IsMaleColumnVisible = true;
+                IsLastHrUpdatedAtColumnVisible = true;
+            }
+        }
+
+        private void SetupSorting()
+        {
+            PatientsViewSortingColumn sort;
+            if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListSorting, true, out sort))
+                Sorting = sort;
+            else
+                Sorting = PatientsViewSortingColumn.LastHrUpdatedAt;
+
+            ListSortDirection dir;
+            if (Enum.TryParse<ListSortDirection>(doctor.Settings.PatientsListSortingDirection, true, out dir))
+                SortDirection = dir;
+            else
+                SortDirection = ListSortDirection.Descending;
+        }
+
+        private void SaveDoctorSettings()
+        {
+            if (view.SortDescriptions.Count > 0)
+            {
+                var sort = view.SortDescriptions.FirstOrDefault();
+                doctor.Settings.PatientsListSorting = sort.PropertyName;
+                doctor.Settings.PatientsListSortingDirection = sort.Direction.ToString();
+            }
+            else
+            {
+                // no sort applied
+                // sort cannot be removed, no need to remove setting
+            }
+            var visCols = PatientsViewSortingColumn.FullNameOrCreatedAt;
+            if (IsAgeColumnVisible) visCols |= PatientsViewSortingColumn.Age;
+            if (IsMaleColumnVisible) visCols |= PatientsViewSortingColumn.IsMale;
+            if (IsLastHrUpdatedAtColumnVisible) visCols |= PatientsViewSortingColumn.LastHrUpdatedAt;
+
+            doctor.Settings.PatientsListVisibleColumns = visCols.ToString();
+
+            new Saver(Session).Save(doctor);
         }
     }
 }

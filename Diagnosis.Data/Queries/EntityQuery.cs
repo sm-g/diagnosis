@@ -61,5 +61,16 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
+        public static Func<bool> Any(ISession session)
+        {
+            return () =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    return session.Query<T>().Any();
+                }
+            };
+        }
     }
 }

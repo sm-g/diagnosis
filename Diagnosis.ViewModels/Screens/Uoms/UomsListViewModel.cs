@@ -3,14 +3,12 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
-using NHibernate.Linq;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using System.Windows.Input;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -20,40 +18,25 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<UomViewModel> _uoms;
         private bool _noUoms;
         private UomViewModel _current;
-        private EventMessageHandlersManager emhManager;
         private Saver saver;
+        private FilterableListHelper<Uom, UomViewModel> filterHelper;
 
         public UomsListViewModel()
         {
-            _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
             saver = new Saver(Session);
             SelectedUoms = new ObservableCollection<UomViewModel>();
-
+            _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
             Filter.Filtered += (s, e) =>
             {
                 MakeVms(Filter.Results);
             };
-            Filter.Clear(); // показываем все
 
-            emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Event.UomSaved, (e) =>
-                {
-                    // новое или изменившееся с учетом фильтра
-                    Filter.Filter();
-
-                    var saved = e.GetValue<Uom>(MessageKeys.Uom);
-                    
-                    var vm = Uoms.Where(x => x.uom == saved).FirstOrDefault();
-                    if (vm != null)
-                        vm.IsSelected = true;
-
-                    NoUoms = false;
-                }),
-
-            });
+            filterHelper = new FilterableListHelper<Uom, UomViewModel>(this, (v) => v.uom);
+            filterHelper.AddSelectVmWithEntityOn(Event.UomSaved, MessageKeys.Uom, () => NoUoms = false);
 
             Title = "Единицы измерения";
-            NoUoms = !Session.Query<Uom>().Any();
+            Filter.Clear(); // показываем все
+            NoUoms = !EntityQuery<Uom>.Any(Session)();
         }
 
         public FilterViewModel<Uom> Filter
@@ -102,10 +85,13 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     string abbr = "";
                     double factor = 0;
-                    UomType type = EntityQuery<UomType>.FirstOrDefault(Session)();
+                    var type = EntityQuery<UomType>.FirstOrDefault(Session)();
 
-                    var uom = new Uom(abbr, factor, type);
-                    this.Send(Event.EditUom, uom.AsParams(MessageKeys.Uom));
+                    if (type != null)
+                    {
+                        var uom = new Uom(abbr, factor, type);
+                        this.Send(Event.EditUom, uom.AsParams(MessageKeys.Uom));
+                    }
                 });
             }
         }
@@ -126,39 +112,6 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedUom != null);
             }
         }
-
-        //public ICommand EditCommand
-        //{
-        //    get
-        //    {
-        //        return new RelayCommand(() =>
-        //        {
-        //            this.Send(Event.EditWord, SelectedUom.uom.AsParams(MessageKeys.Word));
-        //        }, () => SelectedUom != null);
-        //    }
-        //}
-
-        //public ICommand DeleteCommand
-        //{
-        //    get
-        //    {
-        //        return new RelayCommand(() =>
-        //        {
-        //            var toDel = SelectedUoms
-        //                .Select(w => w.word)
-        //                .Where(w => w.IsEmpty())
-        //                .ToArray();
-
-        //            saver.Delete(toDel);
-
-        //            // убираем удаленных из списка
-        //            Filter.Filter();
-
-        //            NoUoms = !Session.Query<Uom>().Any();
-        //        }, () => SelectedUoms.Any(w => w.word.IsEmpty()));
-        //    }
-        //}
-
 
         /// <summary>
         /// В БД нет единиц.
@@ -192,14 +145,20 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                emhManager.Dispose();
                 _filter.Dispose();
+                filterHelper.Dispose();
             }
             base.Dispose(disposing);
         }
+
         IFilter IFilterableList.Filter
         {
             get { return Filter; }
+        }
+
+        IEnumerable<CheckableBase> IFilterableList.Items
+        {
+            get { return Uoms.Cast<CheckableBase>(); }
         }
     }
 }

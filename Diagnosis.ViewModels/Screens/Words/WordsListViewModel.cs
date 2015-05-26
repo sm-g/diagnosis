@@ -4,9 +4,7 @@ using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
-using NHibernate.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -22,36 +20,30 @@ namespace Diagnosis.ViewModels.Screens
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;
         private WordViewModel _current;
-        private EventMessageHandlersManager emhManager;
         private Saver saver;
-        Doctor doctor;
+        private Doctor doctor;
+        private FilterableListHelper<Word, WordViewModel> filterHelper;
 
         public WordsListViewModel()
         {
-            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             saver = new Saver(Session);
             doctor = AuthorityController.CurrentDoctor;
-
             SelectedWords = new ObservableCollection<WordViewModel>();
 
+            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
                 MakeVms(Filter.Results.Where(x => doctor.Words.Contains(x)));
             };
-            Filter.Clear(); // показываем все
 
-            emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Event.WordSaved, (e) =>
-                {
-                    var saved = e.GetValue<Word>(MessageKeys.Word);
-                    OnWordSaved(saved);
-                }),
-               
-            });
+            filterHelper = new FilterableListHelper<Word, WordViewModel>(this, (v) => v.word);
+            filterHelper.AddSelectVmWithEntityOn(Event.WordSaved, MessageKeys.Word, () => OnPropertyChanged(() => NoWords));
 
             Title = "Словарь";
+            Filter.Clear(); // показываем все
         }
+
         public FilterViewModel<Word> Filter
         {
             get { return _filter; }
@@ -105,18 +97,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        internal Word AddWord(string title)
-        {
-            Contract.Requires(title != null);
-
-            var word = new Word(title);
-            // use created word if possible
-            word = SuggestionsMaker.GetSameWordFromCreated(word) ?? word;
-
-            this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
-            return word;
-        }
-
         public ICommand EditCommand
         {
             get
@@ -160,7 +140,6 @@ namespace Diagnosis.ViewModels.Screens
                     Filter.Filter();
 
                     OnPropertyChanged(() => NoWords);
-
                 }, () => SelectedWords.Any(w => w.word.IsEmpty()));
             }
         }
@@ -184,35 +163,26 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void MakeVms(IEnumerable<Word> results)
+        IFilter IFilterableList.Filter
         {
-            var vms = results.Select(w => Words
-                .Where(vm => vm.word == w)
-                .FirstOrDefault() ?? new WordViewModel(w));
-
-            Words.SyncWith(vms);
+            get { return Filter; }
         }
 
-        protected override void Dispose(bool disposing)
+        IEnumerable<CheckableBase> IFilterableList.Items
         {
-            if (disposing)
-            {
-                emhManager.Dispose();
-                _filter.Dispose();
-            }
-            base.Dispose(disposing);
+            get { return Words.Cast<CheckableBase>(); }
         }
 
-        internal void OnWordSaved(Word saved)
+        internal Word AddWord(string title)
         {
-            // новое слово или изменившееся с учетом фильтра
-            Filter.Filter();
+            Contract.Requires(title != null);
 
-            var vm = Words.Where(w => w.word.Title == saved.Title).FirstOrDefault();
-            if (vm != null)
-                vm.IsSelected = true;
+            var word = new Word(title);
+            // use created word if possible
+            word = SuggestionsMaker.GetSameWordFromCreated(word) ?? word;
 
-            OnPropertyChanged(() => NoWords);
+            this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
+            return word;
         }
 
         internal void SelectWord(Word w)
@@ -221,11 +191,25 @@ namespace Diagnosis.ViewModels.Screens
             SelectedWord = toSelect;
             if (toSelect != null && !SelectedWords.Contains(toSelect))
                 SelectedWords.Add(toSelect);
-
         }
-        IFilter IFilterableList.Filter
+
+        protected override void Dispose(bool disposing)
         {
-            get { return Filter; }
+            if (disposing)
+            {
+                _filter.Dispose();
+                filterHelper.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void MakeVms(IEnumerable<Word> results)
+        {
+            var vms = results.Select(w => Words
+                .Where(vm => vm.word == w)
+                .FirstOrDefault() ?? new WordViewModel(w));
+
+            Words.SyncWith(vms);
         }
     }
 }

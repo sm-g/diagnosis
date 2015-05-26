@@ -280,6 +280,7 @@
     <Compile Include="DataTransfer\HrData.cs" />
     <Compile Include="Screens\AbstractNavigator.cs" />
     <Compile Include="Screens\Card\CardNavigator.cs" />
+    <Compile Include="Screens\FilterableListHelper.cs" />
     <Compile Include="Screens\HierViewer.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
     <Compile Include="Extensions\Extensions.cs" />

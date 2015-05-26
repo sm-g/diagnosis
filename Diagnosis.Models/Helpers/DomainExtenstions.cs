@@ -176,6 +176,22 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
+        /// Дата последнего обновления записей внутри пациента.
+        /// Дата обновления пациента, если запсией нет.
+        /// </summary>
+        public static DateTime LastHrUpdatedAt(this Patient p)
+        {
+            Contract.Requires(p != null);
+
+            if (p.GetAllHrs().Any())
+                return p.GetAllHrs()
+                    .OrderByDescending(x => x.UpdatedAt)
+                    .First().UpdatedAt;
+            else
+                return p.UpdatedAt;
+        }
+
+        /// <summary>
         /// Пациент, к которому относится держатель.
         /// </summary>
         /// <param name="holder"></param>

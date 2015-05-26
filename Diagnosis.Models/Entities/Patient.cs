@@ -206,23 +206,6 @@ namespace Diagnosis.Models
             }
         }
 
-        /// <summary>
-        /// Дата последнего обновления записей внутри пациента.
-        /// Дата обновления пациента, если запсией нет.
-        /// </summary>
-        public virtual DateTime LastHrUpdatedAt
-        {
-            get
-            {
-                if (this.GetAllHrs().Any())
-                    return this.GetAllHrs()
-                        .OrderByDescending(x => x.UpdatedAt)
-                        .First().UpdatedAt;
-                else
-                    return this.UpdatedAt;
-            }
-        }
-
         public virtual HealthRecord AddHealthRecord(Doctor author)
         {
             var hr = new HealthRecord(this, author);

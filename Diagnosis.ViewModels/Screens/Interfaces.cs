@@ -1,6 +1,8 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -8,6 +10,7 @@ namespace Diagnosis.ViewModels.Screens
     internal interface IFilterableList
     {
         IFilter Filter { get; }
+        IEnumerable<CheckableBase> Items { get; }
     }
 
     public interface IKeeper<T>
