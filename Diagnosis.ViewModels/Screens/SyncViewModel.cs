@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
@@ -118,7 +119,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     Mouse.OverrideCursor = Cursors.AppStarting;
 
-                    var installedVocs = Session.Query<Vocabulary>();
+                    var installedVocs = EntityQuery<Vocabulary>.All(Session)();
                     await syncer
                         .WithoutDoctors()
                         .WithInstalledVocs(installedVocs)

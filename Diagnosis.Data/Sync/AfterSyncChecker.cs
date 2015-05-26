@@ -87,7 +87,7 @@ namespace Diagnosis.Data.Sync
         {
             var rh = RHFactory.Create<T>();
 
-            var replacing = GetReplaceEntities(rh, entities);
+            var replacing = GetReplaceEntities(rh, entities.Cast<T>());
             if (replacing.Count > 0)
             {
                 rh.UpdateInChilds(session, replacing);
@@ -102,11 +102,11 @@ namespace Diagnosis.Data.Sync
         /// </summary>
         /// <typeparam name="T">Тип сущности справочника для замены</typeparam>
         /// <param name="entities"></param>
-        private Dictionary<T, T> GetReplaceEntities<T>(RH<T> rh, IList<object> entities)
+        private Dictionary<T, T> GetReplaceEntities<T>(RH<T> rh, IEnumerable<T> entities)
             where T : IEntity
         {
             var toReplace = new Dictionary<T, T>();
-            foreach (var item in entities.Cast<T>())
+            foreach (var item in entities)
             {
                 var existing = session.Query<T>()
                     .Where(x => x.Id != item.Id)

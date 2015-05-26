@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using EventAggregator;
 using log4net;
@@ -43,7 +44,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             };
 
-            var ests = Session.Query<Estimator>().ToList();
+            var ests = EntityQuery<Estimator>.All(Session)();
             ests.ForEach(x =>
                 Navigator.AddRootItemFor(x));
 

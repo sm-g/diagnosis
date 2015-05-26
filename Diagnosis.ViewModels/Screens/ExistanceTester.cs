@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using NHibernate;
@@ -62,10 +63,8 @@ namespace Diagnosis.ViewModels.Screens
         private void TestExisting()
         {
             //vm.HasExistingValue = existing.Any(ex => eqByVal(ex) && !editing.Equals(ex) && extraTest(ex));
-            var existing = session.Query<T>()
-                .Where(expr)
-                .Where(x => x.Id != editing.Id)
-                .ToList();
+            var existing = EntityQuery<T>.WhereAndIdNotIn(session)(expr, editing.Id.ToEnumerable());
+
             vm.HasExistingValue = existing.Any() && existing.Any(ex => extraTest(ex));
         }
 

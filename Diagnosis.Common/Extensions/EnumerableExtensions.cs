@@ -40,7 +40,7 @@ namespace Diagnosis.Common
             return cnt.Values.All(c => c <= 0);
         }
         /// <summary>
-        /// As new Bag<T>(x).DifferenceWith(new Bag<T>(y))
+        /// As <code>new Bag(x).DifferenceWith(new Bag(y))</code>
         /// Leaves items not in y.
         /// </summary>
         public static IEnumerable<T> DifferenceWith<T>(this IEnumerable<T> x, IEnumerable<T> y)
@@ -89,6 +89,12 @@ namespace Diagnosis.Common
             Contract.Requires(collection != null);
 
             return collection.Except(item.ToEnumerable());
+        }
+        public static IEnumerable<T> Union<T>(this IEnumerable<T> collection, T item)
+        {
+            Contract.Requires(collection != null);
+
+            return collection.Union(item.ToEnumerable());
         }
 
         public static T[] Concat<T>(this T[] x, T[] y)

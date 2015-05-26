@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.Data.Queries
 {
-    public class DiagnosisQuery
+    public class IcdQuery
     {
         /// <summary>
         /// Возвращает все диагнозы, у которых заголовок содержит строку или код начинается на строку.

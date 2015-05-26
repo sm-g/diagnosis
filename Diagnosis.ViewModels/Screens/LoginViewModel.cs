@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
@@ -21,13 +22,12 @@ namespace Diagnosis.ViewModels.Screens
 
         public LoginViewModel()
         {
-            var doctors = Session.QueryOver<Doctor>().List()
+            var doctors = EntityQuery<Doctor>.All(Session)()
                 .OrderBy(d => d.FullName)
                 .ToList();
 
-            var adminUser = Session.Query<Passport>().
-                Where(u => u.Id == Admin.DefaultId).FirstOrDefault();
-            var admin = new Admin(adminUser);
+            var adminPassport = PassportQuery.WithId(Session)(Admin.DefaultId);
+            var admin = new Admin(adminPassport);
 
             Passwords = new ConfirmPasswordViewModel();
             Users = new ObservableCollection<IUser>(doctors);
@@ -156,7 +156,7 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public bool LoggedIn { get; set; }
-        
+
         private void AutoLogIn()
         {
             IsRemembered = true;

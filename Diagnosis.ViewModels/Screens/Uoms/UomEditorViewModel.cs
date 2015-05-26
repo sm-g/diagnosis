@@ -11,6 +11,7 @@ using NHibernate.Linq;
 using Diagnosis.Models.Validators;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -27,7 +28,7 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(uom != null);
             this.uom = uom;
 
-            Types = new List<UomType>(Session.QueryOver<UomType>().List());
+            Types = new List<UomType>(EntityQuery<UomType>.All(Session)());
             Formats = new ObservableCollection<UomFormat>(uom.Formats);
 
             (uom as IEditableObject).BeginEdit();

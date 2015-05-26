@@ -289,7 +289,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void CreateDiagnosisSearch()
         {
-            var query = DiagnosisQuery.BlockStartingWith(Session);
+            var query = IcdQuery.BlockStartingWith(Session);
             DiagnosisSearch = new PopupSearchViewModel<IcdBlock>(query);
             DiagnosisSearch.Filter.Filtered += (s, e) =>
             {

@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
@@ -23,7 +24,7 @@ namespace Diagnosis.ViewModels.Screens
 
             saver = new Saver(Session);
 
-            var specs = Session.QueryOver<Speciality>().List();
+            var specs = EntityQuery<Speciality>.All(Session)();
             Specialities.SyncWith(specs);
         }
 

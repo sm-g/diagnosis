@@ -283,6 +283,8 @@
     <Compile Include="NHibernate\EventListeners.cs" />
     <Compile Include="NHibernate\Fixed.cs" />
     <Compile Include="NHibernate\IEntityCrudTracker.cs" />
+    <Compile Include="Queries\EntityQuery.cs" />
+    <Compile Include="Queries\PassportQuery.cs" />
     <Compile Include="Queries\VocabularyQuery.cs" />
     <Compile Include="Queries\CategoryQuery.cs" />
     <Compile Include="Search\AndSearcher.cs" />
@@ -335,7 +337,7 @@
     <Compile Include="NHibernate\Logger.cs" />
     <Compile Include="NHibernate\NHibHelper.cs" />
     <Compile Include="NHibernate\Saver.cs" />
-    <Compile Include="Queries\DiagnosisQuery.cs" />
+    <Compile Include="Queries\IcdQuery.cs" />
     <Compile Include="Queries\PatientQuery.cs" />
     <Compile Include="Queries\HealthRecordQuery.cs" />
     <Compile Include="Queries\UomQuery.cs" />

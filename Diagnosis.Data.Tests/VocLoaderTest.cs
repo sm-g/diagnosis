@@ -70,13 +70,11 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(word.IsEmpty());
 
             var origTitle = word.Title;
-            using (var tr = session.BeginTransaction())
-            {
-                voc[1].RemoveWord(word);
-                word.OnDelete();
-                session.Delete(word);
-                tr.Commit();
-            }
+
+            voc[1].RemoveWord(word);
+            word.OnDelete();
+            new Saver(session).Delete(word);
+
             Assert.IsFalse(GetWordTitles().Contains(origTitle));
             Assert.IsFalse(voc[1].Words.Select(x => x.Title).Contains(origTitle));
 
@@ -112,12 +110,8 @@ namespace Diagnosis.Data.Tests
 
             Assert.IsTrue(word.Vocabularies.Single() == voc[1]);
 
-            using (var tr = session.BeginTransaction())
-            {
-                word.Title = "qwe";
-                session.SaveOrUpdate(word);
-                tr.Commit();
-            }
+            word.Title = "qwe";
+            new Saver(session).Save(word);
             Assert.IsTrue(voc[1].Words.Contains(word));
 
             // заново создается слово по шаблону после обновления
@@ -322,11 +316,8 @@ namespace Diagnosis.Data.Tests
             // при удалении словаря измененные слова не удалены
             voc[1].RemoveWord(word3);
             d1.CustomVocabulary.AddWord(word3);
-            using (var tr = session.BeginTransaction())
-            {
-                session.SaveOrUpdate(word3);
-                tr.Commit();
-            }
+
+            new Saver(session).Save(word3);
 
             // убираем словарь
             l.DeleteVocs(voc[1]);

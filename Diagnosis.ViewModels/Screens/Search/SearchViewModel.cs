@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Search;
@@ -39,7 +40,7 @@ namespace Diagnosis.ViewModels.Screens
             });
             QueryEditor.SendToSearchCommand.IsVisible = false;
 
-            var ests = Session.QueryOver<Estimator>().List();
+            var ests = EntityQuery<Estimator>.All(Session)();
             Estimators = new ObservableCollection<Estimator>(ests);
             SelectedEstimator = ests.FirstOrDefault();
 

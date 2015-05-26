@@ -250,9 +250,7 @@ namespace Diagnosis.ViewModels.Screens
         public void AfterLoad(IEnumerable<Vocabulary> vocsToLoad)
         {
             var ids = vocsToLoad.Select(x => x.Id).ToList();
-            var selectedSynced = Session.Query<Vocabulary>()
-                .Where(v => ids.Contains(v.Id))
-                .ToList();
+            var selectedSynced = VocabularyQuery.ByIds(Session)(ids);
 
             loader.LoadOrUpdateVocs(selectedSynced);
 
@@ -316,7 +314,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private int MakeAvailableVms()
         {
-            var ids = Session.Query<Vocabulary>().Select(y => y.Id).ToList();
+            var ids = EntityQuery<Vocabulary>.All(Session)().Select(y => y.Id).ToList();
             var notInstalled = serverNonCustomVocs
                 .Where(x => !ids.Contains(x.Id));
 

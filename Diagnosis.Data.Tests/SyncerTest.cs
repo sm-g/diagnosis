@@ -100,12 +100,10 @@ namespace Diagnosis.Data.Tests
             await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder);
 
             // новый пациент на клиенте
-            using (var tr = clSession.BeginTransaction())
-            {
-                var p = new Patient("x");
-                clSession.Save(p);
-                tr.Commit();
-            }
+            var p = new Patient("x");
+            new Saver(session).Save(p);
+
+
             s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
             await s.WithoutCustomVocsInDoc().SendFrom(Side.Client, Scope.Holder);
 

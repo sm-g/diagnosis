@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
@@ -124,7 +125,7 @@ namespace Diagnosis.ViewModels.Screens
         }
         private void MakeVms()
         {
-            var vocs = Session.QueryOver<Vocabulary>().List();
+            var vocs = EntityQuery<Vocabulary>.All(Session)();
 
             var vms = vocs.Select(v => Vocs
                 .Where(vm => vm.voc == v)

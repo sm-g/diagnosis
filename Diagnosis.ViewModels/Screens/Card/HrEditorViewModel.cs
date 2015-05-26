@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
@@ -79,10 +80,10 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_categories == null && session != null)
                 {
-                    var cats = new List<HrCategory>(session.Query<HrCategory>().ToList());
-                    cats.Add(HrCategory.Null);
-                    _categories = new List<HrCategory>(cats
-                        .OrderBy(cat => cat.Ord).ToList());
+                    _categories = EntityQuery<HrCategory>.All(session)()
+                        .Union(HrCategory.Null)
+                        .OrderBy(cat => cat.Ord)
+                        .ToList();
                 }
                 return _categories;
             }

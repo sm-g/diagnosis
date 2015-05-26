@@ -101,17 +101,13 @@ namespace Diagnosis.Data.Sync
         {
             Contract.Requires(mustBeDeletedIdsPerType != null);
 
-            var vocs = session.Query<Vocabulary>().ToList();
-
             IEnumerable<object> ids;
-            mustBeDeletedIdsPerType.TryGetValue(typeof(Vocabulary), out ids);
-
-            if (ids != null)
+            if (mustBeDeletedIdsPerType.TryGetValue(typeof(Vocabulary), out ids))
             {
-                var vocsToDel = vocs.Where(x => ids.Contains(x.Id)).ToList();
+                var vocsToDel = VocabularyQuery.ByIds(session)(ids.Cast<Guid>());
                 DeleteVocs(vocsToDel);
             }
-            vocs = session.Query<Vocabulary>().ToList();
+            var vocs = EntityQuery<Vocabulary>.All(session)();
             LoadOrUpdateVocs(vocs);
         }
 

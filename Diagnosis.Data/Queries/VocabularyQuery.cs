@@ -19,13 +19,26 @@ namespace Diagnosis.Data.Queries
             {
                 using (var tr = session.BeginTransaction())
                 {
-                    var voc = session.Query<Vocabulary>()
+                    return session.Query<Vocabulary>()
                         .ToList()
                         .Where(x => !x.IsCustom)
                         .OrderBy(x => x.Title)
                         .ToList();
-
-                    return voc;
+                }
+            };
+        }
+        /// <summary>
+        /// Возвращает словари c указанными Id.
+        /// </summary>
+        public static Func<IEnumerable<Guid>, IEnumerable<Vocabulary>> ByIds(ISession session)
+        {
+            return (ids) =>
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    return session.Query<Vocabulary>()
+                        .Where(v => ids.Contains(v.Id))
+                        .ToList();
                 }
             };
         }

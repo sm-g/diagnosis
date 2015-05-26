@@ -70,7 +70,7 @@ namespace Diagnosis.Data.Tests
         public void DiagnosisQueryStartingWithUpperCase()
         {
             var p1 = session.Load<IcdDisease>(1);
-            var res = DiagnosisQuery.StartingWith(session)(p1.Title.Substring(0, 5).ToUpper());
+            var res = IcdQuery.StartingWith(session)(p1.Title.Substring(0, 5).ToUpper());
             Assert.IsTrue(res.Contains(p1));
         }
 
@@ -78,7 +78,7 @@ namespace Diagnosis.Data.Tests
         public void DiagnosisQueryBlockStartingWithUpperCase()
         {
             var p1 = session.Load<IcdBlock>(91);
-            var res = DiagnosisQuery.BlockStartingWith(session)(p1.Title.Substring(0, 5).ToUpper());
+            var res = IcdQuery.BlockStartingWith(session)(p1.Title.Substring(0, 5).ToUpper());
             Assert.IsTrue(res.Contains(p1));
         }
 

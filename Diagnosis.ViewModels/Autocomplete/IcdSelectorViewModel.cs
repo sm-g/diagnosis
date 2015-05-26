@@ -267,7 +267,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CreateDiagnosisSearch()
         {
             DiagnosisSearch = new PopupSearchViewModel<IcdDisease>(
-                DiagnosisQuery.StartingWith(Session)
+                IcdQuery.StartingWith(Session)
                 );
             DiagnosisSearch.Filter.AutoFilterMinQueryLength = MinQueryToExpandBlock;
             DiagnosisSearch.Filter.Cleared += (s, e) =>

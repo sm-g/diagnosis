@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Util;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
@@ -143,20 +144,12 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (_categories == null && session != null)
                 {
-                    var cats = new List<HrCategory>() { HrCategory.Null };
-
-                    try
-                    {
-                        cats.AddRange(session.QueryOver<HrCategory>().List());
-                    }
-                    catch
-                    {
-                    }
-
-                    _categories = cats
+                    _categories = _categories = EntityQuery<HrCategory>.All(session)()
+                        .Union(HrCategory.Null)
                         .OrderBy(cat => cat.Ord)
                         .Select(cat => new HrCategoryViewModel(cat))
                         .ToList();
+
                     _categories.ForAll(cat => cat.CheckedChanged += (s, e) =>
                     {
                         OnPropertyChanged(() => SelectedCategories);

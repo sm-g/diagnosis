@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using log4net;
 using NHibernate.Linq;
@@ -24,7 +25,7 @@ namespace Diagnosis.ViewModels.Screens
             this.doctor = doctor;
 
             _specialities = new List<Speciality> { Speciality.Null };
-            _specialities.AddRange(Session.Query<Speciality>()
+            _specialities.AddRange(EntityQuery<Speciality>.All(Session)()
                 .OrderBy(s => s.Title));
 
             Doctor = new DoctorViewModel(doctor);

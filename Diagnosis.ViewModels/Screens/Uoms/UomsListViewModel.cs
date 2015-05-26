@@ -102,7 +102,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     string abbr = "";
                     double factor = 0;
-                    UomType type = Session.QueryOver<UomType>().List().FirstOrDefault();
+                    UomType type = EntityQuery<UomType>.FirstOrDefault(Session)();
 
                     var uom = new Uom(abbr, factor, type);
                     this.Send(Event.EditUom, uom.AsParams(MessageKeys.Uom));
