@@ -76,7 +76,8 @@ namespace Diagnosis.Data.Search
             // все измерения - просто фильтр
             if (options.MeasuresAll.Any())
             {
-                // одно измерение повторно используется для сравнения
+                // для каждого измерения опций в записи находится подходящее
+                // одно измерение повторно используется для сравнения. t>2 и t>0 - достаточно t>2 в записи
                 hrs = hrs.Where(x =>
                    options.MeasuresAll.All(op => x.Measures.Any(m => op.ResultFor(m))));
             }

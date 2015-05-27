@@ -277,6 +277,22 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Contains(hr[32]));
         }
 
+        [TestMethod]
+        public void WithAnyChio_MinAny2_AsWithAll()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(
+            Enumerable.Empty<Confindencable<Word>>(),
+            new Confindencable<Word>[] {
+                w[31].AsConfidencable()
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            2);
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
+        }
+
         #endregion Confidence
     }
 }

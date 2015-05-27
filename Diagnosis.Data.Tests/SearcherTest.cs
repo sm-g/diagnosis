@@ -3,9 +3,7 @@ using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NHibernate;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Diagnosis.Data.Tests
@@ -36,9 +34,30 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void AllInHr_AllAnySame()
+        public void AllInHr_AllAnySame_Case1()
         {
-            // в записи 22 и еще (22 или 1)
+            // к записи подходит: 22 и (22 или 1) = (22 или 1)
+            var hrs = o
+                  .Scope(SearchScope.HealthRecord)
+                  .All()
+                  .SetAll(w[22])
+                  .SetAny(w[22], w[1])
+                  .Search(session);
+
+            Assert.AreEqual(5, hrs.Count());
+            Assert.IsTrue(hrs.IsSuperSetOf(
+               hr[22],
+               hr[70],
+               hr[73],
+               hr[74],
+               hr[72]));
+        }
+
+        [ExpectedException(typeof(AssertFailedException))]
+        [TestMethod]
+        public void AllInHr_AllAnySame_Case2()
+        {
+            // в записи 22 и еще есть (22 или 1)
             var hrs = o
                   .Scope(SearchScope.HealthRecord)
                   .All()
@@ -1074,6 +1093,4 @@ namespace Diagnosis.Data.Tests
             return cat.Values.Union(HrCategory.Null.ToEnumerable());
         }
     }
-
-
 }

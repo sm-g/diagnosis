@@ -92,18 +92,21 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void MeasureAndWord_SameWord()
+        public void MeasureAndWord_SameWord_UseOne()
         {
+            // все элементы подошли к записи - достаточно одного измерения
             var hrs = o
                .SetAll(w[3], new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
                .Search(session);
 
-            Assert.AreEqual(0, hrs.Count());
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
         }
 
         [TestMethod]
         public void MinAnyTwoMeasureAndWord()
         {
+            // хотя бы 2 = все
             var hrs = o
                 .SetAny(w[22], new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] })
                 .MinAny(2)
@@ -112,10 +115,25 @@ namespace Diagnosis.Data.Tests
             Assert.AreEqual(1, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[22]));
         }
+        [TestMethod]
+        public void MinAnyTwo_SameMeasuresAndWord_UseOne()
+        {
+            // хотя бы 2 (22, 3>0.05, 3>0.06)
+            var hrs = o
+                .SetAny(w[22],
+                    new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] },
+                    new MeasureOp(MeasureOperator.GreaterOrEqual, 0.06, uom[1]) { Word = w[3] })
+                .MinAny(2)
+                .Search(session);
 
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+        }
         [TestMethod]
         public void AllMeasure_AnyMeasure_Same_UseOne()
         {
+            // к записи подошли все элементы и хотя бы 1 из элементов. a & a = a
             var hrs = o
                 .SetAll(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
                 .SetAny(new MeasureOp(MeasureOperator.Equal, 0.05, uom[1]) { Word = w[3] })
@@ -128,6 +146,7 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void AllMeasures_SameWord_UseOne()
         {
+            // все элементы подошли к записи, достаточно одного измерения
             var hrs = o
                .SetAll(
                    new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] },
@@ -137,7 +156,20 @@ namespace Diagnosis.Data.Tests
             Assert.AreEqual(1, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[20]));
         }
+        [TestMethod]
+        public void MinAnyTwo_SameMeasures_UseOne()
+        {
+            // все элементы подошли к записи, достаточно одного измерения
+            var hrs = o
+                .SetAny(
+                    new MeasureOp(MeasureOperator.GreaterOrEqual, 0.05, uom[1]) { Word = w[3] },
+                    new MeasureOp(MeasureOperator.GreaterOrEqual, 0.06, uom[1]) { Word = w[3] })
+                .MinAny(2)
+                .Search(session);
 
+            Assert.AreEqual(1, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+        }
         [TestMethod]
         public void AnyTwoMeasures_SameWord_NotOverlap()
         {
@@ -149,7 +181,6 @@ namespace Diagnosis.Data.Tests
                .Search(session);
 
             Assert.AreEqual(0, hrs.Count());
-            //Assert.IsTrue(hrs.Contains(hr[20]));
         }
 
         [TestMethod]
@@ -162,7 +193,6 @@ namespace Diagnosis.Data.Tests
                .Search(session);
 
             Assert.AreEqual(0, hrs.Count());
-            // Assert.IsTrue(hrs.Contains(hr[20]));
         }
     }
 }
