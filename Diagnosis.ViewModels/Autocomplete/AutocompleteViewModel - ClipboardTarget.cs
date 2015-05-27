@@ -77,7 +77,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             var index = Tags.IndexOf(SelectedTag);
             SelectedTags.ForEach(t => t.IsSelected = false);
 
-            sugMaker.SyncAfterPaste(data.ItemObjects);
+            data.ItemObjects.SyncAfterPaste(sugMaker.Session);
 
             foreach (var item in data.ItemObjects)
             {

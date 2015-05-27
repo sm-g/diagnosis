@@ -117,6 +117,8 @@ namespace Diagnosis.Models
         [Pure]
         public static Estimator GetEstimator(this ICrit crit)
         {
+            Contract.Requires(crit != null);
+
             if (crit is Estimator)
                 return crit as Estimator;
             if (crit is CriteriaGroup)
@@ -135,13 +137,14 @@ namespace Diagnosis.Models
         [Pure]
         public static IEnumerable<HealthRecord> GetAllHrs(this IHrsHolder holder)
         {
+            Contract.Requires(holder != null);
+
             if (holder is Patient)
                 return (holder as Patient).GetAllHrs();
             if (holder is Course)
                 return (holder as Course).GetAllHrs();
             if (holder is Appointment)
                 return (holder as Appointment).HealthRecords;
-
 
             throw new NotImplementedException();
         }
@@ -168,7 +171,7 @@ namespace Diagnosis.Models
         /// Удаляет пустые записи держателя.
         /// </summary>
         /// <param name="holder"></param>
-        public static void DeleteEmptyHrs(this IHrsHolder holder)
+        public static void RemoveEmptyHrs(this IHrsHolder holder)
         {
             Contract.Requires(holder != null);
             var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();

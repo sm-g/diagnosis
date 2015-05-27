@@ -98,6 +98,8 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// </summary>
         public bool AddNotPersistedToSuggestions { get; set; }
 
+        internal ISession Session { get { return session; } }
+
         public static Word GetSameWordFromCreated(Word word)
         {
             Contract.Requires(word != null);
@@ -165,12 +167,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 }
             }
         }
-
-        public void SyncAfterPaste(IList<ConfWithHio> hios)
-        {
-            hios.SyncAfterPaste(session);
-        }
-
         /// <summary>
         /// Первое точно подходящее слово из БД или новое.
         /// </summary>
