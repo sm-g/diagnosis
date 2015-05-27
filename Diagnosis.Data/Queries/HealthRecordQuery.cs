@@ -39,6 +39,9 @@ namespace Diagnosis.Data.Queries
             return (words, mincount) =>
             {
                 Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
+                mincount = Math.Min(mincount, words.Count()); // хотя бы 2 слова из одного - подходят записи, где это единственное слово
+
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
@@ -64,6 +67,8 @@ namespace Diagnosis.Data.Queries
 
                     return hrQ.ToList();
 
+#pragma warning disable 0162 // unreachable
+
                     var hrs = from hr in session.Query<HealthRecord>()
                               let hris = from hri in session.Query<HrItem>()
                                          where hr.Id == hri.HealthRecord.Id
@@ -74,6 +79,7 @@ namespace Diagnosis.Data.Queries
                               where hris.Count() >= mincount
                               select hr;
                     return hrs.Distinct().ToList();
+#pragma warning restore 0162
                 }
             };
         }
@@ -111,6 +117,9 @@ namespace Diagnosis.Data.Queries
             return (cwords, mincount) =>
             {
                 Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
+                mincount = Math.Min(mincount, cwords.Count());
+
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = cwords.Select(w => w.HIO.Id).ToList();
@@ -263,12 +272,13 @@ namespace Diagnosis.Data.Queries
             {
                 throw new NotImplementedException();
 
+#pragma warning disable 0162 // unreachable
+
                 using (var tr = session.BeginTransaction())
                 {
                     var wordsIds = words.Select(w => w.Id).ToList();
                     var hrsw = (from hr in session.Query<HealthRecord>()
                                 join hri in session.Query<HrItem>() on hr.Id equals hri.HealthRecord.Id
-                                //  where hri.Word != null
                                 join w in session.Query<Word>() on hri.Word.Id equals w.Id
                                 group w.Id by hr).ToList();
                     var hrs = from p in hrsw
@@ -282,6 +292,7 @@ namespace Diagnosis.Data.Queries
                     //          select hr;
                     return hrs.Distinct().ToList();
                 }
+#pragma warning restore 0162
             };
         }
 

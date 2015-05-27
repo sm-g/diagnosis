@@ -91,7 +91,7 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void WithAnyAtLeastTwoSameWords()
         {
-            var hrs = HealthRecordQuery.WithAnyWords(session)(new Word[] { w[22] }, 2);
+            var hrs = HealthRecordQuery.WithAnyWords(session)(new Word[] { w[22], w[22] }, 2);
 
             Assert.AreEqual(1, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[70])); // одно слово дважды
