@@ -15,9 +15,10 @@ namespace Diagnosis.ViewModels.Search
 {
     public class QueryEditorViewModel : ViewModelBase
     {
-        private ISession Session;
+        private ISession session;
         private Action onQbEnter;
         private VisibleRelayCommand _send;
+        private EventAggregator.EventMessageHandler handler;
         public QueryEditorViewModel()
         {
             var hist = new History<SearchOptions>();
@@ -42,12 +43,19 @@ namespace Diagnosis.ViewModels.Search
         {
             Contract.Requires(session != null);
 
-            this.Session = session;
+            this.session = session;
             this.onQbEnter = onQbEnter ?? (Action)(() => { });
 
-            var loader = new JsonOptionsLoader(Session);
+            var loader = new JsonOptionsLoader(session);
             Loader = new OptionsLoaderViewModel(this, loader);
 
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                if (this.session.SessionFactory == s.SessionFactory)
+                    this.session = s;
+
+            });
 
             SetRootOptions();
         }
@@ -102,7 +110,7 @@ namespace Diagnosis.ViewModels.Search
 
             QueryBlocks.Clear();
 
-            var qb = new QueryBlockViewModel(Session, onQbEnter, options);
+            var qb = new QueryBlockViewModel(session, onQbEnter, options);
             qb.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "AllEmpty")
@@ -121,6 +129,7 @@ namespace Diagnosis.ViewModels.Search
             {
                 if (disposing)
                 {
+                    handler.Dispose();
                     QueryBlocks.Clear();
                 }
 

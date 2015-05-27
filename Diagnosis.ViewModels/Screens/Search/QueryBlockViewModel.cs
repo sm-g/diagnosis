@@ -33,6 +33,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inFilling;
         private bool _withConf;
         private ReentrantFlag inMakingOptions = new ReentrantFlag();
+        private EventMessageHandler handler;
 
         /// <summary>
         ///
@@ -72,6 +73,13 @@ namespace Diagnosis.ViewModels.Screens
                         break;
                 }
             };
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                if (this.session.SessionFactory == s.SessionFactory)
+                    this.session = s;
+
+            });
 
             if (options != null)
             {
@@ -457,6 +465,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
+                handler.Dispose();
+
                 Children.CollectionChanged -= Children_CollectionChanged;
 
                 AutocompleteAll.InputEnded -= Autocomplete_InputEnded;

@@ -37,6 +37,7 @@ namespace Diagnosis.Common
 
         public static string Name = "name";
         public static string Value = "value";
+        public static string Session = "session";
     }
 
     public enum Event
@@ -64,8 +65,6 @@ namespace Diagnosis.Common
         // card logic
         SendToSearch,
         ShowUndoOverlay,
-        ShowMessageOverlay,
-        HideOverlay,
         DeleteHolder,
         AddHr,
 
@@ -87,8 +86,11 @@ namespace Diagnosis.Common
         ShowHelp,
 
         // app
+        ShowMessageOverlay,
+        HideOverlay,
         PushToSettings,
         Shutdown,
+        NewSession,
     }
 
     public static class EventAggragatorExtensions

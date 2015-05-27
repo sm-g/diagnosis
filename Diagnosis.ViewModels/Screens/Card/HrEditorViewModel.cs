@@ -32,6 +32,13 @@ namespace Diagnosis.ViewModels.Screens
             this.session = session;
 
             doctor = AuthorityController.CurrentDoctor;
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                if (this.session.SessionFactory == s.SessionFactory)
+                    this.session = s;
+
+            });
         }
 
         [Obsolete("For xaml only.")]
@@ -53,6 +60,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Редактор закрывается по команде. Запись может быть null.
         /// </summary>
         public event EventHandler<HealthRecordEventArgs> Closing;
+        private EventMessageHandler handler;
 
         #region HealthRecord
 
@@ -380,6 +388,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
+                    handler.Dispose();
+
                     Unload();
                     if (_autocomplete != null)
                         _autocomplete.Dispose();

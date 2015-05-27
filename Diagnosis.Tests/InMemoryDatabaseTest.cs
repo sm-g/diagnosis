@@ -7,12 +7,14 @@ using System;
 using System.Linq;
 using NHibernate.Linq;
 using System.Collections.Generic;
+using NHibernate;
 
 namespace Diagnosis.Tests
 {
     [TestClass]
     public abstract class InMemoryDatabaseTest : DbTest
     {
+        private EventAggregator.EventMessageHandler handler;
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
@@ -23,12 +25,22 @@ namespace Diagnosis.Tests
             Constants.IsClient = true;
 
             session = NHibernateHelper.Default.OpenSession();
+
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                if (session.SessionFactory == s.SessionFactory)
+                {
+                    session = s;
+                }
+            });
         }
 
         [TestCleanup]
         public void InMemoryDatabaseTestCleanup()
         {
             session.Dispose();
+            handler.Dispose();
         }
 
         protected Word CreateWordAsInEditor(string title)
