@@ -9,8 +9,7 @@ namespace Diagnosis.ViewModels.Tests
     [TestClass]
     public class TagTest : ViewModelTest
     {
-        private TagViewModel t;
-        private AutocompleteViewModel a;
+        private new AutocompleteViewModel a;
 
         [TestInitialize]
         public void AutocompleteTestInit()
