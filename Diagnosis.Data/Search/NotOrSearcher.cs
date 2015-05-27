@@ -20,7 +20,7 @@ namespace Diagnosis.Data.Search
         protected override IEnumerable<HealthRecord> GetResultForGroup(SearchOptions qb)
         {
             var or = base.GetResultForGroup(qb);
-            var allHrs = allHrsCache ?? (allHrsCache = HealthRecordQuery.All(session)()); // минимизировать блоки Nor/выбор всех записей
+            var allHrs = allHrsCache ?? (allHrsCache = EntityQuery<HealthRecord>.All(session)()); // минимизировать блоки Nor/выбор всех записей
             switch (qb.SearchScope)
             {
                 case SearchScope.HealthRecord:

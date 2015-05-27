@@ -12,21 +12,6 @@ namespace Diagnosis.Data.Queries
     public static class HealthRecordQuery
     {
         /// <summary>
-        /// Возвращает все записи.
-        /// </summary>
-        public static Func<IEnumerable<HealthRecord>> All(ISession session)
-        {
-            return () =>
-            {
-                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
-                using (var tr = session.BeginTransaction())
-                {
-                    return session.Query<HealthRecord>().ToList();
-                }
-            };
-        }
-
-        /// <summary>
         /// Возвращает записи с любым из слов.
         /// </summary>
         public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithAnyWord(ISession session)

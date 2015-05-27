@@ -23,6 +23,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         public static Func<T> FirstOrDefault(ISession session)
         {
             return () =>
@@ -34,6 +35,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         public static Func<Expression<Func<T, bool>>, IEnumerable<T>> Where(ISession session)
         {
             return (expr) =>
@@ -47,6 +49,7 @@ namespace Diagnosis.Data.Queries
                 }
             };
         }
+
         public static Func<Expression<Func<T, bool>>, IEnumerable<object>, IEnumerable<T>> WhereAndIdNotIn(ISession session)
         {
             return (expr, ids) =>

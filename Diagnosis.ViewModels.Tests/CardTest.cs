@@ -218,7 +218,7 @@ namespace Diagnosis.ViewModels.Tests
         #region Saving
 
         [TestMethod]
-        public void DeleteEmptyAppCoursePatient()
+        public void DeleteEmptyAppCoursePatient_NavigateUpper()
         {
             card.Open(a[5]);
             IHrsHolder holder = null;
@@ -305,6 +305,26 @@ namespace Diagnosis.ViewModels.Tests
 
             AddTwoCommentsAndDelete(card, p[3]);
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
+        }
+
+        [TestMethod]
+        public void CloseHrList_DeleteEmptyHrs()
+        {
+            card.Open(a[5]);
+
+            // запись и пусиая запись
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            var hr = a[5].HealthRecords.Last();
+            hr.AddItems(new Comment("1").ToEnumerable());
+            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.HrEditor.CloseCommand.Execute(null);
+
+            Assert.AreEqual(2, a[5].HealthRecords.Count());
+
+            card.Open(a[5].Course);
+
+            Assert.AreEqual(1, a[5].HealthRecords.Count());
+            Assert.IsTrue(a[5].HealthRecords.Contains(hr));
         }
 
         [TestMethod]

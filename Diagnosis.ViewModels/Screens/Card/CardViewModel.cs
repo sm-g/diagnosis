@@ -16,11 +16,10 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
         private static HierViewer<Patient, Course, Appointment, IHrsHolder> viewer; // static to hold history
-        private HrListViewModel _hrList;
-        private HeaderViewModel _header;
         private readonly HrEditorViewModel _hrEditor;
         private readonly CardNavigator _navigator;
-
+        private HrListViewModel _hrList;
+        private HeaderViewModel _header;
         private bool editorWasOpened;
         private Saver saver;
         private EventMessageHandlersManager handlers;
@@ -92,6 +91,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             );
         }
+
         /// <summary>
         /// Создает карту и тут же вызывает Open(entity).
         /// </summary>
@@ -282,12 +282,12 @@ namespace Diagnosis.ViewModels.Screens
 
         private void OnDeleteHolder(IHrsHolder holder)
         {
-            // убрать из результатов поиска (или проверять при открытии, удален ли)
+            // TODO убрать из результатов поиска (или проверять при открытии, удален ли)
             viewer.RemoveFromHistory(holder);
 
             if (holder is Patient)
             {
-                saver.SaveWithCleanup(viewer.OpenedRoot);
+                SaveWithCleanup(viewer.OpenedRoot);
 
                 Navigator.RemoveRoot(holder as Patient);
                 saver.Delete(holder);
@@ -299,89 +299,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 var course = holder as Course;
                 course.Patient.RemoveCourse(course);
-                saver.SaveWithCleanup(viewer.OpenedRoot); // сохраняем на случай, если удаление при открытом пациенте — список записей не меняется
+                SaveWithCleanup(viewer.OpenedRoot); // если удаление при открытом пациенте — список записей не меняется
             }
             else if (holder is Appointment)
             {
                 var app = holder as Appointment;
                 app.Course.RemoveAppointment(app);
-                saver.SaveWithCleanup(viewer.OpenedRoot);
+                SaveWithCleanup(viewer.OpenedRoot);
             }
-        }
-
-        protected virtual void OnLastItemRemoved()
-        {
-            var h = LastItemRemoved;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                {
-                    HrEditor.Dispose();
-
-                    CloseHeader();
-                    CloseHrList();
-
-                    viewer.CloseAll();
-
-                    Navigator.Dispose();
-
-                    handlers.Dispose();
-
-                    saver.Save(doctor);
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
-        }
-
-        /// <summary>
-        /// Сохраняет записи в списке, все или переданные.
-        /// </summary>
-        private void SaveHealthRecords(object s, ListEventArgs<HealthRecord> e)
-        {
-            logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
-
-            if (e.list == null)
-            {
-                SaveAllHrs();
-            }
-            else
-            {
-                // вставка/дроп тегов в записи
-                // изменение видимости (IsDeleted)
-
-                saver.Save(e.list.ToArray());
-                if (!HrEditor.HasHealthRecord)
-                {
-                    HrList.IsFocused = true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Cохраняем все записи кроме открытой в редакторе
-        /// </summary>
-        internal void SaveAllHrs()
-        {
-            // новые записи — вставка/дроп записей/тегов на список
-            // смена порядка — дроп записей
-
-            Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
-
-            saver.Save(HrList.HealthRecords
-                .Select(vm => vm.healthRecord)
-                .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
-                .ToArray());
         }
 
         /// <summary>
@@ -455,8 +380,72 @@ namespace Diagnosis.ViewModels.Screens
 
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
 
-            // сохраняем пациента и чистим записи при закрытии чего-либо (ранее в viewer.OpenedCanged мог быть переход вверх без закрытия - не сохраняет)
-            saver.SaveWithCleanup(viewer.OpenedRoot);
+            // сохраняем пациента и чистим записи при закрытии списка
+            SaveWithCleanup(viewer.OpenedRoot);
+        }
+
+        /// <summary>
+        /// Сохраняет записи в списке, все или переданные.
+        /// </summary>
+        private void SaveHealthRecords(object s, ListEventArgs<HealthRecord> e)
+        {
+            logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
+
+            if (e.list == null)
+            {
+                SaveAllHrs();
+            }
+            else
+            {
+                // вставка/дроп тегов в записи
+                // изменение видимости (IsDeleted)
+
+                saver.Save(e.list.ToArray());
+                if (!HrEditor.HasHealthRecord)
+                {
+                    HrList.IsFocused = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cохраняем все записи кроме открытой в редакторе
+        /// </summary>
+        internal void SaveAllHrs()
+        {
+            // новые записи — вставка/дроп записей/тегов на список
+            // смена порядка — дроп записей
+
+            Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
+
+            saver.Save(HrList.HealthRecords
+                .Select(vm => vm.healthRecord)
+                .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                .ToArray());
+        }
+
+        /// <summary>
+        /// Сохраняет пациента, его курсы, осмотры и все записи.
+        /// <param name="deleteEmptyHrs">Удалить все пустые записи.</param>
+        /// </summary>
+        private void SaveWithCleanup(Patient patient, bool deleteEmptyHrs = true)
+        {
+            Contract.Ensures(!deleteEmptyHrs || patient == null || patient.GetAllHrs().All(x => !x.IsEmpty()));
+
+            if (patient == null) return;
+
+            // удаляем пустые и удаленные
+            if (deleteEmptyHrs)
+            {
+                patient.Courses.ForAll(x =>
+                {
+                    x.Appointments.ForAll(a => a.RemoveEmptyHrs());
+                    x.RemoveEmptyHrs();
+                });
+                patient.RemoveEmptyHrs();
+            }
+
+            saver.Save(patient);
         }
 
         private void ShowHeader(IHrsHolder holder)
@@ -552,6 +541,41 @@ namespace Diagnosis.ViewModels.Screens
                 // удаляем записи в бд
 
                 saver.Delete(e.OldItems.Cast<HealthRecord>().ToArray());
+            }
+        }
+
+        protected virtual void OnLastItemRemoved()
+        {
+            var h = LastItemRemoved;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    HrEditor.Dispose();
+
+                    CloseHeader();
+                    CloseHrList();
+
+                    viewer.CloseAll();
+
+                    Navigator.Dispose();
+
+                    handlers.Dispose();
+
+                    saver.Save(doctor);
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
             }
         }
     }
