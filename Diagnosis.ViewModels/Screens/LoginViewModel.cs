@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
@@ -135,7 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                     if (Passwords.IsRepeatVisible && user is Admin)
                     {
                         AuthorityController.ChangePassword(user, Passwords.Password);
-                        new Diagnosis.Data.Saver(Session).Save(user.Passport);
+                        Session.Persist0(user.Passport);
                     }
                     if (AuthorityController.TryLogIn(user, Passwords.Password))
                     {
@@ -143,7 +144,7 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             // сохраняем remember после входа
                             user.Passport.Remember = IsRemembered;
-                            new Diagnosis.Data.Saver(Session).Save(user);
+                            Session.Persist0(user);
                         }
                         LoggedIn = true;
                     }

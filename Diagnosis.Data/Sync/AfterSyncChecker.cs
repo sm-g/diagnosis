@@ -129,7 +129,7 @@ namespace Diagnosis.Data.Sync
         {
             var list = replaced.ToArray();
 
-            new Saver(session).Delete(list);
+            session.DoDelete(list);
             OnReplaced(new ListEventArgs<IEntity>(list));
         }
     }

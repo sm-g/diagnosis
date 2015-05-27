@@ -28,8 +28,6 @@ namespace Diagnosis.ViewModels.Screens
         private bool _noNewVocs;
         private bool _connected;
         private DataConnectionViewModel _remote;
-        private Saver saver;
-        private VocLoader loader;
         private List<Vocabulary> serverNonCustomVocs = new List<Vocabulary>();
         private static string _log;
         private string LocalConnectionString;
@@ -40,8 +38,6 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(Constants.IsClient);
 
             Title = "Словари";
-            saver = new Saver(Session);
-            loader = new VocLoader(Session);
 
             LocalConnectionString = Nhib.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
@@ -252,24 +248,24 @@ namespace Diagnosis.ViewModels.Screens
             var ids = vocsToLoad.Select(x => x.Id).ToList();
             var selectedSynced = VocabularyQuery.ByIds(Session)(ids);
 
-            loader.LoadOrUpdateVocs(selectedSynced);
+            new VocLoader(Session).LoadOrUpdateVocs(selectedSynced);
 
             MakeInstalledVms();
             MakeAvailableVms();
 #if DEBUG
-            AuthorityController.LoadVocsAfterLogin(Session); // загружаем словари не меняя пользователя
+            AuthorityController.LoadVocsAfterLogin(); // загружаем словари не меняя пользователя
 #endif
         }
 
         public void DeleteVocs(IEnumerable<Vocabulary> toDel)
         {
-            loader.DeleteVocs(toDel);
+            new VocLoader(Session).DeleteVocs(toDel);
 
             MakeInstalledVms();
             MakeAvailableVms();
 
 #if DEBUG
-            AuthorityController.LoadVocsAfterLogin(Session); // обновляем доступные слова не меняя пользователя
+            AuthorityController.LoadVocsAfterLogin(); // обновляем доступные слова не меняя пользователя
 #endif
         }
 

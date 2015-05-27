@@ -55,7 +55,7 @@ namespace Diagnosis.ViewModels.Screens
             // если такое слово уже было, делааем доступным врачу
             var toSave = WordQuery.ByTitle(Session)(word.Title) ?? word;
             AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
-            new Saver(Session).Save(toSave);
+            Session.Persist0(toSave);
 
             this.Send(Event.WordSaved, word.AsParams(MessageKeys.Word));
             saved = toSave;

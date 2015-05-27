@@ -101,7 +101,7 @@ namespace Diagnosis.Data.Tests
 
             // новый пациент на клиенте
             var p = new Patient("x");
-            new Saver(session).Save(p);
+            session.DoSave(p);
 
 
             s = new Syncer(serverCon.ConnectionString, clientCon.ConnectionString, serverCon.ProviderName);
@@ -178,7 +178,7 @@ namespace Diagnosis.Data.Tests
             var specTitles = voc.Specialities.Select(x => x.Title);
             specTitles.ForAll(t =>
             {
-                new Saver(clSession).Save(new Speciality(t));
+                clSession.DoSave(new Speciality(t));
             });
 
             // load voc from server
@@ -222,7 +222,7 @@ namespace Diagnosis.Data.Tests
 
             // добавляем шаблон в словарь на сервере
             voc.AddTemplates(new[] { "qwe" });
-            new Saver(sSession).Save(voc);
+            sSession.DoSave(voc);
 
             // загружаем новые шаблоны для установленных словарей
             var cWtCount = clSession.Query<WordTemplate>().Count();

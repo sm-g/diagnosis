@@ -71,7 +71,7 @@ namespace Diagnosis.ViewModels.Screens
                             hr.Unit = HealthRecordUnit.NotSet;
                         }
                     }
-                    new Saver(Session).Save(patient);
+                    Session.Persist0(patient);
 
                     this.Send(Event.PatientSaved, patient.AsParams(MessageKeys.Patient));
                     DialogResult = true;

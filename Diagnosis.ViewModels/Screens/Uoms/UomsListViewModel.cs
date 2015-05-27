@@ -18,12 +18,10 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<UomViewModel> _uoms;
         private bool _noUoms;
         private UomViewModel _current;
-        private Saver saver;
         private FilterableListHelper<Uom, UomViewModel> filterHelper;
 
         public UomsListViewModel()
         {
-            saver = new Saver(Session);
             SelectedUoms = new ObservableCollection<UomViewModel>();
             _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
             Filter.Filtered += (s, e) =>

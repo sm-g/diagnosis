@@ -22,7 +22,7 @@ namespace Diagnosis.Data.Tests
 
             Assert.IsTrue(voc[1].Words.Contains(w));
 
-            new Saver(session).Save(voc[1]);
+            session.DoSave(voc[1]);
 
             Assert.IsTrue(!w.IsTransient);
         }
@@ -38,8 +38,8 @@ namespace Diagnosis.Data.Tests
 
             voc[1].RemoveWord(w);
             w.OnDelete();
-            new Saver(session).Delete(w); // или после
-            new Saver(session).Save(voc[1]);
+            session.DoDelete(w); // или после
+            session.DoSave(voc[1]);
 
             Assert.IsFalse(GetWordTitles().Any(x => x == w.Title));
         }
@@ -55,7 +55,7 @@ namespace Diagnosis.Data.Tests
             voc[1].SetTemplates(voc[1].WordTemplates.Select(x => x.Title)
                 .Except(title.ToEnumerable()));
 
-            new Saver(session).Save(voc[1]);
+            session.DoSave(voc[1]);
 
             Assert.IsTrue(!session.QueryOver<WordTemplate>().List().Any(x => x.Title == title));
         }

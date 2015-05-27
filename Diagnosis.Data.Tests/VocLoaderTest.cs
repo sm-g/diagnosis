@@ -73,7 +73,7 @@ namespace Diagnosis.Data.Tests
 
             voc[1].RemoveWord(word);
             word.OnDelete();
-            new Saver(session).Delete(word);
+            session.DoDelete(word);
 
             Assert.IsFalse(GetWordTitles().Contains(origTitle));
             Assert.IsFalse(voc[1].Words.Select(x => x.Title).Contains(origTitle));
@@ -111,7 +111,7 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(word.Vocabularies.Single() == voc[1]);
 
             word.Title = "qwe";
-            new Saver(session).Save(word);
+            session.DoSave(word);
             Assert.IsTrue(voc[1].Words.Contains(word));
 
             // заново создается слово по шаблону после обновления
@@ -275,7 +275,7 @@ namespace Diagnosis.Data.Tests
 
             // удаляем словарь
             l.DeleteVocs(voc[2]);
-            AuthorityController.LoadVocsAfterLogin(session);
+            AuthorityController.LoadVocsAfterLogin();
 
             // на клиенте не осталось шаблонов, слов и специальностей, связанных со словарем
             Assert.AreEqual(0, session.Query<Speciality>().ToList().Where(x => x.Vocabularies.Contains(voc[2])).Count());
@@ -317,7 +317,7 @@ namespace Diagnosis.Data.Tests
             voc[1].RemoveWord(word3);
             d1.CustomVocabulary.AddWord(word3);
 
-            new Saver(session).Save(word3);
+            session.DoSave(word3);
 
             // убираем словарь
             l.DeleteVocs(voc[1]);

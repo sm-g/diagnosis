@@ -16,13 +16,10 @@ namespace Diagnosis.ViewModels.Screens
         private Speciality _current;
         private ObservableCollection<Speciality> _specialities;
         private SpecialityEditorViewModel _editor;
-        private Saver saver;
 
         public SpecialityListViewModel()
         {
             Title = "Специальности";
-
-            saver = new Saver(Session);
 
             var specs = EntityQuery<Speciality>.All(Session)();
             Specialities.SyncWith(specs);

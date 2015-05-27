@@ -20,13 +20,11 @@ namespace Diagnosis.ViewModels.Screens
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;
         private WordViewModel _current;
-        private Saver saver;
         private Doctor doctor;
         private FilterableListHelper<Word, WordViewModel> filterHelper;
 
         public WordsListViewModel()
         {
-            saver = new Saver(Session);
             doctor = AuthorityController.CurrentDoctor;
             SelectedWords = new ObservableCollection<WordViewModel>();
 
@@ -134,7 +132,7 @@ namespace Diagnosis.ViewModels.Screens
                         .ToArray();
 
                     toDel.ForAll(x => x.OnDelete());
-                    saver.Delete(toDel);
+                    Session.DoDelete(toDel);
 
                     // убираем удаленные из списка
                     Filter.Filter();

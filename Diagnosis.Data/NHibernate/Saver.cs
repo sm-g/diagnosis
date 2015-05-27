@@ -5,23 +5,15 @@ using NHibernate;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using EventAggregator;
 
 namespace Diagnosis.Data
 {
-    public class Saver
+    public static class Saver
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Saver));
 
-        private Patient savingPatient;
-        private ISession session;
-
-        public Saver(ISession session)
-        {
-            this.session = session;
-        }
-
-
-        public bool Delete(params IEntity[] entities)
+        public static bool DoDelete(this ISession session, params IEntity[] entities)
         {
             Contract.Requires(entities != null);
 
@@ -54,7 +46,7 @@ namespace Diagnosis.Data
             }
         }
 
-        public bool Save(params IEntity[] entities)
+        public static bool DoSave(this ISession session, params IEntity[] entities)
         {
             Contract.Requires(entities != null);
 

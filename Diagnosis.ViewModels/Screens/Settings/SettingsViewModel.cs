@@ -102,7 +102,7 @@ namespace Diagnosis.ViewModels.Screens
             doctor.Settings.IcdTopLevelOnly = OnlyTopLevelIcdDisease;
             doctor.Settings.SexSigns = SelectedSex;
 
-            new Saver(Session).Save(doctor);
+            Session.Persist0(doctor);
             this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.User));
         }
 

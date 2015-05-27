@@ -52,7 +52,7 @@ namespace Diagnosis.Tests
                 .FirstOrDefault() ?? newW;
 
             AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
-            new Saver(session).Save(toSave);
+            session.DoSave(toSave);
             return toSave;
         }
 

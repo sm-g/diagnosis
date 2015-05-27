@@ -82,7 +82,7 @@ namespace Diagnosis.Data.Sync
         {
             var toUpdate = UpdateInChildsInner(session, replacing);
             // сохраняем обновленных детей
-            new Saver(session).Save(toUpdate.ToArray());
+            session.Persist0(toUpdate.ToArray());
         }
 
         /// <summary>

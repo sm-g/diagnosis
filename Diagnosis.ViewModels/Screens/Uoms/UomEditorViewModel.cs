@@ -86,7 +86,7 @@ namespace Diagnosis.ViewModels.Screens
                     toSave.AddRange(uom.Type.Uoms);
             }
 
-            new Saver(Session).Save(toSave.ToArray());
+            Session.Persist0(toSave.ToArray());
 
             // force updating uoms colection in type
             Session.Refresh(uom.Type);

@@ -21,7 +21,6 @@ namespace Diagnosis.ViewModels.Screens
         private HrListViewModel _hrList;
         private HeaderViewModel _header;
         private bool editorWasOpened;
-        private Saver saver;
         private EventMessageHandlersManager handlers;
         private Doctor doctor;
 
@@ -32,8 +31,6 @@ namespace Diagnosis.ViewModels.Screens
                 ResetHistory();
 
             doctor = AuthorityController.CurrentDoctor;
-
-            saver = new Saver(Session);
             _navigator = new CardNavigator(viewer);
             _hrEditor = new HrEditorViewModel(Session);
 
@@ -61,7 +58,7 @@ namespace Diagnosis.ViewModels.Screens
                 var hr = e.hr as HealthRecord;
                 if (hr.Doctor == doctor)  // добавлять только если врач редактировал свою запись?
                     doctor.AddWords(hr.Words);
-                saver.Save(hr);
+                Session.DoSave(hr);
             };
             HrEditor.Closing += (s, e) =>
             {
@@ -290,7 +287,7 @@ namespace Diagnosis.ViewModels.Screens
                 SaveWithCleanup(viewer.OpenedRoot);
 
                 Navigator.RemoveRoot(holder as Patient);
-                saver.Delete(holder);
+                Session.DoDelete(holder);
                 if (Navigator.TopItems.Count == 0)
                     OnLastItemRemoved();
                 return;
@@ -400,7 +397,7 @@ namespace Diagnosis.ViewModels.Screens
                 // вставка/дроп тегов в записи
                 // изменение видимости (IsDeleted)
 
-                saver.Save(e.list.ToArray());
+                Session.DoSave(e.list.ToArray());
                 if (!HrEditor.HasHealthRecord)
                 {
                     HrList.IsFocused = true;
@@ -418,7 +415,7 @@ namespace Diagnosis.ViewModels.Screens
 
             Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
 
-            saver.Save(HrList.HealthRecords
+            Session.DoSave(HrList.HealthRecords
                 .Select(vm => vm.healthRecord)
                 .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
                 .ToArray());
@@ -445,7 +442,7 @@ namespace Diagnosis.ViewModels.Screens
                 patient.RemoveEmptyHrs();
             }
 
-            saver.Save(patient);
+            Session.DoSave(patient);
         }
 
         private void ShowHeader(IHrsHolder holder)
@@ -540,7 +537,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // удаляем записи в бд
 
-                saver.Delete(e.OldItems.Cast<HealthRecord>().ToArray());
+                Session.DoDelete(e.OldItems.Cast<HealthRecord>().ToArray());
             }
         }
 
@@ -570,7 +567,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     handlers.Dispose();
 
-                    saver.Save(doctor);
+                    Session.DoSave(doctor);
                 }
             }
             finally

@@ -49,10 +49,10 @@ namespace Diagnosis.Data.Sync
                 var created = CreateWordsFromTemp(voc, templates);
 
                 // сохраняем слова, добавленные в словарь
-                new Saver(session).Save(voc);
+                session.DoSave(voc);
             }
             // сохраняем убранность словаря в оставшихся словах
-            new Saver(session).Save(wordsToSave.ToArray());
+            session.DoSave(wordsToSave.ToArray());
         }
 
         /// <summary>
@@ -87,10 +87,10 @@ namespace Diagnosis.Data.Sync
 
             });
             // удаляем его, vocword и vocspec на клиенте
-            new Saver(session).Delete(vocsToDel);
+            session.DoDelete(vocsToDel);
 
             // сохраняем убранность словаря в оставшихся словах
-            new Saver(session).Save(wordsToSave.ToArray());
+            session.DoSave(wordsToSave.ToArray());
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Diagnosis.Data.Sync
             }
 
             // delete removed words
-            new Saver(session).Delete(toDelete.ToArray());
+            session.DoDelete(toDelete.ToArray());
             return toRemove.Except(toDelete).ToList();
         }
 

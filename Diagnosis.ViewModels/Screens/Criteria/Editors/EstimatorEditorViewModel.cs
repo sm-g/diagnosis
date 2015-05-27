@@ -83,9 +83,9 @@ namespace Diagnosis.ViewModels.Screens
             var words = opt.GetAllWords().ToArray();
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
-            var s = new Saver(Session);
-            s.Save(words);
-            s.Save(estimator);
+
+            Session.Persist0(words);
+            Session.Persist0(estimator);
         }
 
         protected override void OnCancel()

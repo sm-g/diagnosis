@@ -17,15 +17,12 @@ namespace Diagnosis.ViewModels.Screens
         private VocabularyViewModel _current;
         private ObservableCollection<VocabularyViewModel> _vocs;
         private VocabularyEditorViewModel _editor;
-        private Saver saver;
 
         public VocabularyListViewModel()
         {
             Contract.Requires(!Constants.IsClient);
 
             Title = "Специальности";
-
-            saver = new Saver(Session);
 
             MakeVms();
         }

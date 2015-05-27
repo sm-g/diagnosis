@@ -14,8 +14,6 @@ namespace Diagnosis.ViewModels.Screens
     public partial class CriteriaViewModel : ScreenBaseViewModel
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(CriteriaViewModel));
-
-        private Saver saver;
         private static HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer;
         private DialogViewModel _curEditor;
         private EventMessageHandler handler;
@@ -23,7 +21,6 @@ namespace Diagnosis.ViewModels.Screens
 
         public CriteriaViewModel()
         {
-            saver = new Saver(Session);
             viewer = new HierViewer<Estimator, CriteriaGroup, Criterion, ICrit>(
                 cg => cg.Estimator,
                 cr => cr.Group,
@@ -130,19 +127,19 @@ namespace Diagnosis.ViewModels.Screens
             if (crit is Estimator)
             {
                 Navigator.RemoveRoot(crit as Estimator);
-                saver.Delete(crit);
+                Session.DoDelete(crit);
             }
             else if (crit is CriteriaGroup)
             {
                 var crgr = crit as CriteriaGroup;
                 crgr.Estimator.RemoveCriteriaGroup(crgr);
-                saver.Save(viewer.OpenedRoot);
+                Session.DoSave(viewer.OpenedRoot);
             }
             else if (crit is Criterion)
             {
                 var cr = crit as Criterion;
                 cr.Group.RemoveCriterion(cr);
-                saver.Save(viewer.OpenedRoot);
+                Session.DoSave(viewer.OpenedRoot);
             }
         }
 

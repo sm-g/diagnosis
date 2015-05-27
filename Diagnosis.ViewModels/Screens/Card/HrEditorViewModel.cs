@@ -315,7 +315,7 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             // ensure hr is not transient
-            new Saver(session).Save(hr);
+            session.Persist0(hr);
 
             FinishCurrentHr();
 
@@ -429,7 +429,7 @@ namespace Diagnosis.ViewModels.Screens
 
                 // сохраняем настройки редактора
                 doctor.Settings.AddQueryToSuggestions = addQuery;
-                new Saver(session).Save(doctor);
+                session.Persist0(doctor);
             }
         }
 

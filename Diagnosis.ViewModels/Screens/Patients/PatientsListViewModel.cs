@@ -27,14 +27,12 @@ namespace Diagnosis.ViewModels.Screens
         private bool _ageVis;
         private bool _isMaleVis;
         private bool _isLastUpdatedVis;
-        private Saver saver;
         private ListCollectionView view;
         private Doctor doctor;
         private FilterableListHelper<Patient, PatientViewModel> filterHelper;
 
         public PatientsListViewModel()
         {
-            saver = new Saver(Session);
             doctor = AuthorityController.CurrentDoctor;
             SelectedPatients = new ObservableCollection<PatientViewModel>();
 
@@ -214,7 +212,7 @@ namespace Diagnosis.ViewModels.Screens
                         .Where(x => x.patient.IsEmpty())
                         .Select(x => x.patient)
                         .ToArray();
-                    saver.Delete(toDel);
+                    Session.DoDelete(toDel);
 
                     // убираем удаленных из списка
                     Filter.Filter();
@@ -375,7 +373,7 @@ namespace Diagnosis.ViewModels.Screens
 
             doctor.Settings.PatientsListVisibleColumns = visCols.ToString();
 
-            new Saver(Session).Save(doctor);
+            Session.DoSave(doctor);
         }
     }
 }
