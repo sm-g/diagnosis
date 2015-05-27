@@ -136,7 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                     if (Passwords.IsRepeatVisible && user is Admin)
                     {
                         AuthorityController.ChangePassword(user, Passwords.Password);
-                        Session.Persist0(user.Passport);
+                        Session.DoDelete(user.Passport);
                     }
                     if (AuthorityController.TryLogIn(user, Passwords.Password))
                     {
@@ -144,7 +144,7 @@ namespace Diagnosis.ViewModels.Screens
                         {
                             // сохраняем remember после входа
                             user.Passport.Remember = IsRemembered;
-                            Session.Persist0(user);
+                            Session.DoDelete(user);
                         }
                         LoggedIn = true;
                     }

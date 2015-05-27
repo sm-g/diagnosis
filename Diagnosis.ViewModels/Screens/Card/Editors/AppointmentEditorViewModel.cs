@@ -63,7 +63,7 @@ namespace Diagnosis.ViewModels.Screens
             (app.Course as IEditableObject).EndEdit();
             (app as IEditableObject).EndEdit();
 
-            Session.Persist0(app, app.Course);
+            Session.DoDelete(app, app.Course);
         }
 
         protected override void OnCancel()

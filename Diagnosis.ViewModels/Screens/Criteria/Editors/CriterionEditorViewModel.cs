@@ -55,8 +55,8 @@ namespace Diagnosis.ViewModels.Screens
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
 
-            Session.Persist0(words);
-            Session.Persist0(criterion);
+            Session.DoDelete(words);
+            Session.DoDelete(criterion);
         }
 
         protected override void OnCancel()

@@ -37,7 +37,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             AuthorityController.ChangePassword(admin, Passwords.Password);
 
-            Session.Persist0(admin.Passport);
+            Session.DoDelete(admin.Passport);
             this.Send(Event.SettingsSaved, admin.AsParams(MessageKeys.User));
         }
 

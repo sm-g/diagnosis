@@ -151,7 +151,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         protected override void OnOk()
         {
             doctor.Settings.IcdTopLevelOnly = IcdTopLevelOnly;
-            Session.Persist0(doctor);
+            Session.DoDelete(doctor);
         }
 
         /// <summary>
