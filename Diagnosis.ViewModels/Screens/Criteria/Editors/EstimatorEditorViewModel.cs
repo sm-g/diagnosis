@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
 
             QueryEditor = new QueryEditorViewModel(Session);
 
-            var opt = loader.ReadOptions(estimator.HeaderHrsOptions);
+            var opt = loader.ReadOptions(estimator.Options);
             QueryEditor.SetOptions(opt);
             Estimator = new EstimatorViewModel(estimator);
 
@@ -76,7 +76,7 @@ namespace Diagnosis.ViewModels.Screens
         protected override void OnOk()
         {
             var opt = QueryEditor.GetOptions();
-            estimator.HeaderHrsOptions = loader.WriteOptions(opt);
+            estimator.Options = loader.WriteOptions(opt);
 
             (estimator as IEditableObject).EndEdit();
 

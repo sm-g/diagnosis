@@ -198,6 +198,7 @@
     <Compile Include="Entities\Admin.cs" />
     <Compile Include="Domain\Chio.cs" />
     <Compile Include="Domain\DateOffset.cs" />
+    <Compile Include="Entities\Crit.cs" />
     <Compile Include="Entities\CriteriaGroup.cs" />
     <Compile Include="Entities\Criterion.cs" />
     <Compile Include="Entities\Estimator.cs" />

@@ -10,31 +10,25 @@ using System.Diagnostics.Contracts;
 namespace Diagnosis.Models
 {
     [DebuggerDisplay("Estimator {Description}")]
-    public class Estimator : ValidatableEntity<Guid>, IDomainObject, ICrit
+    public class Estimator : Crit
     {
         private ISet<CriteriaGroup> criteriaGroups = new HashSet<CriteriaGroup>();
 
         private string _options;
-        private string _description;
 
         public Estimator()
+            : base()
         {
-            Description = "";
         }
 
         public virtual event NotifyCollectionChangedEventHandler CriteriaGroupsChanged;
 
-        public virtual string HeaderHrsOptions
+        public virtual string Options
         {
             get { return _options; }
-            set { SetProperty(ref _options, value, () => HeaderHrsOptions); }
+            set { SetProperty(ref _options, value, () => Options); }
         }
 
-        public virtual string Description
-        {
-            get { return _description; }
-            set { SetProperty(ref _description, value.Truncate(Length.EstimatorDescr), () => Description); }
-        }
         public virtual IEnumerable<CriteriaGroup> CriteriaGroups
         {
             get { return criteriaGroups; }

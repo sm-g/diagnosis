@@ -4,30 +4,23 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace Diagnosis.Data.Mappings
 {
-    public class EstimatorMap : ClassMapping<Estimator>
+    public class EstimatorMap : SubclassMapping<Estimator>
     {
         public EstimatorMap()
         {
-            Id(x => x.Id, m =>
-            {
-                m.Generator(Generators.GuidComb);
-            });
+            DiscriminatorValue("Estimator");
 
-            Property(x => x.Description, m =>
+
+            Property(x => x.Options, m =>
             {
-                m.NotNullable(true);
-                m.Length(Length.EstimatorDescr);
-            });
-            Property(x => x.HeaderHrsOptions, m =>
-            {
-                m.NotNullable(false);
+                //m.NotNullable(false);
                 m.Column(col => col.SqlType("ntext"));
             });
             Set(x => x.CriteriaGroups, s =>
             {
                 s.Key(k =>
                 {
-                    k.Column(Names.Id.Estimator);
+                    k.Column(Names.Id.CritParent);
                 });
                 s.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 s.Inverse(true);

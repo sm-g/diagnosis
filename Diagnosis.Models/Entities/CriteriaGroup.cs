@@ -10,17 +10,15 @@ using System.Linq;
 namespace Diagnosis.Models
 {
     [DebuggerDisplay("CriteriaGroup {Description}")]
-    public class CriteriaGroup : ValidatableEntity<Guid>, IDomainObject, ICrit
+    public class CriteriaGroup : Crit
     {
         private ISet<Criterion> criteria = new HashSet<Criterion>();
 
-        private string _description;
-
         public CriteriaGroup(Estimator est)
+            : base()
         {
             Contract.Requires(est != null);
             Estimator = est;
-            Description = "";
         }
 
         protected internal CriteriaGroup()
@@ -28,11 +26,7 @@ namespace Diagnosis.Models
         }
 
         public virtual event NotifyCollectionChangedEventHandler CriteriaChanged;
-        public virtual string Description
-        {
-            get { return _description; }
-            set { SetProperty(ref _description, value.Truncate(Length.CrGrDescr), () => Description); }
-        }
+
         public virtual Estimator Estimator { get; set; }
 
         public virtual IEnumerable<Criterion> Criteria
