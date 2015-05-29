@@ -49,11 +49,14 @@ namespace Diagnosis.ViewModels.Screens
             var opt = QueryEditor.GetOptions();
             criterion.Options = loader.WriteOptions(opt);
 
+            var words = opt.GetAllWords().ToArray();
+            criterion.SetWords(words);
+
             (criterion as IEditableObject).EndEdit();
 
-            var words = opt.GetAllWords().ToArray();
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
+
             var s = new Saver(Session);
             s.Save(words);
             s.Save(criterion);

@@ -50,6 +50,7 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void OnOk()
         {
+            word.OnEndEdit();
             (word as IEditableObject).EndEdit();
 
             // если такое слово уже было, делааем доступным врачу

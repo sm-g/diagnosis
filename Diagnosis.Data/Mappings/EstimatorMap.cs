@@ -8,14 +8,8 @@ namespace Diagnosis.Data.Mappings
     {
         public EstimatorMap()
         {
-            DiscriminatorValue("Estimator");
-
-
-            Property(x => x.Options, m =>
-            {
-                //m.NotNullable(false);
-                m.Column(col => col.SqlType("ntext"));
-            });
+            DiscriminatorValue(Names.Col.EstDiscriminator);
+                       
             Set(x => x.CriteriaGroups, s =>
             {
                 s.Key(k =>

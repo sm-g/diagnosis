@@ -26,7 +26,7 @@ namespace Diagnosis.Data.Versions.Client
         {
             Execute.Sql(@"CREATE TABLE {0} (
                 Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,
-                {1} uniqueidentifier NULL DEFAULT NEWID(),
+                {1} uniqueidentifier NULL,
                 {3} nvarchar(255) NOT NULL,
                 Description nvarchar(2000) NOT NULL,
                 Code nvarchar(50) NULL,
@@ -68,7 +68,7 @@ namespace Diagnosis.Data.Versions.Client
                     {1} uniqueidentifier NOT NULL,
                     {4} uniqueidentifier NOT NULL,
                     CONSTRAINT {2} FOREIGN KEY ({1}) REFERENCES {3} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION,
-                    CONSTRAINT {5} FOREIGN KEY ({1}) REFERENCES {6} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION
+                    CONSTRAINT {5} FOREIGN KEY ({4}) REFERENCES {6} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION
                     )"
                 .FormatStr(
                   Names.CritWords,

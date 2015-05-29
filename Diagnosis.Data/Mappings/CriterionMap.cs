@@ -8,17 +8,13 @@ namespace Diagnosis.Data.Mappings
     {
         public CriterionMap()
         {
-            DiscriminatorValue("Criterion");
+            DiscriminatorValue(Names.Col.CritDiscriminator);
             Property(x => x.Code, m =>
             {
                 //m.NotNullable(true);
                 m.Length(Length.CriterionCode);
             });
-            Property(x => x.Options, m =>
-            {
-                //m.NotNullable(true);
-                m.Column(col => col.SqlType("ntext"));
-            });
+            
             Property(x => x.Value, m =>
             {
                 //m.NotNullable(true);

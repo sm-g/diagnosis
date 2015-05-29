@@ -156,6 +156,9 @@ namespace Diagnosis.Data
             public static string UomFStr = "String";
             public static string HrItemTextRepr = "TextRepr";
             public static string CritType = "CritType";
+            public static string EstDiscriminator = "Estimator";
+            public static string CrGrDiscriminator = "CriteriaGroup";
+            public static string CritDiscriminator = "Criterion";
         }
 
         public static class Unique

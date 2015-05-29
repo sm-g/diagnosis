@@ -202,6 +202,7 @@
     <Compile Include="Entities\CriteriaGroup.cs" />
     <Compile Include="Entities\Criterion.cs" />
     <Compile Include="Entities\Estimator.cs" />
+    <Compile Include="Entities\CritWords.cs" />
     <Compile Include="Helpers\StringsLength.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />

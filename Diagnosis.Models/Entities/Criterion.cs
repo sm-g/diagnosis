@@ -4,6 +4,7 @@ using FluentValidation.Results;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+
 using System.Linq;
 
 namespace Diagnosis.Models
@@ -13,7 +14,6 @@ namespace Diagnosis.Models
     {
         private string _code;
         private string _value;
-        private string _options;
         private CriteriaGroup _group;
 
         public Criterion(CriteriaGroup gr)
@@ -45,12 +45,6 @@ namespace Diagnosis.Models
         {
             get { return _value; }
             set { SetProperty(ref _value, value.Truncate(Length.CriterionValue), () => Value); }
-        }
-
-        public virtual string Options
-        {
-            get { return _options; }
-            set { SetProperty(ref _options, value, () => Options); }
         }
 
         public override string ToString()

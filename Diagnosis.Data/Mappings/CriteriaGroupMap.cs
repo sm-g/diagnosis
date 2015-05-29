@@ -8,7 +8,7 @@ namespace Diagnosis.Data.Mappings
     {
         public CriteriaGroupMap()
         {
-            DiscriminatorValue("CriteriaGroup");
+            DiscriminatorValue(Names.Col.CrGrDiscriminator);
 
             Set(x => x.Criteria, s =>
             {
@@ -26,7 +26,7 @@ namespace Diagnosis.Data.Mappings
             ManyToOne(x => x.Estimator, m =>
             {
                 m.Column(Names.Id.CritParent);
-             //   m.NotNullable(true);
+                //   m.NotNullable(true);
             });
         }
     }

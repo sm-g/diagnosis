@@ -69,20 +69,25 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public override bool CanOk
         {
             get { return estimator.IsValid() && !Estimator.HasExistingValue; }
         }
+
         protected override void OnOk()
         {
             var opt = QueryEditor.GetOptions();
             estimator.Options = loader.WriteOptions(opt);
 
+            var words = opt.GetAllWords().ToArray();
+            estimator.SetWords(words);
+
             (estimator as IEditableObject).EndEdit();
 
-            var words = opt.GetAllWords().ToArray();
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
+
             var s = new Saver(Session);
             s.Save(words);
             s.Save(estimator);
@@ -100,7 +105,6 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
-
 
         public ICrit Crit
         {

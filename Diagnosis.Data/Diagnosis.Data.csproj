@@ -259,6 +259,7 @@
     <Compile Include="Mappings\EstimatorMap.cs" />
     <Compile Include="Mappings\CriteriaGroupMap.cs" />
     <Compile Include="Mappings\CriterionMap.cs" />
+    <Compile Include="Mappings\CritWordsMap.cs" />
     <Compile Include="Mappings\VocabularyWordsMap.cs" />
     <Compile Include="Mappings\SpecialityVocabulariesMap.cs" />
     <Compile Include="Mappings\VocabularyMap.cs" />
