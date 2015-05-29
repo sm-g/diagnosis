@@ -82,6 +82,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="ExtenstionsTest.cs" />
+    <Compile Include="CritTest.cs" />
     <Compile Include="WordTest.cs" />
     <Compile Include="CourseTest.cs" />
     <Compile Include="DateOffsetTest.cs" />

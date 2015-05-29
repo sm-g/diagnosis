@@ -51,8 +51,8 @@ namespace Diagnosis.Tests
             { typeof(WordTemplate), new[] { 1, 2, 3, 4, 5, 6, 7 } },
             { typeof(Speciality),   new[] { 1 } },
             { typeof(Estimator),    new[] { 1 } },
-            { typeof(CriteriaGroup),new[] { 1 } },
-            { typeof(Criterion),    new[] { 1 } },
+            { typeof(CriteriaGroup),new[] { 2 } },
+            { typeof(Criterion),    new[] { 3 } },
         };
 
         private static Dictionary<Type, string> guidFormats = new Dictionary<Type, string>()
@@ -75,8 +75,9 @@ namespace Diagnosis.Tests
             { typeof(SpecialityVocabularies),"00000{0:000}-1500-0000-0000-000000000{0:000}" },
             { typeof(UomFormat),             "00000{0:000}-1600-0000-0000-000000000{0:000}" },
             { typeof(Estimator),             "00000{0:000}-1700-0000-0000-000000000{0:000}" },
-            { typeof(CriteriaGroup),         "00000{0:000}-1800-0000-0000-000000000{0:000}" },
-            { typeof(Criterion),             "00000{0:000}-1900-0000-0000-000000000{0:000}" },
+            { typeof(CriteriaGroup),         "00000{0:000}-1700-0000-0000-000000000{0:000}" },
+            { typeof(Criterion),             "00000{0:000}-1700-0000-0000-000000000{0:000}" },
+            { typeof(CritWords),             "00000{0:000}-1800-0000-0000-000000000{0:000}" },
         };
 
         static DbTest()
