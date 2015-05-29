@@ -82,6 +82,7 @@ namespace Diagnosis.Models
         private void ObjectInvariant()
         {
             Contract.Invariant(Options.IsNullOrEmpty());
+            Contract.Invariant(OptionsFormat.IsNullOrEmpty());
         }
 
     }

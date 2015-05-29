@@ -16,12 +16,15 @@ namespace Diagnosis.Data.Mappings
             Property(x => x.Description, m =>
             {
                 m.NotNullable(true);
-                m.Length(Length.CriterionDescr);
+                m.Length(Length.CritDescr);
             });
             Property(x => x.Options, m =>
             {
-                //m.NotNullable(true);
                 m.Column(col => col.SqlType(MappingHelper.SqlTypeNText));
+            });
+            Property(x => x.OptionsFormat, m =>
+            {
+                m.Length(Length.CritOptionsFormat);
             });
             Discriminator(x =>
             {

@@ -48,6 +48,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             var opt = QueryEditor.GetOptions();
             criterion.Options = loader.WriteOptions(opt);
+            criterion.OptionsFormat = loader.Format;
 
             var words = opt.GetAllWords().ToArray();
             criterion.SetWords(words);

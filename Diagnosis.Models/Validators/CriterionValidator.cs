@@ -9,7 +9,7 @@ namespace Diagnosis.Models.Validators
     {
         public CriterionValidator()
         {
-            RuleFor(w => w.Description).Length(1, Length.CriterionDescr).NotNull();
+            RuleFor(w => w.Description).Length(1, Length.CritDescr).NotNull();
             RuleFor(w => w.Value).Length(1, Length.CriterionValue).NotNull();
             RuleFor(w => w.Code).Length(1, Length.CriterionCode).NotNull();
             RuleFor(w => w.Group).NotEmpty();

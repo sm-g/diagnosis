@@ -88,6 +88,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(cgr[2], crit.Navigator.Current.Crit);
             Assert.AreEqual(cgr[2], (crit.CurrentEditor as ICritKeeper).Crit);
         }
+
         [TestMethod]
         public void Close_CurrentNull()
         {
@@ -97,13 +98,13 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(null, crit.Navigator.Current);
             Assert.AreEqual(null, crit.CurrentEditor);
         }
+
         [TestMethod]
         public void Close_TitleEmpty()
         {
             crit.Open(cgr[2]);
             crit.CurrentEditor.CancelCommand.Execute(null);
             Assert.IsTrue(crit.Title.IsNullOrEmpty());
-
         }
 
         [TestMethod]
@@ -113,8 +114,8 @@ namespace Diagnosis.ViewModels.Tests
             crit.Open(est[1]);
 
             Assert.IsTrue(!crit.Title.IsNullOrEmpty());
-
         }
+
         #endregion Opening
 
         #region Saving
@@ -185,7 +186,6 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(!w.IsTransient);
         }
 
-
         [TestMethod]
         public void DoctorCanUseNewWordsFromCritQueryEditor()
         {
@@ -206,7 +206,6 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.IsTrue(d1.Words.Contains(w2));
         }
-
 
         [TestMethod]
         public void CopyNewWord_Save_Remove_PasteTransient_GetFromDb()
@@ -287,9 +286,39 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.AreEqual(w, word);
             Assert.AreEqual("2", word.Title);
-        
-
         }
+
+        [TestMethod]
+        public void WordWithUomTitleAfterRename()
+        {
+            Load<Uom>();
+            Load<Doctor>();
+            AuthorityController.TryLogIn(d1);
+
+            // save
+            crit.Open(cr[3]);
+            var auto = (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel;
+            var w = new Word(uom[1].Type.Title);
+            var m = new MeasureOp(MeasureOperator.Equal, 1, uom[1], w);
+            auto.SelectedTag = auto.AddTag(m);
+            crit.CurrentEditor.OkCommand.Execute(null);
+
+            // rename
+            using (var e = new WordEditorViewModel(w))
+            {
+                w.Title = "2";
+                e.OkCommand.Execute(null);
+            }
+
+            // word still in crit
+            crit.Open(cr[3]);
+            auto = (crit.CurrentEditor as CriterionEditorViewModel).QueryEditor.QueryBlocks[0].AutocompleteAll as AutocompleteViewModel;
+            var word = (auto.GetCHIOs().ElementAt(0).HIO as Measure).Word;
+
+            Assert.AreEqual(w, word);
+            Assert.AreEqual("2", word.Title);
+        }
+
         #endregion Saving
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using FluentMigrator;
 using System;
-
 using System.Linq;
 
 namespace Diagnosis.Data.Versions.Client
@@ -31,11 +31,12 @@ namespace Diagnosis.Data.Versions.Client
                 Description nvarchar(2000) NOT NULL,
                 Code nvarchar(50) NULL,
                 Options ntext NULL,
+                OptionsFormat nvarchar({4}) NULL,
                 Value nvarchar(50) NULL,
                 CONSTRAINT {2} FOREIGN KEY ({1}) REFERENCES {0} (Id) ON UPDATE NO ACTION ON DELETE NO ACTION
                 )"
                .FormatStr(Names.Crit, Names.Id.CritParent, Names.FK.Crit_Crit,
-                Names.Col.CritType));
+                Names.Col.CritType, Length.CritOptionsFormat));
 
             //            Execute.Sql(@"CREATE TABLE {0} (
             //                Id uniqueidentifier NOT NULL DEFAULT NEWID() PRIMARY KEY,

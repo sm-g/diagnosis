@@ -155,15 +155,7 @@ namespace Diagnosis.Models
                 .Distinct()
                 .ForEach(x => x.RemoveWordFromCache(this));
         }
-        /// <summary>
-        /// Вызвать перед заверешнием редактирования.
-        /// </summary>
-        public virtual void OnEndEdit()
-        {
-            var oldTitle = EditHelper.GetOriginal<string, Guid>(() => Title);
 
-            Crits.ForEach(x => x.ReplaceWord(this, oldTitle));
-        }
         public override string ToString()
         {
             return Title;

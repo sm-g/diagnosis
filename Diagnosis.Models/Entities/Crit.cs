@@ -12,8 +12,8 @@ namespace Diagnosis.Models
         private string _description;
         private Many2ManyHelper<CritWords, Word> crwHelper;
         private ISet<CritWords> critWords = new HashSet<CritWords>();
-
         private string _options;
+        private string _optionsFormat;
 
         public Crit()
         {
@@ -25,7 +25,7 @@ namespace Diagnosis.Models
         public virtual string Description
         {
             get { return _description; }
-            set { SetProperty(ref _description, value.Truncate(Length.CriterionDescr), () => Description); }
+            set { SetProperty(ref _description, value.Truncate(Length.CritDescr), () => Description); }
         }
 
         public virtual IEnumerable<Word> Words
@@ -45,6 +45,14 @@ namespace Diagnosis.Models
         {
             get { return _options; }
             set { SetProperty(ref _options, value, () => Options); }
+        }
+        /// <summary>
+        /// Сериализатор опций.
+        /// </summary>
+        public virtual string OptionsFormat
+        {
+            get { return _optionsFormat; }
+            set { SetProperty(ref _optionsFormat, value, () => OptionsFormat); }
         }
 
         private Many2ManyHelper<CritWords, Word> CrwHelper
@@ -78,15 +86,6 @@ namespace Diagnosis.Models
             {
                 AddWord(item);
             }
-        }
-
-        public virtual void ReplaceWord(Word word, string oldTitle)
-        {
-            Contract.Requires(word != null);
-            Contract.Requires(Words.Contains(word));
-
-            // меняем текст прямо в сериализованной строке запроса
-            Options = Options.Replace(oldTitle, word.Title);
         }
 
         public virtual Word AddWord(Word w)

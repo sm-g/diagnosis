@@ -9,7 +9,7 @@ namespace Diagnosis.Models.Validators
     {
         public EstimatorValidator()
         {
-            RuleFor(w => w.Description).Length(1, Length.EstimatorDescr).NotNull();
+            RuleFor(w => w.Description).Length(1, Length.CritDescr).NotNull();
             //    RuleFor(w => w.HeaderHrsOptions).NotEmpty();
         }
     }

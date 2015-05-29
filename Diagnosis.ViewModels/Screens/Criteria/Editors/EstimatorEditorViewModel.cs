@@ -79,6 +79,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             var opt = QueryEditor.GetOptions();
             estimator.Options = loader.WriteOptions(opt);
+            estimator.OptionsFormat = loader.Format;
 
             var words = opt.GetAllWords().ToArray();
             estimator.SetWords(words);

@@ -8,11 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Diagnosis.Data
 {
     public abstract class OptionsLoader
     {
+        public const string JsonFormat = "json";
         private ISession session;
 
         static OptionsLoader()
@@ -23,6 +25,17 @@ namespace Diagnosis.Data
         public OptionsLoader(ISession session)
         {
             this.session = session;
+        }
+
+        public abstract string Format { get; }
+
+        public static OptionsLoader FromFormat(string format, ISession session)
+        {
+            if (format == JsonFormat)
+            {
+                return new JsonOptionsLoader(session);
+            }
+            throw new ArgumentOutOfRangeException();
         }
 
         /// <summary>
@@ -53,6 +66,20 @@ namespace Diagnosis.Data
             var dto = MapToDto(options);
             return WriteOptionsInner(dto);
         }
+
+        /// <summary>
+        /// Меняем текст слова прямо в сериализованной строке запроса.
+        /// </summary>
+        public string ReplaceWord(string options, string oldTitle, string newTitle)
+        {
+            Contract.Requires(options != null);
+            Contract.Requires(oldTitle != null);
+            Contract.Requires(newTitle != null);
+
+            return ReplaceWordInner(options, oldTitle, newTitle);
+        }
+
+        protected abstract string ReplaceWordInner(string options, string oldTitle, string newTitle);
 
         protected abstract SearchOptionsDTO ReadOptionsInner(string str);
 
@@ -129,7 +156,6 @@ namespace Diagnosis.Data
                 result.Children.Add(child);
             });
 
-
             var smthMissed =
                 result.CWordsAll.Count != dto.CWordsAll.Count ||
                 result.CWordsAny.Count != dto.CWordsAny.Count ||
@@ -178,7 +204,7 @@ namespace Diagnosis.Data
             return mWords;
         }
 
-        private static IEnumerable<MeasureOp> SelectMeasures(IEnumerable<MeasureOpDTO> mopDtos, IEnumerable<Word> mWords, IEnumerable<Uom> uoms, out bool mopNotParsed)
+        private IEnumerable<MeasureOp> SelectMeasures(IEnumerable<MeasureOpDTO> mopDtos, IEnumerable<Word> mWords, IEnumerable<Uom> uoms, out bool mopNotParsed)
         {
             MeasureOperator op;
             var opNP = false;
@@ -201,7 +227,7 @@ namespace Diagnosis.Data
             return res;
         }
 
-        private static IEnumerable<Confindencable<Word>> SelectConfWords(IEnumerable<ConfWordDTO> cwords, IEnumerable<Word> words, out bool confNotParsed)
+        private IEnumerable<Confindencable<Word>> SelectConfWords(IEnumerable<ConfWordDTO> cwords, IEnumerable<Word> words, out bool confNotParsed)
         {
             Confidence conf;
             confNotParsed = false;
@@ -231,6 +257,11 @@ namespace Diagnosis.Data
         {
         }
 
+        public override string Format
+        {
+            get { return JsonFormat; }
+        }
+
         protected override SearchOptionsDTO ReadOptionsInner(string str)
         {
             return str.DeserializeDCJson<SearchOptionsDTO>();
@@ -239,6 +270,12 @@ namespace Diagnosis.Data
         protected override string WriteOptionsInner(SearchOptionsDTO dto)
         {
             return dto.SerializeDCJson();
+        }
+
+        protected override string ReplaceWordInner(string options, string oldTitle, string newTitle)
+        {
+            // "Title":"АД"
+            return Regex.Replace(options, "(?<=Title\":\")" + oldTitle + "(?=\")", newTitle);
         }
     }
 
