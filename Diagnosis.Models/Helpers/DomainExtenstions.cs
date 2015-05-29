@@ -108,7 +108,12 @@ namespace Diagnosis.Models
         public static IEnumerable<Word> GetAllWords(this SearchOptions o)
         {
             Contract.Requires(o != null);
-            return o.Children.Aggregate(o.WordsAll.Union(o.WordsAny).Union(o.WordsNot), (acc, opt) => acc.Union(opt.GetAllWords()));
+            return o.Children.Aggregate(o
+                .WordsAll
+                .Union(o.WordsAny)
+                .Union(o.WordsNot)
+                .Union(o.MeasuresAll.Select(x => x.Word))
+                .Union(o.MeasuresAny.Select(x => x.Word)), (acc, opt) => acc.Union(opt.GetAllWords()));
         }
     }
 
@@ -252,7 +257,7 @@ namespace Diagnosis.Models
         /// курс — без записей и осмотров
         /// осмотр — без записей
         /// запись — без элементов и даты или удаленная
-        /// слово — без записей с этим словом
+        /// слово — без записей и критов с этим словом
         /// словарь — без слов
         /// 
         /// </summary>
@@ -301,7 +306,8 @@ namespace Diagnosis.Models
                 { typeof(Word),() =>
                     {
                         var w = entity as Word;
-                        return !w.HealthRecords.Any();
+                        return !w.HealthRecords.Any() &&
+                            !w.Crits.Any();
                     }
                 },
                 { typeof(Vocabulary),() =>

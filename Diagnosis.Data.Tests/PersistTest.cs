@@ -1,9 +1,7 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data;
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.Tests;
-using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -58,6 +56,24 @@ namespace Diagnosis.Data.Tests
             new Saver(session).Save(voc[1]);
 
             Assert.IsTrue(!session.QueryOver<WordTemplate>().List().Any(x => x.Title == title));
+        }
+
+        [TestMethod]
+        public void AddWordSaveCrit()
+        {
+            var crit = new Estimator() { Description = "1" };
+            var w = new Word("1");
+            var w2 = new Word("2");
+            crit.SetWords(new[] { w, w2 });
+
+            new Saver(session).Save(crit);
+
+            var dbCrit = session.Get<Estimator>(crit.Id);
+            var dbCritWords = session.QueryOver<CritWords>().List();
+
+            Assert.IsTrue(dbCrit.Words.Contains(w));
+            Assert.IsTrue(dbCrit.Words.Contains(w2));
+            Assert.IsTrue(dbCritWords.Count >= 2);
         }
     }
 }

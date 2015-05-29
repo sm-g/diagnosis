@@ -30,7 +30,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return word.HealthRecords.Count();
+                return word.HealthRecords.Count() + word.Crits.Count();
             }
         }
 

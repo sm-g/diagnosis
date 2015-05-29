@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Screens
 
             QueryEditor = new QueryEditorViewModel(Session);
 
-            var opt = loader.ReadOptions(estimator.HeaderHrsOptions);
+            var opt = loader.ReadOptions(estimator.Options);
             QueryEditor.SetOptions(opt);
             Estimator = new EstimatorViewModel(estimator);
 
@@ -69,20 +69,26 @@ namespace Diagnosis.ViewModels.Screens
                 });
             }
         }
+
         public override bool CanOk
         {
             get { return estimator.IsValid() && !Estimator.HasExistingValue; }
         }
+
         protected override void OnOk()
         {
             var opt = QueryEditor.GetOptions();
-            estimator.HeaderHrsOptions = loader.WriteOptions(opt);
+            estimator.Options = loader.WriteOptions(opt);
+            estimator.OptionsFormat = loader.Format;
+
+            var words = opt.GetAllWords().ToArray();
+            estimator.SetWords(words);
 
             (estimator as IEditableObject).EndEdit();
 
-            var words = opt.GetAllWords().ToArray();
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
+
             var s = new Saver(Session);
             s.Save(words);
             s.Save(estimator);
@@ -100,7 +106,6 @@ namespace Diagnosis.ViewModels.Screens
             }
             base.Dispose(disposing);
         }
-
 
         public ICrit Crit
         {

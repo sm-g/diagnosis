@@ -6,6 +6,7 @@ using EventAggregator;
 using NHibernate.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -16,12 +17,14 @@ namespace Diagnosis.ViewModels.Screens
         private readonly Word word;
         internal Word saved;
         private ExistanceTester<Models.Word> tester;
-
+        string oldTitle;
         public WordEditorViewModel(Word word)
         {
-            this.word = word;
-            (word as IEditableObject).BeginEdit();
+            Contract.Requires(word != null);
 
+            this.word = word;
+            oldTitle = word.Title;
+            (word as IEditableObject).BeginEdit();
 
             Word = new WordViewModel(word);
             //Нельзя ввести слово, которое уже есть в словарях врача.
@@ -50,6 +53,12 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void OnOk()
         {
+            foreach (var crit in word.Crits)
+            {
+                var l = OptionsLoader.FromFormat(crit.OptionsFormat, Session);
+                crit.Options = l.ReplaceWord(crit.Options, oldTitle, word.Title);
+            }
+
             (word as IEditableObject).EndEdit();
 
             // если такое слово уже было, делааем доступным врачу

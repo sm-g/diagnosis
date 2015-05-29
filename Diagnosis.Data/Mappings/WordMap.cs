@@ -78,6 +78,19 @@ namespace Diagnosis.Data.Mappings.Client
             {
                 r.OneToMany();
             });
+            Set(x => x.CritWords, s =>
+            {
+                s.Key(k =>
+                {
+                    k.Column(Names.Id.Word);
+                });
+                s.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                s.Inverse(true);
+                s.Access(Accessor.Field);
+            }, r =>
+            {
+                r.OneToMany();
+            });
         }
     }
 }

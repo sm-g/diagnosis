@@ -19,6 +19,9 @@ namespace Diagnosis.Models
         private ISet<VocabularyWords> vocabularyWords = new HashSet<VocabularyWords>();
 
         [NonSerialized]
+        private ISet<CritWords> critWords = new HashSet<CritWords>();
+
+        [NonSerialized]
         private IList<HealthRecord> healthRecords = new List<HealthRecord>(); // many-2-many bag
 
         [NonSerialized]
@@ -28,8 +31,10 @@ namespace Diagnosis.Models
         private Uom _uom;
 
         [NonSerialized]
-        private Many2ManyHelper<Models.VocabularyWords, Vocabulary> vwHelper;
+        private Many2ManyHelper<VocabularyWords, Vocabulary> vwHelper;
 
+        [NonSerialized]
+        private Many2ManyHelper<CritWords, Crit> crwHelper;
 
         public Word(string title)
         {
@@ -58,6 +63,7 @@ namespace Diagnosis.Models
             get { return _parent; }
             set { SetProperty(ref _parent, value, () => Parent); }
         }
+
         /// <summary>
         /// Cамая частая единица на клиенте с этим словом.
         /// </summary>
@@ -85,6 +91,19 @@ namespace Diagnosis.Models
             get { return vocabularyWords; }
         }
 
+        public virtual IEnumerable<Crit> Crits
+        {
+            get
+            {
+                return CrwHelper.Values;
+            }
+        }
+
+        public virtual IEnumerable<CritWords> CritWords
+        {
+            get { return critWords; }
+        }
+
         public virtual IEnumerable<Word> Children
         {
             get { return children; }
@@ -95,7 +114,7 @@ namespace Diagnosis.Models
             get { return healthRecords; }
         }
 
-        private Many2ManyHelper<Models.VocabularyWords, Vocabulary> VwHelper
+        private Many2ManyHelper<VocabularyWords, Vocabulary> VwHelper
         {
             get
             {
@@ -107,6 +126,21 @@ namespace Diagnosis.Models
                         x => x.Vocabulary);
                 }
                 return vwHelper;
+            }
+        }
+
+        private Many2ManyHelper<CritWords, Crit> CrwHelper
+        {
+            get
+            {
+                if (crwHelper == null)
+                {
+                    crwHelper = new Many2ManyHelper<CritWords, Crit>(
+                        critWords,
+                        x => x.Word == this,
+                        x => x.Crit);
+                }
+                return crwHelper;
             }
         }
 
@@ -158,11 +192,27 @@ namespace Diagnosis.Models
             Contract.Ensures(!VwHelper.Values.Contains(voc));
             VwHelper.Remove(voc);
         }
+
         protected internal virtual void AddVocWords(VocabularyWords vw)
         {
             Contract.Requires(vw != null);
             Contract.Requires(vw.Vocabulary.Words.Contains(this));
             VwHelper.Add(vw);
+        }
+
+        protected internal virtual void RemoveCrit(Crit crit)
+        {
+            Contract.Requires(crit != null);
+            Contract.Requires(!crit.Words.Contains(this));
+            Contract.Ensures(!CrwHelper.Values.Contains(crit));
+            CrwHelper.Remove(crit);
+        }
+
+        protected internal virtual void AddCritWords(CritWords crw)
+        {
+            Contract.Requires(crw != null);
+            Contract.Requires(crw.Crit.Words.Contains(this));
+            CrwHelper.Add(crw);
         }
 
         protected internal virtual void AddHr(HealthRecord hr)

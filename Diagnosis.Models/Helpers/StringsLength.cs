@@ -7,9 +7,8 @@ namespace Diagnosis.Models
 {
     public static class Length
     {
-        public static int EstimatorDescr = 2000;
-        public static int CrGrDescr = 2000;
-        public static int CriterionDescr = 2000;
+        public static int CritDescr = 2000;
+        public static int CritOptionsFormat = 10;
         public static int CriterionCode = 50;
         public static int CriterionValue = 50;
 

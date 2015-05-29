@@ -231,7 +231,7 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => x.Opt != null);
 
                 var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));
-                var hOpt = loader.ReadOptions(est.HeaderHrsOptions);
+                var hOpt = loader.ReadOptions(est.Options);
                 var topHrs = Searcher.GetResult(Session, hOpt);
                 Result = new CritSearchResultViewModel(crHrs, topHrs, est);
             }

@@ -272,6 +272,20 @@ namespace Diagnosis.Models.Tests
             Assert.IsFalse(e.CriteriaGroups.Contains(gr));
             Assert.IsNull(gr.Estimator);
         }
+
+        [TestMethod]
+        public void Crit2Word()
+        {
+            Load<Criterion>();
+
+            cr[3].AddWord(w[1]);
+            Assert.IsTrue(w[1].Crits.Contains(cr[3]));
+            Assert.IsTrue(cr[3].Words.Contains(w[1]));
+
+            cr[3].RemoveWord(w[1]);
+            Assert.IsFalse(w[1].Crits.Contains(cr[3]));
+            Assert.IsFalse(cr[3].Words.Contains(w[1]));
+        }
         [TestMethod]
         public void HrCascade()
         {
