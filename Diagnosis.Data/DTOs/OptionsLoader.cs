@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace Diagnosis.Data
 {
-
     public abstract class OptionsLoader
     {
         private ISession session;
@@ -73,11 +72,29 @@ namespace Diagnosis.Data
             Contract.Ensures(dto.GetAllChildrenCount() == Contract.Result<SearchOptions>().GetAllChildrenCount());
 
             var result = new SearchOptions();
-            result.GroupOperator = dto.GroupOperator;
-            result.SearchScope = dto.SearchScope;
+
+            // some options
+            bool sscopeNotParsed = false;
+            bool grOpNotParsed = false;
+            QueryGroupOperator groupOperator;
+            if (!Enum.TryParse<QueryGroupOperator>(dto.GroupOperator, out groupOperator))
+            {
+                groupOperator = QueryGroupOperator.All;
+                grOpNotParsed = true;
+            }
+            SearchScope sscope;
+            if (!Enum.TryParse<SearchScope>(dto.SearchScope, out sscope))
+            {
+                sscope = SearchScope.HealthRecord;
+                sscopeNotParsed = true;
+            }
+
+            result.GroupOperator = groupOperator;
+            result.SearchScope = sscope;
             result.MinAny = dto.MinAny;
             result.WithConf = dto.WithConf;
 
+            // words
             var allWordsTitles = dto.CWordsAll.Union(dto.CWordsAny).Union(dto.CWordsNot).Select(x => x.Title);
             var words = WordQuery.ByTitles(session)(allWordsTitles);
 
@@ -87,42 +104,16 @@ namespace Diagnosis.Data
             result.CWordsAll = new List<Confindencable<Word>>(SelectConfWords(dto.CWordsAll, words, out confNotParsedAll));
             result.CWordsAny = new List<Confindencable<Word>>(SelectConfWords(dto.CWordsAny, words, out confNotParsedAny));
             result.CWordsNot = new List<Confindencable<Word>>(SelectConfWords(dto.CWordsNot, words, out confNotParsedNot));
-            var notParsed = confNotParsedAll || confNotParsedAny || confNotParsedNot;
 
             // measures
-            var mWordTitles = (from w in dto.MeasuresAll
-                                         .Union(dto.MeasuresAny)
-                                         .Select(x => x.Word)
-                               where w != null
-                               select w.Title).Distinct().ToList();
+            bool mWordsMissed;
+            bool uomsMissed;
+            var mWords = LoadMeasureWords(dto, out mWordsMissed);
+            var uoms = LoadUoms(dto, out uomsMissed);
 
-            var mWords = WordQuery.ByTitles(session)(mWordTitles).ToList();
-
-            var uomSpecs = (from u in dto.MeasuresAll
-                                         .Union(dto.MeasuresAny)
-                                         .Select(x => x.Uom)
-                            where u != null
-                            select new { Abbr = u.Abbr, Descr = u.Description, TypeName = u.Type == null ? null : u.Type.Title })
-                           .Distinct().ToList();
-            var uoms = uomSpecs
-                .Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName))
-                .Where(x => x != null)
-                .ToList();
-
-            var mAll = dto.MeasuresAll.Select(x =>
-                new MeasureOp(x.Operator, x.Value)
-                {
-                    Uom = x.Uom == null ? null : uoms.FirstOrDefault(u => x.Uom.Equals(u)),
-                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title),
-                    RightValue = x.RightValue
-                });
-            var mAny = dto.MeasuresAny.Select(x =>
-                new MeasureOp(x.Operator, x.Value)
-                {
-                    Uom = x.Uom == null ? null : uoms.FirstOrDefault(u => x.Uom.Equals(u)),
-                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title),
-                    RightValue = x.RightValue
-                });
+            bool mopNotParsed;
+            var mAll = SelectMeasures(dto.MeasuresAll, mWords, uoms, out mopNotParsed);
+            var mAny = SelectMeasures(dto.MeasuresAny, mWords, uoms, out mopNotParsed);
 
             result.MeasuresAll = new List<MeasureOp>(mAll);
             result.MeasuresAny = new List<MeasureOp>(mAny);
@@ -131,26 +122,83 @@ namespace Diagnosis.Data
             var cats = CategoryQuery.ByTitles(session)(dto.Categories.Select(x => x.Title));
             result.Categories = new List<HrCategory>(cats);
 
+            // childs
             dto.Children.ForAll(x =>
             {
                 var child = this.LoadFromDTO(x);
                 result.Children.Add(child);
             });
 
+
             var smthMissed =
-                 result.CWordsAll.Count != dto.CWordsAll.Count ||
-                 result.CWordsAny.Count != dto.CWordsAny.Count ||
-                 result.CWordsNot.Count != dto.CWordsNot.Count ||
+                result.CWordsAll.Count != dto.CWordsAll.Count ||
+                result.CWordsAny.Count != dto.CWordsAny.Count ||
+                result.CWordsNot.Count != dto.CWordsNot.Count ||
                 result.MeasuresAll.Count != dto.MeasuresAll.Count ||
                 result.MeasuresAny.Count != dto.MeasuresAny.Count ||
                 result.Categories.Count != dto.Categories.Count ||
-                mWords.Count != mWordTitles.Count() ||
-                uoms.Count != uomSpecs.Count();
+                mWordsMissed ||
+                uomsMissed;
+
+            var notParsed = confNotParsedAll || confNotParsedAny || confNotParsedNot || sscopeNotParsed || grOpNotParsed || mopNotParsed;
 
             if (smthMissed || notParsed || result.Children.Any(x => x.PartialLoaded))
                 result.SetPartialLoaded();
 
             return result;
+        }
+
+        private List<Uom> LoadUoms(SearchOptionsDTO dto, out bool uomsMissed)
+        {
+            var uomSpecs = dto.MeasuresAll
+                        .Union(dto.MeasuresAny)
+                        .Where(x => x.UomDescr != null)
+                        .Select(x => new { Abbr = x.Abbr, Descr = x.UomDescr, TypeName = x.UomTypeTitle == null ? null : x.UomTypeTitle })
+                        .Distinct()
+                        .ToList();
+            var uoms = uomSpecs
+                .Select(x => UomQuery.ByAbbrDescrAndTypeName(session)(x.Abbr, x.Descr, x.TypeName))
+                .Where(x => x != null)
+                .ToList();
+
+            uomsMissed = uomSpecs.Count != uoms.Count;
+            return uoms;
+        }
+
+        private IEnumerable<Word> LoadMeasureWords(SearchOptionsDTO dto, out bool mWordsMissed)
+        {
+            var mWordTitles = (from w in dto.MeasuresAll
+                                            .Union(dto.MeasuresAny)
+                                            .Select(x => x.Word)
+                               where w != null
+                               select w.Title).Distinct().ToList();
+            var mWords = WordQuery.ByTitles(session)(mWordTitles).ToList();
+
+            mWordsMissed = mWordTitles.Count != mWords.Count;
+            return mWords;
+        }
+
+        private static IEnumerable<MeasureOp> SelectMeasures(IEnumerable<MeasureOpDTO> mopDtos, IEnumerable<Word> mWords, IEnumerable<Uom> uoms, out bool mopNotParsed)
+        {
+            MeasureOperator op;
+            var opNP = false;
+            var res = mopDtos.Select(x =>
+            {
+                if (!Enum.TryParse<MeasureOperator>(x.Operator, out op))
+                {
+                    op = MeasureOperator.GreaterOrEqual;
+                    opNP = true;
+                }
+
+                return new MeasureOp(op, x.Value)
+                {
+                    Uom = x.UomDescr == null ? null : uoms.FirstOrDefault(u => x.UomEquals(u)),
+                    Word = x.Word == null ? null : mWords.FirstOrDefault(w => w.Title == x.Word.Title),
+                    RightValue = x.RightValue
+                };
+            });
+            mopNotParsed = opNP;
+            return res;
         }
 
         private static IEnumerable<Confindencable<Word>> SelectConfWords(IEnumerable<ConfWordDTO> cwords, IEnumerable<Word> words, out bool confNotParsed)
@@ -193,6 +241,7 @@ namespace Diagnosis.Data
             return dto.SerializeDCJson();
         }
     }
+
     public static class SearchOptionsExtensions
     {
         [Pure]
@@ -201,6 +250,7 @@ namespace Diagnosis.Data
             Contract.Requires(o != null);
             return o.Children.Aggregate(o.Children.Count, (x, d) => x + GetAllChildrenCount(d));
         }
+
         [Pure]
         public static int GetAllChildrenCount(this SearchOptionsDTO dto)
         {
