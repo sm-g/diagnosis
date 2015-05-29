@@ -64,6 +64,7 @@ namespace Diagnosis.ViewModels.Screens
     public class HrsStatistic : StatisticBase
     {
         private ReadOnlyCollection<Patient> _pats;
+        bool initialized;
 
         public HrsStatistic(IEnumerable<HealthRecord> hrs)
         {
@@ -104,6 +105,7 @@ namespace Diagnosis.ViewModels.Screens
             GridValues = new Dictionary<HealthRecord, Dictionary<IHrItemObject, GridValue>>();
 
             FillGridValues();
+            initialized = true;
         }
 
         /// <summary>
@@ -202,8 +204,8 @@ namespace Diagnosis.ViewModels.Screens
         private void ObjectInvariant()
         {
             Contract.Invariant(GridValues.Values.All(x => x.Keys.All(hio => hio is Word || hio is IcdDisease)));
-            Contract.Invariant(GridValues.Keys.Count == HealthRecords.Count);
-            Contract.Invariant(GridValues.Values.All(x => x.Keys.Count == Words.Count + Icds.Count));
+            Contract.Invariant(!initialized || GridValues.Keys.Count == HealthRecords.Count);
+            Contract.Invariant(!initialized || GridValues.Values.All(x => x.Keys.Count == Words.Count + Icds.Count));
         }
 
         /// <summary>
