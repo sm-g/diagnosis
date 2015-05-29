@@ -251,8 +251,6 @@
     <Compile Include="DTOs\_ModelDtosMapper.cs" />
     <Compile Include="DTOs\HrCategoryDTO.cs" />
     <Compile Include="DTOs\MeasureOpDTO.cs" />
-    <Compile Include="DTOs\UomDTO.cs" />
-    <Compile Include="DTOs\UomTypeDTO.cs" />
     <Compile Include="DTOs\WordDTO.cs" />
     <Compile Include="Mappings\UomFormatMap.cs" />
     <Compile Include="Mappings\EstimatorMap.cs" />
