@@ -69,8 +69,25 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void WithAllOfWordsRepeat()
+        public void WithAllOfWordsRepeat_Case1()
         {
+            // a & a = a
+            var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[22], w[22] }, new Word[] { }, new Word[] { });
+
+            Assert.AreEqual(6, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public void WithAllOfWordsRepeat_Case2()
+        {
+            // отдельные элементы
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[22], w[22] }, new Word[] { }, new Word[] { });
 
             Assert.AreEqual(1, hrs.Count());

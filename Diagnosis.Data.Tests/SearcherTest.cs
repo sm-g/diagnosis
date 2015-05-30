@@ -36,7 +36,7 @@ namespace Diagnosis.Data.Tests
         [TestMethod]
         public void AllInHr_AllAnySame_Case1()
         {
-            // к записи подходит: 22 и (22 или 1) = (22 или 1)
+            // к записи подходит: 22 и (22 или 1) = 22
             var hrs = o
                   .Scope(SearchScope.HealthRecord)
                   .All()
@@ -44,13 +44,13 @@ namespace Diagnosis.Data.Tests
                   .SetAny(w[22], w[1])
                   .Search(session);
 
-            Assert.AreEqual(5, hrs.Count());
-            Assert.IsTrue(hrs.IsSuperSetOf(
-               hr[22],
-               hr[70],
-               hr[73],
-               hr[74],
-               hr[72]));
+            Assert.AreEqual(6, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
         }
 
         [ExpectedException(typeof(AssertFailedException))]
@@ -126,6 +126,21 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Contains(hr[22]));
             Assert.IsTrue(hrs.Contains(hr[30]));
             Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+        }
+
+        [TestMethod]
+        public void AnyInHr_MinAny()
+        {
+            var hrs = o
+                .Scope(SearchScope.HealthRecord)
+                .MinAny(2)
+                .SetAny(w[1], w[22], w[3])
+                .Search(session);
+
+            Assert.AreEqual(3, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
             Assert.IsTrue(hrs.Contains(hr[72]));
         }
 

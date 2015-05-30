@@ -141,7 +141,7 @@ namespace Diagnosis.Data.Queries
         }
 
         /// <summary>
-        /// Возвращает записи со всеми из слов.
+        /// Возвращает записи со всеми из слов (с точным числом слов).
         /// </summary>
         public static Func<IEnumerable<Word>, IEnumerable<HealthRecord>> WithAllWords(ISession session)
         {
@@ -301,11 +301,32 @@ namespace Diagnosis.Data.Queries
             return (all, any, not) =>
             {
                 Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
+                // записи где слова - надмножество all
+                // all.IsSubmultisetOf(hr.Words)
+                // var withAny = withall.Where(hr => any.Any(w => hr.Words.DifferenceWith(all).Contains(w))); // TODO minany
+
+                // записи где set(all) - подмножество слов записи
+                //all.IsSubsetOf(hr.Words)
+
                 if (any.Any() || all.Any())
                 {
                     var withAny = WithAnyWord(session)(any.Any() ? any : all);
-                    var withall = withAny.Where(hr => all.IsSubmultisetOf(hr.Words));
+                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.Words)); // записи где слова - надмножество all
                     return withall.Where(hr => !hr.Words.Any(w => not.Contains(w)));
+
+                    //IEnumerable<HealthRecord> allany;
+                    //if (any.Any() && all.Any())
+                    //{
+                    //    var withall = WithAllWords(session)(all);
+                    //    allany = withall.Where(hr => any.Any(w => hr.Words.Contains(w)));
+                    //}
+                    //else if (any.Any())
+                    //    allany = WithAnyWord(session)(any);
+                    //else // all.Any()
+                    //    allany = WithAllWords(session)(all);
+
+                    //return allany.Where(hr => !hr.Words.Any(w => not.Contains(w)));
                 }
                 else
                 {
@@ -314,15 +335,36 @@ namespace Diagnosis.Data.Queries
             };
         }
 
-        public static Func<IEnumerable<Confindencable<Word>>, IEnumerable<Confindencable<Word>>, IEnumerable<Confindencable<Word>>, int, IEnumerable<HealthRecord>> WithAllAnyNotConfWordsMinAny(ISession session)
+        // test only
+        public static Func<IEnumerable<Word>, IEnumerable<Word>, IEnumerable<Word>, int, IEnumerable<HealthRecord>> WithAllAnyNotWordsMinAny(ISession session)
         {
             return (all, any, not, minAny) =>
             {
                 Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+
                 if (any.Any() || all.Any())
                 {
-                    var withAny = WithAnyConfWords(session)(any.Any() ? any : all, minAny);
-                    var withall = withAny.Where(hr => all.IsSubmultisetOf(hr.GetCWords()));
+                    var withAny = WithAnyWords(session)(any.Any() ? any : all, minAny);
+                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.Words)); // записи где слова - надмножество all
+                    return withall.Where(hr => !hr.Words.Any(w => not.Contains(w)));
+
+                }
+                else
+                {
+                    return WithoutAnyWord(session)(not);
+                }
+            };
+        }
+
+        public static Func<IEnumerable<Confindencable<Word>>, IEnumerable<Confindencable<Word>>, IEnumerable<Confindencable<Word>>, IEnumerable<HealthRecord>> WithAllAnyNotConfWords(ISession session)
+        {
+            return (all, any, not) =>
+            {
+                Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
+                if (any.Any() || all.Any())
+                {
+                    var withAny = WithAnyConfWord(session)(any.Any() ? any : all);
+                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.GetCWords())); // записи где слова - надмножество all
                     return withall.Where(hr => !hr.GetCWords().Any(w => not.Contains(w)));
                 }
                 else
@@ -332,20 +374,21 @@ namespace Diagnosis.Data.Queries
             };
         }
 
-        public static Func<IEnumerable<Word>, IEnumerable<Word>, IEnumerable<Word>, int, IEnumerable<HealthRecord>> WithAllAnyNotWordsMinAny(ISession session)
+        // test only
+        public static Func<IEnumerable<Confindencable<Word>>, IEnumerable<Confindencable<Word>>, IEnumerable<Confindencable<Word>>, int, IEnumerable<HealthRecord>> WithAllAnyNotConfWordsMinAny(ISession session)
         {
             return (all, any, not, minAny) =>
             {
                 Contract.Ensures(Contract.Result<IEnumerable<HealthRecord>>() != null);
                 if (any.Any() || all.Any())
                 {
-                    var withAny = WithAnyWords(session)(any.Any() ? any : all, minAny);
-                    var withall = withAny.Where(hr => all.IsSubmultisetOf(hr.Words));
-                    return withall.Where(hr => !hr.Words.Any(w => not.Contains(w)));
+                    var withAny = WithAnyConfWords(session)(any.Any() ? any : all, minAny);
+                    var withall = withAny.Where(hr => all.IsSubsetOf(hr.GetCWords())); // записи где слова - надмножество all
+                    return withall.Where(hr => !hr.GetCWords().Any(w => not.Contains(w)));
                 }
                 else
                 {
-                    return WithoutAnyWord(session)(not);
+                    return WithoutAnyConfWord(session)(not);
                 }
             };
         }
