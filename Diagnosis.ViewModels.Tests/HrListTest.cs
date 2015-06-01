@@ -20,15 +20,11 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void Init()
         {
-            Load<Doctor>();
-
             Load<Patient>();
             Load<Course>();
             Load<HrCategory>();
             Load<Appointment>();
             Load<HealthRecord>();
-
-            AuthorityController.TryLogIn(d1);
 
             card = new CardViewModel(a[2], true);
         }

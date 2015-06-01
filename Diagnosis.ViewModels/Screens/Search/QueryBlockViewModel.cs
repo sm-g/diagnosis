@@ -484,7 +484,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private void CreateAutocompletes(ISession session)
         {
-            var sm = new SuggestionsMaker(session) { AddNotPersistedToSuggestions = false };
+            var sm = new SuggestionsMaker(session, AuthorityController.CurrentDoctor) { AddNotPersistedToSuggestions = false };
             AutocompleteAll = new QueryBlockAutocomplete(sm);
             AutocompleteAny = new QueryBlockAutocomplete(sm);
             AutocompleteNot = new QueryBlockAutocomplete(sm, new[] { BlankType.Word }); // без measure

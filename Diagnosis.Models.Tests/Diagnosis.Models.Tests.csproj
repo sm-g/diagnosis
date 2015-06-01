@@ -86,7 +86,6 @@
     <Compile Include="WordTest.cs" />
     <Compile Include="CourseTest.cs" />
     <Compile Include="DateOffsetTest.cs" />
-    <Compile Include="DoctorTest.cs" />
     <Compile Include="HealthRecordTest.cs" />
     <Compile Include="HrCategoryTest.cs" />
     <Compile Include="HrItemTest.cs" />

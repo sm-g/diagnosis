@@ -26,6 +26,18 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
+        public void CustomVocCreatedAfterSaveNewWord()
+        {
+            var d = new Doctor("doc");
+            Assert.IsTrue(d.CustomVocabulary.IsTransient);
+
+            var newW = CreateWordAsInEditor("123", d);
+
+            Assert.IsFalse(newW.IsTransient);
+            Assert.IsFalse(d.CustomVocabulary.IsTransient);
+        }
+
+        [TestMethod]
         public void RemoveWordSaveVoc()
         {
             Load<Vocabulary>();

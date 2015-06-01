@@ -5,7 +5,6 @@ using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Linq;
 
 namespace Diagnosis.Models.Tests
 {
@@ -24,8 +23,6 @@ namespace Diagnosis.Models.Tests
             Load<Speciality>();
             Load<IcdBlock>();
             Load<Vocabulary>();
-
-            AuthorityController.TryLogIn(d1);
         }
 
         [TestMethod]

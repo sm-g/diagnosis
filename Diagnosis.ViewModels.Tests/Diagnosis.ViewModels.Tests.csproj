@@ -84,6 +84,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="AuthorityControllerTest.cs" />
     <Compile Include="OverlayTest.cs" />
     <Compile Include="TagTest.cs" />
     <Compile Include="BlankSetterTest.cs" />

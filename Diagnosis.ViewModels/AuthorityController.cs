@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
+using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
 using PasswordHash;
@@ -7,22 +8,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Security;
-using NHibernate.Linq;
-using Diagnosis.Data.Queries;
 
 namespace Diagnosis.ViewModels
 {
-    public static class AuthorityController
+    public class AuthorityController
     {
+        private static readonly System.Lazy<AuthorityController> lazyInstance = new System.Lazy<AuthorityController>(() => new AuthorityController());
+
         public static event EventHandler<UserEventArgs> LoggedIn;
 
         public static event EventHandler LoggedOut;
 
-        private static List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words, Screen.Criteria };
-        private static List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync, Screen.Vocabularies };
+        private List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words, Screen.Criteria };
+        private List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync, Screen.Vocabularies };
 
-        static AuthorityController()
+        private AuthorityController()
         {
             AutoLogon = true;
 #if DEBUG
@@ -31,13 +31,15 @@ namespace Diagnosis.ViewModels
 #endif
         }
 
-        public static Doctor CurrentDoctor { get; private set; }
+        public static AuthorityController Default { get { return lazyInstance.Value; } }
 
-        public static IUser CurrentUser { get; private set; }
+        public Doctor CurrentDoctor { get; private set; }
 
-        public static bool AutoLogon { get; set; }
+        public IUser CurrentUser { get; private set; }
 
-        public static bool TryLogIn(IUser user, string password = null)
+        public bool AutoLogon { get; set; }
+
+        public bool TryLogIn(IUser user, string password = null)
         {
             if (ValidatePassword(user, password))
             {
@@ -56,7 +58,7 @@ namespace Diagnosis.ViewModels
             return false;
         }
 
-        public static void LoadVocsAfterLogin(NHibernate.ISession session)
+        public void LoadVocsAfterLogin(NHibernate.ISession session)
         {
             if (CurrentDoctor == null) return;
 
@@ -74,7 +76,7 @@ namespace Diagnosis.ViewModels
         /// <param name="user"></param>
         /// <param name="pass"></param>
         /// <returns></returns>
-        public static bool ValidatePassword(IUser user, string pass)
+        public bool ValidatePassword(IUser user, string pass)
         {
             if (user is Admin && pass != null)
             {
@@ -85,7 +87,7 @@ namespace Diagnosis.ViewModels
             return user is Doctor;
         }
 
-        public static void LogOut()
+        public void LogOut()
         {
             AutoLogon = false;
             CurrentDoctor = null;
@@ -99,7 +101,7 @@ namespace Diagnosis.ViewModels
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns>False, если пароль совпадает с текущим.</returns>
-        public static bool ChangePassword(IUser user, string password)
+        public bool ChangePassword(IUser user, string password)
         {
             if (ValidatePassword(user, password))
                 return false;
@@ -109,7 +111,7 @@ namespace Diagnosis.ViewModels
             return true;
         }
 
-        public static bool IsStrong(string password)
+        public bool IsStrong(string password)
         {
             if (password.IsNullOrEmpty())
                 return false;
@@ -121,7 +123,7 @@ namespace Diagnosis.ViewModels
         }
 
         [Pure]
-        public static bool CurrentUserCanOpen(Screen screen)
+        public bool CurrentUserCanOpen(Screen screen)
         {
             if (CurrentUser is Admin)
             {
@@ -135,21 +137,21 @@ namespace Diagnosis.ViewModels
             return screen == Screen.Login;
         }
 
-        private static void OnLoggedIn(IUser user)
+        private void OnLoggedIn(IUser user)
         {
             var h = LoggedIn;
             if (h != null)
             {
-                h(typeof(AuthorityController), new UserEventArgs(user));
+                h(this, new UserEventArgs(user));
             }
         }
 
-        private static void OnLoggedOut()
+        private void OnLoggedOut()
         {
             var h = LoggedOut;
             if (h != null)
             {
-                h(typeof(AuthorityController), EventArgs.Empty);
+                h(this, EventArgs.Empty);
             }
         }
     }

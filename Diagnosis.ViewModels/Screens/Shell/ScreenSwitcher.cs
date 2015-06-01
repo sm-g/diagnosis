@@ -18,9 +18,12 @@ namespace Diagnosis.ViewModels.Screens
         private List<Screen> history = new List<Screen>();
         private Screen _curScreen;
         private ScreenBaseViewModel _curView;
+        AuthorityController ac;
 
-        public ScreenSwitcher()
+        public ScreenSwitcher(AuthorityController ac)
         {
+            this.ac = ac;
+
             // диалоги
 
             SubscribeForSendOpenDialog();
@@ -91,7 +94,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return AuthorityController.CurrentDoctor != null;
+                return ac.CurrentDoctor != null;
             }
         }
 
@@ -102,8 +105,8 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="replace">Открывать ли экран заново, если совпадает с текущим экраном.</param>
         public void OpenScreen(Screen screen, object parameter = null, bool replace = false)
         {
-            if (!AuthorityController.CurrentUserCanOpen(screen))
-                throw new InvalidOperationException(string.Format("{0} не может открывать {1}", AuthorityController.CurrentUser, screen));
+            if (!ac.CurrentUserCanOpen(screen))
+                throw new InvalidOperationException(string.Format("{0} не может открывать {1}", ac.CurrentUser, screen));
 
             var updateCurView = replace || Screen != screen;
             Screen = screen;

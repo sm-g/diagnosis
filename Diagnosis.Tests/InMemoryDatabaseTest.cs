@@ -13,6 +13,8 @@ namespace Diagnosis.Tests
     [TestClass]
     public abstract class InMemoryDatabaseTest : DbTest
     {
+        protected AuthorityController AuthorityController { get; private set; }
+
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
@@ -23,15 +25,20 @@ namespace Diagnosis.Tests
             Constants.IsClient = true;
 
             session = NHibernateHelper.Default.OpenSession();
+
+            Load<Doctor>();
+            AuthorityController = AuthorityController.Default;
+            AuthorityController.TryLogIn(d1);
         }
 
         [TestCleanup]
         public void InMemoryDatabaseTestCleanup()
         {
             session.Dispose();
+            AuthorityController.LogOut();
         }
 
-        protected Word CreateWordAsInEditor(string title)
+        protected Word CreateWordAsInEditor(string title, Doctor doc = null)
         {
             var dbWords = session.Query<Word>().ToList();
             var newW = new Word(title);
@@ -39,7 +46,8 @@ namespace Diagnosis.Tests
                 .Where(w => w.Title == newW.Title && w != newW)
                 .FirstOrDefault() ?? newW;
 
-            AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
+            var doctor = doc ?? AuthorityController.CurrentDoctor;
+            doctor.AddWords(toSave.ToEnumerable());
             new Saver(session).Save(toSave);
             return toSave;
         }

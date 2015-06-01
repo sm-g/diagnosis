@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Screens
 
             OverlayService = new OverlayServiceViewModel();
 
-            switcher = new ScreenSwitcher();
+            switcher = new ScreenSwitcher(AuthorityController);
             switcher.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CurrentView")

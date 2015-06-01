@@ -22,6 +22,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<Word>();
             Load<Appointment>();
             Load<Uom>();
+            
 
             s = new SearchViewModel();
         }

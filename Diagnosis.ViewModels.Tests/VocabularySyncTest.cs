@@ -6,8 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
-using System.Linq;
-
 namespace Diagnosis.ViewModels.Tests
 {
     [TestClass]
@@ -18,9 +16,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void Init()
         {
-            Load<Doctor>();
-
-            AuthorityController.TryLogIn(d1);
+            
 
             vl = new VocabularySyncViewModel();
         }

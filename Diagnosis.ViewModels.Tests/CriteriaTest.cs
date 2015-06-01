@@ -20,6 +20,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<CriteriaGroup>();
             Load<Criterion>();
 
+
             crit = new CriteriaViewModel();
         }
 
@@ -161,8 +162,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SaveNewWordsFromCriterionQueryEditor()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             crit.Open(cr[3]);
             var w = new Word("1");
@@ -175,8 +175,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void SaveNewWordsFromEstimatorQueryEditor()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             crit.Open(est[1]);
             var w = new Word("1");
@@ -189,8 +188,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void DoctorCanUseNewWordsFromCritQueryEditor()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             crit.Open(cr[3]);
             var w = new Word("1");
@@ -210,8 +208,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void CopyNewWord_Save_Remove_PasteTransient_GetFromDb()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             var w = new Word("11");
             crit.Open(cr[3]);
@@ -244,8 +241,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void WordsFromOptionsIsNotEmpty()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             // save word
             crit.Open(cr[3]);
@@ -262,8 +258,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void WordsAfterRename()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             // save word
             crit.Open(cr[3]);
@@ -292,8 +287,7 @@ namespace Diagnosis.ViewModels.Tests
         public void WordWithUomTitleAfterRename()
         {
             Load<Uom>();
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+
 
             // save
             crit.Open(cr[3]);

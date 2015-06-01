@@ -16,14 +16,12 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void Init()
         {
-            Load<Doctor>();
             Load<Patient>();
             Load<Course>();
             Load<Appointment>();
             Load<HealthRecord>();
             Load<Word>();
 
-            AuthorityController.TryLogIn(d1);
             // p[3] c[4] a[5] are empty, for deletions
             card = new CardViewModel(true);
         }

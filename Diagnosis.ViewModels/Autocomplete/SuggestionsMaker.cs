@@ -43,24 +43,18 @@ namespace Diagnosis.ViewModels.Autocomplete
         ///
         /// </summary>
         /// <param name="session"></param>
-        public SuggestionsMaker(ISession session, bool clearCreated = false)
+        public SuggestionsMaker(ISession session, Doctor doctor, bool clearCreated = false)
         {
             Contract.Requires(session != null);
-
+            Contract.Requires(doctor != null);
             this.session = session;
+            this.doctor = doctor;
 
             if (clearCreated)
                 created.Clear();
 
             AddNotPersistedToSuggestions = true;
             CanChangeAddQueryToSuggstions = true;
-            doctor = AuthorityController.CurrentDoctor;
-
-            AuthorityController.LoggedIn += (s, e) =>
-            {
-                // fix, search надо создавать после логина
-                doctor = AuthorityController.CurrentDoctor;
-            };
         }
 
         /// <summary>
