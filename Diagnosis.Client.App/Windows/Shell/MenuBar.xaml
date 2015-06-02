@@ -17,9 +17,6 @@
             <MenuItem Command="{Binding OpenDoctorsCommand}"
                       Visibility="{Binding OpenDoctorsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Header="_Врачи" />
-            <!--<MenuItem Header="_Пациенты">
-                <MenuItem Command="{Binding AddCommand}" Header="_Новый..." />
-            </MenuItem>-->
             <MenuItem Command="{Binding OpenWordsCommand}"
                       Visibility="{Binding OpenWordsCommand.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Header="_Словарь" />
@@ -35,15 +32,7 @@
 
             <MenuItem x:Name="view"
                       Header="_Вид">
-                
             </MenuItem>
-            <!--<MenuItem x:Name="metro" IsCheckable="true"
-                      IsChecked="{Binding IsMetroTheme}"
-                      Header="_Metro" />-->
-            <!--<MenuItem x:Name="big"
-                      IsCheckable="true"
-                      IsChecked="{Binding IsBigFont}"
-                      Header="Big" />-->
         </Menu>
     </Grid>
 </UserControl>

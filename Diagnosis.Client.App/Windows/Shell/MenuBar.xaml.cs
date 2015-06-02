@@ -12,13 +12,9 @@ namespace Diagnosis.Client.App.Windows.Shell
             InitializeComponent();
             Loaded += (s, e) =>
             {
-#if !DEBUG
                 view.Visibility = System.Windows.Visibility.Collapsed;
                 view.IsEnabled = false;
-                //metro.Visibility = System.Windows.Visibility.Collapsed;
-                //metro.IsEnabled = false;
-                //big.Visibility = System.Windows.Visibility.Collapsed;
-                //big.IsEnabled = false;
+#if !DEBUG
 #endif
             };
         }

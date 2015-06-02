@@ -14,7 +14,6 @@ namespace Diagnosis.ViewModels.Screens
     public class MainWindowViewModel : ViewModelBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
-        private ScreenSwitcher switcher;
         private SearchViewModel searchPanel;
         private bool? searchVisByUser = null;
         private string _sexes;
@@ -29,9 +28,13 @@ namespace Diagnosis.ViewModels.Screens
                 titlePrefix = "Демо :: ";
             }
 
-            OverlayService = new OverlayServiceViewModel();
+            var switcher = new ScreenSwitcher(AuthorityController);
 
-            switcher = new ScreenSwitcher(AuthorityController);
+            OverlayService = new OverlayServiceViewModel();
+            MenuBar = new MenuBarViewModel(switcher);
+            Panes = new ObservableCollection<PaneViewModel>();
+            ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
+
             switcher.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CurrentView")
@@ -39,8 +42,6 @@ namespace Diagnosis.ViewModels.Screens
                     if (CurrentView != null)
                         CurrentView.PropertyChanged -= CurrentView_PropertyChanged;
                     CurrentView = switcher.CurrentView;
-
-                    MenuBar.Visible = switcher.Screen != Screen.Login;
 
                     var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
                     //logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
@@ -67,22 +68,24 @@ namespace Diagnosis.ViewModels.Screens
                         searchVisByUser = searchPanel.IsVisible;
                 }
             };
-            Panes = new ObservableCollection<PaneViewModel>();
             //Panes.Add(searchPanel);
             //Panes.CollectionChanged += (s, e) =>
             //{
             //    logger.DebugFormat("Panes {0}", e.Action);
             //};
 
-            ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
             ADLayout.LayoutLoading += (s, e) =>
             {
                 // сначала открываем первый экран
                 switcher.OpenScreen(Screen.Login, replace: true);
             };
 
-            MenuBar = new MenuBarViewModel(switcher, searchPanel);
 
+            Subscribe();
+        }
+
+        private void Subscribe()
+        {
             AuthorityController.LoggedIn += (s, e) =>
             {
                 if (e.user is Doctor)
@@ -145,10 +148,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public string Title
         {
-            get
-            {
-                return CurrentView == null ? null : titlePrefix + CurrentView.Title;
-            }
+            get { return CurrentView == null ? null : titlePrefix + CurrentView.Title; }
         }
 
         public MenuBarViewModel MenuBar { get; private set; }
@@ -241,7 +241,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
                 else if (cId == ScreenBaseViewModel.ScreenContentId)
                 {
-                    args.Content = switcher.CurrentView;
+                    args.Content = CurrentView;
                 }
 
                 //args.Content = ReloadDocument(args.Model.ContentId);

@@ -12,6 +12,7 @@ namespace Diagnosis.ViewModels.Screens
         private ScreenSwitcher switcher;
         private IUser _curUser;
         private bool _visible;
+        private bool _big;
         private VisibleRelayCommand _openSyncCommand;
         private VisibleRelayCommand _openDoctorsCommand;
         private VisibleRelayCommand _openPatientsCommand;
@@ -21,11 +22,10 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand _openVocsCommand;
         private VisibleRelayCommand _openCritCommand;
 
-        public MenuBarViewModel(ScreenSwitcher switcher, SearchViewModel sPanel)
+        public MenuBarViewModel(ScreenSwitcher switcher)
         {
             this.switcher = switcher;
 
-            SearchPanel = sPanel;
             AuthorityController.LoggedIn += (s, e) =>
             {
                 CurrentUser = AuthorityController.CurrentUser;
@@ -46,6 +46,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 CurrentUser = AuthorityController.CurrentUser;
             };
+
+            switcher.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "CurrentView")
+                {
+                    Visible = switcher.WithMenuBar;
+                }
+            };
         }
 
         public bool Visible
@@ -63,29 +71,6 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        private bool _metro = true;
-
-        public bool IsMetroTheme
-        {
-            get
-            {
-                return _metro;
-            }
-            set
-            {
-                if (_metro != value)
-                {
-                    _metro = value;
-                    this.Send(Event.ChangeTheme, value.AsParams(MessageKeys.Boolean));
-
-                    OnPropertyChanged(() => IsMetroTheme);
-                }
-            }
-        }
-
-        private bool _big;
-
 
         public bool IsBigFont
         {
@@ -140,6 +125,7 @@ namespace Diagnosis.ViewModels.Screens
                     }, () => switcher.Screen != Screen.Words && AuthorityController.CurrentUserCanOpen(Screen.Words)));
             }
         }
+
         public VisibleRelayCommand OpenVocsCommand
         {
             get
@@ -151,6 +137,7 @@ namespace Diagnosis.ViewModels.Screens
                     }, () => switcher.Screen != Screen.Vocabularies && AuthorityController.CurrentUserCanOpen(Screen.Vocabularies)));
             }
         }
+
         public VisibleRelayCommand OpenCriteriaCommand
         {
             get
@@ -162,6 +149,7 @@ namespace Diagnosis.ViewModels.Screens
                     }, () => switcher.Screen != Screen.Criteria && AuthorityController.CurrentUserCanOpen(Screen.Criteria)));
             }
         }
+
         public VisibleRelayCommand OpenPatientsCommand
         {
             get
@@ -183,8 +171,6 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => switcher.Screen != Screen.Doctors && AuthorityController.CurrentUserCanOpen(Screen.Doctors)));
             }
         }
-
-
 
         public VisibleRelayCommand OpenSyncCommand
         {
@@ -236,7 +222,5 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
-        public ToolViewModel SearchPanel { get; private set; }
     }
 }

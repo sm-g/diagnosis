@@ -89,13 +89,19 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
-
+        /// <summary>
+        /// Показывать поиск на текущем экране.
+        /// </summary>
         public bool WithSearch
         {
-            get
-            {
-                return ac.CurrentDoctor != null;
-            }
+            get { return ac.CurrentDoctor != null; }
+        }
+        /// <summary>
+        /// Показывать меню на текущем экране.
+        /// </summary>
+        public bool WithMenuBar
+        {
+            get { return Screen != Screens.Screen.Login; }
         }
 
         /// <summary>

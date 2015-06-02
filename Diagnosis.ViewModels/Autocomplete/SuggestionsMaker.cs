@@ -39,10 +39,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             };
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="session"></param>
         public SuggestionsMaker(ISession session, Doctor doctor, bool clearCreated = false)
         {
             Contract.Requires(session != null);

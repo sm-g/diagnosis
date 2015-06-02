@@ -39,7 +39,8 @@ namespace Diagnosis.Client.App.DesignData
     }
     public class SampleQueryEditorViewModel : QueryEditorViewModel
     {
-        public SampleQueryEditorViewModel() { }
+        public SampleQueryEditorViewModel()
+            : base(SessionVMBase.Nhib.GetSession()) { }
     }
     public class SampleQueryBlockViewModel : QueryBlockViewModel
     {
