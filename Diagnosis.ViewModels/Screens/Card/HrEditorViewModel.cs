@@ -34,11 +34,6 @@ namespace Diagnosis.ViewModels.Screens
             doctor = AuthorityController.CurrentDoctor;
         }
 
-        [Obsolete("For xaml only.")]
-        public HrEditorViewModel()
-        {
-        }
-
         /// <summary>
         /// Запись выгружена, но редактор еще открыт.
         /// </summary>

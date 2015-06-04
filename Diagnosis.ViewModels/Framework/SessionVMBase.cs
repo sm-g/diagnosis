@@ -1,5 +1,8 @@
 ﻿using Diagnosis.Data;
+using System.Linq;
 using NHibernate;
+using NHibernate.Linq;
+using Diagnosis.Models;
 
 namespace Diagnosis.ViewModels
 {
@@ -16,6 +19,11 @@ namespace Diagnosis.ViewModels
 
         public SessionVMBase()
         {
+            if (IsInDesignMode && AuthorityController.CurrentDoctor == null)
+            {
+                var doc = Nhib.GetSession().Query<Doctor>().FirstOrDefault();
+                AuthorityController.TryLogIn(doc);
+            }
         }
 
         protected ISession Session

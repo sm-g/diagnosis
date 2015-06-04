@@ -40,16 +40,19 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleQueryEditorViewModel : QueryEditorViewModel
     {
         public SampleQueryEditorViewModel()
-            : base(SessionVMBase.Nhib.GetSession()) { }
+            : base(SessionVMBase.Nhib.GetSession())
+        {
+            QueryBlocks.Add(new SampleQueryBlockViewModel());
+        }
     }
     public class SampleQueryBlockViewModel : QueryBlockViewModel
     {
-#pragma warning disable 0618
         public SampleQueryBlockViewModel()
+            : base(SessionVMBase.Nhib.GetSession(), () => { })
         {
-            Children.Add(new SampleQueryBlockViewModel());
+            if (IsRoot)
+                Children.Add(new SampleQueryBlockViewModel());
         }
-#pragma warning restore 0618
     }
 
     public class SampleTagViewModel : TagViewModel
@@ -79,12 +82,13 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
-#pragma warning disable 0618
-
-    // ctor for xaml
     public class SampleHrEditorViewModel : HrEditorViewModel
-#pragma warning restore 0618
     {
+        public SampleHrEditorViewModel()
+            : base(SessionVMBase.Nhib.GetSession())
+        {
+
+        }
         public new IEnumerable<HrCategory> Categories
         {
             get

@@ -12,7 +12,7 @@
              xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:diag="http://schemas.smg.com/diagnosis"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance design:SampleQueryBlockViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance design:SampleQueryBlockViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="400"
              d:DesignWidth="400"
              Background="Transparent"

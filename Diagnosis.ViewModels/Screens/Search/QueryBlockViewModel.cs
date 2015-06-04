@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="options"></param>
         public QueryBlockViewModel(ISession session, Action onAutocompleteInputEnded, SearchOptions options = null)
         {
-            Contract.Ensures(options == null || options.Equals(_options));
+            // Contract.Ensures(options == null || options.Equals(_options));
 
             this.session = session;
             this.onAutocompleteInputEnded = onAutocompleteInputEnded;
@@ -78,11 +78,6 @@ namespace Diagnosis.ViewModels.Screens
                 _options = options;
                 FillFromOptions(options);
             }
-        }
-
-        [Obsolete("For xaml only.")]
-        public QueryBlockViewModel()
-        {
         }
 
         public ObservableCollection<MenuItem> MinAnyMenuItems { get; private set; }
