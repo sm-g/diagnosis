@@ -3,20 +3,20 @@ using System;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// Авалон-панель.
+    /// </summary>
     public class PaneViewModel : SessionVMBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(PaneViewModel));
 
         private string _contentId = null;
         private bool _isActive = false;
-        private bool _hide;
-        //private bool _isAutoHidden;
         private bool _isSelected = false;
         private string _title = null;
-        private Action<bool> OnIsAutoHiddenChanging;
 
         /// <summary>
-        /// Заголовок панели
+        /// Заголовок панели.
         /// </summary>
         public string Title
         {
@@ -47,7 +47,6 @@ namespace Diagnosis.ViewModels.Screens
         public virtual Uri IconSource
         {
             get;
-
             protected set;
         }
 
@@ -61,25 +60,6 @@ namespace Diagnosis.ViewModels.Screens
                     _isActive = value;
                     //logger.DebugFormat("{0} IsActive = {1}", this, value);
                     OnPropertyChanged("IsActive");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Anchorable will be autohidden after insert.
-        /// </summary>
-        public bool HideAfterInsert
-        {
-            get
-            {
-                return _hide;
-            }
-            set
-            {
-                if (_hide != value)
-                {
-                    _hide = value;
-                    OnPropertyChanged(() => HideAfterInsert);
                 }
             }
         }
@@ -98,24 +78,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        // public bool IsAutoHidden
-        //{
-        //    get
-        //    {
-        //        return _isAutoHidden;
-        //    }
-        //    set
-        //    {
-        //        if (_isAutoHidden != value)
-        //        {
-        //            _isAutoHidden = value;
-        //            logger.DebugFormat("{0} IsAutoHidden = {1}", this, value);
-
-        //            OnPropertyChanged(() => IsAutoHidden);
-        //        }
-        //    }
-        //}
-
         public RelayCommand NothingCommand
         {
             get
@@ -124,23 +86,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                 }, () => false);
             }
-        }
-
-        public void ShowAutoHidden()
-        {
-            if (OnIsAutoHiddenChanging != null)
-                OnIsAutoHiddenChanging(false);
-        }
-
-        public void AutoHide()
-        {
-            if (OnIsAutoHiddenChanging != null)
-                OnIsAutoHiddenChanging(true);
-        }
-
-        public void SetIsAutoHiddenChangingCallback(Action<bool> actToNewValue)
-        {
-            this.OnIsAutoHiddenChanging = actToNewValue;
         }
 
         public override string ToString()

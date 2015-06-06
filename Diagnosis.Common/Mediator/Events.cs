@@ -89,6 +89,7 @@ namespace Diagnosis.Common
         // app
         PushToSettings,
         Shutdown,
+        SaveLayout,
     }
 
     public static class EventAggragatorExtensions
