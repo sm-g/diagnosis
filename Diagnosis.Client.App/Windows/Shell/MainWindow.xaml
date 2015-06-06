@@ -194,7 +194,7 @@
                 <xcad:MetroTheme />
             </shell:MyDockingManager.Theme>
             <shell:MyDockingManager.Resources>
-                <!--Прячем кнопки панели для экранов-->
+                <!--Прячем кнопки панели для экранов (если они не документы) -->
                 <Style TargetType="{x:Type xcad:AnchorablePaneTitle}"
                        BasedOn="{StaticResource AnchorablePaneTitleEmptyForScreen}">
                 </Style>
