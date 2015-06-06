@@ -136,7 +136,7 @@
                      Command="{Binding OpenPrevCommand}"
                      Style="{StaticResource metroCircleButton}">
                 <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
-                                   Source="{DynamicResource appbar_navigate_previous}" />
+                                   Source="{StaticResource appbar_navigate_previous}" />
             </Button>
             <headers:Holder DockPanel.Dock="Top"
                             DataContext="{Binding PrevHolder}"
@@ -153,7 +153,7 @@
                      Command="{Binding OpenNextCommand}"
                      Style="{StaticResource metroCircleButton}">
                 <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
-                                   Source="{DynamicResource appbar_navigate_next}" />
+                                   Source="{StaticResource appbar_navigate_next}" />
             </Button>
             <headers:Holder HorizontalAlignment="Right"
                             DockPanel.Dock="Top"

@@ -147,7 +147,7 @@
                         <MenuItem.Icon>
                             <diag:MenuItemIcon Fill="{StaticResource AccentColorBrush}"
                                                diag:Square.Size="16"
-                                               Source="{DynamicResource appbar_database}" />
+                                               Source="{StaticResource appbar_database}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -170,7 +170,7 @@
                     ToolTip="Помощь (F1)">
                 <diag:MenuItemIcon   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                      diag:Square.Size="16"
-                                     Source="{DynamicResource appbar_question}" />
+                                     Source="{StaticResource appbar_question}" />
             </Button>
             <Button Width="10" />
         </mahapps:WindowCommands>
