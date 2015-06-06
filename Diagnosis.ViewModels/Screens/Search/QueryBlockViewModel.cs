@@ -42,7 +42,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="options"></param>
         public QueryBlockViewModel(ISession session, Action onAutocompleteInputEnded, SearchOptions options = null)
         {
-            // Contract.Ensures(options == null || options.Equals(_options));
+            Contract.Requires(session != null);
 
             this.session = session;
             this.onAutocompleteInputEnded = onAutocompleteInputEnded;
@@ -479,6 +479,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void CreateAutocompletes(ISession session)
         {
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
+
             var sm = new SuggestionsMaker(session, AuthorityController.CurrentDoctor) { AddNotPersistedToSuggestions = false };
             AutocompleteAll = new QueryBlockAutocomplete(sm);
             AutocompleteAny = new QueryBlockAutocomplete(sm);

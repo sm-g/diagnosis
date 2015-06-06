@@ -21,7 +21,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<Word>();
             Load<Appointment>();
             Load<Uom>();
-            
+
 
             s = new SearchViewModel();
             hrsTotal = hr.Count;
@@ -44,9 +44,29 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void CannotSearchWithoutOptions()
         {
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);
             s.QueryEditor.QueryBlocks.Clear();
             Assert.IsTrue(s.QueryEditor.AllEmpty);
             Assert.IsFalse(s.SearchCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void CannotSearchAfterLogout()
+        {
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);
+            AuthorityController.LogOut();
+
+            Assert.IsFalse(s.SearchCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void CanSearchAfterRelogin()
+        {
+            AuthorityController.LogOut();
+            AuthorityController.TryLogIn(d1);
+            (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);
+
+            Assert.IsTrue(s.SearchCommand.CanExecute(null));
         }
 
         [TestMethod]

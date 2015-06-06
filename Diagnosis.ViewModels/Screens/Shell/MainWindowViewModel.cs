@@ -241,7 +241,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (cId == SearchViewModel.ToolContentId)
             {
-                // нельзя делать после логина - в авалоне всегда должна быть модель
+                // нельзя делать после логина / убирать - в авалоне всегда должна быть модель
                 searchPanel = new SearchViewModel() { Title = "Поиск" };
                 searchPanel.SetAnchorable(anchorable);
                 searchPanel.IsVisible = switcher.WithSearch;
