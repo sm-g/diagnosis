@@ -206,6 +206,9 @@ namespace Diagnosis.Data
         /// <returns>Connection success</returns>
         public bool Init(ConnectionInfo conn, Side side, bool useSavedCfg = true)
         {
+            if (InMemory) // maybe set before Init call
+                return false;
+
             if (connection != default(ConnectionInfo))
                 throw new System.InvalidOperationException("Already initialized");
 
@@ -217,8 +220,6 @@ namespace Diagnosis.Data
             if (fail || conn == default(ConnectionInfo))
                 InMemory = true;
 
-            if (InMemory) // maybe set before Init call
-                return false;
 
             connection = conn;
             return true;
