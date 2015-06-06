@@ -44,6 +44,7 @@ namespace Diagnosis.Client.App
         {
             inExit = true;
             this.Send(Event.Shutdown);
+            this.Send(Event.SaveLayout);
             Diagnosis.Client.App.Properties.Settings.Default.Save();
             DbMaintenanceOnExit();
         }
