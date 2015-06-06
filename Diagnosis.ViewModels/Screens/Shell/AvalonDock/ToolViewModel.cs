@@ -1,17 +1,46 @@
-﻿using NHibernate;
+﻿using Diagnosis.Common;
+using EventAggregator;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
 namespace Diagnosis.ViewModels.Screens
 {
     public class ToolViewModel : PaneViewModel
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ToolViewModel));
-
-        bool wasDeAutoHiddenBeforeHide;
+        private static List<ToolViewModel> vms = new List<ToolViewModel>();
+        protected Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable anchorable;
         private bool _isVisible = true;
+
+        static ToolViewModel()
+        {
+            typeof(ToolViewModel).Subscribe(Event.Shutdown, (e) =>
+            {
+                vms.ForEach(x =>
+                {
+                    // показываем скрытые панели перед сериализацией, чтобы они остались в xml
+                    x.IsVisible = true;
+
+                    // разворачиваем их.
+                    // https://avalondock.codeplex.com/workitem/17319
+                    // если оставить их свернутыми, созданный LayoutAnchorGroup (в ToggleAutoHide)
+                    // останется пустым, и при след. сворачивании будет создан новый LayoutAnchorGroup 
+                    // который мешает TabNavigation
+
+                    // чтобы вернуть свернутость после загрузки, можно
+                    // хранить свернуть в настройках
+                    // убирать пустые LayoutAnchorGroup в xml
+                    x.SetIsAutoHidden(false);
+                });
+            });
+        }
+        public ToolViewModel()
+        {
+            vms.Add(this);
+        }
+
         public bool IsVisible
         {
             get { return _isVisible; }
@@ -20,23 +49,14 @@ namespace Diagnosis.ViewModels.Screens
                 if (_isVisible != value)
                 {
                     _isVisible = value;
-                    //logger.DebugFormat("IsVisible {0} -> {1}", ContentId, value);
+                    logger.DebugFormat("IsVisible {0} -> {1}", ContentId, value);
 
-                    if (value)
+                    if (anchorable != null)
                     {
-                        // AD call LayoutAnchorable.Show() after
-                        if (wasDeAutoHiddenBeforeHide)
-                            AutoHide();
-                    }
-                    else
-                    {
-                        // AD call LayoutAnchorable.Hide() after
-                        // to prevent empty LayoutAnchorGroup, call ToggleAutoHide() for him
-
-                        //wasDeAutoHiddenBeforeHide = IsAutoHidden;
-
-                        // there is no callback before layout loaded
-                        // ShowAutoHidden();
+                        if (value)
+                            anchorable.Show();
+                        else
+                            anchorable.Hide();
                     }
 
                     OnPropertyChanged("IsVisible");
@@ -46,15 +66,43 @@ namespace Diagnosis.ViewModels.Screens
 
         public void Activate()
         {
-            HideAfterInsert = false;
             IsVisible = true;
+            SetIsAutoHidden(false);
             IsActive = true;
-            ShowAutoHidden();
         }
 
         public override string ToString()
         {
             return "tool " + Title;
+        }
+
+        /// <summary>
+        /// Чтобы работал IsVisible
+        /// </summary>
+        internal void SetAnchorable(Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable anchorable)
+        {
+            Contract.Requires(anchorable != null);
+
+            logger.DebugFormat("{0} SetAnchorable {1}", this, anchorable);
+            if (this.anchorable == null)
+            {
+                this.anchorable = anchorable;
+
+                // скрываем как только появился anchorable
+                if (!IsVisible)
+                    anchorable.Hide();
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                vms.Remove(this);
+            }
+
+            base.Dispose(disposing);
+
         }
     }
 }

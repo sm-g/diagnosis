@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using System;
+using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels.Screens
 {
@@ -9,11 +10,9 @@ namespace Diagnosis.ViewModels.Screens
 
         private string _contentId = null;
         private bool _isActive = false;
-        private bool _hide;
-        //private bool _isAutoHidden;
         private bool _isSelected = false;
         private string _title = null;
-        private Action<bool> OnIsAutoHiddenChanging;
+        private Action<bool> OnIsAutoHiddenSet;
 
         /// <summary>
         /// Заголовок панели
@@ -65,25 +64,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Anchorable will be autohidden after insert.
-        /// </summary>
-        public bool HideAfterInsert
-        {
-            get
-            {
-                return _hide;
-            }
-            set
-            {
-                if (_hide != value)
-                {
-                    _hide = value;
-                    OnPropertyChanged(() => HideAfterInsert);
-                }
-            }
-        }
-
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -98,24 +78,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        // public bool IsAutoHidden
-        //{
-        //    get
-        //    {
-        //        return _isAutoHidden;
-        //    }
-        //    set
-        //    {
-        //        if (_isAutoHidden != value)
-        //        {
-        //            _isAutoHidden = value;
-        //            logger.DebugFormat("{0} IsAutoHidden = {1}", this, value);
-
-        //            OnPropertyChanged(() => IsAutoHidden);
-        //        }
-        //    }
-        //}
-
         public RelayCommand NothingCommand
         {
             get
@@ -126,21 +88,22 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public void ShowAutoHidden()
+        /// <summary>
+        /// Вместо IsAutoHidden depprop, которого нет
+        /// </summary>
+        public void SetIsAutoHidden(bool willBeAutoHidden)
         {
-            if (OnIsAutoHiddenChanging != null)
-                OnIsAutoHiddenChanging(false);
+            if (OnIsAutoHiddenSet != null)
+                OnIsAutoHiddenSet(willBeAutoHidden);
         }
 
-        public void AutoHide()
+        /// <summary>
+        /// Чтобы управлять IsAutoHidden.
+        /// </summary>
+        public void SetIsAutoHiddenSettingCallback(Action<bool> actToNewValue)
         {
-            if (OnIsAutoHiddenChanging != null)
-                OnIsAutoHiddenChanging(true);
-        }
-
-        public void SetIsAutoHiddenChangingCallback(Action<bool> actToNewValue)
-        {
-            this.OnIsAutoHiddenChanging = actToNewValue;
+            if (OnIsAutoHiddenSet == null)
+                this.OnIsAutoHiddenSet = actToNewValue;
         }
 
         public override string ToString()

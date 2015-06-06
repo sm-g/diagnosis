@@ -233,8 +233,10 @@
                             <Setter Property="CanHide"
                                     Value="False" />
 
-                            <Setter Property="Visibility"
-                                    Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                            <!--if uncomment, prop overwrites to Collapsed somewhere in WPF-External, 
+                                so call anchorable.Show()/Hide()-->
+                            <!--<Setter Property="Visibility"
+                                    Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />-->
                             <Setter Property="DockAsDocumentCommand"
                                     Value="{Binding Model.NothingCommand}" />
                         </Style>
@@ -253,7 +255,6 @@
                                     Value="{Binding Model.IsActive, Mode=TwoWay}" />
                             <Setter Property="CanClose"
                                     Value="False" />
-
                             <Setter Property="CanFloat"
                                     Value="False" />
                             <!--<Setter Property="CanHide"
