@@ -1,7 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -15,77 +13,72 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
         private SearchViewModel searchPanel;
-        private bool? searchVisByUser = null;
         private string _sexes;
         private ScreenBaseViewModel _curView;
         private IDialogViewModel _modalDialog;
         private string titlePrefix;
+        private ScreenSwitcher switcher;
+        private bool loaded;
 
         public MainWindowViewModel(bool demoMode = false)
         {
             if (demoMode)
-            {
                 titlePrefix = "Демо :: ";
-            }
 
-            var switcher = new ScreenSwitcher(AuthorityController);
+            switcher = new ScreenSwitcher(AuthorityController);
 
             OverlayService = new OverlayServiceViewModel();
             MenuBar = new MenuBarViewModel(switcher);
-            Panes = new ObservableCollection<PaneViewModel>();
+            Tools = new ObservableCollection<ToolViewModel>();
             ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
 
-            switcher.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "CurrentView")
-                {
-                    if (CurrentView != null)
-                        CurrentView.PropertyChanged -= CurrentView_PropertyChanged;
-                    CurrentView = switcher.CurrentView;
+            // нельзя делать после логина - в авалоне всегда должна быть модель
+            searchPanel = new SearchViewModel() { Title = "Поиск" };
 
-                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
-                    //logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
-
-                    // показываем поиск на первом экране, где он может быть
-                    //searchPanel.IsVisible = switcher.WithSearch && (searchVisByUser ?? true);
-
-                    Panes.Add(CurrentView);
-                    Panes.Remove(prevScreen);
-
-                    CurrentView.IsActive = true;
-
-                    CurrentView.PropertyChanged += CurrentView_PropertyChanged;
-                }
-            };
-
-            searchPanel = new SearchViewModel() { Title = "Поиск", HideAfterInsert = true };
-            searchPanel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "IsVisible")
-                {
-                    if (switcher.WithSearch)
-                        // пользователь скрыл/показал поиск, сохраняем
-                        searchVisByUser = searchPanel.IsVisible;
-                }
-            };
-            //Panes.Add(searchPanel);
-            //Panes.CollectionChanged += (s, e) =>
-            //{
-            //    logger.DebugFormat("Panes {0}", e.Action);
-            //};
+            Tools.Add(searchPanel);
 
             ADLayout.LayoutLoading += (s, e) =>
             {
-                // сначала открываем первый экран
+                // сначала открываем первый экран, чтобы поставить его в панель во время десериализации лейаута
                 switcher.OpenScreen(Screen.Login, replace: true);
             };
-
+            ADLayout.LayoutLoaded += (s, e) =>
+            {
+                loaded = true;
+            };
 
             Subscribe();
         }
 
+        private void OnCurrentViewChanged()
+        {
+            // показываем новый экран
+
+            if (CurrentView != null)
+                CurrentView.PropertyChanged -= CurrentView_PropertyChanged;
+
+            CurrentView = switcher.CurrentView;
+            CurrentView.PropertyChanged += CurrentView_PropertyChanged;
+
+            if (loaded) // уже есть панель
+                searchPanel.IsVisible = switcher.WithSearch;
+
+            var prevScreen = _screens.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
+            _screens.Add(CurrentView);
+            _screens.Remove(prevScreen);
+            CurrentView.IsActive = true;
+        }
+
         private void Subscribe()
         {
+            switcher.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "CurrentView")
+                {
+                    OnCurrentViewChanged();
+                }
+            };
+
             AuthorityController.LoggedIn += (s, e) =>
             {
                 if (e.user is Doctor)
@@ -96,6 +89,7 @@ namespace Diagnosis.ViewModels.Screens
                     this.Send(Event.ChangeFont, doc.Settings.BigFontSize.AsParams(MessageKeys.Boolean));
                 }
             };
+
             this.Subscribe(Event.SettingsSaved, (e) =>
             {
                 var doc = e.GetValue<IUser>(MessageKeys.User) as Doctor;
@@ -115,10 +109,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public IDialogViewModel Modal
         {
-            get
-            {
-                return _modalDialog;
-            }
+            get { return _modalDialog; }
             set
             {
                 if (_modalDialog != value)
@@ -131,10 +122,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ScreenBaseViewModel CurrentView
         {
-            get
-            {
-                return _curView;
-            }
+            get { return _curView; }
             set
             {
                 if (_curView != value)
@@ -146,6 +134,18 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        ObservableCollection<ScreenBaseViewModel> _screens = new ObservableCollection<ScreenBaseViewModel>();
+        ReadOnlyObservableCollection<ScreenBaseViewModel> _readonlyScreens = null;
+        public ReadOnlyObservableCollection<ScreenBaseViewModel> Screens
+        {
+            get
+            {
+                if (_readonlyScreens == null)
+                    _readonlyScreens = new ReadOnlyObservableCollection<ScreenBaseViewModel>(_screens);
+
+                return _readonlyScreens;
+            }
+        }
         public string Title
         {
             get { return CurrentView == null ? null : titlePrefix + CurrentView.Title; }
@@ -155,7 +155,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public OverlayServiceViewModel OverlayService { get; private set; }
 
-        public ObservableCollection<PaneViewModel> Panes { get; private set; }
+        public ObservableCollection<ToolViewModel> Tools { get; private set; }
 
         public AvalonDockLayoutViewModel ADLayout { get; private set; }
 
@@ -167,7 +167,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     searchPanel.ControlsVisible = true;
                     searchPanel.Activate();
-                });
+                }, () => switcher.WithSearch);
             }
         }
 
@@ -178,23 +178,16 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     if (CurrentView is IFilterableList)
-                    {
                         (CurrentView as IFilterableList).Filter.IsFocused = true;
-                    }
-                    else
-                    {
+                    else if (OpenSearchCommand.CanExecute(null))
                         OpenSearchCommand.Execute(null);
-                    }
                 });
             }
         }
 
         public string Sexes
         {
-            get
-            {
-                return _sexes;
-            }
+            get { return _sexes; }
             set
             {
                 if (_sexes != value)
@@ -223,31 +216,55 @@ namespace Diagnosis.ViewModels.Screens
         private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
         {
             string cId = args.Model.ContentId;
-            if (string.IsNullOrWhiteSpace(cId) == true)
-            {
-                args.Cancel = true;
-                return;
-            }
+            logger.DebugFormat("ReloadContentOnStartUp, {0}", cId);
 
-            var pane = Panes.FirstOrDefault(p => p.ContentId == cId);
-
+            var pane = Tools.Union<PaneViewModel>(Screens).FirstOrDefault(p => p.ContentId == cId);
             if (pane != null)
                 args.Content = pane;
             else
-            {
-                if (cId == SearchViewModel.ToolContentId)
-                {
-                    args.Content = searchPanel;
-                }
-                else if (cId == ScreenBaseViewModel.ScreenContentId)
-                {
-                    args.Content = CurrentView;
-                }
+                args.Content =
+                    ReloadTool(args.Model) as PaneViewModel ??
+                    ReloadDocument(args.Model) as PaneViewModel;
 
-                //args.Content = ReloadDocument(args.Model.ContentId);
-                if (args.Content == null)
-                    args.Cancel = true;
+            // убираем пустую панель
+            if (args.Content == null)
+                args.Cancel = true;
+        }
+
+        private ScreenBaseViewModel ReloadDocument(Xceed.Wpf.AvalonDock.Layout.LayoutContent model)
+        {
+            string cId = model.ContentId;
+            if (cId == ScreenBaseViewModel.ScreenContentId)
+            {
+                return CurrentView;
             }
+
+            return null;
+        }
+
+        private ToolViewModel ReloadTool(Xceed.Wpf.AvalonDock.Layout.LayoutContent model)
+        {
+            string cId = model.ContentId;
+            var anchorable = model as Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable;
+
+            if (cId == SearchViewModel.ToolContentId)
+            {
+                searchPanel.SetAnchorable(anchorable);
+
+                searchPanel.IsVisible = switcher.WithSearch; // теперь можно скрыть панель
+
+                searchPanel.SetIsAutoHiddenChangingCallback((willBeAutoHidden) =>
+                {
+                    logger.DebugFormat("AutoHiddenChangingCallback from Reload. IsAutoHidden {0}, IsHidden {1}, willBeAutoHidden {2}",
+                        anchorable.IsAutoHidden, anchorable.IsHidden, willBeAutoHidden);
+                    if (willBeAutoHidden != anchorable.IsAutoHidden)
+                    {
+                        anchorable.ToggleAutoHide();
+                    }
+                });
+                return searchPanel;
+            }
+            return null;
         }
     }
 }

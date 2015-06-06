@@ -124,15 +124,19 @@ namespace Diagnosis.Client.App.Windows.Shell
 
                 }
             };
-            
+
 
             dockManager.Layout.ElementAdded += (s, e) =>
             {
-                logger.DebugFormat("added {0} {1}", e.Element.GetType().Name, "");
+                var lContent = e.Element as LayoutContent;
+                var content = lContent != null ? lContent.Content : null;
+                logger.DebugFormat("added {0} with {1}", e.Element.GetType().Name, content);
             };
             dockManager.Layout.ElementRemoved += (s, e) =>
             {
-                logger.DebugFormat("removed {0} {1}", e.Element.GetType().Name, "");
+                var lContent = e.Element as LayoutContent;
+                var content = lContent != null ? lContent.Content : null;
+                logger.DebugFormat("removed {0} with {1}", e.Element.GetType().Name, content);
             };
         }
 
@@ -211,61 +215,77 @@ namespace Diagnosis.Client.App.Windows.Shell
             w.SetBinding(ActivateBehavior.IsActiveProperty, new Binding() { Path = path });
             w.Show();
         }
+        #region Debug
 
         private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (e.Command == ApplicationCommands.Undo)
-                DumpLayout();
+            {
+                //DumpFocusScopes();
+                //LogRecordsFocused();
+                //GCollect();
+                //SaveAvalonLayout();
+                dockManager.Layout.ConsoleDump(0);
+            }
         }
 
-        private void DumpLayout()
+        private void LogRecordsFocused()
         {
-            //List<DependencyObject> scopes = new List<DependencyObject>();
-            //foreach (var item in this.FindVisualChildren())
-            //{
-            //    scopes.Add(FocusManager.GetFocusScope(item));
-            //}
-            //scopes = scopes.Distinct().ToList();
-            //foreach (var item in scopes)
-            //{
-            //    logger.DebugFormat("scope - {0}", item);
+            var grid = this.FindChild<Grid>("grid");
+            var rec = this.FindChild<ListBox>("records");
+            if (grid != null)
+                logger.DebugFormat("grid Focused {0}", grid.IsFocused);
+            logger.DebugFormat("rec Focused {0}", rec.IsFocused);
+        }
 
-            //}
-            //var grid = this.FindChild<Grid>("grid");
-            //var rec = this.FindChild<ListBox>("records");
-            //if (grid != null)
-            //    logger.DebugFormat("grid Focused {0}", grid.IsFocused);
-            //logger.DebugFormat("rec Focused {0}", rec.IsFocused);
+        private void DumpFocusScopes()
+        {
+            List<DependencyObject> scopes = new List<DependencyObject>();
+            foreach (var item in this.FindVisualChildren())
+            {
+                scopes.Add(FocusManager.GetFocusScope(item));
+            }
+            scopes = scopes.Distinct().ToList();
+            foreach (var item in scopes)
+            {
+                logger.DebugFormat("scope - {0}", item);
 
+            }
+        }
+
+        private void SaveAvalonLayout()
+        {
+            var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
+            if (SaveLayoutCommand != null)
+            {
+                string xmlLayoutString = "";
+
+                using (StringWriter fs = new StringWriter())
+                {
+                    var serializer = new XmlLayoutSerializer(dockManager);
+                    serializer.Serialize(fs);
+
+                    xmlLayoutString = fs.ToString();
+                }
+
+                if (SaveLayoutCommand is RoutedCommand)
+                {
+                    (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
+                }
+                else
+                {
+                    SaveLayoutCommand.Execute(xmlLayoutString);
+                }
+            }
+        }
+
+        private static void GCollect()
+        {
             GC.Collect();
             var mb = string.Format("{0:0.00} MB", GC.GetTotalMemory(true) / 1024.0 / 1024.0);
             logger.DebugFormat("{0}", mb);
-
-            //dockManager.Layout.ConsoleDump(0);
-            //var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
-            //if (SaveLayoutCommand != null)
-            //{
-            //    string xmlLayoutString = "";
-
-            //    using (StringWriter fs = new StringWriter())
-            //    {
-            //        var serializer = new XmlLayoutSerializer(dockManager);
-            //        serializer.Serialize(fs);
-
-            //        xmlLayoutString = fs.ToString();
-            //    }
-
-            //    if (SaveLayoutCommand is RoutedCommand)
-            //    {
-            //        (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
-            //    }
-            //    else
-            //    {
-            //        SaveLayoutCommand.Execute(xmlLayoutString);
-            //    }
-            //}
         }
-
+        #endregion
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var version = System.Reflection.Assembly.GetExecutingAssembly()
