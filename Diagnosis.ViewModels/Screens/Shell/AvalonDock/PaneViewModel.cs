@@ -1,9 +1,11 @@
 ﻿using Diagnosis.Common;
 using System;
-using System.Diagnostics.Contracts;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// Авалон-панель.
+    /// </summary>
     public class PaneViewModel : SessionVMBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(PaneViewModel));
@@ -12,10 +14,9 @@ namespace Diagnosis.ViewModels.Screens
         private bool _isActive = false;
         private bool _isSelected = false;
         private string _title = null;
-        private Action<bool> OnIsAutoHiddenSet;
 
         /// <summary>
-        /// Заголовок панели
+        /// Заголовок панели.
         /// </summary>
         public string Title
         {
@@ -46,7 +47,6 @@ namespace Diagnosis.ViewModels.Screens
         public virtual Uri IconSource
         {
             get;
-
             protected set;
         }
 
@@ -86,24 +86,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                 }, () => false);
             }
-        }
-
-        /// <summary>
-        /// Вместо IsAutoHidden depprop, которого нет
-        /// </summary>
-        public void SetIsAutoHidden(bool willBeAutoHidden)
-        {
-            if (OnIsAutoHiddenSet != null)
-                OnIsAutoHiddenSet(willBeAutoHidden);
-        }
-
-        /// <summary>
-        /// Чтобы управлять IsAutoHidden.
-        /// </summary>
-        public void SetIsAutoHiddenSettingCallback(Action<bool> actToNewValue)
-        {
-            if (OnIsAutoHiddenSet == null)
-                this.OnIsAutoHiddenSet = actToNewValue;
         }
 
         public override string ToString()

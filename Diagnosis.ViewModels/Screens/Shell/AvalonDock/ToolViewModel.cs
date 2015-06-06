@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// Скрываемая панель инструментов.
+    /// </summary>
     public class ToolViewModel : PaneViewModel
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ToolViewModel));
@@ -26,16 +29,17 @@ namespace Diagnosis.ViewModels.Screens
                     // разворачиваем их.
                     // https://avalondock.codeplex.com/workitem/17319
                     // если оставить их свернутыми, созданный LayoutAnchorGroup (в ToggleAutoHide)
-                    // останется пустым, и при след. сворачивании будет создан новый LayoutAnchorGroup 
+                    // останется пустым, и при след. сворачивании будет создан новый LayoutAnchorGroup
                     // который мешает TabNavigation
 
                     // чтобы вернуть свернутость после загрузки, можно
-                    // хранить свернуть в настройках
+                    // хранить свернутость в настройках
                     // убирать пустые LayoutAnchorGroup в xml
                     x.SetIsAutoHidden(false);
                 });
             });
         }
+
         public ToolViewModel()
         {
             vms.Add(this);
@@ -77,13 +81,32 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         /// <summary>
-        /// Чтобы работал IsVisible
+        /// Вместо IsAutoHidden depprop, которого нет
+        /// </summary>
+        private void SetIsAutoHidden(bool willBeAutoHidden)
+        {
+            if (anchorable == null)
+            {
+                logger.Warn("Cannot set IsAutoHidden without anchorable");
+                return;
+            }
+
+            logger.DebugFormat("{3}. IsAutoHidden {0}, IsHidden {1}, willBeAutoHidden {2}",
+                        anchorable.IsAutoHidden, anchorable.IsHidden, willBeAutoHidden, this);
+            if (willBeAutoHidden != anchorable.IsAutoHidden)
+            {
+                anchorable.ToggleAutoHide();
+            }
+        }
+
+        /// <summary>
+        /// Чтобы работал IsVisible и управлять IsAutoHidden
         /// </summary>
         internal void SetAnchorable(Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable anchorable)
         {
             Contract.Requires(anchorable != null);
 
-            logger.DebugFormat("{0} SetAnchorable {1}", this, anchorable);
+            //logger.DebugFormat("{0} SetAnchorable {1}", this, anchorable);
             if (this.anchorable == null)
             {
                 this.anchorable = anchorable;
@@ -102,7 +125,6 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             base.Dispose(disposing);
-
         }
     }
 }

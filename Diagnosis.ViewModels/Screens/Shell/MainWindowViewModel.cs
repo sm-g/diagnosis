@@ -14,13 +14,11 @@ namespace Diagnosis.ViewModels.Screens
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
         private SearchViewModel searchPanel;
         private string _sexes;
-        ObservableCollection<ScreenBaseViewModel> _screens;
-        ReadOnlyObservableCollection<ScreenBaseViewModel> _readonlyScreens;
+        private ObservableCollection<ScreenBaseViewModel> _screens;
         private ScreenBaseViewModel _curView;
         private IDialogViewModel _modalDialog;
         private string titlePrefix;
         private ScreenSwitcher switcher;
-        private bool loaded;
 
         public MainWindowViewModel(bool demoMode = false)
         {
@@ -36,27 +34,17 @@ namespace Diagnosis.ViewModels.Screens
             MenuBar = new MenuBarViewModel(switcher);
             ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
 
-            Tools.CollectionChanged += (s, e) =>
-            {
-                logger.DebugFormat("Tools {0}\n{1}", e.Action, Tools.Aggregate("", (acc, x) => acc + ", " + x));
-            };
-            _screens.CollectionChanged += (s, e) =>
-            {
-                logger.DebugFormat("Screens {0}\n{1}", e.Action, _screens.Aggregate("", (acc, x) => acc + ", " + x));
-            };
+            //DoPanesChangedLogging();
 
             ADLayout.LayoutLoading += (s, e) =>
             {
                 // сначала открываем первый экран, чтобы поставить его в панель во время десериализации лейаута
                 switcher.OpenScreen(Screen.Login, replace: true);
             };
-            ADLayout.LayoutLoaded += (s, e) =>
-            {
-                loaded = true;
-            };
 
             Subscribe();
         }
+
 
         private void OnCurrentViewChanged()
         {
@@ -259,19 +247,22 @@ namespace Diagnosis.ViewModels.Screens
                 searchPanel.IsVisible = switcher.WithSearch;
                 Tools.Add(searchPanel);
 
-                logger.DebugFormat("SetIsAutoHiddenSettingCallback");
-                searchPanel.SetIsAutoHiddenSettingCallback((willBeAutoHidden) =>
-                {
-                    logger.DebugFormat("AutoHiddenChangingCallback from Reload. IsAutoHidden {0}, IsHidden {1}, willBeAutoHidden {2}",
-                        anchorable.IsAutoHidden, anchorable.IsHidden, willBeAutoHidden);
-                    if (willBeAutoHidden != anchorable.IsAutoHidden)
-                    {
-                        anchorable.ToggleAutoHide();
-                    }
-                });
                 return searchPanel;
             }
             return null;
         }
+
+        private void DoPanesChangedLogging()
+        {
+            Tools.CollectionChanged += (s, e) =>
+            {
+                logger.DebugFormat("Tools {0}\n{1}", e.Action, Tools.Aggregate("", (acc, x) => acc + ", " + x));
+            };
+            _screens.CollectionChanged += (s, e) =>
+            {
+                logger.DebugFormat("Screens {0}\n{1}", e.Action, _screens.Aggregate("", (acc, x) => acc + ", " + x));
+            };
+        }
+
     }
 }

@@ -9,6 +9,9 @@ using System.Windows.Threading;
 
 namespace Diagnosis.ViewModels.Screens
 {
+    /// <summary>
+    /// Ёкран (авалон-документ).
+    /// </summary>
     public abstract class ScreenBaseViewModel : PaneViewModel
     {
         public static string ScreenContentId = "Screen";

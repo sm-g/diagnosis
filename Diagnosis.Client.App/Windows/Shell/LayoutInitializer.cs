@@ -29,16 +29,7 @@ namespace Diagnosis.Client.App.Windows.Shell
             {
                 if (content != null)
                 {
-                    // есть VM, повторно показываем панель
-
-                    //logger.DebugFormat("SetIsAutoHiddenSettingCallback");
-                    content.SetIsAutoHiddenSettingCallback((willBeAutoHidden) =>
-                    {
-                        logger.DebugFormat("AutoHiddenChangingCallback. IsAutoHidden {0}, IsHidden {1}, willBeAutoHidden {1}",
-                            anchorableToShow.IsAutoHidden, anchorableToShow.IsHidden, willBeAutoHidden);
-                        if (willBeAutoHidden != anchorableToShow.IsAutoHidden)
-                            anchorableToShow.ToggleAutoHide();
-                    });
+                    // already have VM, after IsVisible = true
                 }
                 pane.Children.Add(anchorableToShow);
                 return true;
