@@ -176,7 +176,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _estimators;
             }
-            set
+            private set
             {
                 if (_estimators != value)
                 {

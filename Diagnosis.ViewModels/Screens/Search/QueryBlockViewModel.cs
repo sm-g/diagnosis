@@ -50,7 +50,7 @@ namespace Diagnosis.ViewModels.Screens
             _operator = QueryGroupOperator.All;
             _minAny = 1;
 
-            CreateAutocompletes(session);
+            CreateAutocompletes();
             CreateMenuItems();
 
             Children.CollectionChanged += Children_CollectionChanged;
@@ -479,7 +479,7 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
-        private void CreateAutocompletes(ISession session)
+        private void CreateAutocompletes()
         {
             Contract.Assume(AuthorityController.CurrentDoctor != null);
 

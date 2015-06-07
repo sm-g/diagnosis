@@ -14,7 +14,7 @@ namespace Diagnosis.ViewModels.Screens
     /// </summary>
     public abstract class ScreenBaseViewModel : PaneViewModel
     {
-        public static string ScreenContentId = "Screen";
+        public const string ScreenContentId = "Screen";
 
         public ScreenBaseViewModel()
         {

@@ -23,7 +23,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
         public ObservableCollection<string> Days
         {
             get;
-            set;
+            private set;
         }
 
         public bool WithPicker

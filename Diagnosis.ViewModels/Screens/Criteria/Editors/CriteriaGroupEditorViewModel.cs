@@ -84,6 +84,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
+                tester.Dispose();
             }
             base.Dispose(disposing);
         }

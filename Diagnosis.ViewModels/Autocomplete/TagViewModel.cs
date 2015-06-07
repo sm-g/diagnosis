@@ -565,7 +565,6 @@ namespace Diagnosis.ViewModels.Autocomplete
         }
     }
 
-    [Serializable]
     public class TagEventArgs : EventArgs
     {
         public readonly TagViewModel tag;

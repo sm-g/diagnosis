@@ -12,7 +12,7 @@ namespace Diagnosis.ViewModels
 {
     public class DialogViewModel : SessionVMBase, IDialogViewModel
     {
-        public static Type[] ChildWindowModalDialogs = new Type[] {
+        public readonly static Type[] ChildWindowModalDialogs = new Type[] {
                 typeof(AppointmentEditorViewModel),
                 typeof(CourseEditorViewModel),
                 typeof(AdminSettingsViewModel),
