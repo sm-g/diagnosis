@@ -1,6 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

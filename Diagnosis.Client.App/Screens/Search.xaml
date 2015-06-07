@@ -120,7 +120,7 @@
                             </ComboBox>
                             <Button  Command="{Binding EditEstimatorCommand}" 
                                      Style="{StaticResource metroCircleButton}"
-                                     Visibility="{calc:Binding SelectedEstimator, Mode=OneWay}">
+                                     Visibility="{Binding SelectedEstimator, Converter={StaticResource NotNullToVis}}">
                                 <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
                                                    Source="{StaticResource appbar_edit}" />
                             </Button>
@@ -137,7 +137,7 @@
         <ContentPresenter Content="{Binding Result}"
                           Grid.Row="2"
                           Margin="5"
-                          Visibility="{Binding DataContent.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
+                          Visibility="{Binding DataContext.Result, ElementName=search, Converter={StaticResource NotNullToVis}}">
             <ContentPresenter.ContentTemplateSelector>
                 <search:SearchResultDataTemplateSelector>
                     <search:SearchResultDataTemplateSelector.CritTemplate>

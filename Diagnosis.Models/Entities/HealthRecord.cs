@@ -242,9 +242,19 @@ namespace Diagnosis.Models
             get { return hrItems.Where(x => x.Measure != null).Select(x => x.Measure); }
         }
 
+        /// <summary>
+        /// Включая слова из измерений.
+        /// </summary>
         public virtual IEnumerable<Word> Words
         {
             get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
+        }
+        /// <summary>
+        /// Без слов измерений.
+        /// </summary>
+        public virtual IEnumerable<Word> WordsNotFromMeasure
+        {
+            get { return hrItems.Where(x => x.Entity is Word).Select(x => x.Word); }
         }
 
         public virtual IEnumerable<IcdDisease> Diseases

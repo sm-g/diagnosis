@@ -196,6 +196,15 @@ namespace Diagnosis.Models
             return true;
         }
 
+        protected bool TryGetOriginal<T>(Expression<Func<T>> propertyExpression, out T value)
+        {
+            value = default(T);
+            if (!InEdit) return false;
+
+            value = EditHelper.GetOriginal<T, TId>(propertyExpression);
+            return true;
+        }
+
         [OnDeserialized]
         private void OnDeserializedMethod(StreamingContext context)
         {

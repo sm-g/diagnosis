@@ -4,19 +4,17 @@ using Diagnosis.Common.Presentation.Controls;
 using Diagnosis.ViewModels;
 using Diagnosis.ViewModels.Autocomplete;
 using Diagnosis.ViewModels.Screens;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Xceed.Wpf.AvalonDock.Layout.Serialization;
-using Xceed.Wpf.AvalonDock.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Threading;
-using System;
-using Xceed.Wpf.Toolkit;
+using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 namespace Diagnosis.Client.App.Windows.Shell
 {
@@ -32,34 +30,6 @@ namespace Diagnosis.Client.App.Windows.Shell
         {
             InitializeComponent();
 
-            this.Subscribe(Event.OpenDialog, (e) =>
-            {
-                var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
-
-                Dispatcher.Invoke((Action)(() =>
-                {
-                    if (dialogVM is PatientEditorViewModel)
-                    {
-                        ShowDialog(dialogVM, new PatientEditorWindow());
-                    }
-                    else if (dialogVM is IcdSelectorViewModel)
-                    {
-                        ShowDialog(dialogVM, new IcdSelectorWindow());
-                    }
-                    else if (!DialogViewModel.ChildWindowModalDialogs.Contains(dialogVM.GetType()))
-                    {
-                        ShowDialog(dialogVM, new EditorWindow());
-                    }
-                }));
-            });
-
-            this.Subscribe(Event.ShowHelp, (e) =>
-            {
-                var topic = e.GetValue<string>(MessageKeys.String);
-                OpenHelpWIndow(topic);
-
-            });
-
             Loaded += (s, e) =>
             {
 #if DEBUG
@@ -68,27 +38,21 @@ namespace Diagnosis.Client.App.Windows.Shell
 
                 if (demoMode)
                 {
-#if !DEBUG
-                new Thread(new ThreadStart(delegate
-                {
-                    System.Windows.MessageBox.Show(
-                        "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ClientConfigFilePath),
-                        "Демонстрационный режим",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                })).Start();
-#endif
-                }
-            };
-            dockManager.ActiveContentChanged += (s, e) =>
-            {
-                var pane = dockManager.ActiveContent as PaneViewModel;
-                if (pane != null)
-                {
-                    logger.DebugFormat("AD active = {0} ", pane);
+                    ShowDemoWarning();
                 }
             };
 
+            SubscribeToOpenEvents();
+
+            SetupChildEditorWindow();
+
+            SetupAvalonLogging();
+        }
+
+        private MainWindowViewModel Vm { get { return DataContext as MainWindowViewModel; } }
+
+        private void SetupChildEditorWindow()
+        {
             childWindow.Closing += (s, e1) =>
             {
                 var vm = childWindow.DataContext as IDialogViewModel;
@@ -121,19 +85,51 @@ namespace Diagnosis.Client.App.Windows.Shell
                     {
                         Keyboard.Focus(editorCommon);
                     }
-
                 }
             };
-            
+        }
 
-            dockManager.Layout.ElementAdded += (s, e) =>
+        private static void ShowDemoWarning()
+        {
+#if !DEBUG
+            new Thread(new ThreadStart(delegate
             {
-                logger.DebugFormat("added {0} {1}", e.Element.GetType().Name, "");
-            };
-            dockManager.Layout.ElementRemoved += (s, e) =>
+                System.Windows.MessageBox.Show(
+                    "Проверьте строку подключения в файле '{0}'".FormatStr(Constants.ClientConfigFilePath),
+                    "Демонстрационный режим",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            })).Start();
+#endif
+        }
+
+        private void SubscribeToOpenEvents()
+        {
+            this.Subscribe(Event.OpenDialog, (e) =>
             {
-                logger.DebugFormat("removed {0} {1}", e.Element.GetType().Name, "");
-            };
+                var dialogVM = e.GetValue<IDialogViewModel>(MessageKeys.Dialog);
+
+                Dispatcher.Invoke((Action)(() =>
+                {
+                    if (dialogVM is PatientEditorViewModel)
+                    {
+                        ShowDialog(dialogVM, new PatientEditorWindow());
+                    }
+                    else if (dialogVM is IcdSelectorViewModel)
+                    {
+                        ShowDialog(dialogVM, new IcdSelectorWindow());
+                    }
+                    else if (!DialogViewModel.ChildWindowModalDialogs.Contains(dialogVM.GetType()))
+                    {
+                        ShowDialog(dialogVM, new EditorWindow());
+                    }
+                }));
+            });
+            this.Subscribe(Event.ShowHelp, (e) =>
+            {
+                var topic = e.GetValue<string>(MessageKeys.String);
+                OpenHelpWIndow(topic);
+            });
         }
 
         /// <summary>
@@ -180,8 +176,6 @@ namespace Diagnosis.Client.App.Windows.Shell
             }
         }
 
-        MainWindowViewModel Vm { get { return DataContext as MainWindowViewModel; } }
-
         private bool? ShowDialog(IDialogViewModel vm, Window w)
         {
             w.Owner = this;
@@ -212,60 +206,6 @@ namespace Diagnosis.Client.App.Windows.Shell
             w.Show();
         }
 
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (e.Command == ApplicationCommands.Undo)
-                DumpLayout();
-        }
-
-        private void DumpLayout()
-        {
-            //List<DependencyObject> scopes = new List<DependencyObject>();
-            //foreach (var item in this.FindVisualChildren())
-            //{
-            //    scopes.Add(FocusManager.GetFocusScope(item));
-            //}
-            //scopes = scopes.Distinct().ToList();
-            //foreach (var item in scopes)
-            //{
-            //    logger.DebugFormat("scope - {0}", item);
-
-            //}
-            //var grid = this.FindChild<Grid>("grid");
-            //var rec = this.FindChild<ListBox>("records");
-            //if (grid != null)
-            //    logger.DebugFormat("grid Focused {0}", grid.IsFocused);
-            //logger.DebugFormat("rec Focused {0}", rec.IsFocused);
-
-            GC.Collect();
-            var mb = string.Format("{0:0.00} MB", GC.GetTotalMemory(true) / 1024.0 / 1024.0);
-            logger.DebugFormat("{0}", mb);
-
-            //dockManager.Layout.ConsoleDump(0);
-            //var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
-            //if (SaveLayoutCommand != null)
-            //{
-            //    string xmlLayoutString = "";
-
-            //    using (StringWriter fs = new StringWriter())
-            //    {
-            //        var serializer = new XmlLayoutSerializer(dockManager);
-            //        serializer.Serialize(fs);
-
-            //        xmlLayoutString = fs.ToString();
-            //    }
-
-            //    if (SaveLayoutCommand is RoutedCommand)
-            //    {
-            //        (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
-            //    }
-            //    else
-            //    {
-            //        SaveLayoutCommand.Execute(xmlLayoutString);
-            //    }
-            //}
-        }
-
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var version = System.Reflection.Assembly.GetExecutingAssembly()
@@ -274,5 +214,101 @@ namespace Diagnosis.Client.App.Windows.Shell
                                           .ToString();
             System.Windows.MessageBox.Show(version, "Версия", MessageBoxButton.OK);
         }
+
+        #region Debug
+
+        private void SetupAvalonLogging()
+        {
+            dockManager.ActiveContentChanged += (s, e) =>
+            {
+                var pane = dockManager.ActiveContent as PaneViewModel;
+                if (pane != null)
+                {
+                    logger.DebugFormat("AD active pane = {0} ", pane);
+                }
+            };
+            dockManager.Layout.ElementAdded += (s, e) =>
+            {
+                var lContent = e.Element as LayoutContent;
+                var content = lContent != null ? lContent.Content : null;
+                logger.DebugFormat("AD added {0} with {1}", e.Element.GetType().Name, content);
+            };
+            dockManager.Layout.ElementRemoved += (s, e) =>
+            {
+                var lContent = e.Element as LayoutContent;
+                var content = lContent != null ? lContent.Content : null;
+                logger.DebugFormat("AD removed {0} with {1}", e.Element.GetType().Name, content);
+            };
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Command == ApplicationCommands.Undo)
+            {
+                //DumpFocusScopes();
+                //LogRecordsFocused();
+                //GCollect();
+                //SaveAvalonLayout();
+                //dockManager.Layout.ConsoleDump(0);
+            }
+        }
+
+        private void LogRecordsFocused()
+        {
+            var grid = this.FindChild<Grid>("grid");
+            var rec = this.FindChild<ListBox>("records");
+            if (grid != null)
+                logger.DebugFormat("grid Focused {0}", grid.IsFocused);
+            logger.DebugFormat("rec Focused {0}", rec.IsFocused);
+        }
+
+        private void DumpFocusScopes()
+        {
+            List<DependencyObject> scopes = new List<DependencyObject>();
+            foreach (var item in this.FindVisualChildren())
+            {
+                scopes.Add(FocusManager.GetFocusScope(item));
+            }
+            scopes = scopes.Distinct().ToList();
+            foreach (var item in scopes)
+            {
+                logger.DebugFormat("scope - {0}", item);
+            }
+        }
+
+        private void SaveAvalonLayout()
+        {
+            var SaveLayoutCommand = AvalonDockLayoutSerializer.GetSaveLayoutCommand(dockManager);
+            if (SaveLayoutCommand != null)
+            {
+                string xmlLayoutString = "";
+
+                using (StringWriter fs = new StringWriter())
+                {
+                    var serializer = new XmlLayoutSerializer(dockManager);
+                    serializer.Serialize(fs);
+
+                    xmlLayoutString = fs.ToString();
+                }
+
+                if (SaveLayoutCommand is RoutedCommand)
+                {
+                    (SaveLayoutCommand as RoutedCommand).Execute(xmlLayoutString, dockManager);
+                }
+                else
+                {
+                    SaveLayoutCommand.Execute(xmlLayoutString);
+                }
+            }
+        }
+
+        private static void GCollect()
+        {
+            GC.Collect();
+            var mb = string.Format("{0:0.00} MB", GC.GetTotalMemory(true) / 1024.0 / 1024.0);
+            logger.DebugFormat("{0}", mb);
+        }
+
+        #endregion Debug
     }
 }

@@ -43,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
         /// <param name="options"></param>
         public QueryBlockViewModel(ISession session, Action onAutocompleteInputEnded, SearchOptions options = null)
         {
-            Contract.Ensures(options == null || options.Equals(_options));
+            Contract.Requires(session != null);
 
             this.session = session;
             this.onAutocompleteInputEnded = onAutocompleteInputEnded;
@@ -51,7 +51,7 @@ namespace Diagnosis.ViewModels.Screens
             _operator = QueryGroupOperator.All;
             _minAny = 1;
 
-            CreateAutocompletes(session);
+            CreateAutocompletes();
             CreateMenuItems();
 
             Children.CollectionChanged += Children_CollectionChanged;
@@ -86,11 +86,6 @@ namespace Diagnosis.ViewModels.Screens
                 _options = options;
                 FillFromOptions(options);
             }
-        }
-
-        [Obsolete("For xaml only.")]
-        public QueryBlockViewModel()
-        {
         }
 
         public ObservableCollection<MenuItem> MinAnyMenuItems { get; private set; }
@@ -468,6 +463,8 @@ namespace Diagnosis.ViewModels.Screens
                 handler.Dispose();
 
                 Children.CollectionChanged -= Children_CollectionChanged;
+                Children.ForEach(x => x.Dispose());
+                this.Remove();
 
                 AutocompleteAll.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteAny.InputEnded -= Autocomplete_InputEnded;
@@ -492,9 +489,11 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
-        private void CreateAutocompletes(ISession session)
+        private void CreateAutocompletes()
         {
-            var sm = new SuggestionsMaker(session) { AddNotPersistedToSuggestions = false };
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
+
+            var sm = new SuggestionsMaker(session, AuthorityController.CurrentDoctor) { AddNotPersistedToSuggestions = false };
             AutocompleteAll = new QueryBlockAutocomplete(sm);
             AutocompleteAny = new QueryBlockAutocomplete(sm);
             AutocompleteNot = new QueryBlockAutocomplete(sm, new[] { BlankType.Word }); // без measure

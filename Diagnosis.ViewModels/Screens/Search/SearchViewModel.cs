@@ -82,8 +82,9 @@ namespace Diagnosis.ViewModels.Screens
             get
             {
                 return new RelayCommand(Search,
-                    () => (IsCriteriaSearch && SelectedEstimator != null)
-                        || !QueryEditor.AllEmpty);
+                    () => AuthorityController.CurrentDoctor != null &&
+                        ((IsCriteriaSearch && SelectedEstimator != null) // выбран критерий
+                        || !QueryEditor.AllEmpty)); // есть условия поиска
             }
         }
 
@@ -175,7 +176,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return _estimators;
             }
-            set
+            private set
             {
                 if (_estimators != value)
                 {
@@ -221,6 +222,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Search()
         {
+            RemoveLastResults();
+
             if (IsCriteriaSearch)
             {
                 Estimator est = SelectedEstimator;
@@ -231,7 +234,7 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => x.Opt != null);
 
                 var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));
-                var hOpt = loader.ReadOptions(est.HeaderHrsOptions);
+                var hOpt = loader.ReadOptions(est.Options);
                 var topHrs = Searcher.GetResult(Session, hOpt);
                 Result = new CritSearchResultViewModel(crHrs, topHrs, est);
             }
@@ -347,6 +350,8 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private void RemoveLastResults()
         {
+            if (Result != null)
+                Result.Dispose();
             Result = null;
             ControlsVisible = true;
         }

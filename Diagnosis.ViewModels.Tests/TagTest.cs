@@ -14,9 +14,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
-            var r = new SuggestionsMaker(session, clearCreated: true);
+            
+            var r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
             a = new HrEditorAutocomplete(r);
         }
 

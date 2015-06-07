@@ -1,15 +1,19 @@
-﻿using Diagnosis.Data;
-using NHibernate;
+﻿using Diagnosis.Common;
+using Diagnosis.Data;
+using Diagnosis.Models;
 using EventAggregator;
-using Diagnosis.Common;
+using NHibernate;
+using NHibernate.Linq;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
     public class SessionVMBase : ViewModelBase
     {
-        static NHibernateHelper nhib;
-        ISession _session;
+        private static NHibernateHelper nhib;
+        private ISession _session;
         private EventMessageHandler handler;
+
         static SessionVMBase()
         {
             if (IsInDesignMode)
@@ -20,13 +24,17 @@ namespace Diagnosis.ViewModels
 
         public SessionVMBase()
         {
+            if (IsInDesignMode && AuthorityController.CurrentDoctor == null)
+            {
+                var doc = Nhib.GetSession().Query<Doctor>().FirstOrDefault();
+                AuthorityController.TryLogIn(doc);
+            }
             _session = Nhib.GetSession();
             handler = this.Subscribe(Event.NewSession, (e) =>
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
                 if (_session.SessionFactory == s.SessionFactory)
                     _session = s;
-
             });
         }
 
@@ -50,6 +58,7 @@ namespace Diagnosis.ViewModels
                 nhib = value;
             }
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

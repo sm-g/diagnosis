@@ -111,7 +111,6 @@ namespace Diagnosis.ViewModels
         }
     }
 
-    [Serializable]
     public class CheckableEventArgs : EventArgs
     {
         public readonly CheckableBase vm;

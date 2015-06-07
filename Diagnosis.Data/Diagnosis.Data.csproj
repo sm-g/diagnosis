@@ -251,13 +251,13 @@
     <Compile Include="DTOs\_ModelDtosMapper.cs" />
     <Compile Include="DTOs\HrCategoryDTO.cs" />
     <Compile Include="DTOs\MeasureOpDTO.cs" />
-    <Compile Include="DTOs\UomDTO.cs" />
-    <Compile Include="DTOs\UomTypeDTO.cs" />
     <Compile Include="DTOs\WordDTO.cs" />
+    <Compile Include="Mappings\CritMap.cs" />
     <Compile Include="Mappings\UomFormatMap.cs" />
     <Compile Include="Mappings\EstimatorMap.cs" />
     <Compile Include="Mappings\CriteriaGroupMap.cs" />
     <Compile Include="Mappings\CriterionMap.cs" />
+    <Compile Include="Mappings\CritWordsMap.cs" />
     <Compile Include="Mappings\VocabularyWordsMap.cs" />
     <Compile Include="Mappings\SpecialityVocabulariesMap.cs" />
     <Compile Include="Mappings\VocabularyMap.cs" />

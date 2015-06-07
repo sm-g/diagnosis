@@ -36,6 +36,10 @@ namespace Diagnosis.Data.Tests
             Assert.AreEqual(6, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[1]));
             Assert.IsTrue(hrs.Contains(hr[2]));
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[21]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
         }
 
         [TestMethod]

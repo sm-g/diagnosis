@@ -6,10 +6,13 @@ using Diagnosis.ViewModels.Search;
 using Moq;
 using System;
 using System.Collections.Generic;
+
 using System.Linq;
 
 namespace Diagnosis.Client.App.DesignData
 {
+    #region Screens
+
     public class SampleSearchViewModel : SearchViewModel
     {
         public SampleSearchViewModel()
@@ -17,47 +20,27 @@ namespace Diagnosis.Client.App.DesignData
             ControlsVisible = true;
         }
     }
-    public class SamplePatResultViewModel : CritResultItemViewModel
+
+    public class SampleCardViewModel : CardViewModel
     {
-        public SamplePatResultViewModel()
-            : base(Mocks.pat, new[] { Mocks.hr }, new[] { Mocks.crit }) { }
-    }
-    public class SampleCriterionEditorViewModel : CriterionEditorViewModel
-    {
-        public SampleCriterionEditorViewModel()
-            : base(Mocks.crit) { }
-    }
-    public class SampleCriteriaGroupEditorViewModel : CriteriaGroupEditorViewModel
-    {
-        public SampleCriteriaGroupEditorViewModel()
-            : base(Mocks.crg) { }
-    }
-    public class SampleEstimatorEditorViewModel : EstimatorEditorViewModel
-    {
-        public SampleEstimatorEditorViewModel()
-            : base(Mocks.est) { }
-    }
-    public class SampleQueryEditorViewModel : QueryEditorViewModel
-    {
-        public SampleQueryEditorViewModel() { }
-    }
-    public class SampleQueryBlockViewModel : QueryBlockViewModel
-    {
-#pragma warning disable 0618
-        public SampleQueryBlockViewModel()
+        public SampleCardViewModel()
         {
-            Children.Add(new SampleQueryBlockViewModel());
         }
-#pragma warning restore 0618
     }
 
-    public class SampleTagViewModel : TagViewModel
+    public class SampleHrListViewModel : HrListViewModel
     {
-        public SampleTagViewModel()
-            : base(new Mock<ITagParentAutocomplete>().Object)
+        public SampleHrListViewModel() :
+            base(Mocks.course, (hr, info) => { }, (hios) => { })
         {
-            Blank = Mocks.word;
-            IsDraggable = true;
+        }
+    }
+
+    public class SampleIcdSelectorViewModel : IcdSelectorViewModel
+    {
+        public SampleIcdSelectorViewModel()
+            : base("перикардит")
+        {
         }
     }
 
@@ -78,12 +61,43 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
-#pragma warning disable 0618
+    #endregion Screens
 
-    // ctor for xaml
-    public class SampleHrEditorViewModel : HrEditorViewModel
-#pragma warning restore 0618
+    #region Editors
+
+    public class SampleCriterionEditorViewModel : CriterionEditorViewModel
     {
+        public SampleCriterionEditorViewModel()
+            : base(Mocks.crit) { }
+    }
+
+    public class SampleCriteriaGroupEditorViewModel : CriteriaGroupEditorViewModel
+    {
+        public SampleCriteriaGroupEditorViewModel()
+            : base(Mocks.crg) { }
+    }
+
+    public class SampleEstimatorEditorViewModel : EstimatorEditorViewModel
+    {
+        public SampleEstimatorEditorViewModel()
+            : base(Mocks.est) { }
+    }
+
+    public class SampleDoctorEditorViewModel : DoctorEditorViewModel
+    {
+        public SampleDoctorEditorViewModel()
+            : base(Mocks.doc)
+        {
+        }
+    }
+
+    public class SampleHrEditorViewModel : HrEditorViewModel
+    {
+        public SampleHrEditorViewModel()
+            : base(SessionVMBase.Nhib.GetSession())
+        {
+        }
+
         public new IEnumerable<HrCategory> Categories
         {
             get
@@ -106,52 +120,6 @@ namespace Diagnosis.Client.App.DesignData
                 {
                 };
             }
-        }
-    }
-    public class SampleHealthRecordViewModel : HealthRecordViewModel
-    {
-        public SampleHealthRecordViewModel()
-            : base(Mocks.hr)
-        {
-
-        }
-    }
-    public class SampleDateEditorViewModel : DateEditorViewModel
-    {
-        public SampleDateEditorViewModel()
-            : base(Mocks.hr)
-        {
-            IsDateEditorExpanded = true;
-        }
-    }
-    public class SampleCardViewModel : CardViewModel
-    {
-        public SampleCardViewModel()
-        {
-        }
-    }
-
-    public class SampleEventDateViewModel : EventDateViewModel
-    {
-        public SampleEventDateViewModel()
-            : base(Mocks.hr)
-        {
-        }
-    }
-
-    public class SampleHrListViewModel : HrListViewModel
-    {
-        public SampleHrListViewModel() :
-            base(Mocks.course, (hr, info) => { }, (hios) => { })
-        {
-        }
-    }
-
-    public class SampleDoctorEditorViewModel : DoctorEditorViewModel
-    {
-        public SampleDoctorEditorViewModel()
-            : base(Mocks.doc)
-        {
         }
     }
 
@@ -179,10 +147,66 @@ namespace Diagnosis.Client.App.DesignData
         }
     }
 
-    public class SampleIcdSelectorViewModel : IcdSelectorViewModel
+    public class SampleDateEditorViewModel : DateEditorViewModel
     {
-        public SampleIcdSelectorViewModel()
-            : base("перикардит")
+        public SampleDateEditorViewModel()
+            : base(Mocks.hr)
+        {
+            IsDateEditorExpanded = true;
+        }
+    }
+
+    public class SampleQueryEditorViewModel : QueryEditorViewModel
+    {
+        public SampleQueryEditorViewModel()
+            : base(SessionVMBase.Nhib.GetSession())
+        {
+            QueryBlocks.Add(new SampleQueryBlockViewModel());
+        }
+    }
+
+    #endregion Editors
+
+    #region Parts
+
+    public class SamplePatResultViewModel : CritResultItemViewModel
+    {
+        public SamplePatResultViewModel()
+            : base(Mocks.pat, new[] { Mocks.hr }, new[] { Mocks.crit }) { }
+    }
+
+    public class SampleQueryBlockViewModel : QueryBlockViewModel
+    {
+        public SampleQueryBlockViewModel()
+            : base(SessionVMBase.Nhib.GetSession(), () => { })
+        {
+            if (IsRoot)
+                Children.Add(new SampleQueryBlockViewModel());
+        }
+    }
+
+    public class SampleTagViewModel : TagViewModel
+    {
+        public SampleTagViewModel()
+            : base(new Mock<ITagParentAutocomplete>().Object)
+        {
+            Blank = Mocks.word;
+            IsDraggable = true;
+        }
+    }
+
+    public class SampleHealthRecordViewModel : HealthRecordViewModel
+    {
+        public SampleHealthRecordViewModel()
+            : base(Mocks.hr)
+        {
+        }
+    }
+
+    public class SampleEventDateViewModel : EventDateViewModel
+    {
+        public SampleEventDateViewModel()
+            : base(Mocks.hr)
         {
         }
     }
@@ -203,6 +227,8 @@ namespace Diagnosis.Client.App.DesignData
             SortingExtraInfo = Mocks.hr.Category.Title;
         }
     }
+
+    #endregion Parts
 
     public class Mocks
     {

@@ -21,14 +21,11 @@ namespace Diagnosis.Data.Tests
         {
             l = new VocLoader(session);
 
-            Load<Doctor>();
             Load<Appointment>();
             Load<Word>();
             Load<Vocabulary>();
             Load<WordTemplate>();
             Load<Speciality>();
-
-            AuthorityController.TryLogIn(d1);
         }
 
         [TestMethod]

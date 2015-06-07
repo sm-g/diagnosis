@@ -41,11 +41,6 @@ namespace Diagnosis.ViewModels.Screens
             });
         }
 
-        [Obsolete("For xaml only.")]
-        public HrEditorViewModel()
-        {
-        }
-
         /// <summary>
         /// Запись выгружена, но редактор еще открыт.
         /// </summary>
@@ -270,7 +265,7 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             var initials = HealthRecord.healthRecord.GetOrderedCHIOs();
-            var sugMaker = new SuggestionsMaker(session)
+            var sugMaker = new SuggestionsMaker(session, AuthorityController.CurrentDoctor)
             {
                 ShowChildrenFirst = true,
                 AddQueryToSuggestions = doctor.Settings.AddQueryToSuggestions,

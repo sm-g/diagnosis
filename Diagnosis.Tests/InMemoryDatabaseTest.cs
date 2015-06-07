@@ -15,6 +15,8 @@ namespace Diagnosis.Tests
     public abstract class InMemoryDatabaseTest : DbTest
     {
         private EventAggregator.EventMessageHandler handler;
+        protected AuthorityController AuthorityController { get; private set; }
+
         [TestInitialize]
         public void InMemoryDatabaseTestInit()
         {
@@ -26,6 +28,10 @@ namespace Diagnosis.Tests
 
             session = NHibernateHelper.Default.OpenSession();
 
+
+            Load<Doctor>();
+            AuthorityController = AuthorityController.Default;
+            AuthorityController.TryLogIn(d1);
             handler = this.Subscribe(Event.NewSession, (e) =>
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
@@ -41,9 +47,10 @@ namespace Diagnosis.Tests
         {
             session.Dispose();
             handler.Dispose();
+            AuthorityController.LogOut();
         }
 
-        protected Word CreateWordAsInEditor(string title)
+        protected Word CreateWordAsInEditor(string title, Doctor doc = null)
         {
             var dbWords = session.Query<Word>().ToList();
             var newW = new Word(title);
@@ -51,7 +58,8 @@ namespace Diagnosis.Tests
                 .Where(w => w.Title == newW.Title && w != newW)
                 .FirstOrDefault() ?? newW;
 
-            AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
+            var doctor = doc ?? AuthorityController.CurrentDoctor;
+            doctor.AddWords(toSave.ToEnumerable());
             session.DoSave(toSave);
             return toSave;
         }

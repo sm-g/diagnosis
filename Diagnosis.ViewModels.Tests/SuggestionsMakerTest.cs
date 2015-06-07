@@ -7,7 +7,6 @@ using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Linq;
 
 namespace Diagnosis.ViewModels.Tests
 {
@@ -21,10 +20,9 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void RecognizerTestInit()
         {
-            Load<Doctor>();
             Load<Word>();
-            r = new SuggestionsMaker(session, clearCreated: true);
-            AuthorityController.TryLogIn(d1);
+
+            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
         }
 
         [TestMethod]

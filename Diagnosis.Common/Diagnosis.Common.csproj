@@ -206,6 +206,7 @@
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Helpers\SerializationHelper.cs" />
+    <Compile Include="Mediator\EventAggragatorExtensions.cs" />
     <Compile Include="Types\AsyncObservableCollection.cs" />
     <Compile Include="Types\ConnectionInfo.cs" />
     <Compile Include="Extensions\ConvertExtensions.cs" />

@@ -1,7 +1,5 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
 using System;
 using System.Collections.ObjectModel;
@@ -14,74 +12,68 @@ namespace Diagnosis.ViewModels.Screens
     public class MainWindowViewModel : ViewModelBase
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(MainWindowViewModel));
-        private ScreenSwitcher switcher;
         private SearchViewModel searchPanel;
-        private bool? searchVisByUser = null;
         private string _sexes;
+        private ObservableCollection<ScreenBaseViewModel> _screens;
         private ScreenBaseViewModel _curView;
         private IDialogViewModel _modalDialog;
         private string titlePrefix;
+        private ScreenSwitcher switcher;
 
         public MainWindowViewModel(bool demoMode = false)
         {
             if (demoMode)
-            {
                 titlePrefix = "Демо :: ";
-            }
 
+            switcher = new ScreenSwitcher(AuthorityController);
+
+            _screens = new ObservableCollection<ScreenBaseViewModel>();
+            Screens = new ReadOnlyObservableCollection<ScreenBaseViewModel>(_screens);
+            Tools = new ObservableCollection<ToolViewModel>();
             OverlayService = new OverlayServiceViewModel();
+            MenuBar = new MenuBarViewModel(switcher);
+            ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
 
-            switcher = new ScreenSwitcher();
+            //DoPanesChangedLogging();
+
+            ADLayout.LayoutLoading += (s, e) =>
+            {
+                // сначала открываем первый экран, чтобы поставить его в панель во время десериализации лейаута
+                switcher.OpenScreen(Screen.Login, replace: true);
+            };
+
+            Subscribe();
+        }
+
+
+        private void OnCurrentViewChanged()
+        {
+            // показываем новый экран
+
+            if (CurrentView != null)
+                CurrentView.PropertyChanged -= CurrentView_PropertyChanged;
+
+            CurrentView = switcher.CurrentView;
+            CurrentView.PropertyChanged += CurrentView_PropertyChanged;
+
+            if (searchPanel != null)
+                searchPanel.IsVisible = switcher.WithSearch;
+
+            var prevScreen = _screens.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
+            _screens.Add(CurrentView);
+            _screens.Remove(prevScreen);
+            CurrentView.IsActive = true;
+        }
+
+        private void Subscribe()
+        {
             switcher.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CurrentView")
                 {
-                    if (CurrentView != null)
-                        CurrentView.PropertyChanged -= CurrentView_PropertyChanged;
-                    CurrentView = switcher.CurrentView;
-
-                    MenuBar.Visible = switcher.Screen != Screen.Login;
-
-                    var prevScreen = Panes.FirstOrDefault(p => p.ContentId == ScreenBaseViewModel.ScreenContentId);
-                    //logger.DebugFormat("CurrentView '{0}' -> '{1}'", prevScreen, CurrentView);
-
-                    // показываем поиск на первом экране, где он может быть
-                    //searchPanel.IsVisible = switcher.WithSearch && (searchVisByUser ?? true);
-
-                    Panes.Add(CurrentView);
-                    Panes.Remove(prevScreen);
-
-                    CurrentView.IsActive = true;
-
-                    CurrentView.PropertyChanged += CurrentView_PropertyChanged;
+                    OnCurrentViewChanged();
                 }
             };
-
-            searchPanel = new SearchViewModel() { Title = "Поиск", HideAfterInsert = true };
-            searchPanel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == "IsVisible")
-                {
-                    if (switcher.WithSearch)
-                        // пользователь скрыл/показал поиск, сохраняем
-                        searchVisByUser = searchPanel.IsVisible;
-                }
-            };
-            Panes = new ObservableCollection<PaneViewModel>();
-            //Panes.Add(searchPanel);
-            //Panes.CollectionChanged += (s, e) =>
-            //{
-            //    logger.DebugFormat("Panes {0}", e.Action);
-            //};
-
-            ADLayout = new AvalonDockLayoutViewModel(ReloadContentOnStartUp);
-            ADLayout.LayoutLoading += (s, e) =>
-            {
-                // сначала открываем первый экран
-                switcher.OpenScreen(Screen.Login, replace: true);
-            };
-
-            MenuBar = new MenuBarViewModel(switcher, searchPanel);
 
             AuthorityController.LoggedIn += (s, e) =>
             {
@@ -93,6 +85,7 @@ namespace Diagnosis.ViewModels.Screens
                     this.Send(Event.ChangeFont, doc.Settings.BigFontSize.AsParams(MessageKeys.Boolean));
                 }
             };
+
             this.Subscribe(Event.SettingsSaved, (e) =>
             {
                 var doc = e.GetValue<IUser>(MessageKeys.User) as Doctor;
@@ -112,10 +105,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public IDialogViewModel Modal
         {
-            get
-            {
-                return _modalDialog;
-            }
+            get { return _modalDialog; }
             set
             {
                 if (_modalDialog != value)
@@ -128,10 +118,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public ScreenBaseViewModel CurrentView
         {
-            get
-            {
-                return _curView;
-            }
+            get { return _curView; }
             set
             {
                 if (_curView != value)
@@ -145,17 +132,20 @@ namespace Diagnosis.ViewModels.Screens
 
         public string Title
         {
-            get
-            {
-                return CurrentView == null ? null : titlePrefix + CurrentView.Title;
-            }
+            get { return CurrentView == null ? null : titlePrefix + CurrentView.Title; }
         }
 
         public MenuBarViewModel MenuBar { get; private set; }
 
         public OverlayServiceViewModel OverlayService { get; private set; }
 
-        public ObservableCollection<PaneViewModel> Panes { get; private set; }
+        /// <summary>
+        /// Экраны как avalon-documents чтобы сворачивать поиск на нужную сторону, а не по ошибке направо.
+        /// Fix is here: http://ungorge3.rssing.com/chan-2612661/all_p24.html
+        /// </summary>
+        public ReadOnlyObservableCollection<ScreenBaseViewModel> Screens { get; private set; }
+
+        public ObservableCollection<ToolViewModel> Tools { get; private set; }
 
         public AvalonDockLayoutViewModel ADLayout { get; private set; }
 
@@ -167,7 +157,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     searchPanel.ControlsVisible = true;
                     searchPanel.Activate();
-                });
+                }, () => searchPanel != null && switcher.WithSearch);
             }
         }
 
@@ -178,23 +168,16 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     if (CurrentView is IFilterableList)
-                    {
                         (CurrentView as IFilterableList).Filter.IsFocused = true;
-                    }
-                    else
-                    {
+                    else if (OpenSearchCommand.CanExecute(null))
                         OpenSearchCommand.Execute(null);
-                    }
                 });
             }
         }
 
         public string Sexes
         {
-            get
-            {
-                return _sexes;
-            }
+            get { return _sexes; }
             set
             {
                 if (_sexes != value)
@@ -223,31 +206,63 @@ namespace Diagnosis.ViewModels.Screens
         private void ReloadContentOnStartUp(LayoutSerializationCallbackEventArgs args)
         {
             string cId = args.Model.ContentId;
-            if (string.IsNullOrWhiteSpace(cId) == true)
-            {
-                args.Cancel = true;
-                return;
-            }
+            logger.DebugFormat("ReloadContentOnStartUp, {0}", cId);
 
-            var pane = Panes.FirstOrDefault(p => p.ContentId == cId);
-
+            var pane = Tools.Union<PaneViewModel>(Screens).FirstOrDefault(p => p.ContentId == cId);
             if (pane != null)
                 args.Content = pane;
             else
-            {
-                if (cId == SearchViewModel.ToolContentId)
-                {
-                    args.Content = searchPanel;
-                }
-                else if (cId == ScreenBaseViewModel.ScreenContentId)
-                {
-                    args.Content = switcher.CurrentView;
-                }
+                args.Content =
+                    ReloadTool(args.Model) as PaneViewModel ??
+                    ReloadDocument(args.Model) as PaneViewModel;
 
-                //args.Content = ReloadDocument(args.Model.ContentId);
-                if (args.Content == null)
-                    args.Cancel = true;
-            }
+            // убираем пустую панель
+            if (args.Content == null)
+                args.Cancel = true;
         }
+
+        private ScreenBaseViewModel ReloadDocument(Xceed.Wpf.AvalonDock.Layout.LayoutContent model)
+        {
+            string cId = model.ContentId;
+            if (cId == ScreenBaseViewModel.ScreenContentId)
+            {
+                return CurrentView;
+            }
+
+            return null;
+        }
+
+        private ToolViewModel ReloadTool(Xceed.Wpf.AvalonDock.Layout.LayoutContent model)
+        {
+            string cId = model.ContentId;
+            var anchorable = model as Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable;
+            if (anchorable == null)
+                return null;
+
+            if (cId == SearchViewModel.ToolContentId)
+            {
+                // нельзя делать после логина / убирать - в авалоне всегда должна быть модель
+                searchPanel = new SearchViewModel() { Title = "Поиск" };
+                searchPanel.SetAnchorable(anchorable);
+                searchPanel.IsVisible = switcher.WithSearch;
+                Tools.Add(searchPanel);
+
+                return searchPanel;
+            }
+            return null;
+        }
+
+        private void DoPanesChangedLogging()
+        {
+            Tools.CollectionChanged += (s, e) =>
+            {
+                logger.DebugFormat("Tools {0}\n{1}", e.Action, Tools.Aggregate("", (acc, x) => acc + ", " + x));
+            };
+            _screens.CollectionChanged += (s, e) =>
+            {
+                logger.DebugFormat("Screens {0}\n{1}", e.Action, _screens.Aggregate("", (acc, x) => acc + ", " + x));
+            };
+        }
+
     }
 }

@@ -111,10 +111,6 @@ namespace Diagnosis.Models
 
         public override string ToString()
         {
-            //var all = "всё {0}".FormatStr(string.Join(", ", WordsAll));
-            //var any = "хотя бы {0} {1}".FormatStr(MinAny, string.Join(", ", WordsAny));
-            //var not = "ни одного {0}".FormatStr(string.Join(", ", WordsNot));
-            //var cat = "разделы {0}".FormatStr(string.Join(", ", Categories));
             if (IsGroup)
             {
                 string s = string.Empty;
@@ -131,8 +127,8 @@ namespace Diagnosis.Models
 
             var alls = CWordsAll.Union<object>(MeasuresAll).ToList();
             var anys = CWordsAny.Union<object>(MeasuresAny);
-            if (anys.Count() <= MinAny)
-                alls.AddRange(anys); // повторы?
+            if (anys.Count() <= MinAny) // фактически нужно всё из "хотя бы"
+                alls.AddRange(anys); // TODO убрать повторы - всё из (а) и хотя бы 2 из (а б) = (a и б)
 
             if (alls.Any())
             {

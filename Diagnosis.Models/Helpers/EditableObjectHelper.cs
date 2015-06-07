@@ -158,5 +158,32 @@ namespace Diagnosis.Models
                 OriginalValues.Clear();
             }
         }
+
+        public T GetOriginal<T, TId>(Expression<Func<T>> propertyExpression)
+        {
+            lock (_syncRoot)
+            {
+                if (!_inEdit)
+                    throw new InvalidOperationException("Not In edit");
+
+                var propValuePair = ExpressionHelper.GetPropertyNameAndValue(propertyExpression);
+                var propertyName = propValuePair.Item1;
+                T value;
+
+                if (propValuePair.Item2 is EntityBase<TId>)
+                {
+                    value = (T)(propValuePair.Item2 as EntityBase<TId>).Actual;  // unproxy
+                }
+                else
+                {
+                    value = propValuePair.Item2;
+                }
+
+                if (OriginalValues.Contains(propertyName))
+                    return (T)OriginalValues[propertyName];
+                else
+                    return default(T);
+            }
+        }
     }
 }

@@ -48,15 +48,18 @@ namespace Diagnosis.ViewModels.Screens
         {
             var opt = QueryEditor.GetOptions();
             criterion.Options = loader.WriteOptions(opt);
+            criterion.OptionsFormat = loader.Format;
+
+            var words = opt.GetAllWords().ToArray();
+            criterion.SetWords(words);
 
             (criterion as IEditableObject).EndEdit();
 
-            var words = opt.GetAllWords().ToArray();
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
 
-            Session.DoDelete(words);
-            Session.DoDelete(criterion);
+            Session.DoSave(words);
+            Session.DoSave(criterion);
         }
 
         protected override void OnCancel()

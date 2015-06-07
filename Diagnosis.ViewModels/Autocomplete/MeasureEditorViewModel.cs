@@ -246,7 +246,7 @@ namespace Diagnosis.ViewModels.Autocomplete
         private void CreateAutocomplete()
         {
             Autocomplete = new MeasureAutocomplete(
-                new SuggestionsMaker(Session)
+                new SuggestionsMaker(Session, AuthorityController.CurrentDoctor)
                 {
                     AddQueryToSuggestions = true,
                     CanChangeAddQueryToSuggstions = false

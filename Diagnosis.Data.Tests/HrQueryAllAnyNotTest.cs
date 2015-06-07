@@ -69,8 +69,25 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void WithAllOfWordsRepeat()
+        public void WithAllOfWordsRepeat_Case1()
         {
+            // a & a = a
+            var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[22], w[22] }, new Word[] { }, new Word[] { });
+
+            Assert.AreEqual(6, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AssertFailedException))]
+        public void WithAllOfWordsRepeat_Case2()
+        {
+            // отдельные элементы
             var hrs = HealthRecordQuery.WithAllAnyNotWords(session)(new Word[] { w[22], w[22] }, new Word[] { }, new Word[] { });
 
             Assert.AreEqual(1, hrs.Count());
@@ -275,6 +292,22 @@ namespace Diagnosis.Data.Tests
             Assert.AreEqual(2, hrs.Count());
             Assert.IsTrue(hrs.Contains(hr[22]));
             Assert.IsTrue(hrs.Contains(hr[32]));
+        }
+
+        [TestMethod]
+        public void WithAnyChio_MinAny2_AsWithAll()
+        {
+            var hrs = HealthRecordQuery.WithAllAnyNotConfWordsMinAny(session)(
+            Enumerable.Empty<Confindencable<Word>>(),
+            new Confindencable<Word>[] {
+                w[31].AsConfidencable()
+            },
+            Enumerable.Empty<Confindencable<Word>>(),
+            2);
+
+            Assert.AreEqual(2, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[30]));
+            Assert.IsTrue(hrs.Contains(hr[31]));
         }
 
         #endregion Confidence

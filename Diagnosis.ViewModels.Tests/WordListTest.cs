@@ -14,11 +14,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void Init()
         {
-            Load<Doctor>();
             Load<Word>();
             Load<Vocabulary>();
-
-            AuthorityController.TryLogIn(d1);
         }
 
         [TestMethod]

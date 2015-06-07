@@ -16,7 +16,16 @@ namespace Diagnosis.Data.Mappings
                     return "GETDATE()"; // sqlserver, ce
             }
         }
-
+        public static string SqlTypeNText
+        {
+            get
+            {
+                if (MappingForSqlite)
+                    return "text";
+                else
+                    return "ntext"; // sqlserver, ce
+            }
+        }
         internal static void Reset()
         {
             MappingForSqlite = false;

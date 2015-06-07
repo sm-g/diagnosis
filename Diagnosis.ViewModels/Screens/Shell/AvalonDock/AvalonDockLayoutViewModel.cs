@@ -31,11 +31,22 @@ namespace Diagnosis.ViewModels.Screens
             this.reloadContent = reloadContentCallback;
         }
 
-        public event EventHandler LayoutLoaded;
-
-        public event EventHandler LayoutSaved;
-
+        /// <summary>
+        /// Before deserialization.
+        /// </summary>
         public event EventHandler LayoutLoading;
+        /// <summary>
+        /// After deserialization.
+        /// </summary>
+        public event EventHandler LayoutLoaded;
+        /// <summary>
+        /// Before writing serialized string.
+        /// </summary>
+        public event EventHandler LayoutSaving;
+        /// <summary>
+        /// After writing serialized string.
+        /// </summary>
+        public event EventHandler LayoutSaved;
 
         /// <summary>
         /// XML with layout. Starting with "LayoutRoot".
@@ -132,7 +143,16 @@ namespace Diagnosis.ViewModels.Screens
                 h(this, e);
             }
         }
+        protected virtual void OnLayoutSaving(EventArgs e)
+        {
+            //logger.DebugFormat("layout saving");
 
+            var h = LayoutSaving;
+            if (h != null)
+            {
+                h(this, e);
+            }
+        }
         /// <summary>
         /// Loads the layout of a particular docking manager instance from persistence
         /// and checks whether a file should really be reloaded (some files may no longer
@@ -178,6 +198,8 @@ namespace Diagnosis.ViewModels.Screens
 
             try
             {
+                OnLayoutSaving(EventArgs.Empty);
+
                 File.WriteAllText(LayoutFileName, xmlLayout);
 
                 OnLayoutSaved(EventArgs.Empty);

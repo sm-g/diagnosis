@@ -23,9 +23,8 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
-            r = new SuggestionsMaker(session, clearCreated: true);
+            
+            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
             a = new HrEditorAutocomplete(r);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
@@ -144,7 +143,7 @@ namespace Diagnosis.ViewModels.Tests
             a.SelectedTag.Query = notExistQ;
             a.InverseEnterCommand.Execute(a.SelectedTag);
 
-            var r = new SuggestionsMaker(session);
+            var r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             var other = new HrEditorAutocomplete(r);
             other.StartEdit();
             other.SelectedTag.Query = notExistQ;
@@ -285,8 +284,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AddMeasureWhenTyping()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+            
 
             using (var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session))
             {
@@ -362,7 +360,7 @@ namespace Diagnosis.ViewModels.Tests
             a.SelectedTag = a.Tags.First();
             a.Copy();
 
-            var r2 = new SuggestionsMaker(session);
+            var r2 = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             var a2 = new HrEditorAutocomplete(r2);
             a2.Paste();
 
@@ -380,7 +378,7 @@ namespace Diagnosis.ViewModels.Tests
             session.SaveOrUpdate(w);
             a.Copy();
 
-            var r2 = new SuggestionsMaker(session);
+            var r2 = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             var a2 = new HrEditorAutocomplete(r);
 
             a2.Paste(); // достаем из БД по id
@@ -399,7 +397,7 @@ namespace Diagnosis.ViewModels.Tests
             a.Copy();
             session.SaveOrUpdate(w);
 
-            var r2 = new SuggestionsMaker(session);
+            var r2 = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             var a2 = new HrEditorAutocomplete(r);
 
             a2.Paste(); // достаем из БД по тексту

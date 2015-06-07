@@ -3,9 +3,7 @@ using Diagnosis.Data.Search;
 using Diagnosis.Models;
 using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NHibernate;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Diagnosis.Data.Tests
@@ -36,9 +34,30 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public void AllInHr_AllAnySame()
+        public void AllInHr_AllAnySame_Case1()
         {
-            // в записи 22 и еще (22 или 1)
+            // к записи подходит: 22 и (22 или 1) = 22
+            var hrs = o
+                  .Scope(SearchScope.HealthRecord)
+                  .All()
+                  .SetAll(w[22])
+                  .SetAny(w[22], w[1])
+                  .Search(session);
+
+            Assert.AreEqual(6, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[22]));
+            Assert.IsTrue(hrs.Contains(hr[70]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+            Assert.IsTrue(hrs.Contains(hr[73]));
+            Assert.IsTrue(hrs.Contains(hr[74]));
+            Assert.IsTrue(hrs.Contains(hr[40]));
+        }
+
+        [ExpectedException(typeof(AssertFailedException))]
+        [TestMethod]
+        public void AllInHr_AllAnySame_Case2()
+        {
+            // в записи 22 и еще есть (22 или 1)
             var hrs = o
                   .Scope(SearchScope.HealthRecord)
                   .All()
@@ -107,6 +126,21 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(hrs.Contains(hr[22]));
             Assert.IsTrue(hrs.Contains(hr[30]));
             Assert.IsTrue(hrs.Contains(hr[31]));
+            Assert.IsTrue(hrs.Contains(hr[72]));
+        }
+
+        [TestMethod]
+        public void AnyInHr_MinAny()
+        {
+            var hrs = o
+                .Scope(SearchScope.HealthRecord)
+                .MinAny(2)
+                .SetAny(w[1], w[22], w[3])
+                .Search(session);
+
+            Assert.AreEqual(3, hrs.Count());
+            Assert.IsTrue(hrs.Contains(hr[20]));
+            Assert.IsTrue(hrs.Contains(hr[22]));
             Assert.IsTrue(hrs.Contains(hr[72]));
         }
 
@@ -1074,6 +1108,4 @@ namespace Diagnosis.Data.Tests
             return cat.Values.Union(HrCategory.Null.ToEnumerable());
         }
     }
-
-
 }

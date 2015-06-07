@@ -1,7 +1,8 @@
-﻿using System;
+﻿using EventAggregator;
+using System;
 using System.Collections.Generic;
 
-namespace EventAggregator
+namespace Diagnosis.Common
 {
     /// <summary>
     /// Tracks list of EventAggragator EventMessageHandler's. Call Dispose to unsubscribe from all events.
@@ -36,8 +37,15 @@ namespace EventAggregator
                 Add(item);
             }
         }
+        /// <summary>
+        /// Subscribe without capturing reference to eventSource.
+        /// </summary>
+        public void Subscribe(int eventId, Action<EventMessage> act)
+        {
+            Diagnosis.Common.EventAggragatorExtensions.Subscribe(eventId, act);
+        }
 
-        public void Remove(EventMessageHandler handler)
+        private void Remove(EventMessageHandler handler)
         {
             list.Remove(handler);
         }

@@ -91,46 +91,8 @@ namespace Diagnosis.Common
         PushToSettings,
         Shutdown,
         NewSession,
+        SaveLayout,
     }
 
-    public static class EventAggragatorExtensions
-    {
-        public static EventMessageHandler Subscribe(this object obj, Event @event, Action<EventMessage> handler)
-        {
-            return obj.Subscribe((int)@event, handler);
-        }
 
-        public static EventMessage Send(this object obj, Event @event, params KeyValuePair<string, object>[] parameters)
-        {
-            return obj.Send((int)@event, parameters);
-        }
-
-        public static KeyValuePair<string, object>[] AsParams(this object obj, string key)
-        {
-            return new[] { new KeyValuePair<string, object>(key, obj) };
-        }
-
-        /// <summary>
-        /// Массив как параметр.
-        /// </summary>
-        /// <param name="objs"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static KeyValuePair<string, object>[] AsParams(this object[] objs, string key)
-        {
-            return new[] { new KeyValuePair<string, object>(key, objs) };
-        }
-
-        /// <summary>
-        /// Несколько объектов как параметры.
-        /// </summary>
-        /// <param name="objs"></param>
-        /// <param name="keys"></param>
-        /// <returns></returns>
-        public static KeyValuePair<string, object>[] AsParams(this object[] objs, params string[] keys)
-        {
-            var result = objs.Zip(keys, (obj, key) => new KeyValuePair<string, object>(key, obj));
-            return result.ToArray();
-        }
-    }
 }

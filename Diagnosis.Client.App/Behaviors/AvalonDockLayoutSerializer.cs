@@ -155,7 +155,7 @@ namespace Diagnosis.Client.App.Behaviors
                 framworkElement.Unloaded += OnFrameworkElement_Saved; // не сработает, если приложение закрывается
             }
 
-            typeof(AvalonDockLayoutSerializer).Subscribe(Event.Shutdown, (e1) =>
+            typeof(AvalonDockLayoutSerializer).Subscribe(Event.SaveLayout, (e1) =>
             {
                 OnFrameworkElement_Saved(framworkElement, null);
             });

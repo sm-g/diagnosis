@@ -29,9 +29,11 @@ namespace Diagnosis.Data
         public static string SpecialityVocabularies = "SpecialityVocabularies";
         public static string Passport = "Passport";
         public static string Setting = "Setting";
+        public static string Crit = "Crit";
         public static string Criterion = "Criterion";
         public static string CriteriaGroup = "CriteriaGroup";
         public static string Estimator = "Estimator";
+        public static string CritWords = "CritWords";
 
         public static Dictionary<string, Type> tblToTypeMap = new Dictionary<string, Type> {
             { Doctor,            typeof(Doctor) },
@@ -60,6 +62,7 @@ namespace Diagnosis.Data
             { Passport,          typeof(Passport) },
             { Setting,           typeof(Setting) },
 
+            { Crit,         typeof(Crit) },
             { Criterion,         typeof(Criterion) },
             { CriteriaGroup,     typeof(CriteriaGroup) },
             { Estimator,         typeof(Estimator) },
@@ -104,6 +107,8 @@ namespace Diagnosis.Data
             public static string Criterion = Names.Criterion + "ID";
             public static string CriteriaGroup = Names.CriteriaGroup + "ID";
             public static string Estimator = Names.Estimator + "ID";
+            public static string Crit = Names.Crit + "ID";
+            public static string CritParent = "ParentID";
         }
 
         public static class FK
@@ -123,10 +128,13 @@ namespace Diagnosis.Data
             public static string SpecialityIcdBlocks_Specia = string.Format("FK_{0}_Specia", SpecialityIcdBlocks); //
             public static string Word_HrCategory = string.Format("FK_{0}_{1}", Word, HrCategory);
             public static string Word_Word = string.Format("FK_{0}_{1}", Word, Word);
+            public static string Word_Uom = string.Format("FK_{0}_{1}", Word, Uom);
             public static string Setting_Doctor = string.Format("FK_{0}_{1}", Setting, Doctor);
             public static string Criterion_CritGr = string.Format("FK_{0}_{1}", Criterion, CriteriaGroup);
-            public static string Word_Uom = string.Format("FK_{0}_{1}", Word, Uom);
             public static string CrGr_Est = string.Format("FK_{0}_{1}", CriteriaGroup, Estimator);
+            public static string CritWord_Word = string.Format("FK_{0}_{1}", CritWords, Word);
+            public static string CritWord_Crit = string.Format("FK_{0}_{1}", CritWords, Crit);
+            public static string Crit_Crit = string.Format("FK_{0}_{1}", Crit, Crit);
         }
 
         public static class Col
@@ -147,6 +155,10 @@ namespace Diagnosis.Data
             public static string UomFValue = "MeasureValue";
             public static string UomFStr = "String";
             public static string HrItemTextRepr = "TextRepr";
+            public static string CritType = "CritType";
+            public static string EstDiscriminator = "Estimator";
+            public static string CrGrDiscriminator = "CriteriaGroup";
+            public static string CritDiscriminator = "Criterion";
         }
 
         public static class Unique

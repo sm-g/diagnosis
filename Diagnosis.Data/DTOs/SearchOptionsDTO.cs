@@ -28,13 +28,13 @@ namespace Diagnosis.Data.DTOs
         public List<HrCategoryDTO> Categories { get; set; }
 
         [DataMember]
-        public QueryGroupOperator GroupOperator { get; set; }
+        public string GroupOperator { get; set; }
 
         [DataMember]
         public int MinAny { get; set; }
 
         [DataMember]
-        public SearchScope SearchScope { get; set; }
+        public string SearchScope { get; set; }
         [DataMember]
         public bool WithConf { get; set; }
 

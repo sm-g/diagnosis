@@ -44,6 +44,7 @@ namespace Diagnosis.Client.App
         {
             inExit = true;
             this.Send(Event.Shutdown);
+            this.Send(Event.SaveLayout);
             Diagnosis.Client.App.Properties.Settings.Default.Save();
             DbMaintenanceOnExit();
         }
@@ -92,9 +93,21 @@ namespace Diagnosis.Client.App
                 Settings.Default.Upgraded = true;
             }
 
-            ConnectionInfo syncServerConection;
+            Subscribe();
+
+            var syncServerConection = new ConnectionInfo(Settings.Default.SyncServerConstr, Settings.Default.SyncServerProviderName);
+            Constants.ServerConnectionInfo = syncServerConection;
+
+            Constants.SyncServerConstrSettingName = "SyncServerConstr";
+            Constants.SyncServerProviderSettingName = "SyncServerProviderName";
+        }
+
+        private void Subscribe()
+        {
             this.Subscribe(Event.PushToSettings, (e) =>
             {
+                ConnectionInfo syncServerConection;
+
                 var name = e.GetValue<string>(MessageKeys.Name);
                 var value = e.GetValue<object>(MessageKeys.Value);
 
@@ -117,12 +130,6 @@ namespace Diagnosis.Client.App
                     Constants.ServerConnectionInfo = syncServerConection;
                 }
             });
-
-            syncServerConection = new ConnectionInfo(Settings.Default.SyncServerConstr, Settings.Default.SyncServerProviderName);
-            Constants.ServerConnectionInfo = syncServerConection;
-
-            Constants.SyncServerConstrSettingName = "SyncServerConstr";
-            Constants.SyncServerProviderSettingName = "SyncServerProviderName";
         }
 
         private void StartMainWindow()

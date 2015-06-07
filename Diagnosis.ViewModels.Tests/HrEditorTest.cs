@@ -20,8 +20,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void HrEditorTestInit()
         {
-            Load<Doctor>();
-            AuthorityController.TryLogIn(d1);
+            
 
             e = new HrEditorViewModel(session);
             hr = session.Get<HealthRecord>(IntToGuid<HealthRecord>(1));

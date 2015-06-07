@@ -23,6 +23,7 @@ namespace Diagnosis.ViewModels.Tests
             Load<Appointment>();
             Load<Uom>();
 
+
             s = new SearchViewModel();
         }
         [TestCleanup]
@@ -64,9 +65,9 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, Stats.GridValues[hr[20]][wWithM].Measures.Count());
             Assert.AreEqual(1, Stats.GridValues[hr[22]][wWithM].Measures.Count());
 
-            Assert.AreEqual(null, Stats.GridValues[hr[32]][wWithM].Measures);
-            Assert.AreEqual(null, Stats.GridValues[hr[20]][wWithoutM].Measures);
-            Assert.AreEqual(null, Stats.GridValues[hr[22]][wWithoutM].Measures);
+            Assert.AreEqual(0, Stats.GridValues[hr[32]][wWithM].Measures.Count());
+            Assert.AreEqual(0, Stats.GridValues[hr[20]][wWithoutM].Measures.Count());
+            Assert.AreEqual(0, Stats.GridValues[hr[22]][wWithoutM].Measures.Count());
         }
 
         [TestMethod]

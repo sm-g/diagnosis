@@ -1,8 +1,8 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
 using Diagnosis.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+
 using System.Linq;
 
 namespace Diagnosis.Models.Tests
@@ -43,6 +43,16 @@ namespace Diagnosis.Models.Tests
 
             var chio = w1.AsConfidencable(Confidence.Present);
             Assert.AreEqual(chio, item.GetConfindenceHrItemObject());
+        }
+
+        [TestMethod]
+        public void WithMeasure_WordNotNull()
+        {
+            var m = new Measure(1, word: w1);
+            var item = new HrItem(hr, m);
+            Assert.AreEqual(m, item.Measure);
+            Assert.AreEqual(m, item.Entity);
+            Assert.AreEqual(w1, item.Word);
         }
     }
 }

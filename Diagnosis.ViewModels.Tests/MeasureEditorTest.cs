@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels.Tests
         public void MeasureEditorTestInit()
         {
             Load<Uom>();
-            Load<Doctor>();
+            
 
             w = session.Get<Word>(IntToGuid<Word>(1));
             e = new MeasureEditorViewModel(false);

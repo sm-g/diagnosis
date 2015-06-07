@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Models;
+using Diagnosis.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public abstract class StatisticBase
+    public abstract class StatisticBase : IDisposable
     {        /// <summary>
         /// Пациенты, о которых записи, по имени
         /// </summary>
@@ -42,6 +43,8 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return PatientsCount == 0 ? -1 : Patients.Where(p => p.Age.HasValue).Min(p => p.Age); }
         }
+
+        public abstract void Dispose();
     }
 
     public class CritStatistic : StatisticBase
@@ -59,11 +62,16 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return _pats; }
         }
+
+        public override void Dispose()
+        {
+        }
     }
 
     public class HrsStatistic : StatisticBase
     {
         private ReadOnlyCollection<Patient> _pats;
+        private bool initialized;
 
         public HrsStatistic(IEnumerable<HealthRecord> hrs)
         {
@@ -104,6 +112,7 @@ namespace Diagnosis.ViewModels.Screens
             GridValues = new Dictionary<HealthRecord, Dictionary<IHrItemObject, GridValue>>();
 
             FillGridValues();
+            initialized = true;
         }
 
         /// <summary>
@@ -202,25 +211,27 @@ namespace Diagnosis.ViewModels.Screens
         private void ObjectInvariant()
         {
             Contract.Invariant(GridValues.Values.All(x => x.Keys.All(hio => hio is Word || hio is IcdDisease)));
-            Contract.Invariant(GridValues.Keys.Count == HealthRecords.Count);
-            Contract.Invariant(GridValues.Values.All(x => x.Keys.Count == Words.Count + Icds.Count));
+            Contract.Invariant(!initialized || GridValues.Keys.Count == HealthRecords.Count);
+            Contract.Invariant(!initialized || GridValues.Values.All(x => x.Keys.Count == Words.Count + Icds.Count));
         }
 
         /// <summary>
-        /// Значение в ячейке таблицы — true/false/несколько измерений.
+        /// Значение в ячейке таблицы — true/false/несколько измерений/ничего.
         /// </summary>
         public class GridValue
         {
+            private readonly IEnumerable<Measure> measures = Enumerable.Empty<Measure>();
+            private readonly bool? boolean;
             public GridValue(IEnumerable<Measure> measures)
             {
                 Contract.Requires(measures != null);
                 Contract.Requires(measures.Any());
-                Measures = measures;
+                this.measures = measures.ToArray();
             }
 
             public GridValue(bool boolean)
             {
-                Bool = boolean;
+                this.boolean = boolean;
             }
 
             public GridValue()
@@ -228,9 +239,16 @@ namespace Diagnosis.ViewModels.Screens
                 // null value
             }
 
-            public bool? Bool { get; private set; }
+            public bool? Bool { get { return boolean; } }
 
-            public IEnumerable<Measure> Measures { get; private set; }
+            public IEnumerable<Measure> Measures { get { return measures; } }
+        }
+
+        public override void Dispose()
+        {
+            if (GridValues != null)
+                GridValues.Clear();
+            GridValues = null;
         }
     }
 }
