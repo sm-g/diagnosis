@@ -47,6 +47,7 @@ namespace Diagnosis.ViewModels.Search
             };
             AuthorityController.LoggedOut += (s, e) =>
             {
+                QueryBlocks.ForAll(x => x.Dispose());
                 QueryBlocks.Clear();
             };
 

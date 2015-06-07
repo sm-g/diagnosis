@@ -79,9 +79,8 @@ namespace Diagnosis.ViewModels
 
                     if (stats.GridValues[hr][word].Bool.HasValue)
                         worksheet.Cells[rIndex, cIndex].Value = stats.GridValues[hr][word].Bool;
-                    else if (stats.GridValues[hr][word].Measures != null)
+                    else
                     {
-                        Debug.Assert(HasMeasuresFor(stats.GridValues, word));
                         foreach (var measure in stats.GridValues[hr][word].Measures)
                         {
                             // При повторе слова с числом в одной записи — только это число в дополнительной строке.
@@ -178,7 +177,7 @@ namespace Diagnosis.ViewModels
             Dictionary<HealthRecord, Dictionary<IHrItemObject, Diagnosis.ViewModels.Screens.HrsStatistic.GridValue>> GridValues,
             Word word)
         {
-            return GridValues.Values.Any(y => y[word].Measures != null);
+            return GridValues.Values.Any(y => y[word].Measures.Any());
         }
 
         private static void SaveTo(ExcelPackage package, FileInfo file)

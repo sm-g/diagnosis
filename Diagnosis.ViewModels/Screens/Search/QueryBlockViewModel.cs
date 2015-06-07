@@ -453,6 +453,8 @@ namespace Diagnosis.ViewModels.Screens
             if (disposing)
             {
                 Children.CollectionChanged -= Children_CollectionChanged;
+                Children.ForEach(x => x.Dispose());
+                this.Remove();
 
                 AutocompleteAll.InputEnded -= Autocomplete_InputEnded;
                 AutocompleteAny.InputEnded -= Autocomplete_InputEnded;

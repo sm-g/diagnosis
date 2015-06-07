@@ -222,6 +222,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void Search()
         {
+            RemoveLastResults();
+
             if (IsCriteriaSearch)
             {
                 Estimator est = SelectedEstimator;
@@ -348,6 +350,8 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private void RemoveLastResults()
         {
+            if (Result != null)
+                Result.Dispose();
             Result = null;
             ControlsVisible = true;
         }

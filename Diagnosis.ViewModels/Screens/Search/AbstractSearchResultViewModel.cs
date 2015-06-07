@@ -55,6 +55,9 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     handler.Dispose();
+                    Patients.OfType<IDisposable>().ForAll(x => x.Dispose());
+                    Patients = null;
+                    Statistic.Dispose();
                 }
             }
             finally
