@@ -79,17 +79,6 @@ namespace Diagnosis.Common
             }
         }
 
-        public static void ForEach<T>(this IList<T> collection, Action<T> action)
-        {
-            Contract.Requires(collection != null);
-            Contract.Requires(action != null);
-
-            foreach (var item in collection)
-            {
-                action(item);
-            }
-        }
-
         public static IEnumerable<T> ToEnumerable<T>(this T item)
         {
             return new[] { item };

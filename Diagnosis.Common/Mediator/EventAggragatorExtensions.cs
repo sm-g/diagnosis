@@ -8,7 +8,7 @@ namespace Diagnosis.Common
 {
     public static class EventAggragatorExtensions
     {
-        static object capturedObj = new object(); // остается в словаре EventAggregator
+        // для каждого event новый объект как eventSource
 
         public static EventMessageHandler Subscribe(this Event @event, Action<EventMessage> handler)
         {
@@ -22,22 +22,22 @@ namespace Diagnosis.Common
 
         public static EventMessageHandler Subscribe(this int @event, Action<EventMessage> handler)
         {
-            return capturedObj.Subscribe(@event, handler);
+            return new object().Subscribe(@event, handler);
         }
 
         public static EventMessage Send(this int @event, params KeyValuePair<string, object>[] parameters)
         {
-            return capturedObj.Send(@event, parameters);
+            return new object().Send(@event, parameters);
         }
 
         public static EventMessageHandler Subscribe(this object obj, Event @event, Action<EventMessage> handler)
         {
-            return capturedObj.Subscribe((int)@event, handler);
+            return new object().Subscribe((int)@event, handler);
         }
 
         public static EventMessage Send(this object obj, Event @event, params KeyValuePair<string, object>[] parameters)
         {
-            return capturedObj.Send((int)@event, parameters);
+            return new object().Send((int)@event, parameters);
         }
 
         public static KeyValuePair<string, object>[] AsParams(this object obj, string key)
