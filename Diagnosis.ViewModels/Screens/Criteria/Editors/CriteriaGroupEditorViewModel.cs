@@ -72,7 +72,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (crgroup as IEditableObject).EndEdit();
 
-            Session.DoDelete(crgroup);
+            Session.DoSave(crgroup);
         }
 
         protected override void OnCancel()

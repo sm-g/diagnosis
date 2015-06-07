@@ -117,7 +117,7 @@ namespace Diagnosis.ViewModels.Screens
             voc.SetTemplates(Templates);
             (voc as IEditableObject).EndEdit();
 
-            Session.DoDelete(voc);
+            Session.DoSave(voc);
         }
 
         protected override void OnCancel()
