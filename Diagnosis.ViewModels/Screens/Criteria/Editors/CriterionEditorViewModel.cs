@@ -17,7 +17,7 @@ namespace Diagnosis.ViewModels.Screens
         public CriterionEditorViewModel(Criterion cr)
         {
             this.criterion = cr;
-            loader = new JsonOptionsLoader(Session);
+            loader = new JsonOptionsLoader();
 
             QueryEditor = new QueryEditorViewModel(Session);
 
@@ -25,7 +25,7 @@ namespace Diagnosis.ViewModels.Screens
             tester = new ExistanceTester<Criterion>(cr, Criterion, Session);
             tester.Test();
 
-            var opt = loader.ReadOptions(criterion.Options);
+            var opt = loader.ReadOptions(criterion.Options, Session);
             QueryEditor.SetOptions(opt);
 
             (criterion as IEditableObject).BeginEdit();

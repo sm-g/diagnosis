@@ -22,7 +22,7 @@ namespace Diagnosis.Data.Tests
             Load<Word>();
             Load<Uom>();
 
-            l = new JsonOptionsLoader(session);
+            l = new JsonOptionsLoader();
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace Diagnosis.Data.Tests
             opt.SearchScope = SearchScope.Patient;
 
             var str = l.WriteOptions(opt);
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(opt.Equals(read));
         }
@@ -47,7 +47,7 @@ namespace Diagnosis.Data.Tests
             opt.CWordsAll.AddRange(new[] { w[1].AsConfidencable(Confidence.Absent) });
 
             var str = l.WriteOptions(opt);
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(opt.Equals(read));
         }
@@ -59,7 +59,7 @@ namespace Diagnosis.Data.Tests
             opt.MeasuresAll.Add(new MeasureOp(MeasureOperator.Between, 3, uom[2], w[1]) { RightValue = 7 });
 
             var str = l.WriteOptions(opt);
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(opt.Equals(read));
         }
@@ -73,7 +73,7 @@ namespace Diagnosis.Data.Tests
             opt.MeasuresAny.Add(new MeasureOp(MeasureOperator.Between, 3, uom[2], w[1]));
 
             var str = l.WriteOptions(opt);
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(opt.Equals(read));
         }
@@ -89,7 +89,7 @@ namespace Diagnosis.Data.Tests
             opt.Children.Add(child);
 
             var str = l.WriteOptions(opt);
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(opt.Equals(read));
         }
@@ -101,7 +101,7 @@ namespace Diagnosis.Data.Tests
             opt.CWordsAll.AddRange(new[] { w[1].AsConfidencable(), w[2].AsConfidencable() });
 
             var str = l.WriteOptions(opt).Replace(w[1].Title, "qwe");
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(read.PartialLoaded);
         }
@@ -115,7 +115,7 @@ namespace Diagnosis.Data.Tests
             opt.Children.Add(child);
 
             var str = l.WriteOptions(opt).Replace(w[1].Title, "qwe");
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(read.PartialLoaded);
             Assert.IsTrue(read.Children[0].PartialLoaded);
@@ -127,7 +127,7 @@ namespace Diagnosis.Data.Tests
             opt.MeasuresAny.Add(new MeasureOp(MeasureOperator.Between, 3, uom[2]));
 
             var str = l.WriteOptions(opt).Replace(uom[2].Abbr, "qwe");
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(read.PartialLoaded);
         }
@@ -139,7 +139,7 @@ namespace Diagnosis.Data.Tests
             opt.Categories.Add(cat[1]);
 
             var str = l.WriteOptions(opt).Replace(cat[1].Title, "qwe");
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(read.PartialLoaded);
         }
@@ -150,7 +150,7 @@ namespace Diagnosis.Data.Tests
             opt.MeasuresAny.Add(new MeasureOp(MeasureOperator.Between, 3, uom[2]));
 
             var str = l.WriteOptions(opt).Replace(uom[2].Type.Title, "qwe");
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(read.PartialLoaded);
         }
@@ -161,7 +161,7 @@ namespace Diagnosis.Data.Tests
             opt.MeasuresAny.Add(new MeasureOp(MeasureOperator.Between, 3, word: w[2]));
 
             var str = l.WriteOptions(opt).Replace(w[2].Title, "qwe");
-            var read = l.ReadOptions(str);
+            var read = l.ReadOptions(str, session);
 
             Assert.IsTrue(read.PartialLoaded);
         }

@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             ContentId = ToolContentId;
 
-            loader = new JsonOptionsLoader(Session);
+            loader = new JsonOptionsLoader();
 
             QueryEditor = new QueryEditorViewModel(Session, () =>
             {
@@ -230,11 +230,11 @@ namespace Diagnosis.ViewModels.Screens
 
                 var crOpts = est.CriteriaGroups
                     .SelectMany(x => x.Criteria)
-                    .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options) })
+                    .Select(x => new { Cr = x, Opt = loader.ReadOptions(x.Options, Session) })
                     .Where(x => x.Opt != null);
 
                 var crHrs = crOpts.ToDictionary(x => x.Cr, x => Searcher.GetResult(Session, x.Opt));
-                var hOpt = loader.ReadOptions(est.Options);
+                var hOpt = loader.ReadOptions(est.Options, Session);
                 var topHrs = Searcher.GetResult(Session, hOpt);
                 Result = new CritSearchResultViewModel(crHrs, topHrs, est);
             }

@@ -17,13 +17,13 @@ namespace Diagnosis.ViewModels.Screens
         public EstimatorEditorViewModel(Estimator estimator)
         {
             this.estimator = estimator;
-            loader = new JsonOptionsLoader(Session);
+            loader = new JsonOptionsLoader();
 
             CriteriaGroups = new ObservableCollection<CriteriaGroupEditorViewModel>();
 
             QueryEditor = new QueryEditorViewModel(Session);
 
-            var opt = loader.ReadOptions(estimator.Options);
+            var opt = loader.ReadOptions(estimator.Options, Session);
             QueryEditor.SetOptions(opt);
             Estimator = new EstimatorViewModel(estimator);
 

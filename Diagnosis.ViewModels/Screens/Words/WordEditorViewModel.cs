@@ -55,7 +55,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             foreach (var crit in word.Crits)
             {
-                var l = OptionsLoader.FromFormat(crit.OptionsFormat, Session);
+                var l = OptionsLoader.FromFormat(crit.OptionsFormat);
                 crit.Options = l.ReplaceWord(crit.Options, oldTitle, word.Title);
             }
 

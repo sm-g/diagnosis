@@ -16,6 +16,7 @@ namespace Diagnosis.ViewModels.Search
         private Action onQbEnter;
         private VisibleRelayCommand _send;
         private EventAggregator.EventMessageHandler handler;
+
         public QueryEditorViewModel(ISession session, Action onQbEnter = null)
         {
             Contract.Requires(session != null);
@@ -23,8 +24,8 @@ namespace Diagnosis.ViewModels.Search
             this.session = session;
             this.onQbEnter = onQbEnter ?? (Action)(() => { });
 
-            var loader = new JsonOptionsLoader(session);
-            Loader = new OptionsLoaderViewModel(this, loader);
+            var loader = new JsonOptionsLoader();
+            Loader = new OptionsLoaderViewModel(this, loader, session);
             var hist = new History<SearchOptions>();
             History = new SearchHistoryViewModel(hist);
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
@@ -45,7 +46,6 @@ namespace Diagnosis.ViewModels.Search
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
                 ReplaceSession(s);
-
             });
             AuthorityController.LoggedIn += (s, e) =>
             {
@@ -56,7 +56,6 @@ namespace Diagnosis.ViewModels.Search
             {
                 QueryBlocks.ForAll(x => x.Dispose());
                 QueryBlocks.Clear();
-
             };
 
             SetupQueryBlocks();
@@ -126,6 +125,7 @@ namespace Diagnosis.ViewModels.Search
             if (this.session.SessionFactory == s.SessionFactory)
                 this.session = s;
         }
+
         private void SetupQueryBlocks()
         {
             if (AuthorityController.CurrentDoctor != null)
