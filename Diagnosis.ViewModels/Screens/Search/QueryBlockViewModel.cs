@@ -76,9 +76,7 @@ namespace Diagnosis.ViewModels.Screens
             handler = this.Subscribe(Event.NewSession, (e) =>
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
-                if (this.session.SessionFactory == s.SessionFactory)
-                    this.session = s;
-
+                ReplaceSession(s);
             });
 
             if (options != null)
@@ -87,7 +85,6 @@ namespace Diagnosis.ViewModels.Screens
                 FillFromOptions(options);
             }
         }
-
         public ObservableCollection<MenuItem> MinAnyMenuItems { get; private set; }
 
         public ObservableCollection<MenuItem> GroupOperatorMenuItems { get; private set; }
@@ -656,6 +653,11 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => AnyPopupOpen);
                     break;
             }
+        }
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
         }
 
         [ContractInvariantMethod]

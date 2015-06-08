@@ -6,7 +6,6 @@ using Diagnosis.ViewModels.Autocomplete;
 using EventAggregator;
 using log4net;
 using NHibernate;
-using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,6 +25,7 @@ namespace Diagnosis.ViewModels.Screens
         private Doctor doctor;
         private bool _focused;
         private IEnumerable<HrCategory> _categories;
+        private EventMessageHandler handler;
 
         public HrEditorViewModel(ISession session)
         {
@@ -35,9 +35,7 @@ namespace Diagnosis.ViewModels.Screens
             handler = this.Subscribe(Event.NewSession, (e) =>
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
-                if (this.session.SessionFactory == s.SessionFactory)
-                    this.session = s;
-
+                ReplaceSession(s);
             });
         }
 
@@ -55,7 +53,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Редактор закрывается по команде. Запись может быть null.
         /// </summary>
         public event EventHandler<HealthRecordEventArgs> Closing;
-        private EventMessageHandler handler;
+
 
         #region HealthRecord
 
@@ -426,6 +424,11 @@ namespace Diagnosis.ViewModels.Screens
                 doctor.Settings.AddQueryToSuggestions = addQuery;
                 session.DoSave(doctor);
             }
+        }
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
         }
 
         private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)

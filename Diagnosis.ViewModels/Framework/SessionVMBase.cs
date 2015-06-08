@@ -33,17 +33,8 @@ namespace Diagnosis.ViewModels
             handler = this.Subscribe(Event.NewSession, (e) =>
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
-                if (_session.SessionFactory == s.SessionFactory)
-                    _session = s;
+                ReplaceSession(s);
             });
-        }
-
-        protected ISession Session
-        {
-            get
-            {
-                return _session;
-            }
         }
 
         public static NHibernateHelper Nhib
@@ -59,6 +50,14 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        protected ISession Session
+        {
+            get
+            {
+                return _session;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -66,6 +65,12 @@ namespace Diagnosis.ViewModels
                 handler.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void ReplaceSession(ISession s)
+        {
+            if (_session.SessionFactory == s.SessionFactory)
+                _session = s;
         }
     }
 }

@@ -41,6 +41,12 @@ namespace Diagnosis.ViewModels.Search
                 }
             };
 
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
+
+            });
             AuthorityController.LoggedIn += (s, e) =>
             {
                 SetupQueryBlocks();
@@ -54,13 +60,6 @@ namespace Diagnosis.ViewModels.Search
             };
 
             SetupQueryBlocks();
-            handler = this.Subscribe(Event.NewSession, (e) =>
-            {
-                var s = e.GetValue<ISession>(MessageKeys.Session);
-                if (this.session.SessionFactory == s.SessionFactory)
-                    this.session = s;
-
-            });
         }
 
         public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; private set; }
@@ -105,6 +104,28 @@ namespace Diagnosis.ViewModels.Search
 
             SetRootOptions(opt);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                    QueryBlocks.Clear();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
+        }
         private void SetupQueryBlocks()
         {
             if (AuthorityController.CurrentDoctor != null)
@@ -130,22 +151,6 @@ namespace Diagnosis.ViewModels.Search
             QueryBlocks.Add(qb);
 
             return qb;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                {
-                    handler.Dispose();
-                    QueryBlocks.Clear();
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
         }
     }
 }
