@@ -28,7 +28,7 @@ namespace Diagnosis.Data.Versions.Server
 
         public override void Up()
         {
-            foreach (var sqlRow in InMemoryHelper.GetScript(true, true))
+            foreach (var sqlRow in InMemoryHelper.GetScript(true, true, false))
             {
                 Execute.Sql(sqlRow);
             }

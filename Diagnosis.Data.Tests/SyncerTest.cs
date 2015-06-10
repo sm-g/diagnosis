@@ -9,9 +9,6 @@ using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using System.Linq;
-
 using System.Threading.Tasks;
 
 namespace Diagnosis.Data.Tests
@@ -45,7 +42,7 @@ namespace Diagnosis.Data.Tests
         }
 
         [TestMethod]
-        public async Task SendFromServer()
+        public async Task SendFromServerToEmptyClient()
         {
             var scopes = new[] { Scope.Icd, Scope.Reference };
             var types = scopes.SelectMany(x => x.GetTypes());
@@ -88,6 +85,33 @@ namespace Diagnosis.Data.Tests
             foreach (var type in types)
             {
                 Assert.AreEqual(entitiesCount[type], sSession.QueryOver(type.Name, () => al).RowCount());
+            }
+        }
+
+
+        [TestMethod]
+        public async Task SendFromServerToFilledClient()
+        {
+            InMemoryHelper.FillData(clCfg, clSession, false, alterIds: true);
+
+            var scopes = new[] { Scope.Icd, Scope.Reference };
+            var types = scopes.SelectMany(x => x.GetTypes());
+
+            var entitiesCount = new Dictionary<Type, int>();
+            object al = null;
+            foreach (var type in types)
+            {
+                entitiesCount[type] = sSession.QueryOver(type.Name, () => al).RowCount();
+            }
+
+            await s.SendFrom(Side.Server, scopes);
+
+            // после загрузки проверяем справочные сущности на совпадение
+            var checker = new AfterSyncChecker(clSession);
+            checker.CheckReferenceEntitiesAfterDownload(s.AddedOnServerIdsPerType);
+            foreach (var type in types)
+            {
+                Assert.AreEqual(entitiesCount[type], clSession.QueryOver(type.Name, () => al).RowCount());
             }
         }
 

@@ -165,9 +165,6 @@
     <Content Include="..\Diagnosis.Data\Versions\Sql\inmem_sqlite.sql">
       <Link>inmem_sqlite.sql</Link>
     </Content>
-    <Content Include="db.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <Choose>
