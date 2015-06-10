@@ -51,6 +51,15 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
+        public void CannotSearchWithoutSelectedEstimator()
+        {
+            s.SearchTabIndex = 1; // crit search
+            s.SelectedEstimator = null;
+
+            Assert.IsFalse(s.SearchCommand.CanExecute(null));
+        }
+
+        [TestMethod]
         public void CannotSearchAfterLogout()
         {
             (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);

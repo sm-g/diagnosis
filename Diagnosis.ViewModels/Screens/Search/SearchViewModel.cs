@@ -84,7 +84,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(Search,
                     () => AuthorityController.CurrentDoctor != null &&
                         ((IsCriteriaSearch && SelectedEstimator != null) // выбран критерий
-                        || !QueryEditor.AllEmpty)); // есть условия поиска
+                        || !IsCriteriaSearch && !QueryEditor.AllEmpty)); // есть условия поиска
             }
         }
 
