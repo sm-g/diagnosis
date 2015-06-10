@@ -7,33 +7,33 @@ namespace Diagnosis.Data
 {
     public static class Names
     {
-        public static string Doctor = "Doctor";
-        public static string Patient = "Patient";
-        public static string Course = "Course";
-        public static string Appointment = "Appointment";
-        public static string HealthRecord = "HealthRecord";
-        public static string HrCategory = "HrCategory";
-        public static string HrItem = "HrItem";
-        public static string Word = "Word";
-        public static string WordTemplate = "WordTemplate";
-        public static string Vocabulary = "Vocabulary";
-        public static string VocabularyWords = "VocabularyWords";
-        public static string Speciality = "Speciality";
-        public static string Uom = "Uom";
-        public static string UomType = "UomType";
-        public static string UomFormat = "UomFormat";
-        public static string IcdChapter = "IcdChapter";
-        public static string IcdBlock = "IcdBlock";
-        public static string IcdDisease = "IcdDisease";
-        public static string SpecialityIcdBlocks = "SpecialityIcdBlocks";
-        public static string SpecialityVocabularies = "SpecialityVocabularies";
-        public static string Passport = "Passport";
-        public static string Setting = "Setting";
-        public static string Crit = "Crit";
-        public static string Criterion = "Criterion";
-        public static string CriteriaGroup = "CriteriaGroup";
-        public static string Estimator = "Estimator";
-        public static string CritWords = "CritWords";
+        public readonly static string Doctor = "Doctor";
+        public readonly static string Patient = "Patient";
+        public readonly static string Course = "Course";
+        public readonly static string Appointment = "Appointment";
+        public readonly static string HealthRecord = "HealthRecord";
+        public readonly static string HrCategory = "HrCategory";
+        public readonly static string HrItem = "HrItem";
+        public readonly static string Word = "Word";
+        public readonly static string WordTemplate = "WordTemplate";
+        public readonly static string Vocabulary = "Vocabulary";
+        public readonly static string VocabularyWords = "VocabularyWords";
+        public readonly static string Speciality = "Speciality";
+        public readonly static string Uom = "Uom";
+        public readonly static string UomType = "UomType";
+        public readonly static string UomFormat = "UomFormat";
+        public readonly static string IcdChapter = "IcdChapter";
+        public readonly static string IcdBlock = "IcdBlock";
+        public readonly static string IcdDisease = "IcdDisease";
+        public readonly static string SpecialityIcdBlocks = "SpecialityIcdBlocks";
+        public readonly static string SpecialityVocabularies = "SpecialityVocabularies";
+        public readonly static string Passport = "Passport";
+        public readonly static string Setting = "Setting";
+        public readonly static string Crit = "Crit";
+        public readonly static string Criterion = "Criterion";
+        public readonly static string CriteriaGroup = "CriteriaGroup";
+        public readonly static string Estimator = "Estimator";
+        public readonly static string CritWords = "CritWords";
 
         public static Dictionary<string, Type> tblToTypeMap = new Dictionary<string, Type> {
             { Doctor,            typeof(Doctor) },
@@ -78,95 +78,95 @@ namespace Diagnosis.Data
 
         public static class Id
         {
-            public static string Doctor = Names.Doctor + "ID";
-            public static string Patient = Names.Patient + "ID";
-            public static string Course = Names.Course + "ID";
-            public static string Appointment = Names.Appointment + "ID";
-            public static string HealthRecord = Names.HealthRecord + "ID";
-            public static string HrCategory = Names.HrCategory + "ID";
+            public readonly static string Doctor = Names.Doctor + "ID";
+            public readonly static string Patient = Names.Patient + "ID";
+            public readonly static string Course = Names.Course + "ID";
+            public readonly static string Appointment = Names.Appointment + "ID";
+            public readonly static string HealthRecord = Names.HealthRecord + "ID";
+            public readonly static string HrCategory = Names.HrCategory + "ID";
 
-            public static string HrItem = Names.HrItem + "ID";
-            public static string Word = Names.Word + "ID";
-            public static string WordTemplate = Names.WordTemplate + "ID";
-            public static string Vocabulary = Names.Vocabulary + "ID";
-            public static string VocabularyWords = Names.VocabularyWords + "ID";
-            public static string Speciality = Names.Speciality + "ID";
-            public static string Uom = Names.Uom + "ID";
-            public static string UomType = Names.UomType + "ID";
-            public static string UomFormat = Names.UomFormat + "ID";
+            public readonly static string HrItem = Names.HrItem + "ID";
+            public readonly static string Word = Names.Word + "ID";
+            public readonly static string WordTemplate = Names.WordTemplate + "ID";
+            public readonly static string Vocabulary = Names.Vocabulary + "ID";
+            public readonly static string VocabularyWords = Names.VocabularyWords + "ID";
+            public readonly static string Speciality = Names.Speciality + "ID";
+            public readonly static string Uom = Names.Uom + "ID";
+            public readonly static string UomType = Names.UomType + "ID";
+            public readonly static string UomFormat = Names.UomFormat + "ID";
 
-            public static string IcdChapter = "ChapterID"; //
-            public static string IcdBlock = Names.IcdBlock + "ID";
-            public static string IcdDisease = Names.IcdDisease + "ID";
-            public static string SpecialityIcdBlocks = Names.SpecialityIcdBlocks + "ID";
-            public static string SpecialityVocabularies = Names.SpecialityVocabularies + "ID";
+            public readonly static string IcdChapter = "ChapterID"; //
+            public readonly static string IcdBlock = Names.IcdBlock + "ID";
+            public readonly static string IcdDisease = Names.IcdDisease + "ID";
+            public readonly static string SpecialityIcdBlocks = Names.SpecialityIcdBlocks + "ID";
+            public readonly static string SpecialityVocabularies = Names.SpecialityVocabularies + "ID";
 
-            public static string Passport = Names.Passport + "ID";
-            public static string Setting = Names.Setting + "ID";
+            public readonly static string Passport = Names.Passport + "ID";
+            public readonly static string Setting = Names.Setting + "ID";
 
-            public static string Criterion = Names.Criterion + "ID";
-            public static string CriteriaGroup = Names.CriteriaGroup + "ID";
-            public static string Estimator = Names.Estimator + "ID";
-            public static string Crit = Names.Crit + "ID";
-            public static string CritParent = "ParentID";
+            public readonly static string Criterion = Names.Criterion + "ID";
+            public readonly static string CriteriaGroup = Names.CriteriaGroup + "ID";
+            public readonly static string Estimator = Names.Estimator + "ID";
+            public readonly static string Crit = Names.Crit + "ID";
+            public readonly static string CritParent = "ParentID";
         }
 
         public static class FK
         {
-            public static string Doctor_Passport = string.Format("FK_{0}_{1}", Doctor, Passport);
-            public static string Doc_Voc = string.Format("FK_{0}_{1}", Doctor, Vocabulary);
-            public static string WordTemplate_Voc = string.Format("FK_{0}_{1}", WordTemplate, Vocabulary);
-            public static string SpecVoc_Spec = string.Format("FK_{0}_{1}", SpecialityVocabularies, Speciality);
-            public static string SpecVoc_Voc = string.Format("FK_{0}_{1}", SpecialityVocabularies, Vocabulary);
-            public static string VocWord_Word = string.Format("FK_{0}_{1}", VocabularyWords, Word);
-            public static string VocWord_Voc = string.Format("FK_{0}_{1}", VocabularyWords, Vocabulary);
-            public static string Uom_UomType = string.Format("FK_{0}_{1}", Uom, UomType);
-            public static string UomFormat_Uom = string.Format("FK_{0}_{1}", UomFormat, Uom);
-            public static string HrItem_Uom = string.Format("FK_{0}_{1}", HrItem, Uom);
-            public static string Hr_HrCategory = string.Format("FK_Hr_HrCategory"); //
-            public static string Doctor_Speciality = string.Format("FK_{0}_{1}", Doctor, Speciality);
-            public static string SpecialityIcdBlocks_Specia = string.Format("FK_{0}_Specia", SpecialityIcdBlocks); //
-            public static string Word_HrCategory = string.Format("FK_{0}_{1}", Word, HrCategory);
-            public static string Word_Word = string.Format("FK_{0}_{1}", Word, Word);
-            public static string Word_Uom = string.Format("FK_{0}_{1}", Word, Uom);
-            public static string Setting_Doctor = string.Format("FK_{0}_{1}", Setting, Doctor);
-            public static string Criterion_CritGr = string.Format("FK_{0}_{1}", Criterion, CriteriaGroup);
-            public static string CrGr_Est = string.Format("FK_{0}_{1}", CriteriaGroup, Estimator);
-            public static string CritWord_Word = string.Format("FK_{0}_{1}", CritWords, Word);
-            public static string CritWord_Crit = string.Format("FK_{0}_{1}", CritWords, Crit);
-            public static string Crit_Crit = string.Format("FK_{0}_{1}", Crit, Crit);
+            public readonly static string Doctor_Passport = string.Format("FK_{0}_{1}", Doctor, Passport);
+            public readonly static string Doc_Voc = string.Format("FK_{0}_{1}", Doctor, Vocabulary);
+            public readonly static string WordTemplate_Voc = string.Format("FK_{0}_{1}", WordTemplate, Vocabulary);
+            public readonly static string SpecVoc_Spec = string.Format("FK_{0}_{1}", SpecialityVocabularies, Speciality);
+            public readonly static string SpecVoc_Voc = string.Format("FK_{0}_{1}", SpecialityVocabularies, Vocabulary);
+            public readonly static string VocWord_Word = string.Format("FK_{0}_{1}", VocabularyWords, Word);
+            public readonly static string VocWord_Voc = string.Format("FK_{0}_{1}", VocabularyWords, Vocabulary);
+            public readonly static string Uom_UomType = string.Format("FK_{0}_{1}", Uom, UomType);
+            public readonly static string UomFormat_Uom = string.Format("FK_{0}_{1}", UomFormat, Uom);
+            public readonly static string HrItem_Uom = string.Format("FK_{0}_{1}", HrItem, Uom);
+            public readonly static string Hr_HrCategory = string.Format("FK_Hr_HrCategory"); //
+            public readonly static string Doctor_Speciality = string.Format("FK_{0}_{1}", Doctor, Speciality);
+            public readonly static string SpecialityIcdBlocks_Specia = string.Format("FK_{0}_Specia", SpecialityIcdBlocks); //
+            public readonly static string Word_HrCategory = string.Format("FK_{0}_{1}", Word, HrCategory);
+            public readonly static string Word_Word = string.Format("FK_{0}_{1}", Word, Word);
+            public readonly static string Word_Uom = string.Format("FK_{0}_{1}", Word, Uom);
+            public readonly static string Setting_Doctor = string.Format("FK_{0}_{1}", Setting, Doctor);
+            public readonly static string Criterion_CritGr = string.Format("FK_{0}_{1}", Criterion, CriteriaGroup);
+            public readonly static string CrGr_Est = string.Format("FK_{0}_{1}", CriteriaGroup, Estimator);
+            public readonly static string CritWord_Word = string.Format("FK_{0}_{1}", CritWords, Word);
+            public readonly static string CritWord_Crit = string.Format("FK_{0}_{1}", CritWords, Crit);
+            public readonly static string Crit_Crit = string.Format("FK_{0}_{1}", Crit, Crit);
         }
 
         public static class Col
         {
-            public static string CourseStart = "StartDate";
-            public static string CourseEnd = "EndDate";
-            public static string HrItemMeasure = "MeasureValue";
-            public static string DoctorCustomVocabulary = "CustomVocabularyID";
-            public static string WordParent = "ParentID";
-            public static string HrFromDay = "FromDay";
-            public static string HrFromMonth = "FromMonth";
-            public static string HrFromYear = "FromYear";
-            public static string HrToDay = "ToDay";
-            public static string HrToMonth = "ToMonth";
-            public static string HrToYear = "ToYear";
-            public static string HrDescribedAt = "DescribedAt";
-            public static string CreatedAt = "CreatedAt";
-            public static string UomFValue = "MeasureValue";
-            public static string UomFStr = "String";
-            public static string HrItemTextRepr = "TextRepr";
-            public static string CritType = "CritType";
-            public static string EstDiscriminator = "Estimator";
-            public static string CrGrDiscriminator = "CriteriaGroup";
-            public static string CritDiscriminator = "Criterion";
+            public readonly static string CourseStart = "StartDate";
+            public readonly static string CourseEnd = "EndDate";
+            public readonly static string HrItemMeasure = "MeasureValue";
+            public readonly static string DoctorCustomVocabulary = "CustomVocabularyID";
+            public readonly static string WordParent = "ParentID";
+            public readonly static string HrFromDay = "FromDay";
+            public readonly static string HrFromMonth = "FromMonth";
+            public readonly static string HrFromYear = "FromYear";
+            public readonly static string HrToDay = "ToDay";
+            public readonly static string HrToMonth = "ToMonth";
+            public readonly static string HrToYear = "ToYear";
+            public readonly static string HrDescribedAt = "DescribedAt";
+            public readonly static string CreatedAt = "CreatedAt";
+            public readonly static string UomFValue = "MeasureValue";
+            public readonly static string UomFStr = "String";
+            public readonly static string HrItemTextRepr = "TextRepr";
+            public readonly static string CritType = "CritType";
+            public readonly static string EstDiscriminator = "Estimator";
+            public readonly static string CrGrDiscriminator = "CriteriaGroup";
+            public readonly static string CritDiscriminator = "Criterion";
         }
 
         public static class Unique
         {
-            public static string ChpaterCode = "ChpaterCode";
-            public static string BlockCode = "BlockCode";
-            public static string DiseaseCode = "DiseaseCode";
-            public static string WordTitle = "WordTitle";
+            public readonly static string ChpaterCode = "ChpaterCode";
+            public readonly static string BlockCode = "BlockCode";
+            public readonly static string DiseaseCode = "DiseaseCode";
+            public readonly static string WordTitle = "WordTitle";
         }
     }
 

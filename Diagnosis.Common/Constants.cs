@@ -17,11 +17,11 @@ namespace Diagnosis.Common
         public const string SqliteProvider = "System.Data.SQLite";
         public const string SqlServerProvider = "System.Data.SqlClient";
 
-        public static string serverConStrName = "server";
-        public static string clientConStrName = "client";
+        public readonly static string serverConStrName = "server";
+        public readonly static string clientConStrName = "client";
 
-        public static string clientConfigFileName = "Diagnosis.Client.App.exe.config";
-        public static string serverConfigFileName = "Diagnosis.Server.App.exe.config";
+        public readonly static string clientConfigFileName = "Diagnosis.Client.App.exe.config";
+        public readonly static string serverConfigFileName = "Diagnosis.Server.App.exe.config";
 
         public static string SerializedConfig { get { return AppDataDir + "Configuration.serialized"; } }
         public static string LayoutFileName { get { return AppDataDir + "avalon-layout.config"; } }
@@ -39,7 +39,7 @@ namespace Diagnosis.Common
                 }
                 return _isClient.Value;
             }
-            set // for tests
+            internal set // for tests
             {
                 _isClient = value;
             }
