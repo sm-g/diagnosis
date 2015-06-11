@@ -13,6 +13,19 @@ namespace Diagnosis.Data.Sync
     {
         public override IEnumerable<Type> Childs { get { return new[] { typeof(Doctor), typeof(SpecialityIcdBlocks), typeof(SpecialityVocabularies) }; } }
 
+        public override IEnumerable<IEntity> UpdateInChilds(ISession session, Dictionary<Speciality, Speciality> replacing)
+        {
+            return UpdateInChild<Doctor>(session, replacing)
+               .Union<IEntity>(UpdateInChild<SpecialityIcdBlocks>(session, replacing))
+               .Union<IEntity>(UpdateInChild<SpecialityVocabularies>(session, replacing));
+        }
+
+        public override Expression<Func<Speciality, bool>> EqualsByVal(Speciality x)
+        {
+            return y =>
+                 x.Title.ToLower() == y.Title.ToLower();
+        }
+
         protected override Expression<Func<TUpdate, Speciality>> GetGetterInner<TUpdate>()
         {
             if (typeof(Doctor) == typeof(TUpdate))
@@ -23,14 +36,6 @@ namespace Diagnosis.Data.Sync
                 return (e) => (e as SpecialityVocabularies).Speciality;
             return null;
         }
-
-        protected override IEnumerable<IEntity> UpdateInChildsInner(ISession session, Dictionary<Speciality, Speciality> replacing)
-        {
-            return UpdateInChild<Doctor>(session, replacing)
-               .Union<IEntity>(UpdateInChild<SpecialityIcdBlocks>(session, replacing))
-               .Union<IEntity>(UpdateInChild<SpecialityVocabularies>(session, replacing));
-        }
-
         protected override Action<TUpdate, Speciality> GetSetterInner<TUpdate>()
         {
             if (typeof(Doctor) == typeof(TUpdate))
@@ -42,35 +47,15 @@ namespace Diagnosis.Data.Sync
 
             return null;
         }
-
-        public override Expression<Func<Speciality, bool>> EqualsByVal(Speciality x)
-        {
-            return y =>
-                 x.Title.ToLower() == y.Title.ToLower();
-        }
     }
 
     internal class RHCat : RH<HrCategory>
     {
         public override IEnumerable<Type> Childs { get { return new[] { typeof(HealthRecord) }; } }
 
-        protected override Expression<Func<TUpdate, HrCategory>> GetGetterInner<TUpdate>()
-        {
-            if (typeof(HealthRecord) == typeof(TUpdate))
-                return (e) => (e as HealthRecord).Category;
-            return null;
-        }
-
-        protected override IEnumerable<IEntity> UpdateInChildsInner(ISession session, Dictionary<HrCategory, HrCategory> replacing)
+        public override IEnumerable<IEntity> UpdateInChilds(ISession session, Dictionary<HrCategory, HrCategory> replacing)
         {
             return UpdateInChild<HealthRecord>(session, replacing);
-        }
-
-        protected override Action<TUpdate, HrCategory> GetSetterInner<TUpdate>()
-        {
-            if (typeof(HealthRecord) == typeof(TUpdate))
-                return (e, x) => (e as HealthRecord).Category = x;
-            return null;
         }
 
         public override Expression<Func<HrCategory, bool>> EqualsByVal(HrCategory x)
@@ -78,11 +63,36 @@ namespace Diagnosis.Data.Sync
             return y =>
                       x.Title.ToLower() == y.Title.ToLower();
         }
+
+        protected override Expression<Func<TUpdate, HrCategory>> GetGetterInner<TUpdate>()
+        {
+            if (typeof(HealthRecord) == typeof(TUpdate))
+                return (e) => (e as HealthRecord).Category;
+            return null;
+        }
+        protected override Action<TUpdate, HrCategory> GetSetterInner<TUpdate>()
+        {
+            if (typeof(HealthRecord) == typeof(TUpdate))
+                return (e, x) => (e as HealthRecord).Category = x;
+            return null;
+        }
     }
 
     internal class RHVoc : RH<Vocabulary>
     {
         public override IEnumerable<Type> Childs { get { return new[] { typeof(VocabularyWords), typeof(SpecialityVocabularies) }; } }
+
+        public override IEnumerable<IEntity> UpdateInChilds(ISession session, Dictionary<Vocabulary, Vocabulary> replacing)
+        {
+            return UpdateInChild<VocabularyWords>(session, replacing)
+               .Union<IEntity>(UpdateInChild<SpecialityVocabularies>(session, replacing));
+        }
+
+        public override Expression<Func<Vocabulary, bool>> EqualsByVal(Vocabulary x)
+        {
+            return y =>
+                     x.Title.ToLower() == y.Title.ToLower();
+        }
 
         protected override Expression<Func<TUpdate, Vocabulary>> GetGetterInner<TUpdate>()
         {
@@ -92,13 +102,6 @@ namespace Diagnosis.Data.Sync
                 return (e) => (e as SpecialityVocabularies).Vocabulary;
             return null;
         }
-
-        protected override IEnumerable<IEntity> UpdateInChildsInner(ISession session, Dictionary<Vocabulary, Vocabulary> replacing)
-        {
-            return UpdateInChild<VocabularyWords>(session, replacing)
-               .Union<IEntity>(UpdateInChild<SpecialityVocabularies>(session, replacing));
-        }
-
         protected override Action<TUpdate, Vocabulary> GetSetterInner<TUpdate>()
         {
             if (typeof(VocabularyWords) == typeof(TUpdate))
@@ -106,12 +109,6 @@ namespace Diagnosis.Data.Sync
             else if (typeof(SpecialityVocabularies) == typeof(TUpdate))
                 return (e, x) => (e as SpecialityVocabularies).Vocabulary = x;
             return null;
-        }
-
-        public override Expression<Func<Vocabulary, bool>> EqualsByVal(Vocabulary x)
-        {
-            return y =>
-                     x.Title.ToLower() == y.Title.ToLower();
         }
     }
 
@@ -149,6 +146,11 @@ namespace Diagnosis.Data.Sync
                     x.Title.ToLower() == y.Title.ToLower();
         }
 
+        public override IEnumerable<IEntity> UpdateInChilds(ISession session, Dictionary<UomType, UomType> replacing)
+        {
+            return UpdateInChild<Uom>(session, replacing);
+        }
+
         protected override Expression<Func<TUpdate, UomType>> GetGetterInner<TUpdate>()
         {
             if (typeof(Uom) == typeof(TUpdate))
@@ -161,11 +163,6 @@ namespace Diagnosis.Data.Sync
             if (typeof(Uom) == typeof(TUpdate))
                 return (e, x) => { (e as Uom).Type = x; };
             return null;
-        }
-
-        protected override IEnumerable<IEntity> UpdateInChildsInner(ISession session, Dictionary<UomType, UomType> replacing)
-        {
-            return UpdateInChild<Uom>(session, replacing);
         }
     }
 
@@ -180,7 +177,14 @@ namespace Diagnosis.Data.Sync
             return y =>
                     x.Abbr.ToLower() == y.Abbr.ToLower() &&
                     x.Description.ToLower() == y.Description.ToLower() &&
-                    x.Type.Title.ToLower().ToLower() == y.Type.Title.ToLower();
+                    x.Type.Title.ToLower() == y.Type.Title.ToLower();
+        }
+
+        public override IEnumerable<IEntity> UpdateInChilds(ISession session, Dictionary<Uom, Uom> replacing)
+        {
+            return UpdateInChild<Word>(session, replacing)
+                .Union<IEntity>(UpdateInChild<HrItem>(session, replacing))
+                .Union(UpdateInChild<UomFormat>(session, replacing));
         }
 
         protected override Expression<Func<TUpdate, Uom>> GetGetterInner<TUpdate>()
@@ -190,7 +194,10 @@ namespace Diagnosis.Data.Sync
             else if (typeof(UomFormat) == typeof(TUpdate))
                 return (e) => (e as UomFormat).Uom;
             else if (typeof(HrItem) == typeof(TUpdate))
-                return (e) => (e as HrItem).Measure != null ? (e as HrItem).Measure.Uom : null;
+                return (e) => (e as HrItem).Measure.Uom;
+            // это будет выполняться как sql, поэтому не проверяем Measure != null ? (e as HrItem).Measure.Uom : null
+            // иначе Don't currently support idents of type Uom
+            // возможно стоит сравнивать по ID
             return null;
         }
 
@@ -203,13 +210,6 @@ namespace Diagnosis.Data.Sync
             else if (typeof(HrItem) == typeof(TUpdate))
                 return (e, x) => { if ((e as HrItem).Measure != null) (e as HrItem).Measure.Uom = x; };
             return null;
-        }
-
-        protected override IEnumerable<IEntity> UpdateInChildsInner(ISession session, Dictionary<Uom, Uom> replacing)
-        {
-            return UpdateInChild<Word>(session, replacing)
-                .Union<IEntity>(UpdateInChild<HrItem>(session, replacing))
-                .Union(UpdateInChild<UomFormat>(session, replacing));
         }
     }
 
