@@ -18,6 +18,27 @@ namespace Diagnosis.ViewModels
         private bool _isFiltered;
         private bool _isExpanded;
 
+        public HierarchicalBase()
+        {
+            Children = new AsyncObservableCollection<T>();
+            Children.CollectionChanged += (s, e) =>
+            {
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                {
+                    var item = (T)e.NewItems[0];
+                    if (item.Parent != this)
+                    {
+                        item.Parent = (T)this;
+                    }
+                    OnChildAdded((T)e.NewItems[0]);
+                }
+                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                {
+                    OnChildRemoved((T)e.OldItems[0]);
+                }
+            };
+        }
+
         #region IHierarchical
         /// <summary>
         /// Возникает при добвляении или удалении ребенка.
@@ -56,12 +77,14 @@ namespace Diagnosis.ViewModels
         {
             get
             {
-                List<T> result = Children.ToList();
                 foreach (T child in Children)
                 {
-                    result.AddRange(child.AllChildren);
+                    yield return child;
+                    foreach (var subchild in child.AllChildren)
+                    {
+                        yield return subchild;
+                    }
                 }
-                return result;
             }
         }
 
@@ -295,28 +318,6 @@ namespace Diagnosis.ViewModels
         }
 
         #endregion CheckableBase
-
-        public HierarchicalBase()
-        {
-            Children = new AsyncObservableCollection<T>();
-            Children.CollectionChanged += (s, e) =>
-            {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-                {
-                    var item = (T)e.NewItems[0];
-                    if (item.Parent != this)
-                    {
-                        item.Parent = (T)this;
-                    }
-                    OnChildAdded((T)e.NewItems[0]);
-                }
-                else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-                {
-                    OnChildRemoved((T)e.OldItems[0]);
-                }
-            };
-        }
-
         /// <summary>
         /// If newState true, checks all parents.
         /// Else unckecks all children.
