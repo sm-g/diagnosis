@@ -791,15 +791,15 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         private void SetHrExtra(IEnumerable<ShortHealthRecordViewModel> vms)
         {
-            Action<ShortHealthRecordViewModel> setter = (vm) => vm.SortingExtraInfo = "";
+            Action<ShortHealthRecordViewModel> setter = (vm) => vm.SortingExtraInfo = string.Empty;
 
             switch (Sorting)
             {
                 case HrViewColumn.Category:
                     if (Grouping != HrViewColumn.Category)
-                        setter = (vm) => vm.SortingExtraInfo = vm.Category == HrCategory.Null
+                        setter = (vm) => vm.SortingExtraInfo = (vm.Category != HrCategory.Null
                             ? vm.Category.ToString()
-                            : "";
+                            : string.Empty);
                     break;
 
                 case HrViewColumn.CreatedAt:

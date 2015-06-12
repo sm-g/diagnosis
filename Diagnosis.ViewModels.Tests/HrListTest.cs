@@ -578,10 +578,12 @@ namespace Diagnosis.ViewModels.Tests
 
         #endregion Movement
 
+        #region Sorting and Grouping
+
         [TestMethod]
         public void GroupingAddsSort()
         {
-            l.Sorting = HrViewColumn.None;
+            l.Sorting = HrViewColumn.Ord;
             l.Grouping = HrViewColumn.None;
 
             l.Grouping = HrViewColumn.Category;
@@ -600,6 +602,28 @@ namespace Diagnosis.ViewModels.Tests
 
             Assert.IsTrue(l.view.SortDescriptions.Contains(ordSortD));
         }
+
+        [TestMethod]
+        public void ShowExtraInfoAfterSort()
+        {
+            l.Sorting = HrViewColumn.Category;
+            l.Grouping = HrViewColumn.None;
+
+            var hr = l.HealthRecords[0];
+            Assert.AreEqual(hr.healthRecord.Category.Title, hr.SortingExtraInfo);
+        }
+
+        [TestMethod]
+        public void DoNotShowExtraInfoAfterSortWHenSameGrouping()
+        {
+            l.Sorting = HrViewColumn.Category;
+            l.Grouping = HrViewColumn.Category;
+
+            var hr = l.HealthRecords[0];
+            Assert.IsTrue(hr.SortingExtraInfo.IsNullOrEmpty());
+        }
+
+        #endregion Sorting and Grouping
 
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
