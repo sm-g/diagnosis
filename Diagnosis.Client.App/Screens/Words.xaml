@@ -62,7 +62,6 @@
                       Grid.Row="2"
                       ItemsSource="{Binding Words}"
                       SelectedItem="{Binding SelectedWord}"
-                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedWords}"
                       Visibility="{Binding NoWords, Converter={StaticResource NegBooleanToVisibilityConverter}}"
                       Margin="0,10,0,0"
                       Style="{DynamicResource MyDataGridStyle}"

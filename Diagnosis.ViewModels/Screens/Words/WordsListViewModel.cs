@@ -28,7 +28,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             saver = new Saver(Session);
             doctor = AuthorityController.CurrentDoctor;
-            SelectedWords = new ObservableCollection<WordViewModel>();
 
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
@@ -68,6 +67,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
+                Contract.Ensures(Contract.Result<CheckableBase>() == null || Contract.Result<CheckableBase>().IsSelected);
                 return _current;
             }
             set
@@ -75,12 +75,14 @@ namespace Diagnosis.ViewModels.Screens
                 if (_current != value)
                 {
                     _current = value;
+                    if (_current != null)
+                        _current.IsSelected = true;
                     OnPropertyChanged(() => SelectedWord);
                 }
             }
         }
 
-        public ObservableCollection<WordViewModel> SelectedWords { get; private set; }
+        public IEnumerable<WordViewModel> SelectedWords { get { return Words.Where(x => x.IsSelected); } }
 
         public RelayCommand<WordViewModel> AddCommand
         {
@@ -189,8 +191,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             var toSelect = Words.FirstOrDefault(vm => vm.word == w);
             SelectedWord = toSelect;
-            if (toSelect != null && !SelectedWords.Contains(toSelect))
-                SelectedWords.Add(toSelect);
         }
 
         protected override void Dispose(bool disposing)

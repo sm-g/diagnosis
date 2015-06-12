@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -36,7 +37,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             saver = new Saver(Session);
             doctor = AuthorityController.CurrentDoctor;
-            SelectedPatients = new ObservableCollection<PatientViewModel>();
 
             _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
@@ -73,6 +73,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
+                Contract.Ensures(Contract.Result<CheckableBase>() == null || Contract.Result<CheckableBase>().IsSelected);
                 return _current;
             }
             set
@@ -80,12 +81,14 @@ namespace Diagnosis.ViewModels.Screens
                 if (_current != value)
                 {
                     _current = value;
+                    if (_current != null)
+                        _current.IsSelected = true;
                     OnPropertyChanged(() => SelectedPatient);
                 }
             }
         }
 
-        public ObservableCollection<PatientViewModel> SelectedPatients { get; private set; }
+        public IEnumerable<PatientViewModel> SelectedPatients { get { return Patients.Where(x => x.IsSelected); } }
 
         public FilterViewModel<Patient> Filter { get { return _filter; } }
 

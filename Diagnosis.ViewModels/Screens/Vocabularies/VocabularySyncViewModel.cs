@@ -46,9 +46,6 @@ namespace Diagnosis.ViewModels.Screens
             LocalConnectionString = Nhib.ConnectionString;
             LocalProviderName = LocalConnectionString.Contains(".sdf") ? Constants.SqlCeProvider : Constants.SqlServerProvider;
 
-            SelectedVocs = new ObservableCollection<VocabularyViewModel>();
-            SelectedAvailableVocs = new ObservableCollection<VocabularyViewModel>();
-
             Remote = new DataConnectionViewModel(server);
             Remote.PropertyChanged += (s, e) =>
             {
@@ -112,12 +109,12 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public ObservableCollection<VocabularyViewModel> SelectedVocs { get; private set; }
+        public IEnumerable<VocabularyViewModel> SelectedVocs { get { return Vocs.Where(x => x.IsSelected); } }
 
         /// <summary>
         /// Выбранные новые словари, remote session
         /// </summary>
-        public ObservableCollection<VocabularyViewModel> SelectedAvailableVocs { get; private set; }
+        public IEnumerable<VocabularyViewModel> SelectedAvailableVocs { get { return AvailableVocs.Where(x => x.IsSelected); } }
 
         /// <summary>
         /// Устанавливает выбранные доступные словари.
@@ -143,7 +140,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     AfterLoad(vocsToLoad);
 
-                }, () => SelectedAvailableVocs.Count > 0 && IsConnected);
+                }, () => SelectedAvailableVocs.Any() && IsConnected);
             }
         }
 
@@ -159,7 +156,7 @@ namespace Diagnosis.ViewModels.Screens
                     var toDel = SelectedVocs.Select(w => w.voc).ToList();
 
                     DeleteVocs(toDel);
-                }, () => SelectedVocs.Count > 0);
+                }, () => SelectedVocs.Any());
             }
         }
 
@@ -349,8 +346,6 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     Vocs.Clear();
                     AvailableVocs.Clear();
-                    SelectedVocs.Clear();
-                    SelectedAvailableVocs.Clear();
                 });
 
                 Remote.Dispose();
