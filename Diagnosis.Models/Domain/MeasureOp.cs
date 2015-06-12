@@ -111,11 +111,14 @@ namespace Diagnosis.Models
             string opValue;
 
             if (Operator.IsBinary())
-                opValue = string.Format("{0}{1}{2}", FormattedValue, Operator.ToStr(), FormattedRightValue);
+                if (Operator == MeasureOperator.Between)
+                    opValue = string.Format("({0}{1}{2}]", FormattedValue, Operator.ToStr(), FormattedRightValue); // (2—4]
+                else
+                    opValue = string.Format("{0}{1}{2}", FormattedValue, Operator.ToStr(), FormattedRightValue);
             else
                 opValue = string.Format("{0} {1}", Operator.ToStr(), FormattedValue);
 
-            return string.Format("{0}\u00A0{1}{2}", Word, opValue,
+            return string.Format("{0}{1}{2}{3}", Word, nbsp, opValue,
                 Uom != null ? nbsp + Uom.Abbr.Replace(" ", nbsp) : ""); // nbsp in and before abbr
         }
 
