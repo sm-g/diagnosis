@@ -75,20 +75,20 @@ namespace Diagnosis.Data.Sync
                 return -1;
             return 0;
         }
-        /// <summary>
-        /// Меняет поле во всех дочерних сущностях и сохраняет их.
-        /// </summary>
-        public void UpdateInChilds(ISession session, Dictionary<T, T> replacing)
-        {
-            var toUpdate = UpdateInChildsInner(session, replacing);
-            // сохраняем обновленных детей
-            session.DoSave(toUpdate.ToArray());
-        }
 
         /// <summary>
         /// Выражение для проверки равенства двух сущностей по значению, несмотря на разные ID.
         /// </summary>
         public abstract Expression<Func<T, bool>> EqualsByVal(T x);
+
+        /// <summary>
+        /// Меняет поле во всех дочерних сущностях.
+        /// Возвращает обновленные сущности, которые надо сохранить.
+        /// </summary>
+        public virtual IEnumerable<IEntity> UpdateInChilds(ISession session, Dictionary<T, T> replacing)
+        {
+            return Enumerable.Empty<IEntity>();
+        }
 
         /// <summary>
         /// Геттер свойства для обновления
@@ -105,20 +105,13 @@ namespace Diagnosis.Data.Sync
         {
             return null;
         }
-        /// <summary>
-        /// Меняет поле во всех дочерних сущностях.
-        /// </summary>
-        protected virtual IEnumerable<IEntity> UpdateInChildsInner(ISession session, Dictionary<T, T> replacing)
-        {
-            return Enumerable.Empty<IEntity>();
-        }
 
         /// <summary>
         ///  Меняет поле в сущностях для обновления.
         /// </summary>
         /// <typeparam name="TUpdate">Тип сущности для обновления</typeparam>
         /// <param name="toReplace">Сущности для замены, значения { oldEntity, newEntity }</param>
-        /// <returns></returns>
+        /// <returns>Обновленные сущности</returns>
         protected IEnumerable<TUpdate> UpdateInChild<TUpdate>(ISession session, Dictionary<T, T> toReplace)
             where TUpdate : IEntity
         {
@@ -128,6 +121,7 @@ namespace Diagnosis.Data.Sync
             var setter = GetSetter<TUpdate>();
 
             var olds = toReplace.Keys;
+            var oldIds = olds.Cast<EntityBase<Guid>>().Select(x => x.Id);
 
             // http://stackoverflow.com/a/1069820/3009578
             // from TUpdate e
@@ -140,7 +134,7 @@ namespace Diagnosis.Data.Sync
                     Expression.Constant(value, typeof(T))));
 
             Expression body = equals.Aggregate((accumulate, equal) =>
-                Expression.Or(accumulate, equal));
+                Expression.OrElse(accumulate, equal));
 
             var l = Expression.Lambda<Func<TUpdate, bool>>(body, p);
 

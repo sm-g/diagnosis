@@ -23,7 +23,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             var str = DateOffsetFormatter.GetUnitString(1, DateUnit.Day);
 
-            Assert.AreEqual(Plurals.days[0], str);
+            Assert.AreEqual(PluralsHelper.days[0], str);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             var str = DateOffsetFormatter.GetUnitString(null, DateUnit.Day);
 
-            Assert.AreEqual(Plurals.days[2], str);
+            Assert.AreEqual(PluralsHelper.days[2], str);
         }
 
         [TestMethod]
@@ -39,7 +39,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             var str = DateOffsetFormatter.GetUnitString(-1, DateUnit.Day);
 
-            Assert.AreEqual(Plurals.days[0], str);
+            Assert.AreEqual(PluralsHelper.days[0], str);
         }
 
         [TestMethod]

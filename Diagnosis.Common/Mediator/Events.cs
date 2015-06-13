@@ -11,32 +11,32 @@ namespace Diagnosis.Common
     public static class MessageKeys
     {
         // domain
-        public static string Word = "word";
-        public static string Patient = "patient";
-        public static string Doctor = "doctor";
-        public static string User = "user";
-        public static string Course = "course";
-        public static string Appointment = "appointment";
-        public static string HealthRecord = "healthRecord";
-        public static string HealthRecords = "healthRecords";
-        public static string Category = "category";
-        public static string Holder = "holder";
-        public static string Uom = "uom";
-        public static string Crit = "crit";
+        public readonly static string Word = "word";
+        public readonly static string Patient = "patient";
+        public readonly static string Doctor = "doctor";
+        public readonly static string User = "user";
+        public readonly static string Course = "course";
+        public readonly static string Appointment = "appointment";
+        public readonly static string HealthRecord = "healthRecord";
+        public readonly static string HealthRecords = "healthRecords";
+        public readonly static string Category = "category";
+        public readonly static string Holder = "holder";
+        public readonly static string Uom = "uom";
+        public readonly static string Crit = "crit";
 
         // other
-        public static string ToSearchPackage = "package";
-        public static string UndoDoActions = "undooverlay";
-        public static string Type = "type";
+        public readonly static string ToSearchPackage = "package";
+        public readonly static string UndoDoActions = "undooverlay";
+        public readonly static string Type = "type";
 
-        public static string Dialog = "dialog";
-        public static string Window = "window";
+        public readonly static string Dialog = "dialog";
+        public readonly static string Window = "window";
 
-        public static string String = "string";
-        public static string Boolean = "bool";
+        public readonly static string String = "string";
+        public readonly static string Boolean = "bool";
 
-        public static string Name = "name";
-        public static string Value = "value";
+        public readonly static string Name = "name";
+        public readonly static string Value = "value";
         public static string Session = "session";
     }
 

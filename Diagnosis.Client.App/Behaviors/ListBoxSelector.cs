@@ -270,7 +270,8 @@ namespace Diagnosis.Client.App.Behaviors
         private void StopSelection()
         {
             // Hide the selection rectangle and stop the auto scrolling.
-            this.selectionRect.IsEnabled = false;
+            if (this.selectionRect != null)
+                this.selectionRect.IsEnabled = false;
             this.autoScroller.IsEnabled = false;
             // focus on last selected item
             if (this.selector.lastSelectedItem != null)

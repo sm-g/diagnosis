@@ -13,7 +13,7 @@ namespace Diagnosis.Data.Sync
 {
     internal class SyncUtil
     {
-        private static string prefix = Scopes.syncPrefix;
+        private readonly static string prefix = Scopes.syncPrefix;
         private static Dictionary<string, DbSyncTableDescription> map = new Dictionary<string, DbSyncTableDescription>();
 
         public static RelationalSyncProvider CreateProvider(DbConnection conn, string scopeName)

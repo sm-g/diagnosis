@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels.Screens
                     acts.ForEach(a => a());
 
                     OnExecuted(EventArgs.Empty);
-                }, () => !ActionText.IsNullOrEmpty());
+                }, () => !string.IsNullOrEmpty(ActionText));
             }
         }
 
@@ -164,7 +164,7 @@ namespace Diagnosis.ViewModels.Screens
 
         private static string TypeCountLabel(Type type, int count)
         {
-            int ending = Plurals.GetPluralEnding(count);
+            int ending = PluralsHelper.GetPluralEnding(count);
 
             var @switch = new Dictionary<Type, Func<string>> {
                 { typeof(Patient),() => Plurals.patients[ending] },

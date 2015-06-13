@@ -1,253 +1,371 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+<DirectedGraph GraphDirection="LeftToRight" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="Database" Label="diagnosis.sdf" Category="Database" Group="Expanded" />
-    <Node Id="Appointment" Label="Appointment" Category="Table" Group="Collapsed" />
-    <Node Id="Appointment_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Appointment_CourseID" Label="CourseID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="Appointment_DoctorID" Label="DoctorID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="Appointment_DateAndTime" Label="DateAndTime" Category="Field" Description="datetime" />
-    <Node Id="Appointment_CreatedAt" Label="CreatedAt" Category="Field" Description="datetime" />
-    <Node Id="Appointment_UpdatedAt" Label="UpdatedAt" Category="Field" Description="datetime" />
-    <Node Id="Course" Label="Course" Category="Table" Group="Collapsed" />
-    <Node Id="Course_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Course_PatientID" Label="PatientID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="Course_DoctorID" Label="DoctorID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="Course_StartDate" Label="StartDate" Category="Field" Description="datetime" />
-    <Node Id="Course_EndDate" Label="EndDate" Category="Field Optional" Description="datetime" />
-    <Node Id="Course_CreatedAt" Label="CreatedAt" Category="Field" Description="datetime" />
-    <Node Id="Course_UpdatedAt" Label="UpdatedAt" Category="Field" Description="datetime" />
-    <Node Id="Doctor" Label="Doctor" Category="Table" Group="Collapsed" />
-    <Node Id="Doctor_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Doctor_FirstName" Label="FirstName" Category="Field Optional" Description="nvarchar(20)" />
-    <Node Id="Doctor_MiddleName" Label="MiddleName" Category="Field Optional" Description="nvarchar(20)" />
-    <Node Id="Doctor_LastName" Label="LastName" Category="Field" Description="nvarchar(20)" />
-    <Node Id="Doctor_IsMale" Label="IsMale" Category="Field Optional" Description="bit" />
-    <Node Id="Doctor_SpecialityID" Label="SpecialityID" Category="Field Foreign" Description="int" />
-    <Node Id="HealthRecord" Label="HealthRecord" Category="Table" Group="Collapsed" />
-    <Node Id="HealthRecord_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="HealthRecord_Ord" Label="Ord" Category="Field" Description="tinyint" />
-    <Node Id="HealthRecord_CreatedAt" Label="CreatedAt" Category="Field" Description="datetime" />
-    <Node Id="HealthRecord_PatientID" Label="PatientID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="HealthRecord_CourseID" Label="CourseID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="HealthRecord_AppointmentID" Label="AppointmentID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="HealthRecord_DoctorID" Label="DoctorID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="HealthRecord_HrCategoryID" Label="HrCategoryID" Category="Field Foreign" Description="int" />
-    <Node Id="HealthRecord_FromDay" Label="FromDay" Category="Field Optional" Description="smallint" />
-    <Node Id="HealthRecord_FromMonth" Label="FromMonth" Category="Field Optional" Description="smallint" />
-    <Node Id="HealthRecord_FromYear" Label="FromYear" Category="Field Optional" Description="int" />
-    <Node Id="HealthRecord_Unit" Label="Unit" Category="Field Optional" Description="nvarchar(20)" />
-    <Node Id="HealthRecord_IsDeleted" Label="IsDeleted" Category="Field" Description="bit" />
-    <Node Id="HealthRecord_UpdatedAt" Label="UpdatedAt" Category="Field" Description="datetime" />
-    <Node Id="HrCategory" Label="HrCategory" Category="Table" Group="Collapsed" />
-    <Node Id="HrCategory_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="HrCategory_Title" Label="Title" Category="Field" Description="nvarchar(20)" />
-    <Node Id="HrCategory_Ord" Label="Ord" Category="Field" Description="int" />
-    <Node Id="HrItem" Label="HrItem" Category="Table" Group="Collapsed" />
-    <Node Id="HrItem_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="HrItem_Ord" Label="Ord" Category="Field" Description="int" />
-    <Node Id="HrItem_IcdDiseaseID" Label="IcdDiseaseID" Category="Field Foreign" Description="int" />
-    <Node Id="HrItem_WordID" Label="WordID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="HrItem_UomID" Label="UomID" Category="Field Foreign" Description="int" />
-    <Node Id="HrItem_MeasureValue" Label="MeasureValue" Category="Field Optional" Description="numeric(18,6)" />
-    <Node Id="HrItem_HealthRecordID" Label="HealthRecordID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="HrItem_TextRepr" Label="TextRepr" Category="Field Optional" Description="nvarchar(255)" />
-    <Node Id="IcdBlock" Label="IcdBlock" Category="Table" Group="Collapsed" />
-    <Node Id="IcdBlock_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="IcdBlock_ChapterID" Label="ChapterID" Category="Field Foreign" Description="int" />
-    <Node Id="IcdBlock_Title" Label="Title" Category="Field" Description="nvarchar(150)" />
-    <Node Id="IcdBlock_Code" Label="Code" Category="Field" Description="nvarchar(10)" />
-    <Node Id="IcdChapter" Label="IcdChapter" Category="Table" Group="Collapsed" />
-    <Node Id="IcdChapter_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="IcdChapter_Title" Label="Title" Category="Field" Description="nvarchar(150)" />
-    <Node Id="IcdChapter_Code" Label="Code" Category="Field" Description="nvarchar(10)" />
-    <Node Id="IcdDisease" Label="IcdDisease" Category="Table" Group="Collapsed" />
-    <Node Id="IcdDisease_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="IcdDisease_IcdBlockID" Label="IcdBlockID" Category="Field Foreign" Description="int" />
-    <Node Id="IcdDisease_Title" Label="Title" Category="Field" Description="nvarchar(200)" />
-    <Node Id="IcdDisease_Code" Label="Code" Category="Field" Description="nvarchar(10)" />
-    <Node Id="Passport" Label="Passport" Category="Table" Group="Collapsed" />
-    <Node Id="Passport_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Passport_HashAndSalt" Label="HashAndSalt" Category="Field Optional" Description="nchar(70)" />
-    <Node Id="Passport_Remember" Label="Remember" Category="Field" Description="bit" />
-    <Node Id="Patient" Label="Patient" Category="Table" Group="Collapsed" />
-    <Node Id="Patient_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Patient_FirstName" Label="FirstName" Category="Field Optional" Description="nvarchar(20)" />
-    <Node Id="Patient_MiddleName" Label="MiddleName" Category="Field Optional" Description="nvarchar(20)" />
-    <Node Id="Patient_LastName" Label="LastName" Category="Field Optional" Description="nvarchar(20)" />
-    <Node Id="Patient_IsMale" Label="IsMale" Category="Field Optional" Description="bit" />
-    <Node Id="Patient_BirthYear" Label="BirthYear" Category="Field Optional" Description="int" />
-    <Node Id="Patient_BirthMonth" Label="BirthMonth" Category="Field Optional" Description="smallint" />
-    <Node Id="Patient_BirthDay" Label="BirthDay" Category="Field Optional" Description="smallint" />
-    <Node Id="Patient_CreatedAt" Label="CreatedAt" Category="Field" Description="datetime" />
-    <Node Id="Patient_UpdatedAt" Label="UpdatedAt" Category="Field" Description="datetime" />
-    <Node Id="Setting" Label="Setting" Category="Table" Group="Collapsed" />
-    <Node Id="Setting_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Setting_Title" Label="Title" Category="Field" Description="nvarchar(255)" />
-    <Node Id="Setting_Value" Label="Value" Category="Field" Description="nvarchar(255)" />
-    <Node Id="Setting_DoctorID" Label="DoctorID" Category="Field Foreign" Description="uniqueidentifier" />
-    <Node Id="Speciality" Label="Speciality" Category="Table" Group="Collapsed" />
-    <Node Id="Speciality_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="Speciality_Title" Label="Title" Category="Field" Description="nvarchar(50)" />
-    <Node Id="SpecialityIcdBlocks" Label="SpecialityIcdBlocks" Category="Table" Group="Collapsed" />
-    <Node Id="SpecialityIcdBlocks_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="SpecialityIcdBlocks_SpecialityID" Label="SpecialityID" Category="Field Foreign" Description="int" />
-    <Node Id="SpecialityIcdBlocks_IcdBlockID" Label="IcdBlockID" Category="Field Foreign" Description="int" />
-    <Node Id="Uom" Label="Uom" Category="Table" Group="Collapsed" />
-    <Node Id="Uom_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="Uom_Abbr" Label="Abbr" Category="Field" Description="nvarchar(10)" />
-    <Node Id="Uom_Description" Label="Description" Category="Field Optional" Description="nvarchar(100)" />
-    <Node Id="Uom_Factor" Label="Factor" Category="Field" Description="float" />
-    <Node Id="Uom_UomTypeID" Label="UomTypeID" Category="Field Foreign" Description="int" />
-    <Node Id="UomType" Label="UomType" Category="Table" Group="Collapsed" />
-    <Node Id="UomType_Id" Label="Id" Category="Field Primary" Description="int" />
-    <Node Id="UomType_Title" Label="Title" Category="Field" Description="nvarchar(20)" />
-    <Node Id="UomType_Ord" Label="Ord" Category="Field" Description="int" />
-    <Node Id="VersionInfo" Label="VersionInfo" Category="Table" Group="Collapsed" />
-    <Node Id="VersionInfo_Version" Label="Version" Category="Field" Description="bigint" />
-    <Node Id="VersionInfo_AppliedOn" Label="AppliedOn" Category="Field Optional" Description="datetime" />
-    <Node Id="VersionInfo_Description" Label="Description" Category="Field Optional" Description="nvarchar(1024)" />
-    <Node Id="Word" Label="Word" Category="Table" Group="Collapsed" />
-    <Node Id="Word_Id" Label="Id" Category="Field Primary" Description="uniqueidentifier" />
-    <Node Id="Word_Title" Label="Title" Category="Field" Description="nvarchar(100)" />
-    <Node Id="Word_DefHrCategoryID" Label="DefHrCategoryID" Category="Field Foreign" Description="int" />
-    <Node Id="Word_ParentID" Label="ParentID" Category="Field Foreign" Description="uniqueidentifier" />
+    <Node Id="Appointment" Category="Table" Bounds="159.718333333333,150,110.11,25" Group="Collapsed" Label="Appointment" />
+    <Node Id="Appointment_CourseID" Category="Field Foreign" Description="uniqueidentifier" Label="CourseID" />
+    <Node Id="Appointment_CreatedAt" Category="Field" Description="datetime" Label="CreatedAt" />
+    <Node Id="Appointment_DateAndTime" Category="Field" Description="datetime" Label="DateAndTime" />
+    <Node Id="Appointment_DoctorID" Category="Field Foreign" Description="uniqueidentifier" Label="DoctorID" />
+    <Node Id="Appointment_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Appointment_UpdatedAt" Category="Field" Description="datetime" Label="UpdatedAt" />
+    <Node Id="Course" Category="Table" Bounds="225.376666666667,205,76.7933333333333,25" Group="Collapsed" Label="Course" />
+    <Node Id="Course_CreatedAt" Category="Field" Description="datetime" Label="CreatedAt" />
+    <Node Id="Course_DoctorID" Category="Field Foreign" Description="uniqueidentifier" Label="DoctorID" />
+    <Node Id="Course_EndDate" Category="Field Optional" Description="datetime" Label="EndDate" />
+    <Node Id="Course_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Course_PatientID" Category="Field Foreign" Description="uniqueidentifier" Label="PatientID" />
+    <Node Id="Course_StartDate" Category="Field" Description="datetime" Label="StartDate" />
+    <Node Id="Course_UpdatedAt" Category="Field" Description="datetime" Label="UpdatedAt" />
+    <Node Id="Crit" Category="Table" Bounds="1080.485,95,58.5766666666668,25" Group="Collapsed" Label="Crit" />
+    <Node Id="CritWords" Category="Table" Bounds="1063.19833333333,40,93.1500000000001,25" Group="Collapsed" Label="CritWords" />
+    <Node Id="CritWords_CritID" Category="Field Foreign" Description="uniqueidentifier" Label="CritID" />
+    <Node Id="CritWords_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="CritWords_WordID" Category="Field Foreign" Description="uniqueidentifier" Label="WordID" />
+    <Node Id="Crit_Code" Category="Field Optional" Description="nvarchar(50)" Label="Code" />
+    <Node Id="Crit_CritType" Category="Field" Description="nvarchar(255)" Label="CritType" />
+    <Node Id="Crit_Description" Category="Field" Description="nvarchar(2000)" Label="Description" />
+    <Node Id="Crit_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Crit_Options" Category="Field Optional" Description="ntext" Label="Options" />
+    <Node Id="Crit_OptionsFormat" Category="Field Optional" Description="nvarchar(10)" Label="OptionsFormat" />
+    <Node Id="Crit_ParentID" Category="Field Foreign" Description="uniqueidentifier" Label="ParentID" />
+    <Node Id="Crit_Value" Category="Field Optional" Description="nvarchar(50)" Label="Value" />
+    <Node Id="Database" Category="Database" Bounds="0,0,1176.34833333333,415" Group="Expanded" Label="diagnosis.sdf" />
+    <Node Id="Doctor" Category="Table" Bounds="156.645,260,76.2566666666667,25" Group="Collapsed" Label="Doctor" />
+    <Node Id="Doctor_CustomVocabularyID" Category="Field Foreign" Description="uniqueidentifier" Label="CustomVocabularyID" />
+    <Node Id="Doctor_FirstName" Category="Field Optional" Description="nvarchar(20)" Label="FirstName" />
+    <Node Id="Doctor_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Doctor_IsMale" Category="Field Optional" Description="bit" Label="IsMale" />
+    <Node Id="Doctor_LastName" Category="Field" Description="nvarchar(20)" Label="LastName" />
+    <Node Id="Doctor_MiddleName" Category="Field Optional" Description="nvarchar(20)" Label="MiddleName" />
+    <Node Id="Doctor_SpecialityID" Category="Field Foreign" Description="uniqueidentifier" Label="SpecialityID" />
+    <Node Id="HealthRecord" Category="Table" Bounds="244.806666666667,95.0000000000001,111.933333333333,25" Group="Collapsed" Label="HealthRecord" />
+    <Node Id="HealthRecord_AppointmentID" Category="Field Foreign" Description="uniqueidentifier" Label="AppointmentID" />
+    <Node Id="HealthRecord_CourseID" Category="Field Foreign" Description="uniqueidentifier" Label="CourseID" />
+    <Node Id="HealthRecord_CreatedAt" Category="Field" Description="datetime" Label="CreatedAt" />
+    <Node Id="HealthRecord_DescribedAt" Category="Field" Description="datetime" Label="DescribedAt" />
+    <Node Id="HealthRecord_DoctorID" Category="Field Foreign" Description="uniqueidentifier" Label="DoctorID" />
+    <Node Id="HealthRecord_FromDay" Category="Field Optional" Description="smallint" Label="FromDay" />
+    <Node Id="HealthRecord_FromMonth" Category="Field Optional" Description="smallint" Label="FromMonth" />
+    <Node Id="HealthRecord_FromYear" Category="Field Optional" Description="int" Label="FromYear" />
+    <Node Id="HealthRecord_HrCategoryID" Category="Field Foreign" Description="uniqueidentifier" Label="HrCategoryID" />
+    <Node Id="HealthRecord_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="HealthRecord_IsDeleted" Category="Field" Description="bit" Label="IsDeleted" />
+    <Node Id="HealthRecord_Ord" Category="Field" Description="tinyint" Label="Ord" />
+    <Node Id="HealthRecord_PatientID" Category="Field Foreign" Description="uniqueidentifier" Label="PatientID" />
+    <Node Id="HealthRecord_ToDay" Category="Field Optional" Description="smallint" Label="ToDay" />
+    <Node Id="HealthRecord_ToMonth" Category="Field Optional" Description="smallint" Label="ToMonth" />
+    <Node Id="HealthRecord_ToYear" Category="Field Optional" Description="int" Label="ToYear" />
+    <Node Id="HealthRecord_Unit" Category="Field Optional" Description="nvarchar(20)" Label="Unit" />
+    <Node Id="HealthRecord_UpdatedAt" Category="Field" Description="datetime" Label="UpdatedAt" />
+    <Node Id="HrCategory" Category="Table" Bounds="363.448333333333,150,100.65,25" Group="Collapsed" Label="HrCategory" />
+    <Node Id="HrCategory_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="HrCategory_Ord" Category="Field" Description="int" Label="Ord" />
+    <Node Id="HrCategory_Title" Category="Field" Description="nvarchar(20)" Label="Title" />
+    <Node Id="HrItem" Category="Table" Bounds="661.49,40,76.5666666666666,25" Group="Collapsed" Label="HrItem" />
+    <Node Id="HrItem_Confidence" Category="Field" Description="nvarchar(255)" Label="Confidence" />
+    <Node Id="HrItem_HealthRecordID" Category="Field Foreign" Description="uniqueidentifier" Label="HealthRecordID" />
+    <Node Id="HrItem_IcdDiseaseID" Category="Field Foreign" Description="int" Label="IcdDiseaseID" />
+    <Node Id="HrItem_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="HrItem_MeasureValue" Category="Field Optional" Description="numeric(18,6)" Label="MeasureValue" />
+    <Node Id="HrItem_Ord" Category="Field" Description="int" Label="Ord" />
+    <Node Id="HrItem_TextRepr" Category="Field Optional" Description="nvarchar(255)" Label="TextRepr" />
+    <Node Id="HrItem_UomID" Category="Field Foreign" Description="uniqueidentifier" Label="UomID" />
+    <Node Id="HrItem_WordID" Category="Field Foreign" Description="uniqueidentifier" Label="WordID" />
+    <Node Id="IcdBlock" Category="Table" Bounds="532.71,150,84.1266666666666,25" Group="Collapsed" Label="IcdBlock" />
+    <Node Id="IcdBlock_ChapterID" Category="Field Foreign" Description="int" Label="ChapterID" />
+    <Node Id="IcdBlock_Code" Category="Field" Description="nvarchar(10)" Label="Code" />
+    <Node Id="IcdBlock_Id" Category="Field Primary" Description="int" Label="Id" />
+    <Node Id="IcdBlock_Title" Category="Field" Description="nvarchar(150)" Label="Title" />
+    <Node Id="IcdChapter" Category="Table" Bounds="525.923333333333,205,97.7,25" Group="Collapsed" Label="IcdChapter" />
+    <Node Id="IcdChapter_Code" Category="Field" Description="nvarchar(10)" Label="Code" />
+    <Node Id="IcdChapter_Id" Category="Field Primary" Description="int" Label="Id" />
+    <Node Id="IcdChapter_Title" Category="Field" Description="nvarchar(150)" Label="Title" />
+    <Node Id="IcdDisease" Category="Table" Bounds="572.788333333334,95,95.97,25" Group="Collapsed" Label="IcdDisease" />
+    <Node Id="IcdDisease_Code" Category="Field" Description="nvarchar(10)" Label="Code" />
+    <Node Id="IcdDisease_IcdBlockID" Category="Field Foreign" Description="int" Label="IcdBlockID" />
+    <Node Id="IcdDisease_Id" Category="Field Primary" Description="int" Label="Id" />
+    <Node Id="IcdDisease_Title" Category="Field" Description="nvarchar(200)" Label="Title" />
+    <Node Id="Passport" Category="Table" Bounds="152.105,315,85.3366666666667,25" Group="Collapsed" Label="Passport" />
+    <Node Id="Passport_HashAndSalt" Category="Field Optional" Description="nchar(70)" Label="HashAndSalt" />
+    <Node Id="Passport_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Passport_Remember" Category="Field" Description="bit" Label="Remember" />
+    <Node Id="Patient" Category="Table" Bounds="294.306666666667,260,76.9333333333334,25" Group="Collapsed" Label="Patient" />
+    <Node Id="Patient_BirthDay" Category="Field Optional" Description="smallint" Label="BirthDay" />
+    <Node Id="Patient_BirthMonth" Category="Field Optional" Description="smallint" Label="BirthMonth" />
+    <Node Id="Patient_BirthYear" Category="Field Optional" Description="int" Label="BirthYear" />
+    <Node Id="Patient_CreatedAt" Category="Field" Description="datetime" Label="CreatedAt" />
+    <Node Id="Patient_FirstName" Category="Field Optional" Description="nvarchar(20)" Label="FirstName" />
+    <Node Id="Patient_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Patient_IsMale" Category="Field Optional" Description="bit" Label="IsMale" />
+    <Node Id="Patient_LastName" Category="Field Optional" Description="nvarchar(20)" Label="LastName" />
+    <Node Id="Patient_MiddleName" Category="Field Optional" Description="nvarchar(20)" Label="MiddleName" />
+    <Node Id="Patient_UpdatedAt" Category="Field" Description="datetime" Label="UpdatedAt" />
+    <Node Id="Setting" Category="Table" Bounds="20,205,77.5466666666666,25" Group="Collapsed" Label="Setting" />
+    <Node Id="Setting_DoctorID" Category="Field Foreign" Description="uniqueidentifier" Label="DoctorID" />
+    <Node Id="Setting_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Setting_Title" Category="Field" Description="nvarchar(255)" Label="Title" />
+    <Node Id="Setting_Value" Category="Field" Description="nvarchar(255)" Label="Value" />
+    <Node Id="Speciality" Category="Table" Bounds="449.8,315,89.9466666666667,25" Group="Collapsed" Label="Speciality" />
+    <Node Id="SpecialityIcdBlocks" Category="Table" Bounds="403.19,95.0000000000001,139.166666666667,25" Group="Collapsed" Label="SpecialityIcdBlocks" />
+    <Node Id="SpecialityIcdBlocks_IcdBlockID" Category="Field Foreign" Description="int" Label="IcdBlockID" />
+    <Node Id="SpecialityIcdBlocks_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="SpecialityIcdBlocks_SpecialityID" Category="Field Foreign" Description="uniqueidentifier" Label="SpecialityID" />
+    <Node Id="SpecialityVocabularies" Category="Table" Bounds="526.08,260,157.386666666667,25" Group="Collapsed" Label="SpecialityVocabularies" />
+    <Node Id="SpecialityVocabularies_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="SpecialityVocabularies_SpecialityID" Category="Field Foreign" Description="uniqueidentifier" Label="SpecialityID" />
+    <Node Id="SpecialityVocabularies_VocabularyID" Category="Field Foreign" Description="uniqueidentifier" Label="VocabularyID" />
+    <Node Id="Speciality_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Speciality_Title" Category="Field" Description="nvarchar(50)" Label="Title" />
+    <Node Id="Uom" Category="Table" Bounds="666.968333333333,150,65.6100000000001,25" Group="Collapsed" Label="Uom" />
+    <Node Id="UomFormat" Category="Table" Bounds="831.181666666667,95,103.183333333333,25" Group="Collapsed" Label="UomFormat" />
+    <Node Id="UomFormat_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="UomFormat_MeasureValue" Category="Field" Description="numeric(18,3)" Label="MeasureValue" />
+    <Node Id="UomFormat_String" Category="Field" Description="nvarchar(50)" Label="String" />
+    <Node Id="UomFormat_UomID" Category="Field Foreign" Description="uniqueidentifier" Label="UomID" />
+    <Node Id="UomType" Category="Table" Bounds="654.256666666667,205,91.0333333333333,25" Group="Collapsed" Label="UomType" />
+    <Node Id="UomType_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="UomType_Ord" Category="Field" Description="int" Label="Ord" />
+    <Node Id="UomType_Title" Category="Field" Description="nvarchar(50)" Label="Title" />
+    <Node Id="Uom_Abbr" Category="Field" Description="nvarchar(20)" Label="Abbr" />
+    <Node Id="Uom_Description" Category="Field" Description="nvarchar(100)" Label="Description" />
+    <Node Id="Uom_Factor" Category="Field" Description="numeric(18,6)" Label="Factor" />
+    <Node Id="Uom_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Uom_UomTypeID" Category="Field Foreign" Description="uniqueidentifier" Label="UomTypeID" />
+    <Node Id="VersionInfo" Category="Table" Bounds="20,370,100.493333333333,25" Group="Collapsed" Label="VersionInfo" />
+    <Node Id="VersionInfo_AppliedOn" Category="Field Optional" Description="datetime" Label="AppliedOn" />
+    <Node Id="VersionInfo_Description" Category="Field Optional" Description="nvarchar(1024)" Label="Description" />
+    <Node Id="VersionInfo_Version" Category="Field" Description="bigint" Label="Version" />
+    <Node Id="Vocabulary" Category="Table" Bounds="916.288333333333,315,98.97,25" Group="Collapsed" Label="Vocabulary" />
+    <Node Id="VocabularyWords" Category="Table" Bounds="899.001666666667,40,133.543333333333,25" Group="Collapsed" Label="VocabularyWords" />
+    <Node Id="VocabularyWords_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="VocabularyWords_VocabularyID" Category="Field Foreign" Description="uniqueidentifier" Label="VocabularyID" />
+    <Node Id="VocabularyWords_WordID" Category="Field Foreign" Description="uniqueidentifier" Label="WordID" />
+    <Node Id="Vocabulary_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Vocabulary_Title" Category="Field" Description="nvarchar(50)" Label="Title" />
+    <Node Id="Word" Category="Table" Bounds="731.033333333333,95,69.48,25" Group="Collapsed" Label="Word" />
+    <Node Id="WordTemplate" Category="Table" Bounds="996.378333333334,260,118.79,25" Group="Collapsed" Label="WordTemplate" />
+    <Node Id="WordTemplate_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="WordTemplate_Title" Category="Field" Description="nvarchar(100)" Label="Title" />
+    <Node Id="WordTemplate_VocabularyID" Category="Field Foreign" Description="uniqueidentifier" Label="VocabularyID" />
+    <Node Id="Word_Id" Category="Field Primary" Description="uniqueidentifier" Label="Id" />
+    <Node Id="Word_ParentID" Category="Field Foreign" Description="uniqueidentifier" Label="ParentID" />
+    <Node Id="Word_Title" Category="Field" Description="nvarchar(100)" Label="Title" />
+    <Node Id="Word_UomID" Category="Field Foreign" Description="uniqueidentifier" Label="UomID" />
   </Nodes>
   <Links>
-    <Link Source="Database" Target="Appointment" Category="Contains" />
-    <Link Source="Appointment" Target="Appointment_Id" Category="Contains" />
     <Link Source="Appointment" Target="Appointment_CourseID" Category="Contains" />
-    <Link Source="Appointment" Target="Appointment_DoctorID" Category="Contains" />
-    <Link Source="Appointment" Target="Appointment_DateAndTime" Category="Contains" />
     <Link Source="Appointment" Target="Appointment_CreatedAt" Category="Contains" />
+    <Link Source="Appointment" Target="Appointment_DateAndTime" Category="Contains" />
+    <Link Source="Appointment" Target="Appointment_DoctorID" Category="Contains" />
+    <Link Source="Appointment" Target="Appointment_Id" Category="Contains" />
     <Link Source="Appointment" Target="Appointment_UpdatedAt" Category="Contains" />
-    <Link Source="Appointment_CourseID" Target="Course_Id" Label="FK_Appoinmtment_Course" Category="Foreign Key" />
-    <Link Source="Appointment_DoctorID" Target="Doctor_Id" Label="FK_Appoinmtment_Doctor" Category="Foreign Key" />
-    <Link Source="Database" Target="Course" Category="Contains" />
+    <Link Source="Appointment_CourseID" Target="Course_Id" Category="Foreign Key" Label="FK_Appoinmtment_Course" />
+    <Link Source="Appointment_DoctorID" Target="Doctor_Id" Category="Foreign Key" Label="FK_Appoinmtment_Doctor" />
+    <Link Source="Course" Target="Course_CreatedAt" Category="Contains" />
+    <Link Source="Course" Target="Course_DoctorID" Category="Contains" />
+    <Link Source="Course" Target="Course_EndDate" Category="Contains" />
     <Link Source="Course" Target="Course_Id" Category="Contains" />
     <Link Source="Course" Target="Course_PatientID" Category="Contains" />
-    <Link Source="Course" Target="Course_DoctorID" Category="Contains" />
     <Link Source="Course" Target="Course_StartDate" Category="Contains" />
-    <Link Source="Course" Target="Course_EndDate" Category="Contains" />
-    <Link Source="Course" Target="Course_CreatedAt" Category="Contains" />
     <Link Source="Course" Target="Course_UpdatedAt" Category="Contains" />
-    <Link Source="Course_DoctorID" Target="Doctor_Id" Label="FK_Course_Doctor" Category="Foreign Key" />
-    <Link Source="Course_PatientID" Target="Patient_Id" Label="FK_Course_Patient" Category="Foreign Key" />
+    <Link Source="Course_DoctorID" Target="Doctor_Id" Category="Foreign Key" Label="FK_Course_Doctor" />
+    <Link Source="Course_PatientID" Target="Patient_Id" Category="Foreign Key" Label="FK_Course_Patient" />
+    <Link Source="Crit" Target="Crit_Code" Category="Contains" />
+    <Link Source="Crit" Target="Crit_CritType" Category="Contains" />
+    <Link Source="Crit" Target="Crit_Description" Category="Contains" />
+    <Link Source="Crit" Target="Crit_Id" Category="Contains" />
+    <Link Source="Crit" Target="Crit_Options" Category="Contains" />
+    <Link Source="Crit" Target="Crit_OptionsFormat" Category="Contains" />
+    <Link Source="Crit" Target="Crit_ParentID" Category="Contains" />
+    <Link Source="Crit" Target="Crit_Value" Category="Contains" />
+    <Link Source="CritWords" Target="CritWords_CritID" Category="Contains" />
+    <Link Source="CritWords" Target="CritWords_Id" Category="Contains" />
+    <Link Source="CritWords" Target="CritWords_WordID" Category="Contains" />
+    <Link Source="CritWords_CritID" Target="Crit_Id" Category="Foreign Key" Label="FK_CritWords_Crit" />
+    <Link Source="CritWords_WordID" Target="Word_Id" Category="Foreign Key" Label="FK_CritWords_Word" />
+    <Link Source="Crit_ParentID" Target="Crit_Id" Category="Foreign Key" Label="FK_Crit_Crit" />
+    <Link Source="Database" Target="Appointment" Category="Contains" />
+    <Link Source="Database" Target="Course" Category="Contains" />
+    <Link Source="Database" Target="Crit" Category="Contains" />
+    <Link Source="Database" Target="CritWords" Category="Contains" />
     <Link Source="Database" Target="Doctor" Category="Contains" />
-    <Link Source="Doctor" Target="Doctor_Id" Category="Contains" />
-    <Link Source="Doctor" Target="Doctor_FirstName" Category="Contains" />
-    <Link Source="Doctor" Target="Doctor_MiddleName" Category="Contains" />
-    <Link Source="Doctor" Target="Doctor_LastName" Category="Contains" />
-    <Link Source="Doctor" Target="Doctor_IsMale" Category="Contains" />
-    <Link Source="Doctor" Target="Doctor_SpecialityID" Category="Contains" />
-    <Link Source="Doctor_Id" Target="Passport_Id" Label="FK_Doctor_Passport" Category="Foreign Key" />
-    <Link Source="Doctor_SpecialityID" Target="Speciality_Id" Label="FK_Doctor_Speciality" Category="Foreign Key" />
     <Link Source="Database" Target="HealthRecord" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_Id" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_Ord" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_CreatedAt" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_PatientID" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_CourseID" Category="Contains" />
+    <Link Source="Database" Target="HrCategory" Category="Contains" />
+    <Link Source="Database" Target="HrItem" Category="Contains" />
+    <Link Source="Database" Target="IcdBlock" Category="Contains" />
+    <Link Source="Database" Target="IcdChapter" Category="Contains" />
+    <Link Source="Database" Target="IcdDisease" Category="Contains" />
+    <Link Source="Database" Target="Passport" Category="Contains" />
+    <Link Source="Database" Target="Patient" Category="Contains" />
+    <Link Source="Database" Target="Setting" Category="Contains" />
+    <Link Source="Database" Target="Speciality" Category="Contains" />
+    <Link Source="Database" Target="SpecialityIcdBlocks" Category="Contains" />
+    <Link Source="Database" Target="SpecialityVocabularies" Category="Contains" />
+    <Link Source="Database" Target="Uom" Category="Contains" />
+    <Link Source="Database" Target="UomFormat" Category="Contains" />
+    <Link Source="Database" Target="UomType" Category="Contains" />
+    <Link Source="Database" Target="VersionInfo" Category="Contains" />
+    <Link Source="Database" Target="Vocabulary" Category="Contains" />
+    <Link Source="Database" Target="VocabularyWords" Category="Contains" />
+    <Link Source="Database" Target="Word" Category="Contains" />
+    <Link Source="Database" Target="WordTemplate" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_CustomVocabularyID" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_FirstName" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_Id" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_IsMale" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_LastName" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_MiddleName" Category="Contains" />
+    <Link Source="Doctor" Target="Doctor_SpecialityID" Category="Contains" />
+    <Link Source="Doctor_CustomVocabularyID" Target="Vocabulary_Id" Category="Foreign Key" Label="FK_Doctor_Vocabulary" />
+    <Link Source="Doctor_Id" Target="Passport_Id" Category="Foreign Key" Label="FK_Doctor_Passport" />
+    <Link Source="Doctor_SpecialityID" Target="Speciality_Id" Category="Foreign Key" Label="FK_Doctor_Speciality" />
     <Link Source="HealthRecord" Target="HealthRecord_AppointmentID" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_CourseID" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_CreatedAt" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_DescribedAt" Category="Contains" />
     <Link Source="HealthRecord" Target="HealthRecord_DoctorID" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_HrCategoryID" Category="Contains" />
     <Link Source="HealthRecord" Target="HealthRecord_FromDay" Category="Contains" />
     <Link Source="HealthRecord" Target="HealthRecord_FromMonth" Category="Contains" />
     <Link Source="HealthRecord" Target="HealthRecord_FromYear" Category="Contains" />
-    <Link Source="HealthRecord" Target="HealthRecord_Unit" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_HrCategoryID" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_Id" Category="Contains" />
     <Link Source="HealthRecord" Target="HealthRecord_IsDeleted" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_Ord" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_PatientID" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_ToDay" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_ToMonth" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_ToYear" Category="Contains" />
+    <Link Source="HealthRecord" Target="HealthRecord_Unit" Category="Contains" />
     <Link Source="HealthRecord" Target="HealthRecord_UpdatedAt" Category="Contains" />
-    <Link Source="HealthRecord_AppointmentID" Target="Appointment_Id" Label="FK_Hr_Appointment" Category="Foreign Key" />
-    <Link Source="HealthRecord_CourseID" Target="Course_Id" Label="FK_Hr_Course" Category="Foreign Key" />
-    <Link Source="HealthRecord_DoctorID" Target="Doctor_Id" Label="FK_Hr_Doctor" Category="Foreign Key" />
-    <Link Source="HealthRecord_HrCategoryID" Target="HrCategory_Id" Label="FK_Hr_HrCategory" Category="Foreign Key" />
-    <Link Source="HealthRecord_PatientID" Target="Patient_Id" Label="FK_Hr_Patient" Category="Foreign Key" />
-    <Link Source="Database" Target="HrCategory" Category="Contains" />
+    <Link Source="HealthRecord_AppointmentID" Target="Appointment_Id" Category="Foreign Key" Label="FK_Hr_Appointment" />
+    <Link Source="HealthRecord_CourseID" Target="Course_Id" Category="Foreign Key" Label="FK_Hr_Course" />
+    <Link Source="HealthRecord_DoctorID" Target="Doctor_Id" Category="Foreign Key" Label="FK_Hr_Doctor" />
+    <Link Source="HealthRecord_HrCategoryID" Target="HrCategory_Id" Category="Foreign Key" Label="FK_Hr_HrCategory" />
+    <Link Source="HealthRecord_PatientID" Target="Patient_Id" Category="Foreign Key" Label="FK_Hr_Patient" />
     <Link Source="HrCategory" Target="HrCategory_Id" Category="Contains" />
-    <Link Source="HrCategory" Target="HrCategory_Title" Category="Contains" />
     <Link Source="HrCategory" Target="HrCategory_Ord" Category="Contains" />
-    <Link Source="Database" Target="HrItem" Category="Contains" />
-    <Link Source="HrItem" Target="HrItem_Id" Category="Contains" />
-    <Link Source="HrItem" Target="HrItem_Ord" Category="Contains" />
-    <Link Source="HrItem" Target="HrItem_IcdDiseaseID" Category="Contains" />
-    <Link Source="HrItem" Target="HrItem_WordID" Category="Contains" />
-    <Link Source="HrItem" Target="HrItem_UomID" Category="Contains" />
-    <Link Source="HrItem" Target="HrItem_MeasureValue" Category="Contains" />
+    <Link Source="HrCategory" Target="HrCategory_Title" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_Confidence" Category="Contains" />
     <Link Source="HrItem" Target="HrItem_HealthRecordID" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_IcdDiseaseID" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_Id" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_MeasureValue" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_Ord" Category="Contains" />
     <Link Source="HrItem" Target="HrItem_TextRepr" Category="Contains" />
-    <Link Source="HrItem_HealthRecordID" Target="HealthRecord_Id" Label="FK_HrItem_Hr" Category="Foreign Key" />
-    <Link Source="HrItem_IcdDiseaseID" Target="IcdDisease_Id" Label="FK_HrItem_IcdDisease" Category="Foreign Key" />
-    <Link Source="HrItem_UomID" Target="Uom_Id" Label="FK_HrItem_Uom" Category="Foreign Key" />
-    <Link Source="HrItem_WordID" Target="Word_Id" Label="FK_HrItem_Word" Category="Foreign Key" />
-    <Link Source="Database" Target="IcdBlock" Category="Contains" />
-    <Link Source="IcdBlock" Target="IcdBlock_Id" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_UomID" Category="Contains" />
+    <Link Source="HrItem" Target="HrItem_WordID" Category="Contains" />
+    <Link Source="HrItem_HealthRecordID" Target="HealthRecord_Id" Category="Foreign Key" Label="FK_HrItem_Hr" />
+    <Link Source="HrItem_IcdDiseaseID" Target="IcdDisease_Id" Category="Foreign Key" Label="FK_HrItem_IcdDisease" />
+    <Link Source="HrItem_UomID" Target="Uom_Id" Category="Foreign Key" Label="FK_HrItem_Uom" />
+    <Link Source="HrItem_WordID" Target="Word_Id" Category="Foreign Key" Label="FK_HrItem_Word" />
     <Link Source="IcdBlock" Target="IcdBlock_ChapterID" Category="Contains" />
-    <Link Source="IcdBlock" Target="IcdBlock_Title" Category="Contains" />
     <Link Source="IcdBlock" Target="IcdBlock_Code" Category="Contains" />
-    <Link Source="IcdBlock_ChapterID" Target="IcdChapter_Id" Label="FK_IcdBlock_IcdChapter" Category="Foreign Key" />
-    <Link Source="Database" Target="IcdChapter" Category="Contains" />
+    <Link Source="IcdBlock" Target="IcdBlock_Id" Category="Contains" />
+    <Link Source="IcdBlock" Target="IcdBlock_Title" Category="Contains" />
+    <Link Source="IcdBlock_ChapterID" Target="IcdChapter_Id" Category="Foreign Key" Label="FK_IcdBlock_IcdChapter" />
+    <Link Source="IcdChapter" Target="IcdChapter_Code" Category="Contains" />
     <Link Source="IcdChapter" Target="IcdChapter_Id" Category="Contains" />
     <Link Source="IcdChapter" Target="IcdChapter_Title" Category="Contains" />
-    <Link Source="IcdChapter" Target="IcdChapter_Code" Category="Contains" />
-    <Link Source="Database" Target="IcdDisease" Category="Contains" />
-    <Link Source="IcdDisease" Target="IcdDisease_Id" Category="Contains" />
-    <Link Source="IcdDisease" Target="IcdDisease_IcdBlockID" Category="Contains" />
-    <Link Source="IcdDisease" Target="IcdDisease_Title" Category="Contains" />
     <Link Source="IcdDisease" Target="IcdDisease_Code" Category="Contains" />
-    <Link Source="IcdDisease_IcdBlockID" Target="IcdBlock_Id" Label="FK_IcdDisease_IcdBlock" Category="Foreign Key" />
-    <Link Source="Database" Target="Passport" Category="Contains" />
-    <Link Source="Passport" Target="Passport_Id" Category="Contains" />
+    <Link Source="IcdDisease" Target="IcdDisease_IcdBlockID" Category="Contains" />
+    <Link Source="IcdDisease" Target="IcdDisease_Id" Category="Contains" />
+    <Link Source="IcdDisease" Target="IcdDisease_Title" Category="Contains" />
+    <Link Source="IcdDisease_IcdBlockID" Target="IcdBlock_Id" Category="Foreign Key" Label="FK_IcdDisease_IcdBlock" />
     <Link Source="Passport" Target="Passport_HashAndSalt" Category="Contains" />
+    <Link Source="Passport" Target="Passport_Id" Category="Contains" />
     <Link Source="Passport" Target="Passport_Remember" Category="Contains" />
-    <Link Source="Database" Target="Patient" Category="Contains" />
-    <Link Source="Patient" Target="Patient_Id" Category="Contains" />
-    <Link Source="Patient" Target="Patient_FirstName" Category="Contains" />
-    <Link Source="Patient" Target="Patient_MiddleName" Category="Contains" />
-    <Link Source="Patient" Target="Patient_LastName" Category="Contains" />
-    <Link Source="Patient" Target="Patient_IsMale" Category="Contains" />
-    <Link Source="Patient" Target="Patient_BirthYear" Category="Contains" />
-    <Link Source="Patient" Target="Patient_BirthMonth" Category="Contains" />
     <Link Source="Patient" Target="Patient_BirthDay" Category="Contains" />
+    <Link Source="Patient" Target="Patient_BirthMonth" Category="Contains" />
+    <Link Source="Patient" Target="Patient_BirthYear" Category="Contains" />
     <Link Source="Patient" Target="Patient_CreatedAt" Category="Contains" />
+    <Link Source="Patient" Target="Patient_FirstName" Category="Contains" />
+    <Link Source="Patient" Target="Patient_Id" Category="Contains" />
+    <Link Source="Patient" Target="Patient_IsMale" Category="Contains" />
+    <Link Source="Patient" Target="Patient_LastName" Category="Contains" />
+    <Link Source="Patient" Target="Patient_MiddleName" Category="Contains" />
     <Link Source="Patient" Target="Patient_UpdatedAt" Category="Contains" />
-    <Link Source="Database" Target="Setting" Category="Contains" />
+    <Link Source="Setting" Target="Setting_DoctorID" Category="Contains" />
     <Link Source="Setting" Target="Setting_Id" Category="Contains" />
     <Link Source="Setting" Target="Setting_Title" Category="Contains" />
     <Link Source="Setting" Target="Setting_Value" Category="Contains" />
-    <Link Source="Setting" Target="Setting_DoctorID" Category="Contains" />
-    <Link Source="Setting_DoctorID" Target="Doctor_Id" Label="FK_Setting_Doctor" Category="Foreign Key" />
-    <Link Source="Database" Target="Speciality" Category="Contains" />
+    <Link Source="Setting_DoctorID" Target="Doctor_Id" Category="Foreign Key" Label="FK_Setting_Doctor" />
     <Link Source="Speciality" Target="Speciality_Id" Category="Contains" />
     <Link Source="Speciality" Target="Speciality_Title" Category="Contains" />
-    <Link Source="Database" Target="SpecialityIcdBlocks" Category="Contains" />
+    <Link Source="SpecialityIcdBlocks" Target="SpecialityIcdBlocks_IcdBlockID" Category="Contains" />
     <Link Source="SpecialityIcdBlocks" Target="SpecialityIcdBlocks_Id" Category="Contains" />
     <Link Source="SpecialityIcdBlocks" Target="SpecialityIcdBlocks_SpecialityID" Category="Contains" />
-    <Link Source="SpecialityIcdBlocks" Target="SpecialityIcdBlocks_IcdBlockID" Category="Contains" />
-    <Link Source="SpecialityIcdBlocks_IcdBlockID" Target="IcdBlock_Id" Label="FK_SpecialityIcdBlocks_IcdBlo" Category="Foreign Key" />
-    <Link Source="SpecialityIcdBlocks_SpecialityID" Target="Speciality_Id" Label="FK_SpecialityIcdBlocks_Specia" Category="Foreign Key" />
-    <Link Source="Database" Target="Uom" Category="Contains" />
-    <Link Source="Uom" Target="Uom_Id" Category="Contains" />
+    <Link Source="SpecialityIcdBlocks_IcdBlockID" Target="IcdBlock_Id" Category="Foreign Key" Label="FK_SpecialityIcdBlocks_IcdBlo" />
+    <Link Source="SpecialityIcdBlocks_SpecialityID" Target="Speciality_Id" Category="Foreign Key" Label="FK_SpecialityIcdBlocks_Specia" />
+    <Link Source="SpecialityVocabularies" Target="SpecialityVocabularies_Id" Category="Contains" />
+    <Link Source="SpecialityVocabularies" Target="SpecialityVocabularies_SpecialityID" Category="Contains" />
+    <Link Source="SpecialityVocabularies" Target="SpecialityVocabularies_VocabularyID" Category="Contains" />
+    <Link Source="SpecialityVocabularies_SpecialityID" Target="Speciality_Id" Category="Foreign Key" Label="FK_SpecialityVocabularies_Speciality" />
+    <Link Source="SpecialityVocabularies_VocabularyID" Target="Vocabulary_Id" Category="Foreign Key" Label="FK_SpecialityVocabularies_Vocabulary" />
     <Link Source="Uom" Target="Uom_Abbr" Category="Contains" />
     <Link Source="Uom" Target="Uom_Description" Category="Contains" />
     <Link Source="Uom" Target="Uom_Factor" Category="Contains" />
+    <Link Source="Uom" Target="Uom_Id" Category="Contains" />
     <Link Source="Uom" Target="Uom_UomTypeID" Category="Contains" />
-    <Link Source="Uom_UomTypeID" Target="UomType_Id" Label="FK_Uom_UomType" Category="Foreign Key" />
-    <Link Source="Database" Target="UomType" Category="Contains" />
+    <Link Source="UomFormat" Target="UomFormat_Id" Category="Contains" />
+    <Link Source="UomFormat" Target="UomFormat_MeasureValue" Category="Contains" />
+    <Link Source="UomFormat" Target="UomFormat_String" Category="Contains" />
+    <Link Source="UomFormat" Target="UomFormat_UomID" Category="Contains" />
+    <Link Source="UomFormat_UomID" Target="Uom_Id" Category="Foreign Key" Label="FK_UomFormat_Uom" />
     <Link Source="UomType" Target="UomType_Id" Category="Contains" />
-    <Link Source="UomType" Target="UomType_Title" Category="Contains" />
     <Link Source="UomType" Target="UomType_Ord" Category="Contains" />
-    <Link Source="Database" Target="VersionInfo" Category="Contains" />
-    <Link Source="VersionInfo" Target="VersionInfo_Version" Category="Contains" />
+    <Link Source="UomType" Target="UomType_Title" Category="Contains" />
+    <Link Source="Uom_UomTypeID" Target="UomType_Id" Category="Foreign Key" Label="FK_Uom_UomType" />
     <Link Source="VersionInfo" Target="VersionInfo_AppliedOn" Category="Contains" />
     <Link Source="VersionInfo" Target="VersionInfo_Description" Category="Contains" />
-    <Link Source="Database" Target="Word" Category="Contains" />
+    <Link Source="VersionInfo" Target="VersionInfo_Version" Category="Contains" />
+    <Link Source="Vocabulary" Target="Vocabulary_Id" Category="Contains" />
+    <Link Source="Vocabulary" Target="Vocabulary_Title" Category="Contains" />
+    <Link Source="VocabularyWords" Target="VocabularyWords_Id" Category="Contains" />
+    <Link Source="VocabularyWords" Target="VocabularyWords_VocabularyID" Category="Contains" />
+    <Link Source="VocabularyWords" Target="VocabularyWords_WordID" Category="Contains" />
+    <Link Source="VocabularyWords_VocabularyID" Target="Vocabulary_Id" Category="Foreign Key" Label="FK_VocabularyWords_Vocabulary" />
+    <Link Source="VocabularyWords_WordID" Target="Word_Id" Category="Foreign Key" Label="FK_VocabularyWords_Word" />
     <Link Source="Word" Target="Word_Id" Category="Contains" />
-    <Link Source="Word" Target="Word_Title" Category="Contains" />
-    <Link Source="Word" Target="Word_DefHrCategoryID" Category="Contains" />
     <Link Source="Word" Target="Word_ParentID" Category="Contains" />
-    <Link Source="Word_DefHrCategoryID" Target="HrCategory_Id" Label="FK_Word_HrCategory" Category="Foreign Key" />
-    <Link Source="Word_ParentID" Target="Word_Id" Label="FK_Word_Word" Category="Foreign Key" />
+    <Link Source="Word" Target="Word_Title" Category="Contains" />
+    <Link Source="Word" Target="Word_UomID" Category="Contains" />
+    <Link Source="WordTemplate" Target="WordTemplate_Id" Category="Contains" />
+    <Link Source="WordTemplate" Target="WordTemplate_Title" Category="Contains" />
+    <Link Source="WordTemplate" Target="WordTemplate_VocabularyID" Category="Contains" />
+    <Link Source="WordTemplate_VocabularyID" Target="Vocabulary_Id" Category="Foreign Key" Label="FK_WordTemplate_Vocabulary" />
+    <Link Source="Word_ParentID" Target="Word_Id" Category="Foreign Key" Label="FK_Word_Word" />
+    <Link Source="Word_UomID" Target="Uom_Id" Category="Foreign Key" Label="FK_Word_Uom" />
   </Links>
+  <Categories>
+    <Category Id="Contains" Label="Contains" Description="Whether the source of the link contains the target object" CanBeDataDriven="False" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Contained By" IsContainment="True" OutgoingActionLabel="Contains" />
+    <Category Id="Database" />
+    <Category Id="Field" />
+    <Category Id="Field Foreign" />
+    <Category Id="Field Optional" />
+    <Category Id="Field Primary" />
+    <Category Id="Foreign Key" />
+    <Category Id="Table" />
+  </Categories>
+  <Properties>
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="CanBeDataDriven" Label="CanBeDataDriven" Description="CanBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
+    <Property Id="Description" Label="Description" Description="Description" DataType="System.String" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="Group" Label="Group" Description="Display the node as a group" DataType="Microsoft.VisualStudio.GraphModel.GraphGroupStyle" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IncomingActionLabel" Label="IncomingActionLabel" Description="IncomingActionLabel" DataType="System.String" />
+    <Property Id="IsContainment" DataType="System.Boolean" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="Label" Label="Label" Description="Displayable label of an Annotatable object" DataType="System.String" />
+    <Property Id="Layout" DataType="System.String" />
+    <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+    <Property Id="ZoomLevel" DataType="System.String" />
+  </Properties>
   <Styles>
     <Style TargetType="Node" GroupLabel="Table" ValueLabel="True">
       <Condition Expression="HasCategory('Table')" />

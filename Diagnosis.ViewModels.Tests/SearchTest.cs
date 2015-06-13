@@ -1,6 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -47,6 +47,15 @@ namespace Diagnosis.ViewModels.Tests
             (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);
             s.QueryEditor.QueryBlocks.Clear();
             Assert.IsTrue(s.QueryEditor.AllEmpty);
+            Assert.IsFalse(s.SearchCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void CannotSearchWithoutSelectedEstimator()
+        {
+            s.SearchTabIndex = 1; // crit search
+            s.SelectedEstimator = null;
+
             Assert.IsFalse(s.SearchCommand.CanExecute(null));
         }
 

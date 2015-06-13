@@ -15,15 +15,15 @@ namespace Diagnosis.ViewModels
     internal class Exporter
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Exporter));
-        private static string defName = "diagnosis export";
-        private static double hrIdColWidth = 13;
-        private static string uomHeader = "ед. изм.";
+        private readonly static string defName = "diagnosis export";
+        private readonly static double hrIdColWidth = 13;
+        private readonly static string uomHeader = "ед. изм.";
 
         // колонок на заголовок строки
-        private static int patientCols = 4;
+        private readonly static int patientCols = 4;
 
         // строк на заголовок колонок
-        private static int headerRows = 1;
+        private readonly static int headerRows = 1;
 
         public void ExportToXlsx(HrsStatistic stats)
         {

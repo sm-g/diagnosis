@@ -38,7 +38,6 @@
             <DataGrid x:Name="installedVocs"
                       ItemsSource="{Binding Vocs}"
                       HeadersVisibility="All"
-                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedVocs}"
                       Visibility="{Binding Vocs.Count, Converter={StaticResource MoreThanToVisibility}}"
                       Margin="0,10,0,0"
                       Style="{DynamicResource MyDataGridStyle}">
@@ -88,7 +87,6 @@
             <DataGrid x:Name="availableVocs"
                       HeadersVisibility="All"
                       ItemsSource="{Binding AvailableVocs}"
-                      diag:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedAvailableVocs}"
                       Margin="0,10,0,0"
                       Style="{DynamicResource MyDataGridStyle}">
                 <DataGrid.Columns>

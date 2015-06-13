@@ -1,6 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.DataTransfer;
 using System;
 using System.Collections.Generic;
@@ -17,9 +17,6 @@ namespace Diagnosis.ViewModels.Screens
         /// When set focus from VM, do not focus
         /// </summary>
         public bool inManualFocusSetting;
-
-        private Action<HealthRecord, HrData.HrInfo> fillHr;
-        private Action<IList<ConfWithHio>> syncHios;
 
         private string[] acceptFormats = new[] {
             HrData.DataFormat.Name,
@@ -111,8 +108,9 @@ namespace Diagnosis.ViewModels.Screens
                 // vm уже добавлена
                 var newVm = HealthRecords.FirstOrDefault(vm => vm.healthRecord == newHr);
                 Debug.Assert(newVm != null);
-                fillHr(newHr, hrInfo);
-                // теперь запись заполнена
+
+                FillHr(newHr, hrInfo);
+
                 pastedVms.Add(newVm);
                 pasted.Add(newHr);
             }
@@ -130,14 +128,36 @@ namespace Diagnosis.ViewModels.Screens
             logger.LogHrs("paste", hrData.Hrs);
         }
 
+        private void FillHr(HealthRecord hr, DataTransfer.HrData.HrInfo hrInfo)
+        {
+            hrInfo.Chios.SyncAfterPaste(session);
+
+            if (hrInfo.CategoryId != null)
+            {
+                using (var tr = session.BeginTransaction())
+                {
+                    hr.Category = session.Get<HrCategory>(hrInfo.CategoryId.Value);
+                }
+            }
+            hr.FromDate.FillDateAndNowFrom(hrInfo.From);
+            hr.ToDate.FillDateAndNowFrom(hrInfo.To);
+
+            var unit = hrInfo.Unit;
+            // если вставляем к пациенту без возраста
+            if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
+                unit = HealthRecordUnit.NotSet;
+
+            hr.Unit = unit;
+            hr.SetItems(hrInfo.Chios);
+        }
+
         /// <summary>
         /// Add HrItems to selected HealthRecords or create new HealthRecords with them.
         /// </summary>
         /// <param name="data"></param>
         private void PasteTags(TagData data)
         {
-            // for new word case
-            syncHios(data.ItemObjects);
+            data.ItemObjects.SyncAfterPaste(session);
 
             var hrs = hrManager.GetSelectedHrs();
             if (hrs.Count > 0)

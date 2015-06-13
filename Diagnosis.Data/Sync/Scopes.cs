@@ -21,17 +21,17 @@ namespace Diagnosis.Data.Sync
 
     public static class Scopes
     {
-        public static string syncPrefix = "sync";
+        public readonly static string syncPrefix = "sync";
 
-        private static string holderScope = "holderScope";
-        private static string hrScope = "hrScope";
-        private static string userScope = "userScope";
-        private static string referenceScope = "referenceScope";
-        private static string icdScope = "icdScope";
-        private static string vocScope = "vocScope";
+        private readonly static string holderScope = "holderScope";
+        private readonly static string hrScope = "hrScope";
+        private readonly static string userScope = "userScope";
+        private readonly static string referenceScope = "referenceScope";
+        private readonly static string icdScope = "icdScope";
+        private readonly static string vocScope = "vocScope";
 
-        private static string stagingSchema = "staging";
-        private static string referenceSchema = "dbo";
+        private readonly static string stagingSchema = "staging";
+        private readonly static string referenceSchema = "dbo";
 
         // parent before child (for SetCreateTableDefault)
         private static string[] icdTableNames = new[] {

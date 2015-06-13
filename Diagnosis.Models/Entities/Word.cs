@@ -34,7 +34,7 @@ namespace Diagnosis.Models
         private Many2ManyHelper<VocabularyWords, Vocabulary> vwHelper;
 
         [NonSerialized]
-        private Many2ManyHelper<CritWords, Crit> crwHelper;
+        private Many2ManyHelper<CritWords, CritBase> crwHelper;
 
         public Word(string title)
         {
@@ -91,7 +91,7 @@ namespace Diagnosis.Models
             get { return vocabularyWords; }
         }
 
-        public virtual IEnumerable<Crit> Crits
+        public virtual IEnumerable<CritBase> Crits
         {
             get
             {
@@ -129,13 +129,13 @@ namespace Diagnosis.Models
             }
         }
 
-        private Many2ManyHelper<CritWords, Crit> CrwHelper
+        private Many2ManyHelper<CritWords, CritBase> CrwHelper
         {
             get
             {
                 if (crwHelper == null)
                 {
-                    crwHelper = new Many2ManyHelper<CritWords, Crit>(
+                    crwHelper = new Many2ManyHelper<CritWords, CritBase>(
                         critWords,
                         x => x.Word == this,
                         x => x.Crit);
@@ -200,7 +200,7 @@ namespace Diagnosis.Models
             VwHelper.Add(vw);
         }
 
-        protected internal virtual void RemoveCrit(Crit crit)
+        protected internal virtual void RemoveCrit(CritBase crit)
         {
             Contract.Requires(crit != null);
             Contract.Requires(!crit.Words.Contains(this));

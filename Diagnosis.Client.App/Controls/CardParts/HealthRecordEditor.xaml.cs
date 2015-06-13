@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Common.Presentation.Controls;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;

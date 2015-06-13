@@ -3,7 +3,7 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Data.Search;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
+using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using System;
 using System.Collections.Generic;
@@ -57,6 +57,8 @@ namespace Diagnosis.ViewModels.Screens
                         return;
                     }
 
+                    OpenHrSearch();
+
                     var hrs = pack as IEnumerable<HealthRecord>;
                     var hios = pack as IEnumerable<ConfWithHio>;
                     var opt = pack as SearchOptions;
@@ -84,7 +86,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(Search,
                     () => AuthorityController.CurrentDoctor != null &&
                         ((IsCriteriaSearch && SelectedEstimator != null) // выбран критерий
-                        || !QueryEditor.AllEmpty)); // есть условия поиска
+                        || !IsCriteriaSearch && !QueryEditor.AllEmpty)); // есть условия поиска
             }
         }
 
@@ -201,6 +203,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         public RelayCommand EditEstimatorCommand
         {
             get
@@ -211,6 +214,7 @@ namespace Diagnosis.ViewModels.Screens
                 }, () => SelectedEstimator != null);
             }
         }
+
         internal QueryBlockViewModel RootQueryBlock { get { return QueryEditor.QueryBlocks.FirstOrDefault(); } }
 
         /// <summary>
@@ -218,7 +222,27 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         internal QueryBlockViewModel LastRecieverQueryBlock { get; private set; }
 
-        private bool IsCriteriaSearch { get { return SearchTabIndex == 1; } }
+        private bool IsCriteriaSearch
+        {
+            get { return SearchTabIndex == 1; }
+            set
+            {
+                if (value)
+                    SearchTabIndex = 1;
+                else
+                    SearchTabIndex = 0;
+            }
+        }
+
+        public void OpenCriteriaSearch()
+        {
+            IsCriteriaSearch = true;
+        }
+
+        public void OpenHrSearch()
+        {
+            IsCriteriaSearch = false;
+        }
 
         private void Search()
         {

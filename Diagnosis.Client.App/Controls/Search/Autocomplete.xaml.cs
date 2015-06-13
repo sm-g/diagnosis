@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Common.Presentation.Controls;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using log4net;
 using System;
 using System.Windows;

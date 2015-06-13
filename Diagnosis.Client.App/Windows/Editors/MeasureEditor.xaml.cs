@@ -1,4 +1,5 @@
-﻿using Diagnosis.ViewModels.Autocomplete;
+﻿using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using System;
 using System.Linq;
 using System.Windows.Controls;

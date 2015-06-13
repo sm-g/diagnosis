@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
-    public class AuthorityController
+    public sealed class AuthorityController
     {
         private static readonly System.Lazy<AuthorityController> lazyInstance = new System.Lazy<AuthorityController>(() => new AuthorityController());
 

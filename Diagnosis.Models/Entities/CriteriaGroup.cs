@@ -10,7 +10,7 @@ using System.Linq;
 namespace Diagnosis.Models
 {
     [DebuggerDisplay("CriteriaGroup {Description}")]
-    public class CriteriaGroup : Crit
+    public class CriteriaGroup : CritBase
     {
         private ISet<Criterion> criteria = new HashSet<Criterion>();
 

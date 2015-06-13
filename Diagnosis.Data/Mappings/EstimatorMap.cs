@@ -2,14 +2,14 @@
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace Diagnosis.Data.Mappings
+namespace Diagnosis.Data.Mappings.Client
 {
     public class EstimatorMap : SubclassMapping<Estimator>
     {
         public EstimatorMap()
         {
             DiscriminatorValue(Names.Col.EstDiscriminator);
-                       
+
             Set(x => x.CriteriaGroups, s =>
             {
                 s.Key(k =>

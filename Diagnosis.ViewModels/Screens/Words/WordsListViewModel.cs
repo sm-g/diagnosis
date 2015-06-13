@@ -2,7 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using System.Collections.Generic;
@@ -26,7 +26,6 @@ namespace Diagnosis.ViewModels.Screens
         public WordsListViewModel()
         {
             doctor = AuthorityController.CurrentDoctor;
-            SelectedWords = new ObservableCollection<WordViewModel>();
 
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
@@ -66,6 +65,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
+                Contract.Ensures(Contract.Result<CheckableBase>() == null || Contract.Result<CheckableBase>().IsSelected);
                 return _current;
             }
             set
@@ -73,12 +73,14 @@ namespace Diagnosis.ViewModels.Screens
                 if (_current != value)
                 {
                     _current = value;
+                    if (_current != null)
+                        _current.IsSelected = true;
                     OnPropertyChanged(() => SelectedWord);
                 }
             }
         }
 
-        public ObservableCollection<WordViewModel> SelectedWords { get; private set; }
+        public IEnumerable<WordViewModel> SelectedWords { get { return Words.Where(x => x.IsSelected); } }
 
         public RelayCommand<WordViewModel> AddCommand
         {
@@ -177,7 +179,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var word = new Word(title);
             // use created word if possible
-            word = SuggestionsMaker.GetSameWordFromCreated(word) ?? word;
+            word = CreatedWordsManager.GetSameWordFromCreated(word) ?? word;
 
             this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
             return word;
@@ -187,8 +189,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             var toSelect = Words.FirstOrDefault(vm => vm.word == w);
             SelectedWord = toSelect;
-            if (toSelect != null && !SelectedWords.Contains(toSelect))
-                SelectedWords.Add(toSelect);
         }
 
         protected override void Dispose(bool disposing)

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Diagnosis.ViewModels.Screens.HrsResultItemViewModel" Collapsed="true">
-    <Position X="0.5" Y="8" Width="1.75" />
+    <Position X="0.5" Y="8.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACCAAJAAQEAAAAAAAAEAEADAAAAAQAAAAAAA=</HashCode>
       <FileName>Screens\Search\HrsResultItemViewModel.cs</FileName>
@@ -14,7 +14,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AQBAEwAAACCApAIBgwCAhAQABCAAAQCAAQACBAAgBAA=</HashCode>
+      <HashCode>AQBAkwAAAiCApAIBgwCAhAQAFCAAAQCAAQACBAAgBAA=</HashCode>
       <FileName>Screens\Search\SearchViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -29,7 +29,7 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>NAAIgAAiASRA0gEGIAMIhNGWEFAFMAgBAAQQqAFIASA=</HashCode>
+      <HashCode>NAAIgAAiASRA0gEGIAMIhNGWEFAFMCgBAAQQqAFIASA=</HashCode>
       <FileName>Screens\Search\QueryBlockViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -38,37 +38,17 @@
       <Property Name="AutocompleteNot" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.SearchHistoryViewModel" Collapsed="true">
-    <Position X="7" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAgI=</HashCode>
-      <FileName>Screens\Search\SearchHistoryViewModel.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Diagnosis.ViewModels.Screens.OptionsLoaderViewModel" Collapsed="true">
     <Position X="7" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAgBIQhQAgBAAAAgIQAAAAAAACAAAAAACAAQAA=</HashCode>
+      <HashCode>BAAABAAgBIQhQAgBAAAAgIQAAAABAACAAAAAACAARAA=</HashCode>
       <FileName>Screens\Search\OptionsLoaderViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.AbstractSearchResultViewModel" Collapsed="true">
-    <Position X="1.5" Y="5.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAkAACIABAAAAAAgBAAAAAAAAAAABAAAAAAAAAA=</HashCode>
-      <FileName>Screens\Search\AbstractSearchResultViewModel.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Statistic" />
-    </ShowAsAssociation>
-    <ShowAsCollectionAssociation>
-      <Property Name="Patients" />
-    </ShowAsCollectionAssociation>
-  </Class>
   <Class Name="Diagnosis.ViewModels.Screens.CritResultItemViewModel" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="2.5" Y="8" Width="1.5" />
+    <Position X="2.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAMCCAAgAAAAAAAAAAAAAAAABAAAAAAAAABCAA=</HashCode>
+      <HashCode>AAAAAEAMCCAAgAAAAAAAAAAAAAAAABAAAAIAAAABCAA=</HashCode>
       <FileName>Screens\Search\CritResultItemViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -87,31 +67,10 @@
       <FileName>Screens\Search\HrsSearchResultViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.StatisticBase" Collapsed="true">
-    <Position X="4.5" Y="5.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAIAAAAAAAAAAAAAQAAAQAAAAAAAAAABQAACAAAQAA=</HashCode>
-      <FileName>Screens\Search\Statistic.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.CritStatistic" Collapsed="true">
-    <Position X="6.5" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAEAAABAAAAAAAAAA=</HashCode>
-      <FileName>Screens\Search\Statistic.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Diagnosis.ViewModels.Screens.HrsStatistic" Collapsed="true">
-    <Position X="4.5" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAQAAAAABAAAAQAAACAkEAAABAAAAAAoAAA=</HashCode>
-      <FileName>Screens\Search\Statistic.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Diagnosis.ViewModels.Search.QueryEditorViewModel" Collapsed="true">
     <Position X="9" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAAAAAAQCEAAQAAAEAAAEAAAAAAAAgAAAACAAAQAAA=</HashCode>
+      <HashCode>BAAAACAAQCEAAQAAAEAAAEAAAAAAAAgAAEACAAASAAA=</HashCode>
       <FileName>Screens\Search\QueryEditorViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -122,15 +81,57 @@
       <Property Name="QueryBlocks" />
     </ShowAsCollectionAssociation>
   </Class>
+  <Class Name="Diagnosis.ViewModels.Controls.HistoryViewModel&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAECAAAAAAAAAAAACAIAAAAAAAgA=</HashCode>
+      <FileName>Controls\HistoryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.StatisticBase" Collapsed="true">
+    <Position X="5.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAACAAAAAAAQAAAQAAAAAAAAAABQAACAAAQAA=</HashCode>
+      <FileName>Screens\Search\StatisticBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.CritStatistic" Collapsed="true">
+    <Position X="6.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAABAAAAAAEAAABAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Search\CritStatistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.HrsStatistic" Collapsed="true">
+    <Position X="4.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAADAAAAAAAAAACAAAACAEEAAADAAQAABoAAA=</HashCode>
+      <FileName>Screens\Search\HrsStatistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Diagnosis.ViewModels.Screens.AbstractSearchResultViewModel" Collapsed="true">
+    <Position X="1.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAkAACIABAAAAAAgBAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Screens\Search\AbstractSearchResultViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Statistic" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Patients" />
+    </ShowAsCollectionAssociation>
+  </Class>
   <Interface Name="Diagnosis.ViewModels.Autocomplete.IQbAutocompleteViewModel" Collapsed="true">
     <Position X="14" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAACAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAA=</HashCode>
+      <HashCode>AABAAAAAAACAAAEAAAAAAAAAAAAAAEAAAAAAAAAAQAA=</HashCode>
       <FileName>Autocomplete\IAutocompleteViewModel.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Diagnosis.ViewModels.Screens.IResultItem" Collapsed="true">
-    <Position X="3.25" Y="4.5" Width="1.5" />
+    <Position X="3.75" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Screens\Search\AbstractSearchResultViewModel.cs</FileName>

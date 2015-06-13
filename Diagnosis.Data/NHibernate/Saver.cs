@@ -2,6 +2,7 @@
 using Diagnosis.Models;
 using log4net;
 using NHibernate;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -64,6 +65,49 @@ namespace Diagnosis.Data
                     }
                     t.Commit();
                     logger.DebugFormat("saved: {0}", string.Join<IEntity>("\n", entities));
+                    return true;
+                }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    logger.Error(e);
+#if DEBUG
+                    throw;
+#else
+                    return false;
+#endif
+                }
+            }
+        }
+
+        /// <summary>
+        /// Будут сохранены только те, которых нет среди удаляемых.
+        /// </summary>
+        public static bool DeleteAndSave(this ISession session, IEnumerable<IEntity> toDelete, IEnumerable<IEntity> toSave)
+        {
+            Contract.Requires(toDelete != null);
+            Contract.Requires(toSave != null);
+            Debug.Assert(session.IsOpen);
+
+            toSave = toSave.Except(toDelete).ToList();
+            logger.DebugFormat("deleting {0} IEntity", toDelete.Count());
+            logger.DebugFormat("saving {0} IEntity", toSave.Count());
+
+            using (var t = session.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var item in toDelete)
+                    {
+                        session.Delete(item);
+                    }
+                    foreach (var item in toSave)
+                    {
+                        session.Save(item);
+                    }
+                    t.Commit();
+                    logger.DebugFormat("deleted: {0}", string.Join<IEntity>("\n", toDelete));
+                    logger.DebugFormat("saved: {0}", string.Join<IEntity>("\n", toSave));
                     return true;
                 }
                 catch (System.Exception e)

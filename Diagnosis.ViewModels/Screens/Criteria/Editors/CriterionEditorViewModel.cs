@@ -1,9 +1,8 @@
 ﻿using Diagnosis.Data;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
+using Diagnosis.ViewModels.Controls;
 using System;
 using System.ComponentModel;
-
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens

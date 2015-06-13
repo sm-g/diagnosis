@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Diagnosis.ViewModels.Search;
 using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens

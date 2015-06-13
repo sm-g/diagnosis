@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -23,8 +23,9 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            
-            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
+            CreatedWordsManager.ClearCreated();
+
+            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             a = new HrEditorAutocomplete(r);
             word = session.Get<Word>(IntToGuid<Word>(1));
             icd1 = session.Get<IcdDisease>(1);
@@ -284,7 +285,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void AddMeasureWhenTyping()
         {
-            
+
 
             using (var hre = new Diagnosis.ViewModels.Screens.HrEditorViewModel(session))
             {

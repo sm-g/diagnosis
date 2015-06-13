@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
+using Diagnosis.ViewModels.Controls;
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;

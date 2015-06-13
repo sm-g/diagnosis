@@ -17,9 +17,9 @@ namespace Diagnosis.Common.Presentation.Converters
                 return DependencyProperty.UnsetValue;
 
             int age = (int)value;
-            var index = Plurals.GetPluralEnding(age);
+            var index = PluralsHelper.GetPluralEnding(age);
 
-            return Plurals.years[index];
+            return PluralsHelper.years[index];
         }
     }
 }

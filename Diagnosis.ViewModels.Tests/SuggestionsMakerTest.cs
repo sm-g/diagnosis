@@ -1,9 +1,9 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.Tests;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
-using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -21,8 +21,9 @@ namespace Diagnosis.ViewModels.Tests
         public void RecognizerTestInit()
         {
             Load<Word>();
+            CreatedWordsManager.ClearCreated();
 
-            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
+            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
         }
 
         [TestMethod]
@@ -56,14 +57,14 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(word2.IsTransient);
             Assert.AreNotEqual(word, word2);
 
-            var wordInCreated = SuggestionsMaker.GetSameWordFromCreated(word2);
+            var wordInCreated = CreatedWordsManager.GetSameWordFromCreated(word2);
             Assert.AreEqual(null, wordInCreated);
         }
 
         [TestMethod]
         public void CreateWordInQueryEditor_ThanInWordList()
         {
-            // внутри используется SuggestionsMaker.GetSameWordFromCreated
+            // внутри используется GetSameWordFromCreated
 
             var qe = new QueryEditorViewModel(session);
             var wl = new WordsListViewModel();

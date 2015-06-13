@@ -1,8 +1,7 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using System;
-
 using System.Linq;
 
 namespace Diagnosis.Common.Tests
@@ -91,7 +90,7 @@ namespace Diagnosis.Common.Tests
             var b1 = h.MoveBack();
             var b2 = h.MoveBack();
             Assert.AreEqual(true, h.CurrentIsFirst);
-            Assert.AreEqual("1", h.CurrentState);        
+            Assert.AreEqual("1", h.CurrentState);
             Assert.AreEqual(b1, b2);
         }
 

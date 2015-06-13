@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
@@ -14,8 +14,9 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            
-            var r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
+            CreatedWordsManager.ClearCreated();
+
+            var r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             a = new HrEditorAutocomplete(r);
         }
 

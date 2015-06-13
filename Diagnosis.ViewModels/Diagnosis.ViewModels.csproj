@@ -266,13 +266,15 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AuthorityController.cs" />
-    <Compile Include="Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
-    <Compile Include="Autocomplete\AutocompleteViewModel - DragDrop.cs" />
-    <Compile Include="Autocomplete\BlankSetter.cs" />
-    <Compile Include="Autocomplete\Contracts.cs" />
-    <Compile Include="Autocomplete\Extensions.cs" />
-    <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
-    <Compile Include="Autocomplete\SuggestionViewModel.cs" />
+    <Compile Include="Controls\Autocomplete\AutocompleteViewModel - ClipboardTarget.cs" />
+    <Compile Include="Controls\Autocomplete\AutocompleteViewModel - DragDrop.cs" />
+    <Compile Include="Controls\Autocomplete\BlankSetter.cs" />
+    <Compile Include="Controls\Autocomplete\Contracts.cs" />
+    <Compile Include="Controls\Autocomplete\Extensions.cs" />
+    <Compile Include="Controls\Autocomplete\IAutocompleteViewModel.cs" />
+    <Compile Include="Controls\Autocomplete\SuggestionViewModel.cs" />
+    <Compile Include="Controls\DatePickerViewModel.cs" />
+    <Compile Include="CreatedWordsManager.cs" />
     <Compile Include="Controls\Interfaces.cs" />
     <Compile Include="DataTransfer\ClipboardHelper.cs" />
     <Compile Include="DataTransfer\DragDropHelper.cs" />
@@ -280,12 +282,14 @@
     <Compile Include="DataTransfer\HrData.cs" />
     <Compile Include="Screens\AbstractNavigator.cs" />
     <Compile Include="Screens\Card\CardNavigator.cs" />
-    <Compile Include="Screens\FilterableListHelper.cs" />
+    <Compile Include="Screens\_Helpers\FilterableListHelper.cs" />
+    <Compile Include="Screens\HealthRecords\HrViewColumnHelper.cs" />
     <Compile Include="Screens\HierViewer.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="Screens\ExistanceTester.cs" />
-    <Compile Include="Services\DateOffsetFormatter.cs" />
+    <Compile Include="Screens\_Helpers\NavigatorHelper.cs" />
+    <Compile Include="Screens\_Helpers\ExistanceTester.cs" />
+    <Compile Include="Screens\Search\CritStatistic.cs" />
+    <Compile Include="Screens\Search\HrsStatistic.cs" />
     <Compile Include="Framework\Interfaces.cs" />
     <Compile Include="Framework\MenuItem.cs" />
     <Compile Include="Framework\VisibleRelayCommand.cs" />
@@ -298,7 +302,7 @@
     <Compile Include="Framework\Services\FileType.cs" />
     <Compile Include="Screens\Card\DateEditorViewModel.cs" />
     <Compile Include="Screens\Card\HolderViewModel.cs" />
-    <Compile Include="Autocomplete\MeasureEditorViewModel.cs" />
+    <Compile Include="Controls\MeasureEditorViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaItemViewModel.cs" />
     <Compile Include="Screens\Criteria\CriteriaViewModel.cs" />
     <Compile Include="Screens\Criteria\Editors\CriteriaGroupViewModel.cs" />
@@ -312,12 +316,12 @@
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
     <Compile Include="Controls\DataConnectionViewModel.cs" />
     <Compile Include="Controls\ConfirmPasswordViewModel.cs" />
-    <Compile Include="Screens\HrCategoryViewModel.cs" />
+    <Compile Include="HrCategoryViewModel.cs" />
     <Compile Include="Screens\Interfaces.cs" />
     <Compile Include="Screens\Criteria\Editors\CriterionEditorViewModel.cs" />
     <Compile Include="Screens\Search\HrsSearchResultViewModel.cs" />
-    <Compile Include="Screens\Search\QueryBlockViewModel.cs" />
-    <Compile Include="Screens\Search\QueryEditorViewModel.cs" />
+    <Compile Include="Controls\QueryBlockViewModel.cs" />
+    <Compile Include="Controls\QueryEditorViewModel.cs" />
     <Compile Include="Screens\Search\CritResultItemViewModel.cs" />
     <Compile Include="Screens\Search\CritSearchResultViewModel.cs" />
     <Compile Include="Screens\SyncViewModel.cs" />
@@ -354,20 +358,20 @@
     <Compile Include="Screens\Words\WordEditorViewModel.cs" />
     <Compile Include="Screens\Vocabularies\VocabularyViewModel.cs" />
     <Compile Include="Services\Exporter.cs" />
-    <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
+    <Compile Include="Controls\IcdSelectorViewModel.cs" />
     <Compile Include="Screens\Search\HrsResultItemViewModel.cs" />
     <Compile Include="Screens\Search\OptionsLoaderViewModel.cs" />
-    <Compile Include="Screens\Search\SearchHistoryViewModel.cs" />
+    <Compile Include="Controls\HistoryViewModel.cs" />
     <Compile Include="Screens\Search\AbstractSearchResultViewModel.cs" />
-    <Compile Include="Screens\Search\Statistic.cs" />
+    <Compile Include="Screens\Search\StatisticBase.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Editors\AppointmentViewModel.cs" />
-    <Compile Include="Autocomplete\DiagnosisViewModel.cs" />
+    <Compile Include="DiagnosisViewModel.cs" />
     <Compile Include="Screens\HealthRecords\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
     <Compile Include="Framework\SessionVMBase.cs" />
-    <Compile Include="Screens\HealthRecords\EventDateViewModel.cs" />
+    <Compile Include="Controls\EventDateViewModel.cs" />
     <Compile Include="Types\HierarchicalBase.cs" />
     <Compile Include="Screens\Card\HrEditorViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -384,9 +388,9 @@
     <Compile Include="Screens\Search\SearchViewModel.cs" />
     <Compile Include="Screens\Settings\SettingsViewModel.cs" />
     <Compile Include="Screens\Words\WordsListViewModel.cs" />
-    <Compile Include="Autocomplete\AutocompleteViewModel.cs" />
-    <Compile Include="Autocomplete\SuggestionsMaker.cs" />
-    <Compile Include="Autocomplete\TagViewModel.cs" />
+    <Compile Include="Controls\Autocomplete\AutocompleteViewModel.cs" />
+    <Compile Include="Controls\Autocomplete\SuggestionsMaker.cs" />
+    <Compile Include="Controls\Autocomplete\TagViewModel.cs" />
     <Compile Include="Controls\FilterViewModel.cs" />
     <Compile Include="Controls\PopupSearchViewModel.cs" />
     <Compile Include="Framework\ViewModelBase.cs" />
@@ -409,16 +413,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Autocomplete\IAutocomplete.dgml" />
+    <None Include="Controls\Autocomplete\IAutocomplete.dgml" />
     <None Include="Screens\Criteria\Crit.cd" />
     <None Include="Framework\CodeMap1.dgml" />
     <None Include="packages.config" />
     <None Include="Screens\Card\Card.cd" />
-    <None Include="Autocomplete\Auto-SugMaker-Tag.dgml">
+    <None Include="Controls\Autocomplete\Auto-SugMaker-Tag.dgml">
       <SubType>Designer</SubType>
     </None>
     <None Include="Screens\Card\CardCodeMap.dgml" />
-    <None Include="Screens\HealthRecords\CodeMap1.dgml" />
     <None Include="Screens\Search\CodeMap1.dgml" />
     <None Include="Screens\Search\SearchClassDiagram.cd" />
   </ItemGroup>

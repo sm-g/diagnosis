@@ -3,6 +3,10 @@
 -- use DEFAULT NEWID() since SqlServer CE don't support NEWSEQUENTIALID()
 -- with NHibernate we can use GuidComb
 
+-- run migations after
+-- 17 AddHrToDateDescribedAt
+-- 18 AddUomFormat
+
 CREATE TABLE [Word] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
 , [Title] nvarchar(100) NOT NULL
@@ -64,12 +68,12 @@ CREATE TABLE [Patient] (
 , [UpdatedAt] datetime DEFAULT GETDATE() NOT NULL
 );
 GO
-CREATE TABLE [Passport] (
-  [Id] uniqueidentifier NOT NULL
-, [HashAndSalt] nchar(70) NULL
-, [Remember] bit DEFAULT 0 NOT NULL
-);
-GO
+--CREATE TABLE [Passport] (
+--  [Id] uniqueidentifier NOT NULL
+--, [HashAndSalt] nchar(70) NULL
+--, [Remember] bit DEFAULT 0 NOT NULL
+--);
+--GO
 CREATE TABLE [IcdChapter] (
   [Id] int IDENTITY (1,1) NOT NULL
 , [Title] nvarchar(150) NOT NULL
@@ -112,13 +116,13 @@ CREATE TABLE [Doctor] (
 --, [CustomVocabularyID] uniqueidentifier NULL
 );
 GO
-CREATE TABLE [Setting] (
-  [Id] uniqueidentifier NOT NULL
-, [DoctorID] uniqueidentifier NULL
-, [Title] nvarchar(255) NOT NULL
-, [Value] nvarchar(255) NOT NULL
-);
-GO
+--CREATE TABLE [Setting] (
+--  [Id] uniqueidentifier NOT NULL
+--, [DoctorID] uniqueidentifier NULL
+--, [Title] nvarchar(255) NOT NULL
+--, [Value] nvarchar(255) NOT NULL
+--);
+--GO
 CREATE TABLE [Course] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
 , [PatientID] uniqueidentifier NOT NULL
@@ -158,7 +162,7 @@ GO
 CREATE TABLE [HrItem] (
   [Id] uniqueidentifier NOT NULL ROWGUIDCOL DEFAULT NEWID()
 , [HealthRecordID] uniqueidentifier NOT NULL
-, [Confidence] nvarchar(20) DEFAULT 'Present' NOT NULL
+, [Confidence] nvarchar(255) DEFAULT 'Present' NOT NULL
 , [Ord] int DEFAULT 0 NOT NULL
 , [IcdDiseaseID] int NULL
 , [WordID] uniqueidentifier NULL

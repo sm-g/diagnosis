@@ -120,7 +120,7 @@ namespace Diagnosis.Server.App
             if (conInfo.ProviderName == Constants.SqlCeProvider)
             {
                 var sdfPath = new SqlCeConnectionStringBuilder(conInfo.ConnectionString).DataSource;
-                FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
+                Diagnosis.Common.Services.BackupService.Backup(sdfPath, Constants.BackupDir, 5, 7);
             }
 #endif
 
