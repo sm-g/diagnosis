@@ -62,7 +62,7 @@ namespace Diagnosis.Data
             { Passport,          typeof(Passport) },
             { Setting,           typeof(Setting) },
 
-            { Crit,         typeof(Crit) },
+            { Crit,         typeof(CritBase) },
             { Criterion,         typeof(Criterion) },
             { CriteriaGroup,     typeof(CriteriaGroup) },
             { Estimator,         typeof(Estimator) },

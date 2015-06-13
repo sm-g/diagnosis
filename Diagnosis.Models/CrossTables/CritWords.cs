@@ -6,7 +6,7 @@ namespace Diagnosis.Models
 {
     public class CritWords : EntityBase<Guid>
     {
-        public CritWords(Crit cr, Word w)
+        public CritWords(CritBase cr, Word w)
         {
             Contract.Requires(cr != null);
             Contract.Requires(w != null);
@@ -18,7 +18,7 @@ namespace Diagnosis.Models
         {
         }
 
-        public virtual Crit Crit { get; set; }
+        public virtual CritBase Crit { get; set; }
 
         public virtual Word Word { get; set; }
     }

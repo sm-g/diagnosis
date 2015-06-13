@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public abstract class Crit : ValidatableEntity<Guid>, IDomainObject, ICrit
+    public abstract class CritBase : ValidatableEntity<Guid>, IDomainObject, ICrit
     {
         private string _description;
         private Many2ManyHelper<CritWords, Word> crwHelper;
@@ -15,7 +15,7 @@ namespace Diagnosis.Models
         private string _options;
         private string _optionsFormat;
 
-        public Crit()
+        public CritBase()
         {
             Description = "";
         }

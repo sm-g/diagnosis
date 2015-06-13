@@ -193,24 +193,24 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Contracts.cs" />
-    <Compile Include="Domain\MeasureOp.cs" />
-    <Compile Include="Domain\SearchOptions.cs" />
+    <Compile Include="ValueObjects\MeasureOp.cs" />
+    <Compile Include="ValueObjects\SearchOptions.cs" />
     <Compile Include="Entities\Admin.cs" />
-    <Compile Include="Domain\Chio.cs" />
-    <Compile Include="Domain\DateOffset.cs" />
-    <Compile Include="Entities\Crit.cs" />
+    <Compile Include="ValueObjects\Chio.cs" />
+    <Compile Include="ValueObjects\DateOffset.cs" />
+    <Compile Include="Entities\CritBase.cs" />
     <Compile Include="Entities\CriteriaGroup.cs" />
     <Compile Include="Entities\Criterion.cs" />
     <Compile Include="Entities\Estimator.cs" />
-    <Compile Include="Entities\CritWords.cs" />
+    <Compile Include="CrossTables\CritWords.cs" />
     <Compile Include="Helpers\StringsLength.cs" />
     <Compile Include="Entities\Passport.cs" />
     <Compile Include="Entities\HrItem.cs" />
-    <Compile Include="Domain\Comment.cs" />
+    <Compile Include="ValueObjects\Comment.cs" />
     <Compile Include="Entities\Setting.cs" />
-    <Compile Include="Entities\SpecialityVocabularies.cs" />
+    <Compile Include="CrossTables\SpecialityVocabularies.cs" />
     <Compile Include="Entities\UomFormat.cs" />
-    <Compile Include="Entities\VocabularyWords.cs" />
+    <Compile Include="CrossTables\VocabularyWords.cs" />
     <Compile Include="Entities\UomType.cs" />
     <Compile Include="Entities\Vocabulary.cs" />
     <Compile Include="Entities\WordTemplate.cs" />
@@ -222,7 +222,7 @@
     <Compile Include="Enums\HrView.cs" />
     <Compile Include="Helpers\DomainExtenstions.cs" />
     <Compile Include="Enums\HealthRecordUnit.cs" />
-    <Compile Include="Domain\Measure.cs" />
+    <Compile Include="ValueObjects\Measure.cs" />
     <Compile Include="Entities\Uom.cs" />
     <Compile Include="Entities\Appointment.cs" />
     <Compile Include="Entities\Course.cs" />
@@ -241,7 +241,7 @@
     <Compile Include="Helpers\SettingsProvider.cs" />
     <Compile Include="Helpers\EmtityComparers.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Entities\SpecialityIcdBlock.cs" />
+    <Compile Include="CrossTables\SpecialityIcdBlock.cs" />
     <Compile Include="Entities\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\VersionInfo.cs">

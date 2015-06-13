@@ -10,7 +10,7 @@ using System.Linq;
 namespace Diagnosis.Models
 {
     [DebuggerDisplay("Criterion {Code} {Value}")]
-    public class Criterion : Crit
+    public class Criterion : CritBase
     {
         private string _code;
         private string _value;

@@ -11,7 +11,7 @@ using System.Linq;
 namespace Diagnosis.Models
 {
     [DebuggerDisplay("Estimator {Description}")]
-    public class Estimator : Crit
+    public class Estimator : CritBase
     {
         private ISet<CriteriaGroup> criteriaGroups = new HashSet<CriteriaGroup>();
 
