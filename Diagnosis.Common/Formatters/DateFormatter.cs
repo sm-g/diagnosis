@@ -89,7 +89,7 @@ namespace Diagnosis.Common
                 if (secDiff < 3600) // час
                 {
                     var min = (int)Math.Floor((double)secDiff / 60);
-                    var minsPlural = Plurals.minutes[Plurals.GetPluralEnding(min)];
+                    var minsPlural = PluralsHelper.minutes[PluralsHelper.GetPluralEnding(min)];
                     return string.Format("{0} {1} {2}",
                         min, minsPlural, ending);
                 }
@@ -110,20 +110,22 @@ namespace Diagnosis.Common
             }
             if (dayDiff < 7)
             {
-                var daysPlural = Plurals.days[Plurals.GetPluralEnding(dayDiff)];
+                var daysPlural = PluralsHelper.days[PluralsHelper.GetPluralEnding(dayDiff)];
                 return string.Format("{0} {1} {2}", dayDiff, daysPlural, ending);
             }
 
             return date.ToString("dd.MM.yyyy");
         }
+
         public static string GetAgeString(int? y, int? m, int? d, DateTime now)
         {
             var age = DateHelper.GetAge(y, m, d, now);
             if (age == null)
                 return string.Empty;
-            var index = Plurals.GetPluralEnding(age.Value);
-            return string.Format("{0} {1}", age, Plurals.years[index]);
+            var index = PluralsHelper.GetPluralEnding(age.Value);
+            return string.Format("{0} {1}", age, PluralsHelper.years[index]);
         }
+
         public static Tuple<string, string> GetFormat(DateTime from, DateTime? to = null)
         {
             DateTime now = DateTime.Today;
@@ -191,11 +193,11 @@ namespace Diagnosis.Common
                 return sameAndNegative;
 
             var sb = new StringBuilder();
-            var i = Plurals.GetPluralEnding(ts.Days);
+            var i = PluralsHelper.GetPluralEnding(ts.Days);
             if (ts.Days > 0)
             {
                 sb.Append("{0:%d} ");
-                sb.Append(Plurals.days[i]);
+                sb.Append(PluralsHelper.days[i]);
                 if (ts.Days < daysLimit)
                 {
                     sb.Append(" ");
@@ -211,6 +213,4 @@ namespace Diagnosis.Common
             return string.Format(sb.ToString(), ts);
         }
     }
-
-
 }

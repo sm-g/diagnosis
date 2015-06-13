@@ -175,7 +175,7 @@ namespace Diagnosis.Client.App
             // backup
 #if !DEBUG
             var sdfPath = new SqlCeConnectionStringBuilder(conInfo.ConnectionString).DataSource;
-            FileHelper.Backup(sdfPath, Constants.BackupDir, 5, 7);
+            Diagnosis.Common.Services.BackupService.Backup(sdfPath, Constants.BackupDir, 5, 7);
 #endif
 
             bool? migrateUp = true;

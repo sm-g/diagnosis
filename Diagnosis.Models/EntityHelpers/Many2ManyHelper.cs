@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Diagnosis.Models
 {
-    class Many2ManyHelper<TM2M, TValue>
+    internal class Many2ManyHelper<TM2M, TValue>
+        where TM2M : IEntity
+        where TValue : IEntity
     {
         IList<TValue> cache;
         private Func<TM2M, TValue> selector;
@@ -18,6 +19,7 @@ namespace Diagnosis.Models
             this.where = where;
             this.selector = selector;
         }
+
         public IEnumerable<TValue> Values
         {
             get
@@ -28,6 +30,7 @@ namespace Diagnosis.Models
                    .ToList());
             }
         }
+
         public void Reset()
         {
             cache = null;
@@ -52,6 +55,7 @@ namespace Diagnosis.Models
             }
             return false;
         }
+
         public bool Add(TValue e)
         {
             var m2m = set.Where(x => selector(x).Equals(e)).FirstOrDefault();
@@ -63,6 +67,7 @@ namespace Diagnosis.Models
             }
             return false;
         }
+
         public bool Remove(TValue e)
         {
             var m2m = set.Where(x => selector(x).Equals(e)).FirstOrDefault();

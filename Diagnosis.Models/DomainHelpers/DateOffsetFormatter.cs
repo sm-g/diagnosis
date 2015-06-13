@@ -1,11 +1,8 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.Models
 {
     public static class DateOffsetFormatter
     {
@@ -17,7 +14,7 @@ namespace Diagnosis.ViewModels
             if (offset == null)
                 offset = 0;
 
-            int ending = Plurals.GetPluralEnding(offset.Value);
+            int ending = PluralsHelper.GetPluralEnding(offset.Value);
 
             switch (unit)
             {

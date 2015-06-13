@@ -205,6 +205,7 @@
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Formatters\DateFormatter.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Services\BackupService.cs" />
     <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Mediator\EventAggragatorExtensions.cs" />
     <Compile Include="Types\AsyncObservableCollection.cs" />
@@ -219,10 +220,10 @@
     <Compile Include="Types\INCCReadOnlyObservableCollection.cs" />
     <Compile Include="Mediator\Events.cs" />
     <Compile Include="Util\FlagActionWrapper.cs" />
-    <Compile Include="Types\AssemblyInfo.cs" />
-    <Compile Include="Extensions\Comparers.cs" />
+    <Compile Include="Util\AssemblyInfo.cs" />
+    <Compile Include="Comparers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Types\EventArgs.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -233,8 +234,7 @@
     <Compile Include="Mediator\EventMessageHandlersManager.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Attributes\LocalizableDescriptionAttribute.cs" />
-    <Compile Include="Util\History.cs" />
-    <Compile Include="Util\PasswordService.cs" />
+    <Compile Include="Types\History.cs" />
     <Compile Include="Util\PerformanceTester.cs" />
     <Compile Include="Util\ReentrantFlag.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />

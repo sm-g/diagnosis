@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels
 {
     /// <summary>
     /// Хранит созданные в автокомплитах еще не сохраненные в БД слова.
@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         static CreatedWordsManager()
         {
-            typeof(SuggestionsMaker).Subscribe(Event.WordPersisted, (e) =>
+            typeof(CreatedWordsManager).Subscribe(Event.WordPersisted, (e) =>
             {
                 // now word can be retrieved from db
                 var word = e.GetValue<Word>(MessageKeys.Word);
@@ -36,16 +36,12 @@ namespace Diagnosis.ViewModels.Autocomplete
         /// <summary>
         /// Запоминает новое слово для списка предположений.
         /// </summary>
-        /// <param name="tag"></param>
-        public static void AfterCompleteTag(TagViewModel tag)
+        /// <param name="w"></param>
+        public static void AfterCompleteTagWith(Word w)
         {
-            if (tag.Blank is Word)
+            if (w.IsTransient)
             {
-                var w = tag.Blank as Word;
-                if (w.IsTransient)
-                {
-                    created.Add(w);
-                }
+                created.Add(w);
             }
         }
 

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Diagnosis.Common.Types;
 
-namespace Diagnosis.Common
+namespace Diagnosis.Common.Types
 {
     /// <summary>
     /// Хранит историю состояний некоторого объекта. Без подряд идущих одинаковых состояний.

@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Models;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Screens
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {

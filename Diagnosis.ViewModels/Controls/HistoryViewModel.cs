@@ -1,9 +1,7 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
+using Diagnosis.Common.Types;
 using EventAggregator;
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -11,7 +9,6 @@ namespace Diagnosis.ViewModels.Controls
 {
     public class HistoryViewModel<T> : ViewModelBase where T : class
     {
-
         History<T> history;
 
         public HistoryViewModel(History<T> history)
@@ -43,6 +40,7 @@ namespace Diagnosis.ViewModels.Controls
                 }, () => !history.CurrentIsFirst);
             }
         }
+
         public T Current
         {
             get

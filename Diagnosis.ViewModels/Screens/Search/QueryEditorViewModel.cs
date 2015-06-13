@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
@@ -97,6 +98,7 @@ namespace Diagnosis.ViewModels.Search
 
             SetRootOptions(opt);
         }
+
         private void SetupQueryBlocks()
         {
             if (AuthorityController.CurrentDoctor != null)

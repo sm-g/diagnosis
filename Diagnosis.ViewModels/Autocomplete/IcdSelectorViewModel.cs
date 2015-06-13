@@ -4,6 +4,7 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Screens;
 using Diagnosis.ViewModels.Search;
 using log4net;
 using System;
@@ -135,7 +136,7 @@ namespace Diagnosis.ViewModels.Autocomplete
                 if (_diagnosisSearch != value)
                 {
                     _diagnosisSearch = value;
-                    OnPropertyChanged("DiagnosisSearch");
+                    OnPropertyChanged(() => DiagnosisSearch);
                 }
             }
         }

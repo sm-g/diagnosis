@@ -848,7 +848,11 @@ namespace Diagnosis.ViewModels.Autocomplete
             RefreshPopup();
             tag.SetSignalization();
 
-            CreatedWordsManager.AfterCompleteTag(tag);
+            if (tag.Blank is Word)
+            {
+                var w = tag.Blank as Word;
+                CreatedWordsManager.AfterCompleteTagWith(w);
+            }
 
             AddLastTag();
         }

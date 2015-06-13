@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Diagnosis.Common;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Diagnosis.Common;
 using System.Diagnostics.Contracts;
-using System.Linq.Expressions;
+using System.Linq;
 
 namespace Diagnosis.Models
 {
@@ -20,6 +19,7 @@ namespace Diagnosis.Models
             Contract.Requires(hr != null);
             return hr.Patient ?? (hr.Course != null ? hr.Course.Patient : hr.Appointment.Course.Patient);
         }
+
         /// <summary>
         /// Курс, к которому относится запись
         /// </summary>
@@ -31,6 +31,7 @@ namespace Diagnosis.Models
             Contract.Requires(hr != null);
             return hr.Course ?? (hr.Appointment != null ? hr.Appointment.Course : null);
         }
+
         [Pure]
         public static IEnumerable<IHrItemObject> GetOrderedEntities(this HealthRecord hr)
         {
@@ -39,6 +40,7 @@ namespace Diagnosis.Models
                    orderby item.Ord
                    select item.Entity;
         }
+
         [Pure]
         public static IEnumerable<ConfWithHio> GetOrderedCHIOs(this HealthRecord hr)
         {
@@ -47,18 +49,21 @@ namespace Diagnosis.Models
                    orderby item.Ord
                    select item.GetConfindenceHrItemObject();
         }
+
         [Pure]
         public static IEnumerable<ConfWithHio> GetCHIOs(this HealthRecord hr)
         {
             Contract.Requires(hr != null);
             return hr.HrItems.Select(x => x.GetConfindenceHrItemObject());
         }
+
         [Pure]
         public static IEnumerable<Confindencable<Word>> GetCWords(this HealthRecord hr)
         {
             Contract.Requires(hr != null);
             return hr.HrItems.Where(x => x.Word != null).Select(x => x.Word.AsConfidencable(x.Confidence));
         }
+
         [Pure]
         public static IEnumerable<Confindencable<Word>> GetCWordsNotFromMeasure(this HealthRecord hr)
         {
@@ -76,26 +81,31 @@ namespace Diagnosis.Models
             if (hio is IValidatable) return (hio as IValidatable).IsValid();
             return true;
         }
+
         public static ConfWithHio AsConfWithHio(this IHrItemObject hio, Confidence conf = Confidence.Present)
         {
             Contract.Requires(hio != null);
             return new ConfWithHio(hio, conf);
         }
+
         public static Confindencable<T> AsConfidencable<T>(this T hio, Confidence conf = Confidence.Present) where T : IHrItemObject
         {
             Contract.Requires(hio != null);
             return new Confindencable<T>(hio, conf);
         }
+
         public static MeasureOp ToMeasureOp(this Measure m, MeasureOperator op = MeasureOperator.GreaterOrEqual)
         {
             Contract.Requires(m != null);
             return new MeasureOp(op, m.Value, m.Uom, m.Word);
         }
+
         public static Measure AsMeasure(this MeasureOp mop)
         {
             Contract.Requires(mop != null);
             return new Measure(mop.Value, mop.Uom, mop.Word);
         }
+
         public static ConfWithHio GetConfindenceHrItemObject(this HrItem hi)
         {
             Contract.Requires(hi != null);
@@ -134,6 +144,7 @@ namespace Diagnosis.Models
             throw new NotImplementedException();
         }
     }
+
     public static class IHrsHolderExtensions
     {
         /// <summary>
@@ -215,34 +226,39 @@ namespace Diagnosis.Models
 
             throw new ArgumentOutOfRangeException("holder");
         }
+
         [Pure]
-        static IEnumerable<HealthRecord> GetAllHrs(this Patient pat)
+        private static IEnumerable<HealthRecord> GetAllHrs(this Patient pat)
         {
             var courseHrs = pat.Courses.SelectMany(x => x.GetAllHrs());
             return pat.HealthRecords.Union(courseHrs);
         }
+
         [Pure]
-        static IEnumerable<HealthRecord> GetAllHrs(this Course course)
+        private static IEnumerable<HealthRecord> GetAllHrs(this Course course)
         {
             var appHrs = course.Appointments.SelectMany(x => x.HealthRecords);
             return course.HealthRecords.Union(appHrs);
         }
+
         [Pure]
-        static IEnumerable<Word> GetAllWords(this Patient patient)
+        private static IEnumerable<Word> GetAllWords(this Patient patient)
         {
             var pWords = patient.HealthRecords.SelectMany(hr => hr.Words);
             var cWords = patient.Courses.SelectMany(c => c.GetAllWords());
             return pWords.Concat(cWords);
         }
+
         [Pure]
-        static IEnumerable<Word> GetAllWords(this Course course)
+        private static IEnumerable<Word> GetAllWords(this Course course)
         {
             var cWords = course.HealthRecords.SelectMany(hr => hr.Words);
             var appsWords = course.Appointments.SelectMany(app => app.GetAllWords());
             return cWords.Concat(appsWords);
         }
+
         [Pure]
-        static IEnumerable<Word> GetAllWords(this Appointment app)
+        private static IEnumerable<Word> GetAllWords(this Appointment app)
         {
             return app.HealthRecords.SelectMany(hr => hr.Words);
         }
@@ -259,7 +275,7 @@ namespace Diagnosis.Models
         /// запись — без элементов и даты или удаленная
         /// слово — без записей и критов с этим словом
         /// словарь — без слов
-        /// 
+        ///
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -267,39 +283,39 @@ namespace Diagnosis.Models
         public static bool IsEmpty(this IEntity entity)
         {
             var @switch = new Dictionary<Type, Func<bool>> {
-                { typeof(Doctor), () => 
+                { typeof(Doctor), () =>
                     {
                         var doc = entity as Doctor;
-                        return !doc.Appointments.Any() && 
-                            !doc.Courses.Any() && 
+                        return !doc.Appointments.Any() &&
+                            !doc.Courses.Any() &&
                             doc.HealthRecords.All(h => h.IsEmpty());;
-                    } 
+                    }
                 },
-                { typeof(Patient), () => 
+                { typeof(Patient), () =>
                     {
                         var pat = entity as Patient;
-                        return !pat.Courses.Any() && 
+                        return !pat.Courses.Any() &&
                             pat.HealthRecords.All(h => h.IsEmpty());
-                    } 
+                    }
                 },
-                { typeof(Course), () => 
+                { typeof(Course), () =>
                     {
                         var course = entity as Course;
-                        return !course.Appointments.Any() && 
+                        return !course.Appointments.Any() &&
                             course.HealthRecords.All(h => h.IsEmpty());
-                    } 
+                    }
                 },
-                { typeof(Appointment), () => 
+                { typeof(Appointment), () =>
                     {
                         var app = entity as Appointment;
                         return app.HealthRecords.All(x => x.IsEmpty());
-                    } 
+                    }
                 },
                 { typeof(HealthRecord),() =>
                     {
                         var hr = entity as HealthRecord;
                         return hr.IsDeleted ||
-                            hr.FromDate.IsEmpty && 
+                            hr.FromDate.IsEmpty &&
                             !hr.HrItems.Any();
                     }
                 },
@@ -346,7 +362,7 @@ namespace Diagnosis.Models
         /// <summary>
         /// Формат {[id] ToString()[,] ...}
         /// </summary>
-        public static string FlattenString(this IEnumerable<object> mayBeEntities)
+        public static string FlattenString(this IEnumerable<IDomainObject> mayBeEntities)
         {
             Contract.Requires(mayBeEntities != null);
 
@@ -377,112 +393,6 @@ namespace Diagnosis.Models
                 return string.Format("{0}{1}", pre, item);
             });
             return string.Join(", ", str);
-        }
-
-    }
-
-    public static class DateOffsetExtensions
-    {
-        /// <summary>
-        /// Округляет смещение.
-        /// При укрупнении единицы смещение считается для полной даты с 1 вместо отсутствующих значений.
-        /// </summary>
-        public static int? RoundOffsetFor(this DateOffset d, DateUnit unit)
-        {
-            Contract.Requires(d != null);
-            Contract.Ensures(d.Equals(Contract.OldValue(d)));
-            Contract.Ensures(!d.IsEmpty || Contract.Result<int?>() == null);
-
-            if (!d.Year.HasValue)
-            {
-                return null;
-            }
-            int? roundedOffset;
-            switch (unit)
-            {
-                case DateUnit.Day:
-                    roundedOffset = (d.Now - d.GetSortingDate()).Days;
-                    break;
-
-                case DateUnit.Week:
-                    roundedOffset = (d.Now - d.GetSortingDate()).Days / 7;
-                    break;
-
-                case DateUnit.Month:
-                    if (d.Month.HasValue)
-                    {
-                        roundedOffset = DateHelper.GetTotalMonthsBetween(d.Now, d.Year.Value, d.Month.Value);
-                    }
-                    else
-                    {
-                        roundedOffset = DateHelper.GetTotalMonthsBetween(d.Now, d.Year.Value, 1);
-                    }
-                    break;
-
-                case DateUnit.Year:
-                    roundedOffset = d.Now.Year - d.Year.Value;
-                    break;
-
-                default:
-                    throw new NotImplementedException();
-            }
-            return roundedOffset;
-        }
-        /// <summary>
-        /// Установка даты меняет единицу измерения и смещение на наиболее подходящие.
-        /// </summary>
-        public static DateOffset RoundOffsetUnitByDate(this DateOffset d, DateTime described)
-        {
-            Contract.Requires(d.Year != null);
-            Contract.Ensures(d.Equals(Contract.OldValue(d)));
-
-            int? offset = null;
-            DateUnit unit = 0;
-
-            Action setRoundedOffsetUnitMonthOrYear = () =>
-            {
-                var months = DateHelper.GetTotalMonthsBetween(described, d.Year.Value, d.Month.Value);
-                if (months < 12) // меньше года - месяцы
-                {
-                    offset = months;
-                    unit = DateUnit.Month;
-                }
-                else
-                {
-                    offset = described.Year - d.Year.Value;
-                    unit = DateUnit.Year;
-                }
-            };
-
-            if (d.Month == null) // _ _ y (или d _ y без автообрезания)
-            {
-                offset = described.Year - d.Year.Value;
-                unit = DateUnit.Year;
-            }
-            else if (d.Day == null) // _ m y
-            {
-                setRoundedOffsetUnitMonthOrYear();
-            }
-            else // d m y
-            {
-                var days = (described - (DateTime)d).Days;
-                if (days < 7) // меньше недели - дни
-                {
-                    offset = days;
-                    unit = DateUnit.Day;
-                }
-                else if (days < 4 * 7) // меньше месяца - недели
-                {
-                    offset = days / 7;
-                    unit = DateUnit.Week;
-                }
-                else
-                {
-                    setRoundedOffsetUnitMonthOrYear();
-                }
-            }
-
-            return new DateOffset(offset, unit, () => d.Now);
         }
     }
 }
