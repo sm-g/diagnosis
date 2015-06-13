@@ -316,7 +316,7 @@
     <Compile Include="Screens\HealthRecords\ShortHealthRecordViewModel - DragDrop.cs" />
     <Compile Include="Controls\DataConnectionViewModel.cs" />
     <Compile Include="Controls\ConfirmPasswordViewModel.cs" />
-    <Compile Include="Screens\HrCategoryViewModel.cs" />
+    <Compile Include="HrCategoryViewModel.cs" />
     <Compile Include="Screens\Interfaces.cs" />
     <Compile Include="Screens\Criteria\Editors\CriterionEditorViewModel.cs" />
     <Compile Include="Screens\Search\HrsSearchResultViewModel.cs" />
@@ -366,7 +366,7 @@
     <Compile Include="Screens\Search\StatisticBase.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Editors\AppointmentViewModel.cs" />
-    <Compile Include="Screens\DiagnosisViewModel.cs" />
+    <Compile Include="DiagnosisViewModel.cs" />
     <Compile Include="Screens\HealthRecords\HealthRecordManager.cs" />
     <Compile Include="Screens\Card\HealthRecordViewModel.cs" />
     <Compile Include="Screens\Words\WordViewModel.cs" />
