@@ -181,7 +181,7 @@ namespace Diagnosis.ViewModels.Screens
 
             var word = new Word(title);
             // use created word if possible
-            word = SuggestionsMaker.GetSameWordFromCreated(word) ?? word;
+            word = CreatedWordsManager.GetSameWordFromCreated(word) ?? word;
 
             this.Send(Event.EditWord, word.AsParams(MessageKeys.Word));
             return word;

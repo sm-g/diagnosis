@@ -848,7 +848,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             RefreshPopup();
             tag.SetSignalization();
 
-            sugMaker.AfterCompleteTag(tag);
+            CreatedWordsManager.AfterCompleteTag(tag);
 
             AddLastTag();
         }

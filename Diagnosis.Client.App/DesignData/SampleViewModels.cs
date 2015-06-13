@@ -31,7 +31,7 @@ namespace Diagnosis.Client.App.DesignData
     public class SampleHrListViewModel : HrListViewModel
     {
         public SampleHrListViewModel() :
-            base(Mocks.course, (hr, info) => { }, (hios) => { })
+            base(Mocks.course, SessionVMBase.Nhib.GetSession())
         {
         }
     }

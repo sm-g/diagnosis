@@ -325,33 +325,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (holder != null)
             {
-                HrList = new HrListViewModel(holder, (hr, hrInfo) =>
-                {
-                    // заполняем после вставки записи
-
-                    hrInfo.Chios.SyncAfterPaste(Session);
-
-                    if (hrInfo.CategoryId != null)
-                    {
-                        using (var tr = Session.BeginTransaction())
-                        {
-                            hr.Category = Session.Get<HrCategory>(hrInfo.CategoryId.Value);
-                        }
-                    }
-                    hr.FromDate.FillDateAndNowFrom(hrInfo.From);
-                    hr.ToDate.FillDateAndNowFrom(hrInfo.To);
-
-                    var unit = hrInfo.Unit;
-                    // если вставляем к пациенту без возраста
-                    if (hr.GetPatient().BirthYear == null && hrInfo.Unit == HealthRecordUnit.ByAge)
-                        unit = HealthRecordUnit.NotSet;
-
-                    hr.Unit = unit;
-                    hr.SetItems(hrInfo.Chios);
-                }, (hios) =>
-                {
-                    hios.SyncAfterPaste(Session);
-                });
+                HrList = new HrListViewModel(holder, Session);
 
                 HrViewColumn gr;
                 if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListGrouping, true, out gr))

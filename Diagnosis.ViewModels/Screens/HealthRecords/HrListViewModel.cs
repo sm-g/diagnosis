@@ -4,6 +4,7 @@ using Diagnosis.Common.Util;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels.DataTransfer;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,6 +34,8 @@ namespace Diagnosis.ViewModels.Screens
         private static HrViewer hrViewer = new HrViewer();
 
         internal readonly IHrsHolder holder;
+        private ISession session;
+
         /// <summary>
         /// Visible HealthRecords in right order (with sorting, grouping, filtering).
         /// </summary>
@@ -55,14 +58,12 @@ namespace Diagnosis.ViewModels.Screens
         private bool disposed;
         private VisibleRelayCommand<bool> _moveHr;
 
-        public HrListViewModel(IHrsHolder holder, Action<HealthRecord, HrData.HrInfo> filler, Action<IList<ConfWithHio>> syncer)
+        public HrListViewModel(IHrsHolder holder, ISession session)
         {
             Contract.Requires(holder != null);
-            Contract.Requires(filler != null);
-            Contract.Requires(syncer != null);
+            Contract.Requires(session != null);
+            this.session = session;
             this.holder = holder;
-            this.fillHr = filler;
-            this.syncHios = syncer;
 
             HolderVm = new HolderViewModel(holder);
             Sortings = new List<HrViewColumn>() {

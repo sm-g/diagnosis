@@ -12,42 +12,20 @@ namespace Diagnosis.ViewModels.Autocomplete
     /// <summary>
     /// Ищет предположения, создает слова.
     /// </summary>
-    public class SuggestionsMaker
+    public sealed class SuggestionsMaker
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(SuggestionsMaker));
-
-        /// <summary>
-        /// несохраненные слова, созданные через автокомплит
-        /// </summary>
-        private static HashSet<Word> created = new HashSet<Word>(Compare.By<Word, string>(x => x.Title, StringComparer.OrdinalIgnoreCase));
 
         private readonly ISession session;
         private Doctor doctor;
         private bool _addQueryToSug;
 
-        static SuggestionsMaker()
-        {
-            typeof(SuggestionsMaker).Subscribe(Event.WordPersisted, (e) =>
-            {
-                // now word can be retrieved from db
-                var word = e.GetValue<Word>(MessageKeys.Word);
-                created.Remove(word);
-            });
-            AuthorityController.LoggedOut += (s, e) =>
-            {
-                created.Clear();
-            };
-        }
-
-        public SuggestionsMaker(ISession session, Doctor doctor, bool clearCreated = false)
+        public SuggestionsMaker(ISession session, Doctor doctor)
         {
             Contract.Requires(session != null);
             Contract.Requires(doctor != null);
             this.session = session;
             this.doctor = doctor;
-
-            if (clearCreated)
-                created.Clear();
 
             AddNotPersistedToSuggestions = true;
             CanChangeAddQueryToSuggstions = true;
@@ -90,18 +68,6 @@ namespace Diagnosis.ViewModels.Autocomplete
 
         internal ISession Session { get { return session; } }
 
-        public static Word GetSameWordFromCreated(Word word)
-        {
-            Contract.Requires(word != null);
-            Contract.Requires(word.IsTransient);
-            Contract.Ensures(Contract.Result<Word>() == null || Contract.Result<Word>().CompareTo(word) == 0);
-
-            // несохраненное слово
-            var same = created.Where(e => e.CompareTo(word) == 0).FirstOrDefault();
-
-            return same; // null if transient but not in created
-        }
-
         /// <summary>
         /// Возвращает список предполжений для запроса. По запросу определяет, какой поиск использовать.
         /// </summary>
@@ -116,7 +82,7 @@ namespace Diagnosis.ViewModels.Autocomplete
 
             // слова, доступные для ввода
             var wordsForDoctor = QueryWords(query, prevEntityBlank, AddNotPersistedToSuggestions)
-                    .Where(x => created.Contains(x) || doctor.Words.Contains(x));
+                    .Where(x => CreatedWordsManager.Created.Contains(x) || doctor.Words.Contains(x));
 
             // кроме исключенных
             if (exclude != null)
@@ -142,21 +108,6 @@ namespace Diagnosis.ViewModels.Autocomplete
             return results;
         }
 
-        /// <summary>
-        /// Запоминает новое слово для списка предположений.
-        /// </summary>
-        /// <param name="tag"></param>
-        public void AfterCompleteTag(TagViewModel tag)
-        {
-            if (tag.Blank is Word)
-            {
-                var w = tag.Blank as Word;
-                if (w.IsTransient)
-                {
-                    created.Add(w);
-                }
-            }
-        }
         /// <summary>
         /// Первое точно подходящее слово из БД или новое.
         /// </summary>
@@ -199,7 +150,7 @@ namespace Diagnosis.ViewModels.Autocomplete
             Word parent = prev as Word;
 
             var unsaved = withNotPersisted
-                ? created.Where(w => w.Title.StartsWith(query, StringComparison.OrdinalIgnoreCase))
+                ? CreatedWordsManager.Created.Where(w => w.Title.StartsWith(query, StringComparison.OrdinalIgnoreCase))
                 : Enumerable.Empty<Word>();
 
             var fromDB = ShowChildrenFirst ?
@@ -207,15 +158,6 @@ namespace Diagnosis.ViewModels.Autocomplete
                 WordQuery.StartingWith(session)(query);
 
             return fromDB.Union(unsaved);
-        }
-
-        [ContractInvariantMethod]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
-        private void ObjectInvariant()
-        {
-            // все несохраннные слова - не в словаре
-            Contract.Invariant(created.All(x => x.Vocabularies.Count() == 0));
-            Contract.Invariant(created.IsUnique(x => x.Title, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

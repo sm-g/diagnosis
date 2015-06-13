@@ -21,8 +21,9 @@ namespace Diagnosis.ViewModels.Tests
         [TestInitialize]
         public void AutocompleteTestInit()
         {
-            
-            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor, clearCreated: true);
+            CreatedWordsManager.ClearCreated();
+
+            r = new SuggestionsMaker(session, AuthorityController.CurrentDoctor);
             bs = new BlankSetter(r.FirstMatchingOrNewWord, null, null);
 
             var a = new HrEditorAutocomplete(r);

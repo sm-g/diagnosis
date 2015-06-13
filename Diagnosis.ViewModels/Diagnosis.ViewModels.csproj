@@ -273,6 +273,7 @@
     <Compile Include="Autocomplete\Extensions.cs" />
     <Compile Include="Autocomplete\IAutocompleteViewModel.cs" />
     <Compile Include="Autocomplete\SuggestionViewModel.cs" />
+    <Compile Include="Autocomplete\CreatedWordsManager.cs" />
     <Compile Include="Controls\Interfaces.cs" />
     <Compile Include="DataTransfer\ClipboardHelper.cs" />
     <Compile Include="DataTransfer\DragDropHelper.cs" />
@@ -281,10 +282,13 @@
     <Compile Include="Screens\AbstractNavigator.cs" />
     <Compile Include="Screens\Card\CardNavigator.cs" />
     <Compile Include="Screens\FilterableListHelper.cs" />
+    <Compile Include="Screens\HealthRecords\HrViewColumnHelper.cs" />
     <Compile Include="Screens\HierViewer.cs" />
     <Compile Include="DataTransfer\TagData.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Screens\NavigatorHelper.cs" />
     <Compile Include="Screens\ExistanceTester.cs" />
+    <Compile Include="Screens\Search\CritStatistic.cs" />
+    <Compile Include="Screens\Search\HrsStatistic.cs" />
     <Compile Include="Services\DateOffsetFormatter.cs" />
     <Compile Include="Framework\Interfaces.cs" />
     <Compile Include="Framework\MenuItem.cs" />
@@ -357,9 +361,9 @@
     <Compile Include="Autocomplete\IcdSelectorViewModel.cs" />
     <Compile Include="Screens\Search\HrsResultItemViewModel.cs" />
     <Compile Include="Screens\Search\OptionsLoaderViewModel.cs" />
-    <Compile Include="Screens\Search\SearchHistoryViewModel.cs" />
+    <Compile Include="Controls\HistoryViewModel.cs" />
     <Compile Include="Screens\Search\AbstractSearchResultViewModel.cs" />
-    <Compile Include="Screens\Search\Statistic.cs" />
+    <Compile Include="Screens\Search\StatisticBase.cs" />
     <Compile Include="Types\CheckableBase.cs" />
     <Compile Include="Screens\Card\Editors\AppointmentViewModel.cs" />
     <Compile Include="Autocomplete\DiagnosisViewModel.cs" />
