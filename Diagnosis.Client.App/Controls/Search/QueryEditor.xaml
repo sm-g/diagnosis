@@ -18,13 +18,13 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <Button  Command="{Binding History.PrevOptionsCommand}"
+                <Button  Command="{Binding History.PrevCommand}"
                          ToolTip="Предыдущий запрос"
                          Style="{StaticResource metroCircleButton}">
                     <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"
                                        Source="{StaticResource appbar_navigate_previous}" />
                 </Button>
-                <Button  Command="{Binding History.NextOptionsCommand}"
+                <Button  Command="{Binding History.NextCommand}"
                          ToolTip="Следующий запрос"
                          Style="{StaticResource metroCircleButton}">
                     <diag:MenuItemIcon Style="{StaticResource MetroButtonIcon}"

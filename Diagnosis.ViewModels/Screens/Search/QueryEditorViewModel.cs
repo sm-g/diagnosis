@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Screens;
 using NHibernate;
 using System;
@@ -26,7 +27,7 @@ namespace Diagnosis.ViewModels.Search
             var loader = new JsonOptionsLoader(Session);
             Loader = new OptionsLoaderViewModel(this, loader);
             var hist = new History<SearchOptions>();
-            History = new SearchHistoryViewModel(hist);
+            History = new HistoryViewModel<SearchOptions>(hist);
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
 
             QueryBlocks.CollectionChanged += (s, e) =>
@@ -56,7 +57,7 @@ namespace Diagnosis.ViewModels.Search
 
         public ObservableCollection<QueryBlockViewModel> QueryBlocks { get; private set; }
 
-        public SearchHistoryViewModel History { get; set; }
+        public HistoryViewModel<SearchOptions> History { get; set; }
 
         public OptionsLoaderViewModel Loader { get; set; }
 

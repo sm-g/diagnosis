@@ -7,43 +7,43 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels.Controls
 {
-    public class SearchHistoryViewModel : ViewModelBase
+    public class HistoryViewModel<T> : ViewModelBase where T : class
     {
 
-        History<SearchOptions> history;
+        History<T> history;
 
-        public SearchHistoryViewModel(History<SearchOptions> history)
+        public HistoryViewModel(History<T> history)
         {
             Contract.Requires(history != null);
             this.history = history;
         }
 
-        public RelayCommand NextOptionsCommand
+        public RelayCommand NextCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
                     history.MoveForward();
-                    OnPropertyChanged(() => CurrentOptions);
+                    OnPropertyChanged(() => Current);
                 }, () => !history.CurrentIsLast);
             }
         }
 
-        public RelayCommand PrevOptionsCommand
+        public RelayCommand PrevCommand
         {
             get
             {
                 return new RelayCommand(() =>
                 {
                     history.MoveBack();
-                    OnPropertyChanged(() => CurrentOptions);
+                    OnPropertyChanged(() => Current);
                 }, () => !history.CurrentIsFirst);
             }
         }
-        public SearchOptions CurrentOptions
+        public T Current
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public void Memo(SearchOptions opt)
+        public void Memo(T opt)
         {
             history.Memorize(opt);
         }
