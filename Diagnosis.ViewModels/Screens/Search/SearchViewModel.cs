@@ -3,7 +3,7 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Data.Search;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Search;
+using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using System;
 using System.Collections.Generic;

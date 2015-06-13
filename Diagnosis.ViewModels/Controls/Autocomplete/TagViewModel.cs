@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Windows;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     [Flags]
     public enum Signalizations

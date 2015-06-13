@@ -1,4 +1,4 @@
-﻿using Diagnosis.ViewModels.Autocomplete;
+﻿using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;

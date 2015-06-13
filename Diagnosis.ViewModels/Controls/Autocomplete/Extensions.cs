@@ -5,7 +5,7 @@ using System.Text;
 using System.Diagnostics.Contracts;
 using Diagnosis.Models;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     public static class Extensions
     {

@@ -10,7 +10,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     [ContractClass(typeof(ContractForIViewAutocompleteViewModel))]
     public interface IViewAutocompleteViewModel

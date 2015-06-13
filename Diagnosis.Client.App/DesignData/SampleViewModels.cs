@@ -1,12 +1,11 @@
 ﻿using Diagnosis.Models;
 using Diagnosis.ViewModels;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
-using Diagnosis.ViewModels.Search;
 using Moq;
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
 
 namespace Diagnosis.Client.App.DesignData

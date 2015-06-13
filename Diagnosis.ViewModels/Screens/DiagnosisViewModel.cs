@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Models;
 using System.Diagnostics.Contracts;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels
 {
     public class DiagnosisViewModel : HierarchicalBase<DiagnosisViewModel>
     {
@@ -41,6 +41,7 @@ namespace Diagnosis.ViewModels.Screens
                 return _icd.Code;
             }
         }
+
         /// <summary>
         /// Выбранное пользоваетелем <see cref="IsExpanded"/>
         /// </summary>

@@ -1,10 +1,9 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Screens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Screens
 {
     public static class NavigatorHelper
     {

@@ -5,7 +5,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     public partial class AutocompleteViewModel : IDroppable, IDraggable
     {

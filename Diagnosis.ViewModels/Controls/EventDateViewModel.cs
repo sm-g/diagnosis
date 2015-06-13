@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels
+namespace Diagnosis.ViewModels.Controls
 {
     [DebuggerDisplay("edVm {Do}")]
     public class EventDateViewModel : ViewModelBase
@@ -87,7 +87,7 @@ namespace Diagnosis.ViewModels
                 {
                     _inEdit = value;
                     if (value)
-                        To = new EventDateViewModel.DatePickerViewModel(hr.ToDate);
+                        To = new DatePickerViewModel(hr.ToDate);
                     else
                         To = null; // unbind ComboboxDatePicker DataContext;
 
@@ -527,60 +527,6 @@ namespace Diagnosis.ViewModels
             base.Dispose(disposing);
         }
 
-        public class DatePickerViewModel : ViewModelBase
-        {
-            private DateOffset d;
 
-            public DatePickerViewModel(DateOffset d)
-            {
-                this.d = d;
-                d.PropertyChanged += d_PropertyChanged;
-            }
-
-            public int? Year
-            {
-                get { return d.Year; }
-                set { d.Year = value; }
-            }
-
-            public int? Month
-            {
-                get { return d.Month; }
-                set { d.Month = value; }
-            }
-
-            public int? Day
-            {
-                get { return d.Day; }
-                set { d.Day = value; }
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                try
-                {
-                    if (disposing)
-                    {
-                        d.PropertyChanged -= d_PropertyChanged;
-                    }
-                }
-                finally
-                {
-                    base.Dispose(disposing);
-                }
-            }
-
-            private void d_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-            {
-                switch (e.PropertyName)
-                {
-                    case "Day":
-                    case "Month":
-                    case "Year":
-                        OnPropertyChanged(e.PropertyName);
-                        break;
-                }
-            }
-        }
     }
 }

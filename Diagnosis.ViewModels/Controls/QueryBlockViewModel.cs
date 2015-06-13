@@ -2,7 +2,7 @@
 using Diagnosis.Common.Util;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using EventAggregator;
 using NHibernate;
 using System;
@@ -12,7 +12,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels.Controls
 {
     public class QueryBlockViewModel : HierarchicalBase<QueryBlockViewModel>
     {

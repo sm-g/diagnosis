@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.DataTransfer;
 using NHibernate;
 using System;

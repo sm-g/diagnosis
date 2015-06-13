@@ -1,6 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
-using Diagnosis.ViewModels.Search;
+using Diagnosis.ViewModels.Controls;
 using System;
 using System.Linq;
 using System.Windows;

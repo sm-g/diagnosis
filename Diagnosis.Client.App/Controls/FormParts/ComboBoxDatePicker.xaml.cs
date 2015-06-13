@@ -217,7 +217,7 @@ namespace Diagnosis.Client.App.Controls.FormParts
             if (hrvm != null && hrvm.DateEditor != null && hrvm.DateEditor.EventDate == null)
                 return;
 
-            var dpvm = (DataContext as EventDateViewModel);
+            var dpvm = (DataContext as Diagnosis.ViewModels.Controls.EventDateViewModel);
             if (dpvm != null && dpvm.To == null)
                 return;
 

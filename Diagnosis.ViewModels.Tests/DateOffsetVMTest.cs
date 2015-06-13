@@ -1,8 +1,8 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Tests

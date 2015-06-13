@@ -2,7 +2,7 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using System.Collections.Generic;

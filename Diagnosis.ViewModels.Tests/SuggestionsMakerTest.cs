@@ -1,9 +1,9 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.Tests;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
-using Diagnosis.ViewModels.Search;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;

@@ -1,11 +1,9 @@
 ﻿using Diagnosis.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 
-namespace Diagnosis.ViewModels.Screens
+namespace Diagnosis.ViewModels
 {
     public class HrCategoryViewModel : CheckableBase, IComparable
     {
@@ -24,6 +22,7 @@ namespace Diagnosis.ViewModels.Screens
                 return category.Title;
             }
         }
+
         public int CompareTo(object obj)
         {
             var other = obj as HrCategoryViewModel;

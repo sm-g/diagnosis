@@ -3,16 +3,13 @@ using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Controls;
-using Diagnosis.ViewModels.Screens;
-using Diagnosis.ViewModels.Search;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls
 {
     public class IcdSelectorViewModel : DialogViewModel
     {

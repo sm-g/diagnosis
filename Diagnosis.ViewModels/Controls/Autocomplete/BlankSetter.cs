@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     internal class BlankSetter
     {

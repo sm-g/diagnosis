@@ -10,7 +10,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     public class HrEditorAutocomplete : AutocompleteViewModel, IHrEditorAutocomplete
     {

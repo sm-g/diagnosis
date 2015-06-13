@@ -1,5 +1,5 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.DragDrop;
 using GongSolutions.Wpf.DragDrop;
 using System;

@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;

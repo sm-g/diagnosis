@@ -2,7 +2,6 @@
 using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Controls;
 using Diagnosis.ViewModels.Screens;
 using NHibernate;
 using System;
@@ -10,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Diagnosis.ViewModels.Search
+namespace Diagnosis.ViewModels.Controls
 {
     public class QueryEditorViewModel : ViewModelBase
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls.Autocomplete
 {
     [ContractClassFor(typeof(IViewAutocompleteViewModel))]
     internal abstract class ContractForIViewAutocompleteViewModel : IViewAutocompleteViewModel

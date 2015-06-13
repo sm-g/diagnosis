@@ -1,7 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

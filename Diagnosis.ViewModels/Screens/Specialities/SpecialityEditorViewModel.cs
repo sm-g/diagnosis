@@ -3,7 +3,7 @@ using Diagnosis.Common.Types;
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using log4net;
 using System;

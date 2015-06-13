@@ -22,8 +22,7 @@ using System.Windows.Markup;
 [assembly: InternalsVisibleTo("Diagnosis.ViewModels.Tests")]
 
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
-[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Screens")]
-[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Autocomplete")]
-[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Search")]
-[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Controls")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels")]
+[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Screens")]
+[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Controls")]
+[assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels.Controls.Autocomplete")]

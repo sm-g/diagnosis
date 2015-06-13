@@ -1,6 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;

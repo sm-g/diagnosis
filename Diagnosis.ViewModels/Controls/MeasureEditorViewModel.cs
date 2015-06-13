@@ -1,12 +1,13 @@
 ﻿using Diagnosis.Data.Queries;
 using Diagnosis.Models;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
 
-namespace Diagnosis.ViewModels.Autocomplete
+namespace Diagnosis.ViewModels.Controls
 {
     public class MeasureEditorViewModel : DialogViewModel
     {

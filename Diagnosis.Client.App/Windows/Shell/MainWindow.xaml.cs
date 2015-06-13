@@ -2,7 +2,8 @@
 using Diagnosis.Common;
 using Diagnosis.Common.Presentation.Controls;
 using Diagnosis.ViewModels;
-using Diagnosis.ViewModels.Autocomplete;
+using Diagnosis.ViewModels.Controls;
+using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Screens;
 using System;
 using System.Collections.Generic;
