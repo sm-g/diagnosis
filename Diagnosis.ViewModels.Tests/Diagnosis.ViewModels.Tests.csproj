@@ -86,6 +86,7 @@
     </Compile>
     <Compile Include="AuthorityControllerTest.cs" />
     <Compile Include="OverlayTest.cs" />
+    <Compile Include="LoginTest.cs" />
     <Compile Include="TagTest.cs" />
     <Compile Include="BlankSetterTest.cs" />
     <Compile Include="AutocompleteTest.cs" />

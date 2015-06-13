@@ -131,9 +131,9 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     var user = SelectedUser;
-                    // первый запуск
                     if (Passwords.IsRepeatVisible && user is Admin)
                     {
+                        // первый запуск
                         AuthorityController.ChangePassword(user, Passwords.Password);
                         new Diagnosis.Data.Saver(Session).Save(user.Passport);
                     }
@@ -141,9 +141,10 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         if (user is Doctor)
                         {
-                            // сохраняем remember после входа
+                            var doctors = Users.OfType<Doctor>();
+                            doctors.ForAll(x => x.Passport.Remember = false);
                             user.Passport.Remember = IsRemembered;
-                            new Diagnosis.Data.Saver(Session).Save(user);
+                            new Diagnosis.Data.Saver(Session).Save(doctors.ToArray());
                         }
                         LoggedIn = true;
                     }
