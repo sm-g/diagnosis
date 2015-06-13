@@ -2,7 +2,7 @@
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace Diagnosis.Data.Mappings
+namespace Diagnosis.Data.Mappings.Client
 {
     public class CriterionMap : SubclassMapping<Criterion>
     {
@@ -14,7 +14,7 @@ namespace Diagnosis.Data.Mappings
                 //m.NotNullable(true);
                 m.Length(Length.CriterionCode);
             });
-            
+
             Property(x => x.Value, m =>
             {
                 //m.NotNullable(true);

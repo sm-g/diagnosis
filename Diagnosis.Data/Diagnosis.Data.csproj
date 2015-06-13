@@ -252,7 +252,7 @@
     <Compile Include="DTOs\HrCategoryDTO.cs" />
     <Compile Include="DTOs\MeasureOpDTO.cs" />
     <Compile Include="DTOs\WordDTO.cs" />
-    <Compile Include="Mappings\CritMap.cs" />
+    <Compile Include="Mappings\CritBaseMap.cs" />
     <Compile Include="Mappings\UomFormatMap.cs" />
     <Compile Include="Mappings\EstimatorMap.cs" />
     <Compile Include="Mappings\CriteriaGroupMap.cs" />

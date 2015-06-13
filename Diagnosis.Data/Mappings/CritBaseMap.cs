@@ -2,12 +2,13 @@
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-namespace Diagnosis.Data.Mappings
+namespace Diagnosis.Data.Mappings.Client
 {
-    public class CritMap : ClassMapping<Crit>
+    public class CritBaseMap : ClassMapping<CritBase>
     {
-        public CritMap()
+        public CritBaseMap()
         {
+            Table(Names.Crit);
             Id(x => x.Id, m =>
             {
                 m.Generator(Generators.GuidComb);
