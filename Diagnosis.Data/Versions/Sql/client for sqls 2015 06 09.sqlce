@@ -96,7 +96,7 @@ CREATE TABLE [IcdBlock] (
 GO
 CREATE TABLE [SpecialityIcdBlocks] (
   [IcdBlockID] int NOT NULL
-, [SpecialityID] uniqueidentifier NULL
+, [SpecialityID] uniqueidentifier NOT NULL
 , [Id] uniqueidentifier DEFAULT NEWID() NOT NULL
 );
 GO
