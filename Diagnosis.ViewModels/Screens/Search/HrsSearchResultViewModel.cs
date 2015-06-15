@@ -36,13 +36,13 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void RemoveDeleted(IHrsHolder h)
         {
-            var hsr = Patients.Cast<HrsResultItemViewModel>().FindHolderKeeperOf(h);
-            if (hsr != null)
+            var hrsResultItem = Patients.Cast<HrsResultItemViewModel>().FindHolderKeeperOf(h);
+            if (hrsResultItem != null)
             {
-                if (hsr.IsRoot)
-                    Patients.Remove(hsr);
+                if (hrsResultItem.IsRoot)
+                    Patients.Remove(hrsResultItem);
                 else
-                    hsr.Remove();
+                    hrsResultItem.Remove();
             }
         }
 

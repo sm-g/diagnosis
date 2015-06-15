@@ -70,6 +70,9 @@ namespace Diagnosis.Models
         void RemoveHealthRecord(HealthRecord hr);
     }
 
+    /// <summary>
+    /// Сущность, содержащая критерии.
+    /// </summary>
     public interface ICrit : IEntity, IDomainObject, IDeletable
     {
         string Description { get; }

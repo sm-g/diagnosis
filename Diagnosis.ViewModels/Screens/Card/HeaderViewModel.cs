@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class HeaderViewModel : ViewModelBase, IHolderKeeper
+    public class HeaderViewModel : ViewModelBase, IHrsHolderKeeper
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HeaderViewModel));
         private readonly IHrsHolder holder;

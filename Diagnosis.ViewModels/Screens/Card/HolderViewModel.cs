@@ -8,7 +8,7 @@ namespace Diagnosis.ViewModels.Screens
     /// <summary>
     /// Команды редактирования держателя.
     /// </summary>
-    public class HolderViewModel : ViewModelBase, IHolderKeeper
+    public class HolderViewModel : ViewModelBase, IHrsHolderKeeper
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HolderViewModel));
         private readonly IHrsHolder holder;

@@ -9,7 +9,7 @@ using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CritResultItemViewModel : ViewModelBase, IHolderKeeper, IResultItem
+    public class CritResultItemViewModel : ViewModelBase, IHrsHolderKeeper, IResultItem
     {
         private readonly Patient _patient;
         private IEnumerable<Criterion> _crits;

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CardItemViewModel : HierarchicalBase<CardItemViewModel>, IHolderKeeper
+    public class CardItemViewModel : HierarchicalBase<CardItemViewModel>, IHrsHolderKeeper
     {
         private readonly IHrsHolder holder;
         private bool _isHighlighted;

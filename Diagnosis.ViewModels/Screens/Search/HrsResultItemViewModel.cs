@@ -9,14 +9,14 @@ using System.Windows.Input;
 namespace Diagnosis.ViewModels.Screens
 {
 
-    public class HrsResultItemViewModel : HierarchicalBase<HrsResultItemViewModel>, IHolderKeeper, IResultItem
+    public class HrsResultItemViewModel : HierarchicalBase<HrsResultItemViewModel>, IHrsHolderKeeper, IResultItem
     {
         private readonly IHrsHolder holder;
 
         private HrsResultItemViewModel(IHrsHolder holder, IEnumerable<HealthRecord> foundHrs = null)
         {
             this.holder = holder;
-            // автообновление результатов поиска - сейчас только удаляются запись, но не обновляется текст записи
+            // автообновление результатов поиска - сейчас только удаляется запись, но не статистика
             Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
             if (foundHrs != null)
             {
