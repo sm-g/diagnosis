@@ -85,6 +85,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AuthorityControllerTest.cs" />
+    <Compile Include="HrsSearchResultTest.cs" />
     <Compile Include="OverlayTest.cs" />
     <Compile Include="LoginTest.cs" />
     <Compile Include="TagTest.cs" />

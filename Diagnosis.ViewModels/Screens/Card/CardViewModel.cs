@@ -298,7 +298,6 @@ namespace Diagnosis.ViewModels.Screens
 
         private void OnHolderDeleted(IHrsHolder holder)
         {
-            // TODO убрать из результатов поиска (или проверять при открытии, удален ли)
             viewer.RemoveFromHistory(holder);
 
             if (holder is Patient)

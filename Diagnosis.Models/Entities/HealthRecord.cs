@@ -420,8 +420,9 @@ namespace Diagnosis.Models
 
         protected internal virtual void OnDelete()
         {
-            this.Words.ForEach(x => x.RemoveHr(this));
+            Words.ForEach(x => x.RemoveHr(this));
             Doctor.RemoveHr(this);
+            Holder.RemoveHealthRecord(this);
         }
 
         protected internal virtual void FixDescribedAtAfterLoad()

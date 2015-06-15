@@ -16,17 +16,21 @@ namespace Diagnosis.ViewModels.Screens
         private HrsResultItemViewModel(IHrsHolder holder, IEnumerable<HealthRecord> foundHrs = null)
         {
             this.holder = holder;
-            // автообновление результатов поиска - сейчас только удаляется запись, но не статистика
+            // автообновление результатов поиска - сейчас только удаляется запись/холдер, но не статистика
             Holder.HealthRecordsChanged += Holder_HealthRecordsChanged;
-            if (foundHrs != null)
-            {
-                FoundHealthRecords = new ObservableCollection<HealthRecord>(foundHrs);
-            }
-            else
-            {
-                FoundHealthRecords = new ObservableCollection<HealthRecord>();
-            }
+
             HealthRecords = new ObservableCollection<HealthRecord>(holder.HealthRecords);
+            if (foundHrs != null)
+                FoundHealthRecords = new ObservableCollection<HealthRecord>(foundHrs);
+            else
+                FoundHealthRecords = new ObservableCollection<HealthRecord>();
+
+            FoundHealthRecords.CollectionChanged += (s, e) =>
+            {
+                if (FoundHealthRecords.Count == 0 && this.IsTerminal)
+                    // когда удалены все записи, по которым был найден холдер
+                    this.Remove();
+            };
         }
 
         /// <summary>
