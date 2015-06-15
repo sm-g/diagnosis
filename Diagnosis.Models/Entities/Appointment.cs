@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Appointment : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IComparable<Appointment>
+    public class Appointment : ValidatableEntity<Guid>, IHrsHolder, IComparable<Appointment>, IHaveAuditInformation
     {
         private ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
         private DateTime _dateTime;
@@ -134,6 +134,11 @@ namespace Diagnosis.Models
                 return this.Course.CompareTo(other.Course);
 
             return this.DateAndTime.CompareTo(other.DateAndTime);
+        }
+
+        public virtual bool IsEmpty()
+        {
+            return HealthRecords.All(x => x.IsEmpty());
         }
 
         protected virtual void OnHealthRecordsChanged(NotifyCollectionChangedEventArgs e)

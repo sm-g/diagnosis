@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan, IUser, IComparable<Doctor>
+    public class Doctor : ValidatableEntity<Guid>, IDomainObject, IMan, IUser, IComparable<Doctor>, IDeletable
     {
         private ISet<Appointment> appointments = new HashSet<Appointment>();
         private ISet<Course> courses = new HashSet<Course>();
@@ -214,6 +214,13 @@ namespace Diagnosis.Models
                 return byFirst;
             }
             return byLast;
+        }
+
+        public virtual bool IsEmpty()
+        {
+            return !Appointments.Any() &&
+                !Courses.Any() &&
+                HealthRecords.All(h => h.IsEmpty());
         }
 
         protected internal virtual void AddApp(Appointment app)

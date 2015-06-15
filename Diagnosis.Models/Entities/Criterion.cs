@@ -56,5 +56,10 @@ namespace Diagnosis.Models
         {
             return new CriterionValidator().Validate(this);
         }
+
+        public override bool IsEmpty()
+        {
+            return true;
+        }
     }
 }

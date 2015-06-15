@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Wintellect.PowerCollections;
 
 namespace Diagnosis.Models
 {
-    public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation, IComparable<HealthRecord>
+    public class HealthRecord : EntityBase<Guid>, IDomainObject, IHaveAuditInformation, IComparable<HealthRecord>, IDeletable
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HealthRecord));
         private ISet<HrItem> hrItems = new HashSet<HrItem>();
@@ -249,6 +248,7 @@ namespace Diagnosis.Models
         {
             get { return hrItems.Where(x => x.Word != null).Select(x => x.Word); }
         }
+
         /// <summary>
         /// Без слов измерений.
         /// </summary>
@@ -409,6 +409,13 @@ namespace Diagnosis.Models
 
             res = Doctor.CompareTo(other.Doctor);
             return res;
+        }
+
+        public virtual bool IsEmpty()
+        {
+            return IsDeleted ||
+                FromDate.IsEmpty &&
+                !HrItems.Any();
         }
 
         protected internal virtual void OnDelete()

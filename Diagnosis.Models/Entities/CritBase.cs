@@ -120,5 +120,7 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
+
+        public abstract bool IsEmpty();
     }
 }

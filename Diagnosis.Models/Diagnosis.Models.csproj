@@ -197,6 +197,7 @@
     <Compile Include="DomainHelpers\DateOffsetFormatter.cs" />
     <Compile Include="DomainHelpers\PasswordHashManager.cs" />
     <Compile Include="DomainHelpers\Plurals.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="ValueObjects\MeasureOp.cs" />
     <Compile Include="ValueObjects\SearchOptions.cs" />
     <Compile Include="Entities\Admin.cs" />
