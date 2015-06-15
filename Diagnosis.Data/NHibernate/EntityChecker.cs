@@ -10,6 +10,7 @@ namespace Diagnosis.Data
     {
         public void Delete(IEntity entity)
         {
+            this.Send(Event.EntityDeleted, entity.AsParams(MessageKeys.Entity));
         }
 
         public void Insert(IEntity entity)

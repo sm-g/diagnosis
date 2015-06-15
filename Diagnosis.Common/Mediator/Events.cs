@@ -11,6 +11,7 @@ namespace Diagnosis.Common
     public static class MessageKeys
     {
         // domain
+        public readonly static string Entity = "entity";
         public readonly static string Word = "word";
         public readonly static string Patient = "patient";
         public readonly static string Doctor = "doctor";
@@ -37,6 +38,7 @@ namespace Diagnosis.Common
 
         public readonly static string Name = "name";
         public readonly static string Value = "value";
+
     }
 
     public enum Event
@@ -79,6 +81,7 @@ namespace Diagnosis.Common
         DoctorSaved,
         UomSaved,
         SettingsSaved,
+        EntityDeleted,
 
         // other
         ChangeTheme,

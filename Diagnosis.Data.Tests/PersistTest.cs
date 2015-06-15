@@ -87,5 +87,32 @@ namespace Diagnosis.Data.Tests
             Assert.IsTrue(dbCrit.Words.Contains(w2));
             Assert.IsTrue(dbCritWords.Count >= 2);
         }
+
+        [TestMethod]
+        public void EntityDeletedRaisedByCascadeSave()
+        {
+            Load<Appointment>();
+
+            bool found = false;
+            var h = this.Subscribe(Event.EntityDeleted, (e) =>
+            {
+                var x = e.GetValue<IEntity>(MessageKeys.Entity);
+                if (!found && x.Equals(a[1]))
+                    found = true;
+            });
+
+            using (var tr = session.BeginTransaction())
+            {
+                a[1].GetAllHrs().ToList().ForEach(x =>
+                    a[1].RemoveHealthRecord(x));
+
+                a[1].Course.RemoveAppointment(a[1]);
+                session.Save(a[1].Course);
+                tr.Commit();
+            }
+
+            h.Dispose();
+            Assert.IsTrue(found);
+        }
     }
 }

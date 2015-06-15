@@ -79,7 +79,23 @@ namespace Diagnosis.ViewModels.Screens
                 this.Subscribe(Event.DeleteHolder, (e) =>
                 {
                     var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-                    OnDeleteHolder(holder);
+                    if (holder is Course)
+                    {
+                        var course = holder as Course;
+                        course.Patient.RemoveCourse(course);
+                    }
+                    else if (holder is Appointment)
+                    {
+                        var app = holder as Appointment;
+                        app.Course.RemoveAppointment(app);
+                    }
+                    saver.Delete(holder);
+                }),
+                this.Subscribe(Event.EntityDeleted, (e) =>
+                {
+                    var entity = e.GetValue<IEntity>(MessageKeys.Entity);
+                    if(entity is IHrsHolder)
+                    OnHolderDeleted(entity as IHrsHolder);
                 }),
                 this.Subscribe(Event.AddHr, (e) =>
                 {
@@ -280,32 +296,17 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void OnDeleteHolder(IHrsHolder holder)
+        private void OnHolderDeleted(IHrsHolder holder)
         {
             // TODO убрать из результатов поиска (или проверять при открытии, удален ли)
             viewer.RemoveFromHistory(holder);
 
             if (holder is Patient)
             {
-                SaveWithCleanup(viewer.OpenedRoot);
-
                 Navigator.RemoveRoot(holder as Patient);
-                saver.Delete(holder);
                 if (Navigator.TopItems.Count == 0)
                     OnLastItemRemoved();
                 return;
-            }
-            else if (holder is Course)
-            {
-                var course = holder as Course;
-                course.Patient.RemoveCourse(course);
-                SaveWithCleanup(viewer.OpenedRoot); // если удаление при открытом пациенте — список записей не меняется
-            }
-            else if (holder is Appointment)
-            {
-                var app = holder as Appointment;
-                app.Course.RemoveAppointment(app);
-                SaveWithCleanup(viewer.OpenedRoot);
             }
         }
 
@@ -352,10 +353,9 @@ namespace Diagnosis.ViewModels.Screens
             HrList.Dispose();
             HrList = null;
 
+            // чистим записи при закрытии списка
+            RemoveEmptyHrs(holder);
             holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
-
-            // сохраняем пациента и чистим записи при закрытии списка
-            SaveWithCleanup(viewer.OpenedRoot);
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace Diagnosis.ViewModels.Screens
 
             if (e.list == null)
             {
-                SaveAllHrs();
+                SaveHrListHrs();
             }
             else
             {
@@ -385,41 +385,18 @@ namespace Diagnosis.ViewModels.Screens
         /// <summary>
         /// Cохраняем все записи кроме открытой в редакторе
         /// </summary>
-        internal void SaveAllHrs()
+        internal void SaveHrListHrs()
         {
             // новые записи — вставка/дроп записей/тегов на список
             // смена порядка — дроп записей
 
             Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
 
-            saver.Save(HrList.HealthRecords
+            var hrs = HrList.HealthRecords
                 .Select(vm => vm.healthRecord)
                 .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
-                .ToArray());
-        }
-
-        /// <summary>
-        /// Сохраняет пациента, его курсы, осмотры и все записи.
-        /// <param name="deleteEmptyHrs">Удалить все пустые записи.</param>
-        /// </summary>
-        private void SaveWithCleanup(Patient patient, bool deleteEmptyHrs = true)
-        {
-            Contract.Ensures(!deleteEmptyHrs || patient == null || patient.GetAllHrs().All(x => !x.IsEmpty()));
-
-            if (patient == null) return;
-
-            // удаляем пустые и удаленные
-            if (deleteEmptyHrs)
-            {
-                patient.Courses.ForAll(x =>
-                {
-                    x.Appointments.ForAll(a => RemoveEmptyHrs(a));
-                    RemoveEmptyHrs(x);
-                });
-                RemoveEmptyHrs(patient);
-            }
-
-            saver.Save(patient);
+                .ToArray();
+            saver.Save(hrs);
         }
 
         /// <summary>
