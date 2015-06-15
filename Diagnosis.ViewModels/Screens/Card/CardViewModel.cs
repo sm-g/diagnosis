@@ -404,7 +404,7 @@ namespace Diagnosis.ViewModels.Screens
         private static void RemoveEmptyHrs(IHrsHolder holder)
         {
             Contract.Requires(holder != null);
-            Contract.Ensures(holder.GetAllHrs().All(x => !x.IsEmpty()));
+            Contract.Ensures(holder.HealthRecords.All(x => !x.IsEmpty()));
 
             var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
             emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
