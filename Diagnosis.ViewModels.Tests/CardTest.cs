@@ -277,7 +277,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void DeleteHolderWithDeltedHr()
+        public void DeleteHolderWithDeletedHr()
         {
             card.Open(a[5]);
             Action<CardViewModel, IHrsHolder> AddTwoCommentsAndDelete = (_card, holder) =>

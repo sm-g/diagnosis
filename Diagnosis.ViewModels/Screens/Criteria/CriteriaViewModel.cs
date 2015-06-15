@@ -15,8 +15,8 @@ namespace Diagnosis.ViewModels.Screens
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(CriteriaViewModel));
 
-        private Saver saver;
         private static HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer;
+        private Saver saver;
         private DialogViewModel _curEditor;
         private bool naviagationExpected;
         private EventMessageHandlersManager handlers;
@@ -52,17 +52,7 @@ namespace Diagnosis.ViewModels.Screens
                 this.Subscribe(Event.DeleteCrit, (e) =>
                 {
                     var crit = e.GetValue<ICrit>(MessageKeys.Crit);
-                    if (crit is CriteriaGroup)
-                    {
-                        var crgr = crit as CriteriaGroup;
-                        crgr.Estimator.RemoveCriteriaGroup(crgr);
-                    }
-                    else if (crit is Criterion)
-                    {
-                        var cr = crit as Criterion;
-                        cr.Group.RemoveCriterion(cr);
-                    }
-                    saver.Delete(crit);
+                    DeleteCrit(crit);
                 }),
                 this.Subscribe(Event.EntityDeleted, (e) =>
                 {
@@ -143,6 +133,21 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        private void DeleteCrit(ICrit crit)
+        {
+            if (crit is CriteriaGroup)
+            {
+                var crgr = crit as CriteriaGroup;
+                crgr.Estimator.RemoveCriteriaGroup(crgr);
+            }
+            else if (crit is Criterion)
+            {
+                var cr = crit as Criterion;
+                cr.Group.RemoveCriterion(cr);
+            }
+            saver.Delete(crit);
+        }
+
         private void OnCritDeleted(ICrit crit)
         {
             viewer.RemoveFromHistory(crit);
@@ -173,9 +178,12 @@ namespace Diagnosis.ViewModels.Screens
                 if (CurrentEditor.DialogResult == false)
                 {
                     var crit = (CurrentEditor as ICritKeeper).Crit;
-                    // удаляем новую сущность, если ее нельзя сохранять
+                    // убираем новую сущность, если ее нельзя сохранять
                     if (crit.IsTransient)
+                    {
+                        DeleteCrit(crit);
                         OnCritDeleted(crit);
+                    }
                 }
 
                 CurrentEditor.Dispose();
