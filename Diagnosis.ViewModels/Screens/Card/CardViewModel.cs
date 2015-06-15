@@ -413,13 +413,25 @@ namespace Diagnosis.ViewModels.Screens
             {
                 patient.Courses.ForAll(x =>
                 {
-                    x.Appointments.ForAll(a => a.RemoveEmptyHrs());
-                    x.RemoveEmptyHrs();
+                    x.Appointments.ForAll(a => RemoveEmptyHrs(a));
+                    RemoveEmptyHrs(x);
                 });
-                patient.RemoveEmptyHrs();
+                RemoveEmptyHrs(patient);
             }
 
             saver.Save(patient);
+        }
+
+        /// <summary>
+        /// Удаляет пустые записи держателя.
+        /// </summary>
+        private static void RemoveEmptyHrs(IHrsHolder holder)
+        {
+            Contract.Requires(holder != null);
+            Contract.Ensures(holder.GetAllHrs().All(x => !x.IsEmpty()));
+
+            var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
+            emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
         }
 
         private void ShowHeader(IHrsHolder holder)

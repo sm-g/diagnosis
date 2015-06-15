@@ -184,30 +184,19 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Удаляет пустые записи держателя.
+        /// Дата последнего обновления записей внутри.
+        /// Дата обновления, если запсией нет.
         /// </summary>
-        /// <param name="holder"></param>
-        public static void RemoveEmptyHrs(this IHrsHolder holder)
+        public static DateTime GetLastHrUpdatedAt(this IHrsHolder holder)
         {
             Contract.Requires(holder != null);
-            var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
-            emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
-        }
 
-        /// <summary>
-        /// Дата последнего обновления записей внутри пациента.
-        /// Дата обновления пациента, если запсией нет.
-        /// </summary>
-        public static DateTime LastHrUpdatedAt(this Patient p)
-        {
-            Contract.Requires(p != null);
-
-            if (p.GetAllHrs().Any())
-                return p.GetAllHrs()
+            if (holder.GetAllHrs().Any())
+                return holder.GetAllHrs()
                     .OrderByDescending(x => x.UpdatedAt)
                     .First().UpdatedAt;
             else
-                return p.UpdatedAt;
+                return (holder as IHaveAuditInformation).UpdatedAt;
         }
 
         /// <summary>
