@@ -4,9 +4,9 @@ using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using EventAggregator;
 using log4net;
-using NHibernate.Linq;
 using System;
 using System.Diagnostics.Contracts;
+
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
@@ -18,8 +18,8 @@ namespace Diagnosis.ViewModels.Screens
         private Saver saver;
         private static HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer;
         private DialogViewModel _curEditor;
-        private EventMessageHandler handler;
         private bool naviagationExpected;
+        private EventMessageHandlersManager handlers;
 
         public CriteriaViewModel()
         {
@@ -48,17 +48,37 @@ namespace Diagnosis.ViewModels.Screens
             ests.ForEach(x =>
                 Navigator.AddRootItemFor(x));
 
-            handler = this.Subscribe(Event.DeleteCrit, (e) =>
-            {
-                var crit = e.GetValue<ICrit>(MessageKeys.Crit);
-                OnDeleteCrit(crit);
+            handlers = new EventMessageHandlersManager(new EventMessageHandler[] {
+                this.Subscribe(Event.DeleteCrit, (e) =>
+                {
+                    var crit = e.GetValue<ICrit>(MessageKeys.Crit);
+                    if (crit is CriteriaGroup)
+                    {
+                        var crgr = crit as CriteriaGroup;
+                        crgr.Estimator.RemoveCriteriaGroup(crgr);
+                    }
+                    else if (crit is Criterion)
+                    {
+                        var cr = crit as Criterion;
+                        cr.Group.RemoveCriterion(cr);
+                    }
+                    saver.Delete(crit);
+                }),
+                this.Subscribe(Event.EntityDeleted, (e) =>
+                {
+                    var entity = e.GetValue<IEntity>(MessageKeys.Entity);
+                    if (entity is ICrit)
+                        OnCritDeleted(entity as ICrit);
+                }),
             });
+
             //var last = ests.LastOrDefault();
             //if (last != null)
             //{
             //    Open(last);
             //}
         }
+
         /// <summary>
         /// Создает и тут же вызывает Open(entity).
         /// </summary>
@@ -112,7 +132,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    handler.Dispose();
+                    handlers.Dispose();
                     CloseEditor();
                     Navigator.Dispose();
                 }
@@ -123,26 +143,13 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void OnDeleteCrit(ICrit crit)
+        private void OnCritDeleted(ICrit crit)
         {
             viewer.RemoveFromHistory(crit);
 
             if (crit is Estimator)
             {
                 Navigator.RemoveRoot(crit as Estimator);
-                saver.Delete(crit);
-            }
-            else if (crit is CriteriaGroup)
-            {
-                var crgr = crit as CriteriaGroup;
-                crgr.Estimator.RemoveCriteriaGroup(crgr);
-                saver.Save(viewer.OpenedRoot);
-            }
-            else if (crit is Criterion)
-            {
-                var cr = crit as Criterion;
-                cr.Group.RemoveCriterion(cr);
-                saver.Save(viewer.OpenedRoot);
             }
         }
 
@@ -168,7 +175,7 @@ namespace Diagnosis.ViewModels.Screens
                     var crit = (CurrentEditor as ICritKeeper).Crit;
                     // удаляем новую сущность, если ее нельзя сохранять
                     if (crit.IsTransient)
-                        OnDeleteCrit(crit);
+                        OnCritDeleted(crit);
                 }
 
                 CurrentEditor.Dispose();
@@ -180,6 +187,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         private void ShowEditor(ICrit crit)
         {
             if (CurrentEditor != null && (CurrentEditor as ICritKeeper).Crit == crit)
