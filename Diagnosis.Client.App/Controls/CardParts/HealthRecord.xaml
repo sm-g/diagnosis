@@ -40,7 +40,6 @@
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
 
         <diag:DragControl Foreground="Gray" />
@@ -102,24 +101,5 @@
                        FontStyle="Italic"
                        HorizontalAlignment="Right" />
         </Grid>
-
-        <StackPanel x:Name="buttons"
-                    Grid.Column="3"
-                    Style="{StaticResource hidingListBoxItemPanel}">
-            <StackPanel.Resources>
-                <Style TargetType="Button"
-                       BasedOn="{StaticResource {x:Type Button}}">
-                    <Setter Property="Height"
-                            Value="20" />
-                    <Setter Property="Width"
-                            Value="20" />
-                </Style>
-            </StackPanel.Resources>
-            <Button Command="{Binding SendToSearchCommand}"
-                    Margin="5,0,0,0"
-                    ToolTip="Искать (Ctrl+F)">
-                <Image Source="{StaticResource findImage}" />
-            </Button>
-        </StackPanel>
     </Grid>
 </UserControl>
