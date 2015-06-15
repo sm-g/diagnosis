@@ -90,7 +90,7 @@ namespace Diagnosis.ViewModels.Screens
                     var course = patient.AddCourse(AuthorityController.CurrentDoctor);
                     var app = course.AddAppointment(AuthorityController.CurrentDoctor);
 
-                    this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));
+                    this.Send(Event.OpenHolder, app.AsParams(MessageKeys.Holder));
                 }, () => CanSaveNewPatient());
             }
         }

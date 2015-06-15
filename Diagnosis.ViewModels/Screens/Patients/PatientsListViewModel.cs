@@ -233,7 +233,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                         {
-                            this.Send(Event.OpenPatient, SelectedPatient.patient.AsParams(MessageKeys.Patient));
+                            this.Send(Event.OpenHolder, SelectedPatient.patient.AsParams(MessageKeys.Holder));
                         }, () => SelectedPatient != null);
             }
         }

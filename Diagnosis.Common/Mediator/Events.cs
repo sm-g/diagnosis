@@ -44,9 +44,6 @@ namespace Diagnosis.Common
     public enum Event
     {
         // for ScreenSwitcher
-        OpenPatient,
-        OpenCourse,
-        OpenAppointment,
         OpenHealthRecords,
         EditHealthRecord,
         OpenHolder,
@@ -65,9 +62,6 @@ namespace Diagnosis.Common
 
         // card logic
         SendToSearch,
-        ShowUndoOverlay,
-        ShowMessageOverlay,
-        HideOverlay,
         DeleteHolder,
         AddHr,
 
@@ -88,6 +82,9 @@ namespace Diagnosis.Common
         ChangeFont,
 
         ShowHelp,
+        ShowUndoOverlay,
+        ShowMessageOverlay,
+        HideOverlay,
 
         // app
         PushToSettings,

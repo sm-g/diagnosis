@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Event.OpenPatient, Patient.AsParams(MessageKeys.Patient));
+                    this.Send(Event.OpenHolder, Patient.AsParams(MessageKeys.Holder));
                 });
             }
         }

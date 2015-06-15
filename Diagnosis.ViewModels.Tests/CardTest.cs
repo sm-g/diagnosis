@@ -310,7 +310,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             card.Open(a[5]);
 
-            // запись и пусиая запись
+            // запись и пустая запись
             card.HrList.AddHealthRecordCommand.Execute(null);
             var hr = a[5].HealthRecords.Last();
             hr.AddItems(new Comment("1").ToEnumerable());
