@@ -1,13 +1,12 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Common.Util;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
-using Diagnosis.ViewModels.DataTransfer;
 using NHibernate;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -57,6 +56,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inSetSelected;
         private bool disposed;
         private VisibleRelayCommand<bool> _moveHr;
+        private Saver saver;
 
         public HrListViewModel(IHrsHolder holder, ISession session)
         {
@@ -64,6 +64,8 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(session != null);
             this.session = session;
             this.holder = holder;
+
+            saver = new Saver(session);
 
             HolderVm = new HolderViewModel(holder);
             Sortings = new List<HrViewColumn>() {
@@ -114,6 +116,8 @@ namespace Diagnosis.ViewModels.Screens
             SetHrExtra(HealthRecords);
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
+
+        public event EventHandler<BoolEventArgs> HrsSaved;
 
         private void DeletedHrsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -242,8 +246,6 @@ namespace Diagnosis.ViewModels.Screens
                 //  logger.DebugFormat("commit {0}", hrvm);
             }
         }
-
-        public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
 
         public IList<HrViewColumn> Sortings { get; private set; }
 
@@ -890,11 +892,42 @@ namespace Diagnosis.ViewModels.Screens
 
         protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)
         {
-            var h = SaveNeeded;
+            var saveAll = hrsToSave == null;
+            logger.DebugFormat("SaveNeeded for hrs: {0}", saveAll ? "All" : hrsToSave.Count.ToString());
+            if (saveAll)
+            {
+                SaveHrListHrs();
+            }
+            else
+            {
+                // вставка/дроп тегов в записи
+                // изменение видимости (IsDeleted)
+
+                saver.Save(hrsToSave.ToArray());
+            }
+
+            var h = HrsSaved;
             if (h != null)
             {
-                h(this, new ListEventArgs<HealthRecord>(hrsToSave));
+                h(this, new BoolEventArgs(saveAll));
             }
+        }
+
+        /// <summary>
+        /// Cохраняем все записи кроме открытой в редакторе
+        /// </summary>
+        internal void SaveHrListHrs()
+        {
+            // новые записи — вставка/дроп записей/тегов на список
+            // смена порядка — дроп записей
+
+            Contract.Assume(HealthRecords.IsStrongOrdered(x => x.Ord));
+
+            var hrs = HealthRecords
+                .Select(vm => vm.healthRecord)
+                //  .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
+                .ToArray();
+            saver.Save(hrs);
         }
 
         protected override void Dispose(bool disposing)
