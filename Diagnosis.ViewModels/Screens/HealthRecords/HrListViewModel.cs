@@ -720,9 +720,8 @@ namespace Diagnosis.ViewModels.Screens
             return false;
         }
 
-        internal void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
+        internal void Reorder(IEnumerable<ShortHealthRecordViewModel> data, int insertView, object targetGroup)
         {
-            Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
             // don't change selection
             Contract.Ensures(Contract.OldValue<IEnumerable<ShortHealthRecordViewModel>>(SelectedHealthRecords).ScrambledEquals(SelectedHealthRecords));
 
