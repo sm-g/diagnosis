@@ -321,13 +321,9 @@ namespace Diagnosis.ViewModels.Screens
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.HrsSaved += (s, e) =>
                 {
-                    var savedAll = e.value;
-                    if (!savedAll)
+                    if (!HrEditor.HasHealthRecord)
                     {
-                        if (!HrEditor.HasHealthRecord)
-                        {
-                            HrList.IsFocused = true;
-                        }
+                        HrList.IsFocused = true;
                     }
                 };
             }

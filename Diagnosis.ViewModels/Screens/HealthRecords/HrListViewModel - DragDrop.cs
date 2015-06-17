@@ -142,7 +142,7 @@ namespace Diagnosis.ViewModels.Screens
                     var tags = data.Cast<TagViewModel>();
                     AddHrWithTagsToMaster(tags);
                 }
-                master.OnSaveNeeded();
+                master.SaveHrs();
                 //logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
             }
 

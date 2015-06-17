@@ -106,7 +106,7 @@ namespace Diagnosis.ViewModels.Screens
             var pasted = Paste(hrData, index);
 
             SelectPasted(pasted);
-            OnSaveNeeded(); // save all
+            SaveHrs();
 
             logger.LogHrs("paste", hrData.Hrs);
         }
@@ -179,15 +179,16 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // add hios to end of Selected Hrs
                 hrs.ForAll(hr => hr.AddItems(data.ItemObjects));
-                OnSaveNeeded(hrManager.GetSelectedHrs());
             }
             else
             {
                 // new hr with pasted hios
                 var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                 newHR.AddItems(data.ItemObjects);
-                OnSaveNeeded(); // save all
             }
+
+            SaveHrs();
+
             logger.LogHrItemObjects("paste", data.ItemObjects);
         }
     }

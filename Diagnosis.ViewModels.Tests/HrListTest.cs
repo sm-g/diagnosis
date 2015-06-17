@@ -363,7 +363,7 @@ namespace Diagnosis.ViewModels.Tests
             var hr3 = AddHrToCard(card, "d");
 
             // hrs -> a b c d
-            l.SaveHrListHrs();
+            l.SaveHrs();
 
             Assert.AreEqual(0, hr0.Ord);
             Assert.AreEqual(1, hr1.Ord);
@@ -380,7 +380,7 @@ namespace Diagnosis.ViewModels.Tests
             l.Reorder(vms, 0, null);
             // hrs -> b a c d
 
-            l.SaveHrListHrs();
+            l.SaveHrs();
 
             Assert.AreEqual(1, hr0.Ord);
             Assert.AreEqual(0, hr1.Ord);
@@ -399,7 +399,7 @@ namespace Diagnosis.ViewModels.Tests
             var hr3 = AddHrToCard(card, "d");
 
             // hrs -> a b c d
-            l.SaveHrListHrs();
+            l.SaveHrs();
 
             hr2.IsDeleted = true;
 
@@ -412,7 +412,7 @@ namespace Diagnosis.ViewModels.Tests
             l.Reorder(vms, 3, null);
             // hrs -> a (c) d b
 
-            l.SaveHrListHrs();
+            l.SaveHrs();
 
             Assert.AreEqual(0, hr0.Ord);
             Assert.AreEqual(3, hr1.Ord);

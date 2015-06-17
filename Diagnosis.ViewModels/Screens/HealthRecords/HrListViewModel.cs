@@ -117,7 +117,7 @@ namespace Diagnosis.ViewModels.Screens
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
 
-        public event EventHandler<BoolEventArgs> HrsSaved;
+        public event EventHandler HrsSaved;
 
         private void DeletedHrsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -126,12 +126,11 @@ namespace Diagnosis.ViewModels.Screens
                 // удалены
 
                 // выделяем первую после удаленной записи, чтобы она была выделена для фокуса на ней
-                var del = e.NewItems.Cast<ShortHealthRecordViewModel>().ToList();
+                var deleted = e.NewItems.Cast<ShortHealthRecordViewModel>().ToList();
                 var viewList = view.Cast<ShortHealthRecordViewModel>().ToList();
-                logger.DebugFormat("deleted {0}", del);
-                SelectedHealthRecord = viewList.FirstAfterAndNotIn(del);
 
-                OnSaveNeeded(del.Select(x => x.healthRecord).ToList());
+                logger.DebugFormat("deleted {0}", deleted);
+                SelectedHealthRecord = viewList.FirstAfterAndNotIn(deleted);
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
@@ -142,8 +141,11 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => holder.HealthRecords.Contains(x.healthRecord))
                     .Select(x => x.healthRecord)
                     .ToList();
-                OnSaveNeeded(restored);
+
+                logger.DebugFormat("restored {0}", restored);
             }
+
+            SaveHrs();
         }
 
         private void HrsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -873,61 +875,25 @@ namespace Diagnosis.ViewModels.Screens
             hrViewer = new HrViewer();
         }
 
-        [ContractInvariantMethod]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
-        private void ObjectInvariant()
+        internal void SaveHrs()
         {
-            // может: LastSelected - есть, но ничего не выбрано
-            // не может: что-то выбрано, а LastSelected нет
-
-            // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
-            // добавляем выделение - наоборот
-            Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
-
-            // без повторов
-            Contract.Invariant(selectedOrder.IsUnique());
-
-            //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
-        }
-
-        protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)
-        {
-            var saveAll = hrsToSave == null;
-            logger.DebugFormat("SaveNeeded for hrs: {0}", saveAll ? "All" : hrsToSave.Count.ToString());
-            if (saveAll)
-            {
-                SaveHrListHrs();
-            }
-            else
-            {
-                // вставка/дроп тегов в записи
-                // изменение видимости (IsDeleted)
-
-                saver.Save(hrsToSave.ToArray());
-            }
-
-            var h = HrsSaved;
-            if (h != null)
-            {
-                h(this, new BoolEventArgs(saveAll));
-            }
-        }
-
-        /// <summary>
-        /// Cохраняем все записи кроме открытой в редакторе
-        /// </summary>
-        internal void SaveHrListHrs()
-        {
-            // новые записи — вставка/дроп записей/тегов на список
-            // смена порядка — дроп записей
-
             Contract.Assume(HealthRecords.IsStrongOrdered(x => x.Ord));
 
             var hrs = HealthRecords
                 .Select(vm => vm.healthRecord)
-                //  .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
                 .ToArray();
             saver.Save(hrs);
+
+            OnHrsSaved();
+        }
+
+        protected virtual void OnHrsSaved()
+        {
+            var h = HrsSaved;
+            if (h != null)
+            {
+                h(this, EventArgs.Empty);
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -946,6 +912,23 @@ namespace Diagnosis.ViewModels.Screens
             {
                 base.Dispose(disposing);
             }
+        }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            // может: LastSelected - есть, но ничего не выбрано
+            // не может: что-то выбрано, а LastSelected нет
+
+            // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
+            // добавляем выделение - наоборот
+            Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
+
+            // без повторов
+            Contract.Invariant(selectedOrder.IsUnique());
+
+            //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
         }
     }
 }
