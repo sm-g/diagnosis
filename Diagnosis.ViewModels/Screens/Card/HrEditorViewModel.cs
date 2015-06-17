@@ -6,7 +6,6 @@ using Diagnosis.ViewModels.Controls.Autocomplete;
 using EventAggregator;
 using log4net;
 using NHibernate;
-using NHibernate.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -127,6 +126,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
+                    // not worked with collections
                     (HealthRecord.healthRecord as IEditableObject).CancelEdit();
                     (HealthRecord.healthRecord as IEditableObject).BeginEdit();
                     CreateAutoComplete();
@@ -309,16 +309,6 @@ namespace Diagnosis.ViewModels.Screens
             hr.PropertyChanged += hr_PropertyChanged;
             (hr as IEditableObject).BeginEdit();
 
-            try
-            {
-                // prevent saving hr during edit
-                session.SetReadOnly(hr, true);
-            }
-            catch (TransientObjectException)
-            {
-                logger.WarnFormat("{0} still transient after save", hr);
-            }
-
             HealthRecord = new HealthRecordViewModel(hr);
             CreateAutoComplete();
         }
@@ -400,9 +390,6 @@ namespace Diagnosis.ViewModels.Screens
 
                 hr.PropertyChanged -= hr_PropertyChanged;
                 (hr as IEditableObject).EndEdit();
-
-                session.SetReadOnly(hr, false);
-                session.Evict(hr);
 
                 var addQuery = Autocomplete.AddQueryToSuggestions;
 

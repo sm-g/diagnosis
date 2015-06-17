@@ -114,5 +114,36 @@ namespace Diagnosis.Data.Tests
             h.Dispose();
             Assert.IsTrue(found);
         }
+
+        [TestMethod]
+        public void SaveReadonly()
+        {
+            Load<HealthRecord>();
+            Load<HrCategory>();
+            Load<Word>();
+            var yearWas = hr[1].FromDate.Year;
+            var catWas = hr[1].Category;
+            var unit = hr[1].Unit;
+            var hriCountWas = hr[1].HrItems.Count();
+
+            session.SetReadOnly(hr[1], true);
+            hr[1].FromDate.Year = (yearWas ?? 2000) + 1;
+            hr[1].Category = cat[4];
+            hr[1].Unit = HealthRecordUnit.Week;
+            hr[1].AddItems(w[22].ToEnumerable());
+            using (var tr = session.BeginTransaction())
+            {
+                session.SaveOrUpdate(hr[1]);
+                tr.Commit();
+            }
+
+            session.Evict(hr[1]);
+            var loaded = session.Get<HealthRecord>(IntToGuid<HealthRecord>(1));
+            Assert.AreEqual(yearWas, loaded.FromDate.Year);
+            Assert.AreEqual(catWas, loaded.Category);
+            Assert.AreEqual(unit, loaded.Unit);
+            Assert.AreEqual(hriCountWas + 1, loaded.HrItems.Count());
+
+        }
     }
 }
