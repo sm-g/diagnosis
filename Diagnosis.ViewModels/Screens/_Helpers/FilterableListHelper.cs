@@ -1,11 +1,14 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Models;
 using EventAggregator;
 using System;
 using System.Linq;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    internal class FilterableListHelper<T, TVm> : IDisposable where TVm : CheckableBase
+    internal class FilterableListHelper<T, TVm> : IDisposable
+        where TVm : CheckableBase
+        where T : class
     {
         private EventMessageHandlersManager emhManager;
         private IFilterableList list;
@@ -18,17 +21,16 @@ namespace Diagnosis.ViewModels.Screens
             this.selector = selector;
         }
 
-        public void AddSelectVmWithEntityOn(Event @event,
-            string TMessageKey,
-            Action afterEvent)
+        public void AddAfterEntitySavedAction(Action afterEvent)
         {
-            var handler = this.Subscribe(@event, (e) =>
+            var handler = this.Subscribe(Event.EntitySaved, (e) =>
             {
-                var entity = e.GetValue<T>(TMessageKey);
-
-                SelectVmWithEntity(entity);
-
-                afterEvent();
+                var entity = e.GetValue<IEntity>(MessageKeys.Entity);
+                if (entity is T)
+                {
+                    SelectVmWithEntity(entity as T);
+                    afterEvent();
+                }
             });
 
             emhManager.Add(handler);

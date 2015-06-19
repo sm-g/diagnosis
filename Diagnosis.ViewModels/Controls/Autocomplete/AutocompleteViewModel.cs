@@ -108,7 +108,6 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
         private bool _showALt;
         private SuggestionViewModel prevSelectedSuggestion;
         private SuggestionViewModel _selectedSuggestion;
-        private EventAggregator.EventMessageHandler hanlder;
         private bool inDispose;
         private VisibleRelayCommand<TagViewModel> sendToSearch;
         private VisibleRelayCommand toggleConfidence;
@@ -136,15 +135,7 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
                     OnPropertyChanged(() => IsEmpty);
                 }
             };
-            hanlder = this.Subscribe(Event.WordPersisted, (e) =>
-            {
-                // TODO двжды здесь?
-                // созданные слова можно искать из поиска, убираем сигнал "новое" после сохранения слова
-                var word = e.GetValue<Word>(MessageKeys.Word);
-                Tags.Where(t => (t.Blank as Word) == word)
-                    .ForAll(t => t.SetSignalization());
-            });
-
+            
             DropHandler = new AutocompleteViewModel.DropTargetHandler(this);
             DragHandler = new AutocompleteViewModel.DragSourceHandler(this);
             IsDropTargetEnabled = true;
@@ -979,7 +970,6 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
             if (disposing)
             {
                 tagsWritable.Clear();
-                hanlder.Dispose();
             }
             base.Dispose(disposing);
         }

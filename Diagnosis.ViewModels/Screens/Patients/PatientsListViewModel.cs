@@ -45,7 +45,7 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             filterHelper = new FilterableListHelper<Patient, PatientViewModel>(this, (v) => v.patient);
-            filterHelper.AddSelectVmWithEntityOn(Event.PatientSaved, MessageKeys.Patient, () => NoPatients = false);
+            filterHelper.AddAfterEntitySavedAction(() => NoPatients = false);
 
             SetupSorting();
             SetupColumnsVisibility();

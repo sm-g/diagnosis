@@ -103,7 +103,7 @@ namespace Diagnosis.ViewModels.Screens
             doctor.Settings.SexSigns = SelectedSex;
 
             new Saver(Session).Save(doctor);
-            this.Send(Event.SettingsSaved, doctor.AsParams(MessageKeys.User));
+            this.Send(Event.EntitySaved, doctor.AsParams(MessageKeys.Entity));
         }
 
         protected override void OnCancel()

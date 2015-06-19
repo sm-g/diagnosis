@@ -38,7 +38,7 @@ namespace Diagnosis.ViewModels.Screens
             AuthorityController.ChangePassword(admin, Passwords.Password);
 
             new Saver(Session).Save(admin.Passport);
-            this.Send(Event.SettingsSaved, admin.AsParams(MessageKeys.User));
+            this.Send(Event.EntitySaved, admin.AsParams(MessageKeys.Entity));
         }
 
         public ConfirmPasswordViewModel Passwords { get; private set; }

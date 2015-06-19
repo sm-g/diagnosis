@@ -66,6 +66,7 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(TagViewModel));
         private readonly ITagParentAutocomplete autocomplete;
+        private readonly EventAggregator.EventMessageHandler handler;
         private IHrItemObject _blank;
         private bool _focused;
         private string _query;
@@ -91,6 +92,13 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
             Contract.Ensures(State == State.Init);
 
             this.autocomplete = parent;
+            handler = this.Subscribe(Event.EntityPersisted, (e) =>
+            {
+                var word = e.GetValue<IEntity>(MessageKeys.Entity) as Word;
+                if (word != null && Blank as Word == word)
+                    // убираем сигнал "новое" после сохранения слова
+                    SetSignalization();
+            });
 
             IsDraggable = !autocomplete.SingleTag;
             Reset();
@@ -536,7 +544,15 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
                 h(this, new BlankTypeEventArgs(targetType));
             }
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                handler.Dispose();
+            }
 
+            base.Dispose(disposing);
+        }
         private void Reset()
         {
             Query = string.Empty;

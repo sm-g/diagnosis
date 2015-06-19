@@ -32,7 +32,7 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             filterHelper = new FilterableListHelper<Uom, UomViewModel>(this, (v) => v.uom);
-            filterHelper.AddSelectVmWithEntityOn(Event.UomSaved, MessageKeys.Uom, () => NoUoms = false);
+            filterHelper.AddAfterEntitySavedAction(() => NoUoms = false);
 
             Title = "Единицы измерения";
             Filter.Clear(); // показываем все

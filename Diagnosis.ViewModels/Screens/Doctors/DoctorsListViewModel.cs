@@ -4,6 +4,7 @@ using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using EventAggregator;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -31,13 +32,12 @@ namespace Diagnosis.ViewModels.Screens
             Doctors.SyncWith(docs);
 
             emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Event.DoctorSaved, (e) =>
+                this.Subscribe(Event.EntitySaved, (e) =>
                 {
                     // выбираем нового доктора или изменившегося
-                    var doc = e.GetValue<Doctor>(MessageKeys.Doctor);
-                    if (!Doctors.Contains(doc))
-                        Doctors.Add(doc);
-                    SelectedDoctor = doc;
+                    var doc= e.GetValue<IEntity>(MessageKeys.Entity) as Doctor;
+                    if (doc != null) 
+                        SelectDoctor(doc);
                 })
             });
         }
@@ -117,6 +117,15 @@ namespace Diagnosis.ViewModels.Screens
                 emhManager.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void SelectDoctor(Doctor doc)
+        {
+            Contract.Requires(doc != null);
+
+            if (!Doctors.Contains(doc))
+                Doctors.Add(doc);
+            SelectedDoctor = doc;
         }
     }
 }

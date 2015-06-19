@@ -13,11 +13,11 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class WordEditorViewModel : DialogViewModel
     {
-        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(WordEditorViewModel));
-        private readonly Word word;
-        internal Word saved;
-        private ExistanceTester<Models.Word> tester;
+        static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(WordEditorViewModel));
+        readonly Word word;
+        ExistanceTester<Models.Word> tester;
         string oldTitle;
+
         public WordEditorViewModel(Word word)
         {
             Contract.Requires(word != null);
@@ -65,9 +65,7 @@ namespace Diagnosis.ViewModels.Screens
             var toSave = WordQuery.ByTitle(Session)(word.Title) ?? word;
             AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
             new Saver(Session).Save(toSave);
-
-            this.Send(Event.WordSaved, word.AsParams(MessageKeys.Word));
-            saved = toSave;
+            this.Send(Event.EntitySaved, toSave.AsParams(MessageKeys.Entity));
         }
 
         protected override void OnCancel()

@@ -69,12 +69,8 @@ namespace Diagnosis.Common
         DeleteCrit,
 
         // nhibernate
-        WordPersisted,
-        WordSaved,
-        PatientSaved,
-        DoctorSaved,
-        UomSaved,
-        SettingsSaved,
+        EntitySaved,
+        EntityPersisted,
         EntityDeleted,
 
         // other

@@ -72,8 +72,8 @@ namespace Diagnosis.ViewModels.Screens
                         }
                     }
                     new Saver(Session).Save(patient);
+                    this.Send(Event.EntitySaved, patient.AsParams(MessageKeys.Entity));
 
-                    this.Send(Event.PatientSaved, patient.AsParams(MessageKeys.Patient));
                     DialogResult = true;
                 }, () => CanSave());
             }
