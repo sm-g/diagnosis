@@ -156,7 +156,9 @@ namespace Diagnosis.ViewModels.Screens
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 // новые в списке
-                SetHrExtra(e.NewItems.Cast<ShortHealthRecordViewModel>());
+                var added = e.NewItems.Cast<ShortHealthRecordViewModel>();
+                SetHrExtra(added);
+                added.ForAll(x => x.IsDraggable = CanReorder);
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
@@ -669,6 +671,34 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => Grouping);
                 }
             }
+        }
+
+        internal HealthRecord AddHr()
+        {
+            Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
+
+            HealthRecord hr;
+
+            var lastHrVM = SelectedHealthRecord;
+            if (SelectedHealthRecord != null && SelectedHealthRecord.healthRecord.IsEmpty())
+            {
+                // уже есть выбранная пустая запись
+                hr = SelectedHealthRecord.healthRecord;
+            }
+            else
+            {
+                var doctor = AuthorityController.CurrentDoctor;
+                hr = holder.AddHealthRecord(doctor);
+            }
+
+            if (SelectedHealthRecord != null)
+            {
+                // копируем из выбранной записи
+                hr.Category = lastHrVM.healthRecord.Category;
+                hr.DescribedAt = lastHrVM.healthRecord.DescribedAt;
+            }
+
+            return hr;
         }
 
         /// <summary>

@@ -623,7 +623,18 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(hr.SortingExtraInfo.IsNullOrEmpty());
         }
 
+        [TestMethod]
+        public void SortByOrd_AddedHrIsDraggable()
+        {
+            l.Sorting = HrViewColumn.Ord;
+
+            var newHr = l.AddHr();
+
+            var vm = l.HealthRecords.Where(x => x.healthRecord == newHr).First();
+            Assert.IsTrue(vm.IsDraggable);
+        }
         #endregion Sorting and Grouping
+
 
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {

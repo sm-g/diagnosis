@@ -96,10 +96,10 @@ namespace Diagnosis.ViewModels.Screens
                 }),
                 this.Subscribe(Event.AddHr, (e) =>
                 {
-                    var h = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                    var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
                     var startEdit = e.GetValue<bool>(MessageKeys.Boolean);
 
-                    AddHr(h, startEdit);
+                    AddHr(holder, startEdit);
                 })
                 }
             );
@@ -425,39 +425,21 @@ namespace Diagnosis.ViewModels.Screens
             Header = null;
         }
 
-        private HealthRecord AddHr(IHrsHolder holder, bool startEdit = false)
+        private void AddHr(IHrsHolder holder, bool startEdit)
         {
             Contract.Requires(holder != null);
-            Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
+            Contract.Ensures(HrList.holder == holder);
 
+            // open holder list first
             if (HrList.holder != holder)
-                Open(holder); // open holder list first
+                Open(holder);
 
-            HealthRecord hr;
-
-            var lastHrVM = HrList.SelectedHealthRecord;
-            if (HrList.SelectedHealthRecord != null && HrList.SelectedHealthRecord.healthRecord.IsEmpty())
-            {
-                // уже есть выбранная пустая запись
-                hr = HrList.SelectedHealthRecord.healthRecord;
-            }
-            else
-            {
-                hr = holder.AddHealthRecord(doctor);
-            }
-
-            if (HrList.SelectedHealthRecord != null)
-            {
-                // копируем из выбранной записи
-                hr.Category = lastHrVM.healthRecord.Category;
-                hr.DescribedAt = lastHrVM.healthRecord.DescribedAt;
-            }
+            var hr = HrList.AddHr();
 
             if (startEdit)
             {
                 StartEditHr(hr, false);
             }
-            return hr;
         }
 
         private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
