@@ -251,7 +251,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void DontSaveEditingHrBeforeCloseEditor()
+        public void SaveEditingHrBeforeCloseEditor()
         {
             card.Open(a[2]);
             var hrsBefore = a[2].HealthRecords.Count();
@@ -269,11 +269,8 @@ namespace Diagnosis.ViewModels.Tests
             // завершили "удаление"
             a[2].RemoveHealthRecord(hr[20]);
 
-            // изменения еще не в БД
-            Assert.IsTrue(hr[21].IsDirty);
-
-            // сохраненяем открытую запись
-            card.ToogleHrEditor();
+            // изменения уже в БД
+            Assert.IsFalse(hr[21].IsDirty);
         }
 
         [TestMethod]
