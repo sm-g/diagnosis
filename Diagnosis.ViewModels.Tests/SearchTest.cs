@@ -39,6 +39,8 @@ namespace Diagnosis.ViewModels.Tests
         {
             Assert.AreEqual(1, s.QueryEditor.QueryBlocks.Count);
             Assert.IsTrue(s.QueryEditor.AllEmpty);
+            Assert.IsFalse(s.IsCriteriaSearch);
+            Assert.IsNull(s.LastRecieverQueryBlock);
         }
 
         [TestMethod]
@@ -53,7 +55,7 @@ namespace Diagnosis.ViewModels.Tests
         [TestMethod]
         public void CannotSearchWithoutSelectedEstimator()
         {
-            s.SearchTabIndex = 1; // crit search
+            s.OpenCriteriaSearch();
             s.SelectedEstimator = null;
 
             Assert.IsFalse(s.SearchCommand.CanExecute(null));
@@ -79,7 +81,7 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void NotUsedWords()
+        public void SearchNotUsedWords()
         {
             (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[6]);
             s.SearchCommand.Execute(null);
@@ -116,7 +118,7 @@ namespace Diagnosis.ViewModels.Tests
 
 
         [TestMethod]
-        public void FoundHrs()
+        public void SearchInCourseScope()
         {
             s.UseOldMode = true;
             (s.RootQueryBlock.AutocompleteAll as AutocompleteViewModel).AddTag(w[4]);
@@ -143,11 +145,7 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].FoundHealthRecords.Count); // 7-14
             Assert.AreEqual(2, (s.Result.Patients[0] as HrsResultItemViewModel).Children[0].Children[0].HealthRecords.Count); // 14
         }
-        [TestMethod]
-        public void ReceiverIsNullBeforeSend()
-        {
-            Assert.IsTrue(s.LastRecieverQueryBlock == null);
-        }
+
         [TestMethod]
         public void RecieveChios()
         {

@@ -8,15 +8,15 @@ namespace Diagnosis.ViewModels.Screens
     public static class NavigatorHelper
     {
         public static T FindHolderKeeperOf<T>(this IEnumerable<T> root, IHrsHolder holder)
-            where T : HierarchicalBase<T>, IHolderKeeper
+            where T : HierarchicalBase<T>, IHrsHolderKeeper
         {
             holder = holder.Actual as IHrsHolder;
             T vm;
             foreach (var item in root)
             {
-                if (item.Holder == holder)
+                if (item.Holder.Actual == holder)
                     return item;
-                vm = item.AllChildren.Where(x => x.Holder == holder).FirstOrDefault();
+                vm = item.AllChildren.Where(x => x.Holder.Actual == holder).FirstOrDefault();
                 if (vm != null)
                     return vm;
             }
@@ -30,9 +30,9 @@ namespace Diagnosis.ViewModels.Screens
             T vm;
             foreach (var item in root)
             {
-                if (item.Crit == crit)
+                if (item.Crit.Actual == crit)
                     return item;
-                vm = item.AllChildren.Where(x => x.Crit == crit).FirstOrDefault();
+                vm = item.AllChildren.Where(x => x.Crit.Actual == crit).FirstOrDefault();
                 if (vm != null)
                     return vm;
             }

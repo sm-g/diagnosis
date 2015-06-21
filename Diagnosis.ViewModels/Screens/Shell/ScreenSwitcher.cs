@@ -89,6 +89,7 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+
         /// <summary>
         /// Показывать поиск на текущем экране.
         /// </summary>
@@ -96,6 +97,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get { return ac.CurrentDoctor != null; }
         }
+
         /// <summary>
         /// Показывать меню на текущем экране.
         /// </summary>
@@ -206,24 +208,6 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SubscribeForOpenInCard()
         {
-            this.Subscribe(Event.OpenPatient, (e) =>
-            {
-                var pat = e.GetValue<Patient>(MessageKeys.Patient);
-                OpenScreen(Screen.Card, pat);
-            });
-
-            this.Subscribe(Event.OpenCourse, (e) =>
-            {
-                var course = e.GetValue<Course>(MessageKeys.Course);
-                OpenScreen(Screen.Card, course);
-            });
-
-            this.Subscribe(Event.OpenAppointment, (e) =>
-            {
-                var app = e.GetValue<Appointment>(MessageKeys.Appointment);
-                OpenScreen(Screen.Card, app);
-            });
-
             this.Subscribe(Event.OpenHolder, (e) =>
             {
                 var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);

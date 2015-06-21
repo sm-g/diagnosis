@@ -44,6 +44,21 @@ namespace Diagnosis.Models
             }
         }
 
+        public override string ToString()
+        {
+            return "{0}".FormatStr(Description.Truncate(20)).Replace(Environment.NewLine, " ");
+        }
+
+        public override FluentValidation.Results.ValidationResult SelfValidate()
+        {
+            return new EstimatorValidator().Validate(this);
+        }
+
+        public override bool IsEmpty()
+        {
+            return !CriteriaGroups.Any();
+        }
+
         protected internal virtual void AddCriteriaGroup(CriteriaGroup gr)
         {
             Contract.Requires(gr != null);
@@ -63,16 +78,6 @@ namespace Diagnosis.Models
             {
                 h(this, e);
             }
-        }
-
-        public override string ToString()
-        {
-            return "{0}".FormatStr(Description.Truncate(20)).Replace(Environment.NewLine, " ");
-        }
-
-        public override FluentValidation.Results.ValidationResult SelfValidate()
-        {
-            return new EstimatorValidator().Validate(this);
         }
     }
 }

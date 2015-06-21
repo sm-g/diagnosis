@@ -9,7 +9,7 @@ using EventAggregator;
 
 namespace Diagnosis.ViewModels.Screens
 {
-    public class CritResultItemViewModel : ViewModelBase, IHolderKeeper, IResultItem
+    public class CritResultItemViewModel : ViewModelBase, IHrsHolderKeeper, IResultItem
     {
         private readonly Patient _patient;
         private IEnumerable<Criterion> _crits;
@@ -29,7 +29,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    this.Send(Event.OpenPatient, Patient.AsParams(MessageKeys.Patient));
+                    this.Send(Event.OpenHolder, Patient.AsParams(MessageKeys.Holder));
                 });
             }
         }

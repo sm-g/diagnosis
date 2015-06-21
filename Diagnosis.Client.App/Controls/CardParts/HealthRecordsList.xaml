@@ -374,8 +374,8 @@
                                         <TextBlock Text="{Binding Category}" />
                                         <TextBlock Text="{Binding DescribedAt, StringFormat={}{0:dd.MM.yy}}"
                                                    Visibility="{Binding EventDate.IsEmpty, Converter={StaticResource NegBooleanToVisibilityConverter}}" />
-                                        <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy hh:mm}}" />
-                                        <TextBlock Text="{Binding UpdatedAt, StringFormat={}{0:dd.MM.yy hh:mm}}" />
+                                        <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:dd.MM.yy HH:mm}}" />
+                                        <TextBlock Text="{Binding UpdatedAt, StringFormat={}{0:dd.MM.yy HH:mm}}" />
                                         <TextBlock Text="{Binding Doctor.FullName}" />
                                     </StackPanel>
                                 </DockPanel>

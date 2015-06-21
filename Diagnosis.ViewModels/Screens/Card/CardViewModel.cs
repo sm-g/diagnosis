@@ -6,7 +6,6 @@ using EventAggregator;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -14,15 +13,17 @@ namespace Diagnosis.ViewModels.Screens
 {
     public partial class CardViewModel : ScreenBaseViewModel
     {
-        private static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
-        private static HierViewer<Patient, Course, Appointment, IHrsHolder> viewer; // static to hold history
-        private readonly HrEditorViewModel _hrEditor;
-        private readonly CardNavigator _navigator;
-        private HrListViewModel _hrList;
-        private HeaderViewModel _header;
-        private bool editorWasOpened;
-        private EventMessageHandlersManager handlers;
-        private Doctor doctor;
+        static readonly ILog logger = LogManager.GetLogger(typeof(CardViewModel));
+        static HierViewer<Patient, Course, Appointment, IHrsHolder> viewer;
+        readonly HrEditorViewModel _hrEditor;
+        readonly CardNavigator _navigator;
+        readonly EventMessageHandlersManager handlers;
+        readonly Doctor doctor;
+        HrListViewModel _hrList;
+        HeaderViewModel _header;
+        bool editorWasOpened;
+        IHrsHolder deletingHolder;
+        Action pendingAction;
 
         public CardViewModel(bool resetHistory = false)
         {
@@ -37,7 +38,9 @@ namespace Diagnosis.ViewModels.Screens
             Navigator.CurrentChanged += (s, e) =>
             {
                 // add to history
-                HrEditor.Unload(); // закрываем редактор при смене активной сущности
+
+                // закрываем редактор при смене активной сущности
+                HrEditor.Unload();
 
                 var holder = e.arg != null ? (e.arg as CardItemViewModel).Holder : null;
 
@@ -68,22 +71,32 @@ namespace Diagnosis.ViewModels.Screens
                 // restore selected?
             };
 
-            HrEditor.Closed += (s, e) =>
-            {
-            };
-
             handlers = new EventMessageHandlersManager(new EventMessageHandler[] {
                 this.Subscribe(Event.DeleteHolder, (e) =>
                 {
                     var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-                    OnDeleteHolder(holder);
+                    DeleteHolder(holder);
+
+                    Contract.Assume(HrList == null || HrList.holder != holder);
+                }),
+                this.Subscribe(Event.EntityDeleted, (e) =>
+                {
+                    var entity = e.GetValue<IEntity>(MessageKeys.Entity);
+                    if (entity is IHrsHolder)
+                    {
+                        // дожидаемся конца транзации удаления перед тем как менять экран и сохранять врача
+                        if (deletingHolder == null)
+                            OnHolderDeleted(entity as IHrsHolder);
+                        else
+                            pendingAction = () => OnHolderDeleted(entity as IHrsHolder);
+                    }
                 }),
                 this.Subscribe(Event.AddHr, (e) =>
                 {
-                    var h= e.GetValue<IHrsHolder>(MessageKeys.Holder);
-                    var startEdit= e.GetValue<bool>(MessageKeys.Boolean);
+                    var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
+                    var startEdit = e.GetValue<bool>(MessageKeys.Boolean);
 
-                    AddHr(h, startEdit);
+                    AddHr(holder, startEdit);
                 })
                 }
             );
@@ -149,7 +162,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedRoot.AddCourse(AuthorityController.CurrentDoctor);
+                    viewer.OpenedRoot.AddCourse(doctor);
                 });
             }
         }
@@ -160,7 +173,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedMiddle.AddAppointment(AuthorityController.CurrentDoctor);
+                    viewer.OpenedMiddle.AddAppointment(doctor);
                 },
                 () => viewer.OpenedMiddle != null && viewer.OpenedMiddle.End == null);
             }
@@ -277,39 +290,10 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void OnDeleteHolder(IHrsHolder holder)
-        {
-            // TODO убрать из результатов поиска (или проверять при открытии, удален ли)
-            viewer.RemoveFromHistory(holder);
-
-            if (holder is Patient)
-            {
-                SaveWithCleanup(viewer.OpenedRoot);
-
-                Navigator.RemoveRoot(holder as Patient);
-                Session.DoDelete(holder);
-                if (Navigator.TopItems.Count == 0)
-                    OnLastItemRemoved();
-                return;
-            }
-            else if (holder is Course)
-            {
-                var course = holder as Course;
-                course.Patient.RemoveCourse(course);
-                SaveWithCleanup(viewer.OpenedRoot); // если удаление при открытом пациенте — список записей не меняется
-            }
-            else if (holder is Appointment)
-            {
-                var app = holder as Appointment;
-                app.Course.RemoveAppointment(app);
-                SaveWithCleanup(viewer.OpenedRoot);
-            }
-        }
-
         /// <summary>
         /// Показвает записи активной сущности.
+        /// Закрывает список записей, если передан null.
         /// </summary>
-        /// <param name="holder"></param>
         private void ShowHrsList(IHrsHolder holder)
         {
             if (HrList != null)
@@ -332,11 +316,13 @@ namespace Diagnosis.ViewModels.Screens
                     HrList.Sorting = sort;
 
                 HrList.PropertyChanged += HrList_PropertyChanged;
-                HrList.SaveNeeded += SaveHealthRecords;
-
-                // сначала создаем HrList, чтобы hrManager подписался на добавление записей первым,
-                // иначе HrList.SelectHealthRecord нечего выделять при добавлении записи
-                holder.HealthRecordsChanged += HrsHolder_HealthRecordsChanged;
+                HrList.HrsSaved += (s, e) =>
+                {
+                    if (!HrEditor.HasHealthRecord)
+                    {
+                        HrList.IsFocused = true;
+                    }
+                };
             }
         }
 
@@ -346,77 +332,71 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             var holder = HrList.holder;
+
             HrList.Dispose();
             HrList = null;
 
-            holder.HealthRecordsChanged -= HrsHolder_HealthRecordsChanged;
+            //do not save holder after deleting it
+            if (deletingHolder == holder)
+                return;
 
-            // сохраняем пациента и чистим записи при закрытии списка
-            SaveWithCleanup(viewer.OpenedRoot);
+            var hrs = RemoveEmptyHrs(holder).ToArray();
+            Session.DoSave(holder);
         }
 
-        /// <summary>
-        /// Сохраняет записи в списке, все или переданные.
-        /// </summary>
-        private void SaveHealthRecords(object s, ListEventArgs<HealthRecord> e)
+        private static IEnumerable<HealthRecord> RemoveEmptyHrs(IHrsHolder holder)
         {
-            logger.DebugFormat("SaveNeeded for hrs: {0}", e.list == null ? "All" : e.list.Count.ToString());
+            Contract.Requires(holder != null);
+            Contract.Ensures(holder.HealthRecords.All(x => !x.IsEmpty()));
 
-            if (e.list == null)
-            {
-                SaveAllHrs();
-            }
-            else
-            {
-                // вставка/дроп тегов в записи
-                // изменение видимости (IsDeleted)
-
-                Session.DoSave(e.list.ToArray());
-                if (!HrEditor.HasHealthRecord)
-                {
-                    HrList.IsFocused = true;
-                }
-            }
+            var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
+            emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
+            return emptyHrs;
         }
 
-        /// <summary>
-        /// Cохраняем все записи кроме открытой в редакторе
-        /// </summary>
-        internal void SaveAllHrs()
+        internal void DeleteHolder(IHrsHolder holder)
         {
-            // новые записи — вставка/дроп записей/тегов на список
-            // смена порядка — дроп записей
+            Contract.Assume(deletingHolder == null);
 
-            Contract.Assume(HrList.HealthRecords.IsStrongOrdered(x => x.Ord));
+            deletingHolder = holder;
 
-            Session.DoSave(HrList.HealthRecords
-                .Select(vm => vm.healthRecord)
-                .Except(HrEditor.HasHealthRecord ? HrEditor.HealthRecord.healthRecord.ToEnumerable() : Enumerable.Empty<HealthRecord>())
-                .ToArray());
+            if (holder is Course)
+            {
+                var course = holder as Course;
+                course.Patient.RemoveCourse(course);
+            }
+            else if (holder is Appointment)
+            {
+                var app = holder as Appointment;
+                app.Course.RemoveAppointment(app);
+            }
+            Session.DoDelete(holder);
+
+            ExecutePendingActions();
         }
 
-        /// <summary>
-        /// Сохраняет пациента, его курсы, осмотры и все записи.
-        /// <param name="deleteEmptyHrs">Удалить все пустые записи.</param>
-        /// </summary>
-        private void SaveWithCleanup(Patient patient, bool deleteEmptyHrs = true)
+        private void ExecutePendingActions()
         {
-            Contract.Ensures(!deleteEmptyHrs || patient == null || patient.GetAllHrs().All(x => !x.IsEmpty()));
+            pendingAction();
+            pendingAction = null;
+        }
 
-            if (patient == null) return;
+        private void OnHolderDeleted(IHrsHolder holder)
+        {
+            Contract.Assume(deletingHolder != null);
 
-            // удаляем пустые и удаленные
-            if (deleteEmptyHrs)
+            viewer.RemoveFromHistory(holder);
+
+            if (holder is Patient)
             {
-                patient.Courses.ForAll(x =>
-                {
-                    x.Appointments.ForAll(a => a.RemoveEmptyHrs());
-                    x.RemoveEmptyHrs();
-                });
-                patient.RemoveEmptyHrs();
+                Navigator.RemoveRoot(holder as Patient);
+                if (Navigator.TopItems.Count == 0)
+                    OnLastItemRemoved();
             }
 
-            Session.DoSave(patient);
+            // holder may be child of deleting
+            if (deletingHolder == holder)
+                deletingHolder = null;
         }
 
         private void ShowHeader(IHrsHolder holder)
@@ -442,39 +422,21 @@ namespace Diagnosis.ViewModels.Screens
             Header = null;
         }
 
-        private HealthRecord AddHr(IHrsHolder holder, bool startEdit = false)
+        private void AddHr(IHrsHolder holder, bool startEdit)
         {
             Contract.Requires(holder != null);
-            Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
+            Contract.Ensures(HrList.holder == holder);
 
+            // open holder list first
             if (HrList.holder != holder)
-                Open(holder); // open holder list first
+                Open(holder);
 
-            HealthRecord hr;
-
-            var lastHrVM = HrList.SelectedHealthRecord;
-            if (HrList.SelectedHealthRecord != null && HrList.SelectedHealthRecord.healthRecord.IsEmpty())
-            {
-                // уже есть выбранная пустая запись
-                hr = HrList.SelectedHealthRecord.healthRecord;
-            }
-            else
-            {
-                hr = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
-            }
-
-            if (HrList.SelectedHealthRecord != null)
-            {
-                // копируем из выбранной записи
-                hr.Category = lastHrVM.healthRecord.Category;
-                hr.DescribedAt = lastHrVM.healthRecord.DescribedAt;
-            }
+            var hr = HrList.AddHr();
 
             if (startEdit)
             {
                 StartEditHr(hr, false);
             }
-            return hr;
         }
 
         private void HrList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -505,16 +467,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        private void HrsHolder_HealthRecordsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                // удаляем записи в бд
-
-                Session.DoDelete(e.OldItems.Cast<HealthRecord>().ToArray());
-            }
-        }
-
         protected virtual void OnLastItemRemoved()
         {
             var h = LastItemRemoved;
@@ -531,14 +483,12 @@ namespace Diagnosis.ViewModels.Screens
                 if (disposing)
                 {
                     HrEditor.Dispose();
-
                     CloseHeader();
                     CloseHrList();
 
                     viewer.CloseAll();
 
                     Navigator.Dispose();
-
                     handlers.Dispose();
 
                     Session.DoSave(doctor);

@@ -222,7 +222,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         internal QueryBlockViewModel LastRecieverQueryBlock { get; private set; }
 
-        private bool IsCriteriaSearch
+        internal bool IsCriteriaSearch
         {
             get { return SearchTabIndex == 1; }
             set

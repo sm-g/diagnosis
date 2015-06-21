@@ -11,6 +11,7 @@ namespace Diagnosis.Common
     public static class MessageKeys
     {
         // domain
+        public readonly static string Entity = "entity";
         public readonly static string Word = "word";
         public readonly static string Patient = "patient";
         public readonly static string Doctor = "doctor";
@@ -37,15 +38,12 @@ namespace Diagnosis.Common
 
         public readonly static string Name = "name";
         public readonly static string Value = "value";
-        public static string Session = "session";
+        public readonly static string Session = "session";
     }
 
     public enum Event
     {
         // for ScreenSwitcher
-        OpenPatient,
-        OpenCourse,
-        OpenAppointment,
         OpenHealthRecords,
         EditHealthRecord,
         OpenHolder,
@@ -64,7 +62,6 @@ namespace Diagnosis.Common
 
         // card logic
         SendToSearch,
-        ShowUndoOverlay,
         DeleteHolder,
         AddHr,
 
@@ -72,22 +69,20 @@ namespace Diagnosis.Common
         DeleteCrit,
 
         // nhibernate
-        WordPersisted,
-        WordSaved,
-        PatientSaved,
-        DoctorSaved,
-        UomSaved,
-        SettingsSaved,
+        EntitySaved,
+        EntityPersisted,
+        EntityDeleted,
 
         // other
         ChangeTheme,
         ChangeFont,
 
         ShowHelp,
-
-        // app
+        ShowUndoOverlay,
         ShowMessageOverlay,
         HideOverlay,
+
+        // app
         PushToSettings,
         Shutdown,
         NewSession,

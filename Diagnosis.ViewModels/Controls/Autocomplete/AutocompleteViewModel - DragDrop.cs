@@ -15,6 +15,9 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
 
         private bool _dragSource;
 
+        /// <summary>
+        /// Flag for focus
+        /// </summary>
         public bool InDragDrop
         {
             get { return inDragDrop; }
@@ -56,6 +59,7 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
                 }
             }
         }
+
         public void OnDrop(DragEventArgs e)
         {
             logger.DebugFormat("drop {0}", e.Data.ToString());
@@ -64,7 +68,8 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
 
             if (text != null)
             {
-                // drop strings - make tag with query and complete it
+                // drop strings
+                //make tag with query and complete it
 
                 var strings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var str in strings)
@@ -106,6 +111,7 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
             }
 
             /// <summary>
+            /// Drag Tags (to autocomplete or hrlist)
             /// Data is tags without empty Last tag.
             /// </summary>
             /// <param name="dragInfo"></param>
@@ -146,7 +152,11 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
                 if (dropInfo.FromAutocomplete())
                 {
                     if (dropInfo.FromSameCollection())
+                    {
                         dropInfo.Effects = DragDropEffects.Move;
+                        if (dropInfo.KeyStates.HasFlag(DragDropKeyStates.ControlKey))
+                            dropInfo.Effects |= DragDropEffects.Copy;
+                    }
                     else
                         dropInfo.Effects = DragDropEffects.Copy;
                 }
@@ -169,46 +179,67 @@ namespace Diagnosis.ViewModels.Controls.Autocomplete
 
                 if (dropInfo.FromAutocomplete())
                 {
+                    // drop tags
                     var tags = data.Cast<TagViewModel>();
                     if (dropInfo.FromSameCollection())
                     {
-                        // reorder tags
-                        master.InDragDrop = true;
-                        foreach (var tag in tags)
+                        if (dropInfo.KeyStates == DragDropKeyStates.ControlKey)
                         {
-                            var old = master.Tags.IndexOf(tag);
-                            //master.Tags.RemoveAt(old);
-                            //if (old < insertIndex)
-                            //{
-                            //    --insertIndex;
-                            //}
-                            var n = old < insertIndex ? insertIndex - 1 : insertIndex;
-
-                            // not after last
-                            if (n == master.Tags.IndexOf(master.LastTag))
-                                n--;
-
-                            n = Math.Max(n, 0); // when single n == -1
-
-                            if (old != n) // prevent deselecting
-                                master.tagsWritable.Move(old, n);
+                            CopyContentToMaster(insertIndex, tags);
                         }
-                        //foreach (var tag in tags)
-                        //{
-                        //    master.Tags.Insert(insertIndex, tag);
-                        //}
-                        master.InDragDrop = false;
+                        else
+                        {
+                            ReorderTagsInMaster(insertIndex, tags);
+                        }
                     }
                     else
                     {
-                        // copy tags' content
-                        foreach (var tag in tags)
-                        {
-                            Contract.Assume(tag.State == State.Completed);
-                            master.AddTag(tag.ToChio(), insertIndex).SetSignalization();
-                        }
+                        CopyContentToMaster(insertIndex, tags);
                     }
                     master.LastTag.IsSelected = false;
+                }
+                else if (dropInfo.FromHrList())
+                {
+                    // drop hrs
+                    // TODO make tags from hrs items
+                }
+            }
+
+            private void ReorderTagsInMaster(int insertIndex, System.Collections.Generic.IEnumerable<TagViewModel> tags)
+            {
+                master.InDragDrop = true;
+                foreach (var tag in tags)
+                {
+                    var old = master.Tags.IndexOf(tag);
+                    //master.Tags.RemoveAt(old);
+                    //if (old < insertIndex)
+                    //{
+                    //    --insertIndex;
+                    //}
+                    var n = old < insertIndex ? insertIndex - 1 : insertIndex;
+
+                    // not after last
+                    if (n == master.Tags.IndexOf(master.LastTag))
+                        n--;
+
+                    n = Math.Max(n, 0); // when single n == -1
+
+                    if (old != n) // prevent deselecting
+                        master.tagsWritable.Move(old, n);
+                }
+                //foreach (var tag in tags)
+                //{
+                //    master.Tags.Insert(insertIndex, tag);
+                //}
+                master.InDragDrop = false;
+            }
+
+            private void CopyContentToMaster(int insertIndex, System.Collections.Generic.IEnumerable<TagViewModel> tags)
+            {
+                foreach (var tag in tags)
+                {
+                    Contract.Assume(tag.State == State.Completed);
+                    master.AddTag(tag.ToChio(), insertIndex).SetSignalization();
                 }
             }
         }

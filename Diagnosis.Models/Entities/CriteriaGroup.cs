@@ -34,6 +34,38 @@ namespace Diagnosis.Models
             get { return criteria; }
         }
 
+        public virtual Criterion AddCriterion()
+        {
+            var cr = new Criterion(this);
+            criteria.Add(cr);
+            OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cr));
+            return cr;
+        }
+
+        public virtual void RemoveCriterion(Criterion cr)
+        {
+            if (criteria.Remove(cr))
+            {
+                cr.Group = null;
+                OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, cr));
+            }
+        }
+
+        public override string ToString()
+        {
+            return "{0}".FormatStr(Description.Truncate(20)).Replace(Environment.NewLine, " ");
+        }
+
+        public override FluentValidation.Results.ValidationResult SelfValidate()
+        {
+            return new CriteriaGroupValidator().Validate(this);
+        }
+
+        public override bool IsEmpty()
+        {
+            return !Criteria.Any();
+        }
+
         protected internal virtual void AddCriterion(Criterion cr)
         {
             Contract.Requires(cr != null);
@@ -44,22 +76,6 @@ namespace Diagnosis.Models
                 OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cr));
             }
         }
-        public virtual Criterion AddCriterion()
-        {
-            var cr = new Criterion(this);
-            criteria.Add(cr);
-            OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, cr));
-            return cr;
-        }
-        public virtual void RemoveCriterion(Criterion cr)
-        {
-            if (criteria.Remove(cr))
-            {
-                cr.Group = null;
-                OnCriteriaChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, cr));
-            }
-        }
-
         protected virtual void OnCriteriaChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = CriteriaChanged;
@@ -68,15 +84,6 @@ namespace Diagnosis.Models
                 h(this, e);
             }
         }
-        public override string ToString()
-        {
-            return "{0}".FormatStr(Description.Truncate(20)).Replace(Environment.NewLine, " ");
-        }
-        public override FluentValidation.Results.ValidationResult SelfValidate()
-        {
-            return new CriteriaGroupValidator().Validate(this);
-        }
-
         [ContractInvariantMethod]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
         private void ObjectInvariant()
@@ -84,6 +91,5 @@ namespace Diagnosis.Models
             Contract.Invariant(Options.IsNullOrEmpty());
             Contract.Invariant(OptionsFormat.IsNullOrEmpty());
         }
-
     }
 }

@@ -57,12 +57,22 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void SelectNotInList()
+        public void CanNotSelectHrNotInList()
         {
             l.SelectHealthRecord(hr[1]);
 
             Assert.AreEqual(null, l.SelectedHealthRecord);
             Assert.AreEqual(0, l.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void SelectNewHr()
+        {
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.AddHealthRecordCommand.Execute(null);
+            
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
+            Assert.AreEqual(a[2].HealthRecords.Last(), l.SelectedHealthRecord.healthRecord);
         }
 
         [TestMethod]
@@ -162,16 +172,6 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
-        [TestMethod]
-        public void DateEditorSavesOpenedState()
-        {
-            l.SelectHealthRecord(hr[20]);
-            card.ToogleHrEditor();
-            card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded = true;
-
-            l.MoveHrSelectionCommand.Execute(true);
-            Assert.AreEqual(true, card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded);
-        }
 
         [TestMethod]
         public void MoveEmptyHrSelection()
@@ -363,7 +363,7 @@ namespace Diagnosis.ViewModels.Tests
             var hr3 = AddHrToCard(card, "d");
 
             // hrs -> a b c d
-            card.SaveAllHrs();
+            l.SaveHrs();
 
             Assert.AreEqual(0, hr0.Ord);
             Assert.AreEqual(1, hr1.Ord);
@@ -380,7 +380,7 @@ namespace Diagnosis.ViewModels.Tests
             l.Reorder(vms, 0, null);
             // hrs -> b a c d
 
-            card.SaveAllHrs();
+            l.SaveHrs();
 
             Assert.AreEqual(1, hr0.Ord);
             Assert.AreEqual(0, hr1.Ord);
@@ -399,7 +399,7 @@ namespace Diagnosis.ViewModels.Tests
             var hr3 = AddHrToCard(card, "d");
 
             // hrs -> a b c d
-            card.SaveAllHrs();
+            l.SaveHrs();
 
             hr2.IsDeleted = true;
 
@@ -412,7 +412,7 @@ namespace Diagnosis.ViewModels.Tests
             l.Reorder(vms, 3, null);
             // hrs -> a (c) d b
 
-            card.SaveAllHrs();
+            l.SaveHrs();
 
             Assert.AreEqual(0, hr0.Ord);
             Assert.AreEqual(3, hr1.Ord);
@@ -623,8 +623,50 @@ namespace Diagnosis.ViewModels.Tests
             Assert.IsTrue(hr.SortingExtraInfo.IsNullOrEmpty());
         }
 
+        [TestMethod]
+        public void SortByOrd_AddedHrIsDraggable()
+        {
+            l.Sorting = HrViewColumn.Ord;
+
+            var newHr = l.AddHr();
+
+            var vm = l.HealthRecords.Where(x => x.healthRecord == newHr).First();
+            Assert.IsTrue(vm.IsDraggable);
+        }
         #endregion Sorting and Grouping
 
+        [TestMethod]
+        public void SelectLastSelectedHr()
+        {
+            l.SelectHealthRecord(hr[20]);
+            card.Open(a[1]);
+            card.Open(a[2]);
+
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);        
+        }
+
+
+        [TestMethod]
+        public void SelectNothingAsLastSelectedHr()
+        {
+            l.SelectHealthRecord(hr[20]);
+            l.SelectedHealthRecord = null;
+            card.Open(a[1]);
+            card.Open(a[2]);
+
+            Assert.AreEqual(null, l.SelectedHealthRecord);
+        }
+
+        [TestMethod]
+        public void DateEditorSavesOpenedState()
+        {
+            l.SelectHealthRecord(hr[20]);
+            card.ToogleHrEditor();
+            card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded = true;
+
+            l.MoveHrSelectionCommand.Execute(true);
+            Assert.AreEqual(true, card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded);
+        }
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
             var hr = l.holder.AddHealthRecord(d1);

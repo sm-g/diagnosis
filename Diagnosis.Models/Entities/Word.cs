@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 namespace Diagnosis.Models
 {
     [Serializable]
-    public class Word : ValidatableEntity<Guid>, IDomainObject, IHrItemObject, IComparable<Word>
+    public class Word : ValidatableEntity<Guid>, IDomainObject, IHrItemObject, IComparable<Word>, IDeletable
     {
         [NonSerialized]
         private ISet<Word> children = new HashSet<Word>();
@@ -184,6 +184,12 @@ namespace Diagnosis.Models
         }
 
         // for refresh state of many-2-many relations
+
+        public virtual bool IsEmpty()
+        {
+            return !HealthRecords.Any() &&
+                !Crits.Any();
+        }
 
         protected internal virtual void RemoveVoc(Vocabulary voc)
         {

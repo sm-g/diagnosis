@@ -16,10 +16,10 @@ namespace Diagnosis.Data.NHibernate
 
         protected override void PerformExecutions(IEventSource session)
         {
-            if (log.IsDebugEnabled)
-            {
-                log.Debug("executing flush");
-            }
+            //if (log.IsDebugEnabled)
+            //{
+            //    log.Debug("executing flush");
+            //}
             try
             {
                 session.ConnectionManager.FlushBeginning();

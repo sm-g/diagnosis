@@ -35,18 +35,8 @@ namespace Diagnosis.ViewModels.Screens
         public void Copy()
         {
             var hrs = hrManager.GetSelectedHrs();
-            var hrInfos = hrs.Select(hr => new HrData.HrInfo()
-            {
-                HolderId = (Guid)hr.Holder.Id,
-                DoctorId = hr.Doctor.Id,
-                CategoryId = hr.Category != null ? (Guid?)hr.Category.Id : null,
-                From = new DateOffset(hr.FromDate),
-                To = new DateOffset(hr.ToDate),
-                Unit = hr.Unit,
-                Chios = new List<ConfWithHio>(hr.GetOrderedCHIOs())
-            }).ToList();
 
-            var data = new HrData(hrInfos);
+            HrData data = MakeHrData(hrs);
 
             var strings = string.Join(".\n", hrs.Select(hr => string.Join(", ", hr.GetOrderedCHIOs()))) + ".";
 
@@ -55,7 +45,7 @@ namespace Diagnosis.ViewModels.Screens
             dataObj.SetData(System.Windows.DataFormats.UnicodeText, strings);
             Clipboard.SetDataObject(dataObj, true);
 
-            logger.LogHrs("copy", hrInfos);
+            logger.LogHrs("copy", data.Hrs);
         }
 
         public void Paste()
@@ -69,12 +59,11 @@ namespace Diagnosis.ViewModels.Screens
                 var hrData = (HrData)ido.GetData(HrData.DataFormat.Name);
                 PasteHrs(hrData);
             }
-            else
-                if (ido.GetDataPresent(TagData.DataFormat.Name))
-                {
-                    var hiosData = (TagData)ido.GetData(TagData.DataFormat.Name);
-                    PasteTags(hiosData);
-                }
+            else if (ido.GetDataPresent(TagData.DataFormat.Name))
+            {
+                var hiosData = (TagData)ido.GetData(TagData.DataFormat.Name);
+                PasteTags(hiosData);
+            }
         }
 
         public bool CanPaste()
@@ -85,6 +74,22 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         #endregion IClipboardTarget
+
+        private static HrData MakeHrData(IEnumerable<HealthRecord> hrs)
+        {
+            var hrInfos = hrs.Select(hr => new HrData.HrInfo()
+            {
+                HolderId = (Guid)hr.Holder.Id,
+                DoctorId = hr.Doctor.Id,
+                CategoryId = hr.Category != null ? (Guid?)hr.Category.Id : null,
+                From = new DateOffset(hr.FromDate),
+                To = new DateOffset(hr.ToDate),
+                Unit = hr.Unit,
+                Chios = new List<ConfWithHio>(hr.GetOrderedCHIOs())
+            }).ToList();
+
+            return new HrData(hrInfos);
+        }
 
         /// <summary>
         /// Add HealthRecords before SelectedHealthRecords or to the end of list.
@@ -98,6 +103,25 @@ namespace Diagnosis.ViewModels.Screens
             else
                 index = view.IndexOf(SelectedHealthRecord);
 
+            var pasted = Paste(hrData, index);
+
+            SelectPasted(pasted);
+            SaveHrs();
+
+            logger.LogHrs("paste", hrData.Hrs);
+        }
+
+        private void SelectPasted(IEnumerable<ShortHealthRecordViewModel> pasted)
+        {
+            SelectHealthRecords(pasted.Select(x => x.healthRecord));
+
+            Contract.Assume(SelectedHealthRecord.healthRecord == pasted.Last().healthRecord);
+            inManualFocusSetting = true;
+            SelectedHealthRecord.IsFocused = true;
+        }
+
+        private IEnumerable<ShortHealthRecordViewModel> Paste(HrData hrData, int insertViewIndex)
+        {
             var pasted = new List<HealthRecord>();
             var pastedVms = new List<ShortHealthRecordViewModel>();
             foreach (var hrInfo in hrData.Hrs)
@@ -115,17 +139,8 @@ namespace Diagnosis.ViewModels.Screens
                 pasted.Add(newHr);
             }
 
-            hrManager.Reorder(pastedVms, view.Cast<ShortHealthRecordViewModel>().ToList(), index);
-
-            SelectHealthRecords(pasted);
-            OnSaveNeeded(); // save all
-
-            Contract.Assume(SelectedHealthRecord.healthRecord == pasted.Last());
-            inManualFocusSetting = true;
-            SelectedHealthRecord.IsFocused = true;
-            //inManualFocusSettng = false;
-
-            logger.LogHrs("paste", hrData.Hrs);
+            hrManager.Reorder(pastedVms, view.Cast<ShortHealthRecordViewModel>().ToList(), insertViewIndex);
+            return pastedVms;
         }
 
         private void FillHr(HealthRecord hr, DataTransfer.HrData.HrInfo hrInfo)
@@ -164,15 +179,16 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // add hios to end of Selected Hrs
                 hrs.ForAll(hr => hr.AddItems(data.ItemObjects));
-                OnSaveNeeded(hrManager.GetSelectedHrs());
             }
             else
             {
                 // new hr with pasted hios
                 var newHR = holder.AddHealthRecord(AuthorityController.CurrentDoctor);
                 newHR.AddItems(data.ItemObjects);
-                OnSaveNeeded(); // save all
             }
+
+            SaveHrs();
+
             logger.LogHrItemObjects("paste", data.ItemObjects);
         }
     }

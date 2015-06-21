@@ -72,8 +72,8 @@ namespace Diagnosis.ViewModels.Screens
                         }
                     }
                     Session.DoSave(patient);
+                    this.Send(Event.EntitySaved, patient.AsParams(MessageKeys.Entity));
 
-                    this.Send(Event.PatientSaved, patient.AsParams(MessageKeys.Patient));
                     DialogResult = true;
                 }, () => CanSave());
             }
@@ -90,7 +90,7 @@ namespace Diagnosis.ViewModels.Screens
                     var course = patient.AddCourse(AuthorityController.CurrentDoctor);
                     var app = course.AddAppointment(AuthorityController.CurrentDoctor);
 
-                    this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));
+                    this.Send(Event.OpenHolder, app.AsParams(MessageKeys.Holder));
                 }, () => CanSaveNewPatient());
             }
         }

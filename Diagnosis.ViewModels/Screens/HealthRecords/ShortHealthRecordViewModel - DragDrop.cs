@@ -4,6 +4,7 @@ using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.DragDrop;
 using GongSolutions.Wpf.DragDrop;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
@@ -64,13 +65,15 @@ namespace Diagnosis.ViewModels.Screens
                 if (dropInfo.FromAutocomplete())
                 {
                     // drop tags from autocomplete
-                    // add tags to hr
                     var tags = data.Cast<TagViewModel>();
-
-                    var hr = master.healthRecord;
-                    var items = tags.Select(t => new ConfWithHio(t.Blank, t.Confidence)).ToList();
-                    hr.AddItems(items);
+                    AddTagsToMaster(tags);
                 }
+            }
+
+            private void AddTagsToMaster(IEnumerable<TagViewModel> tags)
+            {
+                var items = tags.Select(t => new ConfWithHio(t.Blank, t.Confidence)).ToList();
+                master.healthRecord.AddItems(items);
             }
         }
     }

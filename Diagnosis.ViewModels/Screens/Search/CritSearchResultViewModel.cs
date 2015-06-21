@@ -49,10 +49,10 @@ namespace Diagnosis.ViewModels.Screens
 
         protected override void RemoveDeleted(IHrsHolder h)
         {
-            var hsr = Patients.Cast<CritResultItemViewModel>().FirstOrDefault(x => x.Patient as IHrsHolder == h);
-            if (hsr != null)
+            var holder = Patients.Cast<CritResultItemViewModel>().FirstOrDefault(x => x.Patient as IHrsHolder == h);
+            if (holder != null)
             {
-                Patients.Remove(hsr);
+                Patients.Remove(holder);
             }
         }
 

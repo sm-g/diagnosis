@@ -152,18 +152,28 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(newHr, card.HrEditor.HealthRecord.healthRecord);
         }
 
-        #region Selection
-
         [TestMethod]
-        public void SelectNewHr()
+        public void HightlightLastOpenedCardItems()
         {
-            card.Open(p[1]);
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.Open(a[2]);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[2].Course).IsHighlighted);
 
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
-            Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
+            card.Open(a[3]);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[3].Course).IsHighlighted);
+            Assert.IsFalse(card.Navigator.FindItemVmOf(a[2].Course).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[2]).IsHighlighted);
+            Assert.IsFalse(card.Navigator.FindItemVmOf(a[3]).IsHighlighted);
+
+            card.Open(a[5]);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[2]).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[3]).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[3].Course).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[5].Course).IsHighlighted);
         }
+
+        #region Hr List Selection
+
+
 
         [TestMethod]
         public void SelectManyShowEditor()
@@ -220,18 +230,12 @@ namespace Diagnosis.ViewModels.Tests
         {
             card.Open(a[5]);
             IHrsHolder holder = null;
-            bool removed = false;
 
             var NavigatingEh = (EventHandler<DomainEntityEventArgs>)((s, e) =>
             {
                 holder = e.entity as IHrsHolder;
             });
-            var LastItemRemovedEh = (EventHandler)((s, e) =>
-            {
-                removed = true;
-            });
             card.Navigator.Navigating += NavigatingEh;
-            card.LastItemRemoved += LastItemRemovedEh;
 
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.AreEqual(c[4], holder);
@@ -241,19 +245,18 @@ namespace Diagnosis.ViewModels.Tests
 
             card.Navigator.Current.HolderVm.DeleteCommand.Execute(null);
             Assert.IsNull(holder);
-            Assert.IsTrue(removed);
+            Assert.IsNull(card.Navigator.Current);
 
             card.Navigator.Navigating -= NavigatingEh;
-            card.LastItemRemoved -= LastItemRemovedEh;
         }
 
         [TestMethod]
-        public void DontSaveEditingHr()
+        public void SaveEditingHrBeforeCloseEditor()
         {
             card.Open(a[2]);
             var hrsBefore = a[2].HealthRecords.Count();
 
-            // удалили несколько записей
+            // "удалили" несколько записей
             card.HrList.SelectHealthRecord(hr[20]);
             card.HrList.DeleteCommand.Execute(null);
 
@@ -261,23 +264,17 @@ namespace Diagnosis.ViewModels.Tests
             card.HrList.SelectHealthRecord(hr[21]);
             card.ToogleHrEditor();
             hr[21].FromDate.Year = 2010;
-
-            // завершили удаление
-            a[2].RemoveHealthRecord(hr[20]);
-
-            // не сохраненяем открытую запись
-            Assert.IsTrue(!hr[20].IsDirty);
-            Assert.AreEqual(hrsBefore - 1, a[2].HealthRecords.Count());
-
             Assert.IsTrue(hr[21].IsDirty);
 
-            // сохраненяем открытую запись
-            card.ToogleHrEditor();
-            Assert.IsTrue(!hr[21].IsDirty);
+            // завершили "удаление"
+            a[2].RemoveHealthRecord(hr[20]);
+
+            // изменения уже в БД
+            Assert.IsFalse(hr[21].IsDirty);
         }
 
         [TestMethod]
-        public void DeleteHolderWithDeltedHr()
+        public void DeleteHolderWithDeletedHr()
         {
             card.Open(a[5]);
             Action<CardViewModel, IHrsHolder> AddTwoCommentsAndDelete = (_card, holder) =>
@@ -306,27 +303,28 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void CloseHrList_DeleteEmptyHrs()
+        public void OpenOtherList_DeleteEmptyHrs()
         {
             card.Open(a[5]);
 
-            // запись и пусиая запись
+            // запись и пустая запись
             card.HrList.AddHealthRecordCommand.Execute(null);
             var hr = a[5].HealthRecords.Last();
             hr.AddItems(new Comment("1").ToEnumerable());
             card.HrList.AddHealthRecordCommand.Execute(null);
             card.HrEditor.CloseCommand.Execute(null);
-
             Assert.AreEqual(2, a[5].HealthRecords.Count());
+            session.Evict(a[5]);
 
             card.Open(a[5].Course);
 
-            Assert.AreEqual(1, a[5].HealthRecords.Count());
-            Assert.IsTrue(a[5].HealthRecords.Contains(hr));
+            var a5 = session.Load<Appointment>(IntToGuid<Appointment>(5));
+            Assert.AreEqual(1, a5.HealthRecords.Count());
+            Assert.IsTrue(a5.HealthRecords.Contains(hr));
         }
 
         [TestMethod]
-        public void ChangeAppWithDeletedHrs()
+        public void OpenOtherList_DeleteSoftDeletedHrs()
         {
             card.Open(a[2]);
             card.HrList.SelectHealthRecords(a[2].HealthRecords);
@@ -343,10 +341,39 @@ namespace Diagnosis.ViewModels.Tests
         public void NavigatorFindVm()
         {
             card.Open(a[2]);
+
             var cardVm = card.Navigator.FindItemVmOf(a[2]);
 
             Assert.IsTrue(cardVm != null);
             Assert.AreEqual(a[2], cardVm.Holder);
+        }
+
+        [TestMethod]
+        public void NavigateToNull()
+        {
+            card.Open(a[2]);
+
+            card.Navigator.NavigateTo(null);
+
+            Assert.AreEqual(null, card.Navigator.Current);
+        }
+
+        [TestMethod]
+        public void DeleteLastPatient_RaiseLastItemRemoved()
+        {
+            card.Open(p[3]);
+            bool removed = false;
+            var LastItemRemovedEh = (EventHandler)((s, e) =>
+            {
+                removed = true;
+            });
+            card.LastItemRemoved += LastItemRemovedEh;
+
+            card.DeleteHolder(p[3]);
+
+            Assert.AreEqual(null, card.Navigator.Current);
+            Assert.IsTrue(removed);
+            card.LastItemRemoved -= LastItemRemovedEh;
         }
 
         [TestMethod]

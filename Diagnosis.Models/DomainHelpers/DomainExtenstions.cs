@@ -184,30 +184,19 @@ namespace Diagnosis.Models
         }
 
         /// <summary>
-        /// Удаляет пустые записи держателя.
+        /// Дата последнего обновления записей внутри.
+        /// Дата обновления, если запсией нет.
         /// </summary>
-        /// <param name="holder"></param>
-        public static void RemoveEmptyHrs(this IHrsHolder holder)
+        public static DateTime GetLastHrUpdatedAt(this IHrsHolder holder)
         {
             Contract.Requires(holder != null);
-            var emptyHrs = holder.HealthRecords.Where(hr => hr.IsEmpty()).ToList();
-            emptyHrs.ForEach(hr => holder.RemoveHealthRecord(hr));
-        }
 
-        /// <summary>
-        /// Дата последнего обновления записей внутри пациента.
-        /// Дата обновления пациента, если запсией нет.
-        /// </summary>
-        public static DateTime LastHrUpdatedAt(this Patient p)
-        {
-            Contract.Requires(p != null);
-
-            if (p.GetAllHrs().Any())
-                return p.GetAllHrs()
+            if (holder.GetAllHrs().Any())
+                return holder.GetAllHrs()
                     .OrderByDescending(x => x.UpdatedAt)
                     .First().UpdatedAt;
             else
-                return p.UpdatedAt;
+                return (holder as IHaveAuditInformation).UpdatedAt;
         }
 
         /// <summary>
@@ -266,99 +255,6 @@ namespace Diagnosis.Models
 
     public static class IEntityExtensions
     {
-        /// <summary>
-        /// Определяет, пуста ли сущность.
-        /// доктор — без курсов и осмотров
-        /// пациент  — без записей и курсов
-        /// курс — без записей и осмотров
-        /// осмотр — без записей
-        /// запись — без элементов и даты или удаленная
-        /// слово — без записей и критов с этим словом
-        /// словарь — без слов
-        ///
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns></returns>
-        [Pure]
-        public static bool IsEmpty(this IEntity entity)
-        {
-            var @switch = new Dictionary<Type, Func<bool>> {
-                { typeof(Doctor), () =>
-                    {
-                        var doc = entity as Doctor;
-                        return !doc.Appointments.Any() &&
-                            !doc.Courses.Any() &&
-                            doc.HealthRecords.All(h => h.IsEmpty());;
-                    }
-                },
-                { typeof(Patient), () =>
-                    {
-                        var pat = entity as Patient;
-                        return !pat.Courses.Any() &&
-                            pat.HealthRecords.All(h => h.IsEmpty());
-                    }
-                },
-                { typeof(Course), () =>
-                    {
-                        var course = entity as Course;
-                        return !course.Appointments.Any() &&
-                            course.HealthRecords.All(h => h.IsEmpty());
-                    }
-                },
-                { typeof(Appointment), () =>
-                    {
-                        var app = entity as Appointment;
-                        return app.HealthRecords.All(x => x.IsEmpty());
-                    }
-                },
-                { typeof(HealthRecord),() =>
-                    {
-                        var hr = entity as HealthRecord;
-                        return hr.IsDeleted ||
-                            hr.FromDate.IsEmpty &&
-                            !hr.HrItems.Any();
-                    }
-                },
-                { typeof(Word),() =>
-                    {
-                        var w = entity as Word;
-                        return !w.HealthRecords.Any() &&
-                            !w.Crits.Any();
-                    }
-                },
-                { typeof(Vocabulary),() =>
-                    {
-                        var w = entity as Vocabulary;
-                        return !w.Words.Any();
-                    }
-                },
-                { typeof(Estimator),() =>
-                    {
-                        var e = entity as Estimator;
-                        return !e.CriteriaGroups.Any();
-                    }
-                },
-                { typeof(CriteriaGroup),() =>
-                    {
-                        var w = entity as CriteriaGroup;
-                        return !w.Criteria.Any();
-                    }
-                },
-                { typeof(Criterion),() =>
-                    {
-                        var w = entity as Criterion;
-                        return true;
-                    }
-                }
-            };
-
-            var type = entity.Actual.GetType();
-            if (@switch.Keys.Contains(type))
-                return @switch[type]();
-
-            throw new NotSupportedException();
-        }
-
         /// <summary>
         /// Формат {[id] ToString()[,] ...}
         /// </summary>

@@ -18,11 +18,13 @@ namespace Diagnosis.ViewModels.Screens
 
         public AbstractSearchResultViewModel()
         {
-            handler = this.Subscribe(Event.DeleteHolder, (e) =>
+            handler = this.Subscribe(Event.EntityDeleted, (e) =>
             {
                 // убираем удаленного холдера из результатов
-                var h = e.GetValue<IHrsHolder>(MessageKeys.Holder);
-                RemoveDeleted(h);
+                var x = e.GetValue<IEntity>(MessageKeys.Entity);
+                var h = x as IHrsHolder;
+                if (h != null)
+                    RemoveDeleted(h);
             });
         }
 

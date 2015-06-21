@@ -59,6 +59,11 @@ namespace Diagnosis.Models
         {
             get { throw new NotImplementedException(); }
         }
+
+        public bool IsEmpty()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [ContractClassFor(typeof(IIcdEntity))]

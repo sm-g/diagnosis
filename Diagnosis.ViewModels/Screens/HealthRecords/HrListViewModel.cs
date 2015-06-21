@@ -1,13 +1,12 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Common.Util;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
-using Diagnosis.ViewModels.DataTransfer;
 using NHibernate;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -122,6 +121,8 @@ namespace Diagnosis.ViewModels.Screens
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
 
+        public event EventHandler HrsSaved;
+
         private void DeletedHrsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
@@ -129,12 +130,11 @@ namespace Diagnosis.ViewModels.Screens
                 // удалены
 
                 // выделяем первую после удаленной записи, чтобы она была выделена для фокуса на ней
-                var del = e.NewItems.Cast<ShortHealthRecordViewModel>().ToList();
+                var deleted = e.NewItems.Cast<ShortHealthRecordViewModel>().ToList();
                 var viewList = view.Cast<ShortHealthRecordViewModel>().ToList();
-                logger.DebugFormat("deleted {0}", del);
-                SelectedHealthRecord = viewList.FirstAfterAndNotIn(del);
 
-                OnSaveNeeded(del.Select(x => x.healthRecord).ToList());
+                logger.DebugFormat("deleted {0}", deleted);
+                SelectedHealthRecord = viewList.FirstAfterAndNotIn(deleted);
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
@@ -145,8 +145,11 @@ namespace Diagnosis.ViewModels.Screens
                     .Where(x => holder.HealthRecords.Contains(x.healthRecord))
                     .Select(x => x.healthRecord)
                     .ToList();
-                OnSaveNeeded(restored);
+
+                logger.DebugFormat("restored {0}", restored);
             }
+
+            SaveHrs();
         }
 
         private void HrsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -157,7 +160,9 @@ namespace Diagnosis.ViewModels.Screens
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
                 // новые в списке
-                SetHrExtra(e.NewItems.Cast<ShortHealthRecordViewModel>());
+                var added = e.NewItems.Cast<ShortHealthRecordViewModel>();
+                SetHrExtra(added);
+                added.ForAll(x => x.IsDraggable = CanReorder);
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
@@ -250,8 +255,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public event EventHandler<ListEventArgs<HealthRecord>> SaveNeeded;
-
         public IList<HrViewColumn> Sortings { get; private set; }
 
         public IList<HrViewColumn> Groupings { get; private set; }
@@ -314,6 +317,10 @@ namespace Diagnosis.ViewModels.Screens
                     hrViewer.Select(value.healthRecord, holder);
                     value.IsSelected = true;
                     Contract.Assume(selectedOrder.Contains(value));
+                }
+                else
+                {
+                    hrViewer.Select(null, holder);
                 }
 
                 if (doNotNotifySelectedChanged.CanEnter)
@@ -674,6 +681,34 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
+        internal HealthRecord AddHr()
+        {
+            Contract.Ensures(Contract.Result<HealthRecord>().IsEmpty());
+
+            HealthRecord hr;
+
+            var lastHrVM = SelectedHealthRecord;
+            if (SelectedHealthRecord != null && SelectedHealthRecord.healthRecord.IsEmpty())
+            {
+                // уже есть выбранная пустая запись
+                hr = SelectedHealthRecord.healthRecord;
+            }
+            else
+            {
+                var doctor = AuthorityController.CurrentDoctor;
+                hr = holder.AddHealthRecord(doctor);
+            }
+
+            if (SelectedHealthRecord != null)
+            {
+                // копируем из выбранной записи
+                hr.Category = lastHrVM.healthRecord.Category;
+                hr.DescribedAt = lastHrVM.healthRecord.DescribedAt;
+            }
+
+            return hr;
+        }
+
         /// <summary>
         /// Добавляет сортировку при группировке (первой).
         /// </summary>
@@ -727,9 +762,8 @@ namespace Diagnosis.ViewModels.Screens
             return false;
         }
 
-        internal void Reorder(IEnumerable<object> data, int insertView, object targetGroup)
+        internal void Reorder(IEnumerable<ShortHealthRecordViewModel> data, int insertView, object targetGroup)
         {
-            Contract.Requires(data.All(o => o is ShortHealthRecordViewModel));
             // don't change selection
             Contract.Ensures(Contract.OldValue<IEnumerable<ShortHealthRecordViewModel>>(SelectedHealthRecords).ScrambledEquals(SelectedHealthRecords));
 
@@ -885,29 +919,24 @@ namespace Diagnosis.ViewModels.Screens
                 this.session = s;
         }
 
-        [ContractInvariantMethod]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
-        private void ObjectInvariant()
+        internal void SaveHrs()
         {
-            // может: LastSelected - есть, но ничего не выбрано
-            // не может: что-то выбрано, а LastSelected нет
+            Contract.Assume(HealthRecords.IsStrongOrdered(x => x.Ord));
 
-            // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
-            // добавляем выделение - наоборот
-            Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
+            var hrs = HealthRecords
+                .Select(vm => vm.healthRecord)
+                .ToArray();
+            session.DoSave(hrs);
 
-            // без повторов
-            Contract.Invariant(selectedOrder.IsUnique());
-
-            //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
+            OnHrsSaved();
         }
 
-        protected virtual void OnSaveNeeded(List<HealthRecord> hrsToSave = null)
+        protected virtual void OnHrsSaved()
         {
-            var h = SaveNeeded;
+            var h = HrsSaved;
             if (h != null)
             {
-                h(this, new ListEventArgs<HealthRecord>(hrsToSave));
+                h(this, EventArgs.Empty);
             }
         }
 
@@ -927,6 +956,23 @@ namespace Diagnosis.ViewModels.Screens
             {
                 base.Dispose(disposing);
             }
+        }
+
+        [ContractInvariantMethod]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Required for code contracts.")]
+        private void ObjectInvariant()
+        {
+            // может: LastSelected - есть, но ничего не выбрано
+            // не может: что-то выбрано, а LastSelected нет
+
+            // снимаем выделение: сначала менять SelectedHealthRecord, потом все остальные
+            // добавляем выделение - наоборот
+            Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
+
+            // без повторов
+            Contract.Invariant(selectedOrder.IsUnique());
+
+            //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
         }
     }
 }

@@ -77,8 +77,7 @@ namespace Diagnosis.ViewModels.Screens
             Doctor.canEditComboBoxValues = false;
 
             Session.DoSave(doctor);
-
-            this.Send(Event.DoctorSaved, doctor.AsParams(MessageKeys.Doctor));
+            this.Send(Event.EntitySaved, doctor.AsParams(MessageKeys.Entity));
         }
 
         protected override void OnCancel()

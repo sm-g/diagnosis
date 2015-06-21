@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public DateTime LastHrUpdatedAt
         {
-            get { return patient.LastHrUpdatedAt(); }
+            get { return patient.GetLastHrUpdatedAt(); }
         }
 
         public bool IsMale

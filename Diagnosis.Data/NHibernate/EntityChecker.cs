@@ -10,6 +10,7 @@ namespace Diagnosis.Data
     {
         public void Delete(IEntity entity)
         {
+            this.Send(Event.EntityDeleted, entity.AsParams(MessageKeys.Entity));
         }
 
         public void Insert(IEntity entity)
@@ -20,10 +21,7 @@ namespace Diagnosis.Data
             }
 
             entity.IsDirty = false;
-            if (entity is Word)
-            {
-                this.Send(Event.WordPersisted, entity.AsParams(MessageKeys.Word));
-            }
+            this.Send(Event.EntityPersisted, entity.AsParams(MessageKeys.Entity));
         }
 
         public void Update(IEntity entity)

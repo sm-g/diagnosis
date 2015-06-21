@@ -17,11 +17,17 @@ namespace Diagnosis.ViewModels.Screens
     {
         T Kept { get; }
     }
-    public interface IHolderKeeper //: IKeeper<IHrsHolder>
+    /// <summary>
+    /// ViewModel c IHrsHolder
+    /// </summary>
+    public interface IHrsHolderKeeper //: IKeeper<IHrsHolder>
     {
         IHrsHolder Holder { get; }
     }
 
+    /// <summary>
+    /// ViewModel c ICrit
+    /// </summary>
     public interface ICritKeeper //: IKeeper<ICrit>
     {
         ICrit Crit { get; }

@@ -92,7 +92,7 @@ namespace Diagnosis.ViewModels.Screens
             Session.Refresh(uom.Type);
             uom.Type.RaiseOnPropertyChanged("Base");
 
-            this.Send(Event.UomSaved, uom.AsParams(MessageKeys.Uom));
+            this.Send(Event.EntitySaved, uom.AsParams(MessageKeys.Entity));
         }
         protected override void OnCancel()
         {

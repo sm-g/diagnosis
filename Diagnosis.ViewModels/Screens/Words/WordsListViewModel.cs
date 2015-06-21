@@ -35,7 +35,7 @@ namespace Diagnosis.ViewModels.Screens
             };
 
             filterHelper = new FilterableListHelper<Word, WordViewModel>(this, (v) => v.word);
-            filterHelper.AddSelectVmWithEntityOn(Event.WordSaved, MessageKeys.Word, () => OnPropertyChanged(() => NoWords));
+            filterHelper.AddAfterEntitySavedAction(() => OnPropertyChanged(() => NoWords));
 
             Title = "Словарь";
             Filter.Clear(); // показываем все

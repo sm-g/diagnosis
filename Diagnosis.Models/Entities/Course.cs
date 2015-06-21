@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Course : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IComparable<Course>
+    public class Course : ValidatableEntity<Guid>, IHrsHolder, IComparable<Course>, IHaveAuditInformation
     {
         private ISet<Appointment> appointments = new HashSet<Appointment>();
         private ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
@@ -125,22 +125,6 @@ namespace Diagnosis.Models
             return a;
         }
 
-        protected internal virtual void AddAppointment(Appointment app)
-        {
-            Contract.Requires(app != null);
-            Contract.Requires(app.Course == null);
-
-            if (appointments.Add(app))
-            {
-                app.Course = this;
-                app.FitDateToCourse();
-
-                if (app.Doctor == null)
-                    app.Doctor = this.LeadDoctor;
-
-                OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, app));
-            }
-        }
         public virtual void RemoveAppointment(Appointment app)
         {
             Contract.Requires(app.IsEmpty());
@@ -247,6 +231,28 @@ namespace Diagnosis.Models
             return new CourseEarlierFirst().Compare(this, other);
         }
 
+        public virtual bool IsEmpty()
+        {
+            return !Appointments.Any() &&
+               HealthRecords.All(h => h.IsEmpty());
+        }
+
+        protected internal virtual void AddAppointment(Appointment app)
+        {
+            Contract.Requires(app != null);
+            Contract.Requires(app.Course == null);
+
+            if (appointments.Add(app))
+            {
+                app.Course = this;
+                app.FitDateToCourse();
+
+                if (app.Doctor == null)
+                    app.Doctor = this.LeadDoctor;
+
+                OnAppointmentsChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, app));
+            }
+        }
         protected virtual void OnAppointmentsChanged(NotifyCollectionChangedEventArgs e)
         {
             var h = AppointmentsChanged;

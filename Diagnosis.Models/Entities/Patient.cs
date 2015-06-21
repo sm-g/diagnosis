@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Patient : ValidatableEntity<Guid>, IDomainObject, IHaveAuditInformation, IHrsHolder, IMan, IComparable<Patient>
+    public class Patient : ValidatableEntity<Guid>, IHrsHolder, IMan, IComparable<Patient>, IHaveAuditInformation
     {
         private ISet<Course> courses = new HashSet<Course>();
         private ISet<HealthRecord> healthRecords = new HashSet<HealthRecord>();
@@ -283,6 +283,12 @@ namespace Diagnosis.Models
                 return byFirst;
             }
             return byLast;
+        }
+
+        public virtual bool IsEmpty()
+        {
+            return !Courses.Any() &&
+                 HealthRecords.All(h => h.IsEmpty());
         }
 
         protected virtual void OnCoursesChanged(NotifyCollectionChangedEventArgs e)

@@ -8,7 +8,7 @@ namespace Diagnosis.ViewModels.Screens
     /// <summary>
     /// Команды редактирования держателя.
     /// </summary>
-    public class HolderViewModel : ViewModelBase, IHolderKeeper
+    public class HolderViewModel : ViewModelBase, IHrsHolderKeeper
     {
         private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(typeof(HolderViewModel));
         private readonly IHrsHolder holder;
@@ -141,13 +141,13 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         var course = (holder as Patient).GetOrderedCourses().LastOrDefault();
                         if (course != null)
-                            this.Send(Event.OpenCourse, course.AsParams(MessageKeys.Course));
+                            this.Send(Event.OpenHolder, course.AsParams(MessageKeys.Holder));
                     }
                     else if (holder is Course)
                     {
                         var app = (holder as Course).GetOrderedAppointments().LastOrDefault();
                         if (app != null)
-                            this.Send(Event.OpenAppointment, app.AsParams(MessageKeys.Appointment));
+                            this.Send(Event.OpenHolder, app.AsParams(MessageKeys.Holder));
                     }
                 }, () => !(holder.IsEmpty() || (holder is Appointment)));
             }

@@ -3,6 +3,7 @@ using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.DragDrop;
 using GongSolutions.Wpf.DragDrop;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
@@ -52,6 +53,7 @@ namespace Diagnosis.ViewModels.Screens
         public class DragSourceHandler : IDragSource
         {
             /// <summary>
+            /// Drag Hrs (to autocomplete or hrlist)
             /// Data is hrs vm.
             /// </summary>
             /// <param name="dragInfo"></param>
@@ -98,6 +100,8 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         dropInfo.Effects = DragDropEffects.Move;
                         dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                        if (dropInfo.KeyStates.HasFlag(DragDropKeyStates.ControlKey))
+                            dropInfo.Effects |= DragDropEffects.Copy;
                     }
                 }
                 else if (dropInfo.FromAutocomplete())
@@ -120,28 +124,51 @@ namespace Diagnosis.ViewModels.Screens
                 var insertView = dropInfo.InsertIndex;
                 if (dropInfo.FromSameCollection())
                 {
-                    // drop hrs from hrslist
-
-                    //  logger.DebugFormat("selected bef {0} ", master.SelectedHealthRecords.Count());
-
+                    //drop hrs from hrslist
                     var group = dropInfo.TargetGroup != null ? dropInfo.TargetGroup.Name : null;
-                    master.Reorder(data, insertView, group);
-
-                    //  logger.DebugFormat("selected after dd {0} ", master.SelectedHealthRecords.Count());
+                    var hrs = data.Cast<ShortHealthRecordViewModel>();
+                    if (dropInfo.KeyStates == DragDropKeyStates.ControlKey)
+                    {
+                        CopyHrsToMaster(hrs, group, insertView);
+                    }
+                    else
+                    {
+                        ReorderHrsInMaster(hrs, group, insertView);
+                    }
                 }
                 else if (dropInfo.FromAutocomplete())
                 {
-                    // drop tags from autocomplete
-
+                    //drop tags from autocomplete
                     var tags = data.Cast<TagViewModel>();
-
-                    // new hr from tags
-                    var newHR = master.holder.AddHealthRecord(master.AuthorityController.CurrentDoctor);
-                    var items = tags.Select(t => new ConfWithHio(t.Blank, t.Confidence)).ToList();
-                    newHR.SetItems(items);
+                    AddHrWithTagsToMaster(tags);
                 }
-                master.OnSaveNeeded();
+                master.SaveHrs();
                 //logger.DebugFormat("selected after save {0} ", master.SelectedHealthRecords.Count());
+            }
+
+            private void CopyHrsToMaster(IEnumerable<ShortHealthRecordViewModel> hrs, object group, int insertView)
+            {
+                var hrData = MakeHrData(hrs.Select(x => x.healthRecord));
+                var pastedVms = master.Paste(hrData, insertView);
+                foreach (var item in pastedVms)
+                {
+                    master.SetGroupObject(item, group);
+                }
+                master.SelectPasted(pastedVms);
+            }
+
+            private void ReorderHrsInMaster(IEnumerable<ShortHealthRecordViewModel> hrs, object group, int insertView)
+            {
+                //  logger.DebugFormat("selected bef {0} ", master.SelectedHealthRecords.Count());
+                master.Reorder(hrs, insertView, group);
+                //  logger.DebugFormat("selected after dd {0} ", master.SelectedHealthRecords.Count());
+            }
+
+            private void AddHrWithTagsToMaster(IEnumerable<TagViewModel> tags)
+            {
+                var newHR = master.holder.AddHealthRecord(master.AuthorityController.CurrentDoctor);
+                var items = tags.Select(t => new ConfWithHio(t.Blank, t.Confidence)).ToList();
+                newHR.SetItems(items);
             }
         }
     }

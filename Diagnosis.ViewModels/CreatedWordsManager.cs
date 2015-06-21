@@ -16,10 +16,10 @@ namespace Diagnosis.ViewModels
 
         static CreatedWordsManager()
         {
-            typeof(CreatedWordsManager).Subscribe(Event.WordPersisted, (e) =>
+            typeof(CreatedWordsManager).Subscribe(Event.EntityPersisted, (e) =>
             {
                 // now word can be retrieved from db
-                var word = e.GetValue<Word>(MessageKeys.Word);
+                var word = e.GetValue<IEntity>(MessageKeys.Entity) as Word;
                 created.Remove(word);
             });
             AuthorityController.LoggedOut += (s, e) =>

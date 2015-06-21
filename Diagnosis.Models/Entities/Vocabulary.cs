@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Diagnosis.Models
 {
-    public class Vocabulary : ValidatableEntity<Guid>, IDomainObject
+    public class Vocabulary : ValidatableEntity<Guid>, IDomainObject, IDeletable
     {
         public static string CustomTitle = "Пользовательский";
 
@@ -222,6 +222,11 @@ namespace Diagnosis.Models
                 OnWordTemplatesChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
+        public virtual bool IsEmpty()
+        {
+            return !Words.Any();
+        }
+
         protected internal virtual void AddSpecVoc(SpecialityVocabularies sv)
         {
             Contract.Requires(sv != null);
