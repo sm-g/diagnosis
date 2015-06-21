@@ -42,6 +42,8 @@ namespace Diagnosis.Client.App.Behaviors
         private Point start;
         private Point end;
 
+        private bool registered;
+
         private ListBoxSelector(ListBox listBox)
         {
             this.listBox = listBox;
@@ -149,6 +151,7 @@ namespace Diagnosis.Client.App.Behaviors
                 this.listBox.PreviewMouseLeftButtonDown += this.OnPreviewMouseLeftButtonDown;
                 this.listBox.MouseLeftButtonUp += this.OnMouseLeftButtonUp;
                 this.listBox.MouseMove += this.OnMouseMove;
+                this.registered = true;
             }
 
             // Return success if we found the ScrollContentPresenter
@@ -157,6 +160,12 @@ namespace Diagnosis.Client.App.Behaviors
 
         private void UnRegister()
         {
+            if (!registered)
+            {
+                return;
+            }
+
+            this.registered = false;
             this.StopSelection();
 
             // Remove all the event handlers so this instance can be reclaimed by the GC.
@@ -270,14 +279,13 @@ namespace Diagnosis.Client.App.Behaviors
         private void StopSelection()
         {
             // Hide the selection rectangle and stop the auto scrolling.
-            if (this.selectionRect != null)
-                this.selectionRect.IsEnabled = false;
+
+            this.selectionRect.IsEnabled = false;
             this.autoScroller.IsEnabled = false;
+
             // focus on last selected item
             if (this.selector.lastSelectedItem != null)
-            {
                 this.selector.lastSelectedItem.Focus();
-            }
         }
 
         private void StartSelection(Point location)
