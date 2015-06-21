@@ -1,11 +1,8 @@
-﻿using Diagnosis.Common.Presentation.DebugTools;
-using Diagnosis.Common.Util;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
@@ -14,18 +11,27 @@ namespace Diagnosis.Common.Presentation
 {
     public class Startuper
     {
-        public static void CheckSingleInstance(Guid appGuid, Application app, string appName)
+        static Mutex mutex;
+
+        public static bool CheckSingleInstance(Guid appGuid, Application app, string appName)
         {
-            bool aIsNewInstance = false;
-            var myMutex = new Mutex(true, appGuid.ToString(), out aIsNewInstance);
-            if (!aIsNewInstance)
+            // unique id for global mutex - Global prefix means it is global to the machine
+            string mutexId = string.Format("Global\\{{{0}}}", appGuid);
+            bool createdNew;
+
+            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+            var securitySettings = new MutexSecurity();
+            securitySettings.AddAccessRule(allowEveryoneRule);
+
+            mutex = new Mutex(false, mutexId, out createdNew, securitySettings);
+            if (!createdNew)
             {
                 MessageBox.Show("Приложение уже запущено.", appName, MessageBoxButton.OK, MessageBoxImage.Information);
                 app.Shutdown();
 
-                return;
+                return false;
             }
-
+            return true;
         }
 
         public static void SetWpfCulture()
@@ -38,7 +44,5 @@ namespace Diagnosis.Common.Presentation
 
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level = System.Diagnostics.SourceLevels.Error;
         }
-
-      
     }
 }

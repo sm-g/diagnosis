@@ -34,13 +34,20 @@ namespace Diagnosis.Server.App
 
         protected override void OnExit(ExitEventArgs e)
         {
+            if (inExit)
+                return;
+
             inExit = true;
             Diagnosis.Server.App.Properties.Settings.Default.Save();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            Startuper.CheckSingleInstance(new Guid(appGuid), App.Current, "Diagnosis Server");
+            if (!Startuper.CheckSingleInstance(new Guid(appGuid), App.Current, "Diagnosis Server"))
+            {
+                inExit = true;
+                return;
+            }
 
             // command line args
             for (int i = 0; i != e.Args.Length; ++i)
