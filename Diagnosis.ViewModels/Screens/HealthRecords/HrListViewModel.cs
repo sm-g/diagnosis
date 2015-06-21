@@ -314,6 +314,10 @@ namespace Diagnosis.ViewModels.Screens
                     value.IsSelected = true;
                     Contract.Assume(selectedOrder.Contains(value));
                 }
+                else
+                {
+                    hrViewer.Select(null, holder);
+                }
 
                 if (doNotNotifySelectedChanged.CanEnter)
                     OnPropertyChanged(() => SelectedHealthRecord);

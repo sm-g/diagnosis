@@ -149,6 +149,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void HightlightLastOpenedFor(CardItemViewModel vm)
         {
+            // максимум один подсвеченный на каждом уровне
+
             vm.Children.ForAll(x => x.IsHighlighted = false);
             var holder = viewer.GetLastOpenedFor(vm.Holder);
             var item = vm.Children.Where(x => x.Holder == holder).FirstOrDefault();

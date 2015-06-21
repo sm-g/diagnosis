@@ -152,18 +152,28 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(newHr, card.HrEditor.HealthRecord.healthRecord);
         }
 
-        #region Selection
-
         [TestMethod]
-        public void SelectNewHr()
+        public void HightlightLastOpenedCardItems()
         {
-            card.Open(p[1]);
-            card.HrList.SelectHealthRecords(new[] { hr[20], hr[21] });
-            card.HrList.AddHealthRecordCommand.Execute(null);
+            card.Open(a[2]);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[2].Course).IsHighlighted);
 
-            Assert.AreEqual(1, card.HrList.SelectedHealthRecords.Count());
-            Assert.AreEqual(p[1].HealthRecords.Last(), card.HrList.SelectedHealthRecord.healthRecord);
+            card.Open(a[3]);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[3].Course).IsHighlighted);
+            Assert.IsFalse(card.Navigator.FindItemVmOf(a[2].Course).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[2]).IsHighlighted);
+            Assert.IsFalse(card.Navigator.FindItemVmOf(a[3]).IsHighlighted);
+
+            card.Open(a[5]);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[2]).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[3]).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[3].Course).IsHighlighted);
+            Assert.IsTrue(card.Navigator.FindItemVmOf(a[5].Course).IsHighlighted);
         }
+
+        #region Hr List Selection
+
+
 
         [TestMethod]
         public void SelectManyShowEditor()

@@ -57,12 +57,22 @@ namespace Diagnosis.ViewModels.Tests
         }
 
         [TestMethod]
-        public void SelectNotInList()
+        public void CanNotSelectHrNotInList()
         {
             l.SelectHealthRecord(hr[1]);
 
             Assert.AreEqual(null, l.SelectedHealthRecord);
             Assert.AreEqual(0, l.SelectedHealthRecords.Count());
+        }
+
+        [TestMethod]
+        public void SelectNewHr()
+        {
+            l.SelectHealthRecords(new[] { hr[20], hr[21] });
+            l.AddHealthRecordCommand.Execute(null);
+            
+            Assert.AreEqual(1, l.SelectedHealthRecords.Count());
+            Assert.AreEqual(a[2].HealthRecords.Last(), l.SelectedHealthRecord.healthRecord);
         }
 
         [TestMethod]
@@ -162,16 +172,6 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
-        [TestMethod]
-        public void DateEditorSavesOpenedState()
-        {
-            l.SelectHealthRecord(hr[20]);
-            card.ToogleHrEditor();
-            card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded = true;
-
-            l.MoveHrSelectionCommand.Execute(true);
-            Assert.AreEqual(true, card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded);
-        }
 
         [TestMethod]
         public void MoveEmptyHrSelection()
@@ -635,7 +635,38 @@ namespace Diagnosis.ViewModels.Tests
         }
         #endregion Sorting and Grouping
 
+        [TestMethod]
+        public void SelectLastSelectedHr()
+        {
+            l.SelectHealthRecord(hr[20]);
+            card.Open(a[1]);
+            card.Open(a[2]);
 
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);        
+        }
+
+
+        [TestMethod]
+        public void SelectNothingAsLastSelectedHr()
+        {
+            l.SelectHealthRecord(hr[20]);
+            l.SelectedHealthRecord = null;
+            card.Open(a[1]);
+            card.Open(a[2]);
+
+            Assert.AreEqual(null, l.SelectedHealthRecord);
+        }
+
+        [TestMethod]
+        public void DateEditorSavesOpenedState()
+        {
+            l.SelectHealthRecord(hr[20]);
+            card.ToogleHrEditor();
+            card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded = true;
+
+            l.MoveHrSelectionCommand.Execute(true);
+            Assert.AreEqual(true, card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded);
+        }
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
             var hr = l.holder.AddHealthRecord(d1);
