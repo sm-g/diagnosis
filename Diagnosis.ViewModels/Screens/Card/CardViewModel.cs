@@ -318,6 +318,8 @@ namespace Diagnosis.ViewModels.Screens
                 if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListSorting, true, out sort))
                     HrList.Sorting = sort;
 
+                HrList.SelectLastSelectedForHolder();
+
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.HrsSaved += (s, e) =>
                 {

@@ -99,7 +99,6 @@ namespace Diagnosis.ViewModels.Screens
             Grouping = grouping;
             Sorting = sorting;
             SetHrExtra(HealthRecords);
-            SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
 
         public event EventHandler HrsSaved;
@@ -853,6 +852,11 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             vms.ForAll(setter);
+        }
+
+        public void SelectLastSelectedForHolder()
+        {
+            SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
 
         /// <summary>
