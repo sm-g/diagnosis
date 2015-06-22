@@ -3,10 +3,12 @@ using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Screens;
+using NHibernate;
 using PasswordHash;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+
 using System.Linq;
 
 namespace Diagnosis.ViewModels
@@ -21,6 +23,7 @@ namespace Diagnosis.ViewModels
 
         private List<Screen> doctorScreens = new List<Screen> { Screen.Login, Screen.Card, Screen.Patients, Screen.Words, Screen.Criteria };
         private List<Screen> adminScreens = new List<Screen> { Screen.Login, Screen.Doctors, Screen.Sync, Screen.Vocabularies };
+        private IUser _curUser;
 
         private AuthorityController()
         {
@@ -29,13 +32,34 @@ namespace Diagnosis.ViewModels
             doctorScreens.Add(Screen.Sync);
             doctorScreens.Add(Screen.Vocabularies);
 #endif
+
+            this.Subscribe(Event.NewSession, (e) =>
+            {
+                var session = e.GetValue<ISession>(MessageKeys.Session);
+
+                if (CurrentUser != null)
+                {
+                    CurrentUser = session.Load<IUser>(CurrentUser.Id);
+                }
+            });
         }
 
         public static AuthorityController Default { get { return lazyInstance.Value; } }
 
         public Doctor CurrentDoctor { get; private set; }
 
-        public IUser CurrentUser { get; private set; }
+        public IUser CurrentUser
+        {
+            get { return _curUser; }
+            private set
+            {
+                if (_curUser != value)
+                {
+                    _curUser = value;
+                    CurrentDoctor = value as Doctor;
+                }
+            }
+        }
 
         public bool AutoLogon { get; set; }
 
@@ -45,7 +69,6 @@ namespace Diagnosis.ViewModels
             {
                 LogOut();
                 CurrentUser = user;
-                CurrentDoctor = user as Doctor;
                 OnLoggedIn(user);
 
                 if (CurrentDoctor != null)
@@ -90,7 +113,6 @@ namespace Diagnosis.ViewModels
         public void LogOut()
         {
             AutoLogon = false;
-            CurrentDoctor = null;
             CurrentUser = null;
             OnLoggedOut();
         }

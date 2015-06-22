@@ -20,6 +20,7 @@ using System.Windows.Markup;
 
 [assembly: InternalsVisibleTo("Diagnosis.Tests")]
 [assembly: InternalsVisibleTo("Diagnosis.ViewModels.Tests")]
+[assembly: InternalsVisibleTo("Diagnosis.Data.Tests")]
 
 [assembly: XmlnsPrefix("http://schemas.smg.com/diagnosis", "diag")]
 [assembly: XmlnsDefinition("http://schemas.smg.com/diagnosis", "Diagnosis.ViewModels")]

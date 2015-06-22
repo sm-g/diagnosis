@@ -22,16 +22,16 @@ namespace Diagnosis.ViewModels.Screens
         private IHrEditorAutocomplete _autocomplete;
         private HealthRecordViewModel _hr;
         private ISession session;
-        private Doctor doctor;
         private bool _focused;
         private IEnumerable<HrCategory> _categories;
         private EventMessageHandler handler;
 
         public HrEditorViewModel(ISession session)
         {
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
+
             this.session = session;
 
-            doctor = AuthorityController.CurrentDoctor;
             handler = this.Subscribe(Event.NewSession, (e) =>
             {
                 var s = e.GetValue<ISession>(MessageKeys.Session);
@@ -267,7 +267,7 @@ namespace Diagnosis.ViewModels.Screens
             var sugMaker = new SuggestionsMaker(session, AuthorityController.CurrentDoctor)
             {
                 ShowChildrenFirst = true,
-                AddQueryToSuggestions = doctor.Settings.AddQueryToSuggestions,
+                AddQueryToSuggestions = AuthorityController.CurrentDoctor.Settings.AddQueryToSuggestions,
             };
 
             Autocomplete = new HrEditorAutocomplete(sugMaker, initials);
@@ -409,8 +409,8 @@ namespace Diagnosis.ViewModels.Screens
                 OnUnloaded(hr);
 
                 // сохраняем настройки редактора
-                doctor.Settings.AddQueryToSuggestions = addQuery;
-                session.DoSave(doctor);
+                AuthorityController.CurrentDoctor.Settings.AddQueryToSuggestions = addQuery;
+                session.DoSave(AuthorityController.CurrentDoctor);
             }
         }
         private void ReplaceSession(ISession s)

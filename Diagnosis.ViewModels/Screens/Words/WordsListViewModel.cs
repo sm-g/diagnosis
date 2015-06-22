@@ -20,17 +20,17 @@ namespace Diagnosis.ViewModels.Screens
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;
         private WordViewModel _current;
-        private Doctor doctor;
         private FilterableListHelper<Word, WordViewModel> filterHelper;
 
         public WordsListViewModel()
         {
-            doctor = AuthorityController.CurrentDoctor;
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
 
             _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
+                var doctor = AuthorityController.CurrentDoctor;
                 MakeVms(Filter.Results.Where(x => doctor.Words.Contains(x)));
             };
 
@@ -159,7 +159,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return doctor.Words.Count() == 0;
+                return AuthorityController.CurrentDoctor.Words.Count() == 0;
             }
         }
 

@@ -29,13 +29,10 @@ namespace Diagnosis.ViewModels.Screens
         private bool _isMaleVis;
         private bool _isLastUpdatedVis;
         private ListCollectionView view;
-        private Doctor doctor;
         private FilterableListHelper<Patient, PatientViewModel> filterHelper;
 
         public PatientsListViewModel()
         {
-            doctor = AuthorityController.CurrentDoctor;
-
             _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
             {
@@ -326,6 +323,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SetupColumnsVisibility()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             PatientsViewSortingColumn visCols;
             if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListVisibleColumns, true, out visCols))
             {
@@ -343,6 +342,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SetupSorting()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             PatientsViewSortingColumn sort;
             if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListSorting, true, out sort))
                 Sorting = sort;
@@ -358,6 +359,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SaveDoctorSettings()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             if (view.SortDescriptions.Count > 0)
             {
                 var sort = view.SortDescriptions.FirstOrDefault();

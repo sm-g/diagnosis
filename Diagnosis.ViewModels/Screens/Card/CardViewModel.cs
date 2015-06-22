@@ -18,7 +18,6 @@ namespace Diagnosis.ViewModels.Screens
         readonly HrEditorViewModel _hrEditor;
         readonly CardNavigator _navigator;
         readonly EventMessageHandlersManager handlers;
-        readonly Doctor doctor;
         HrListViewModel _hrList;
         HeaderViewModel _header;
         bool editorWasOpened;
@@ -31,7 +30,8 @@ namespace Diagnosis.ViewModels.Screens
             if (resetHistory || viewer == null)
                 ResetHistory();
 
-            doctor = AuthorityController.CurrentDoctor;
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
+
             _navigator = new CardNavigator(viewer);
             _hrEditor = new HrEditorViewModel(Session);
 
@@ -59,8 +59,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // сохраняем запись
                 var hr = e.hr as HealthRecord;
-                if (hr.Doctor == doctor)  // добавлять только если врач редактировал свою запись?
-                    doctor.AddWords(hr.Words);
+                if (hr.Doctor == AuthorityController.CurrentDoctor)  // добавлять только если врач редактировал свою запись?
+                    AuthorityController.CurrentDoctor.AddWords(hr.Words);
                 Session.DoSave(hr);
             };
             HrEditor.Closing += (s, e) =>
@@ -162,7 +162,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedRoot.AddCourse(doctor);
+                    viewer.OpenedRoot.AddCourse(AuthorityController.CurrentDoctor);
                 });
             }
         }
@@ -173,7 +173,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedMiddle.AddAppointment(doctor);
+                    viewer.OpenedMiddle.AddAppointment(AuthorityController.CurrentDoctor);
                 },
                 () => viewer.OpenedMiddle != null && viewer.OpenedMiddle.End == null);
             }
@@ -307,7 +307,7 @@ namespace Diagnosis.ViewModels.Screens
             if (holder != null)
             {
                 HrList = new HrListViewModel(holder, Session);
-
+                var doctor = AuthorityController.CurrentDoctor;
                 HrViewColumn gr;
                 if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListGrouping, true, out gr))
                     HrList.Grouping = gr;
@@ -377,6 +377,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void ExecutePendingActions()
         {
+            if (pendingAction == null)
+                return;
             pendingAction();
             pendingAction = null;
         }
@@ -459,10 +461,12 @@ namespace Diagnosis.ViewModels.Screens
             }
             else if (e.PropertyName == "Sorting")
             {
+                var doctor = AuthorityController.CurrentDoctor;
                 doctor.Settings.HrListSorting = HrList.Sorting.ToString();
             }
             else if (e.PropertyName == "Grouping")
             {
+                var doctor = AuthorityController.CurrentDoctor;
                 doctor.Settings.HrListGrouping = HrList.Grouping.ToString();
             }
         }
@@ -491,7 +495,7 @@ namespace Diagnosis.ViewModels.Screens
                     Navigator.Dispose();
                     handlers.Dispose();
 
-                    Session.DoSave(doctor);
+                    Session.DoSave(AuthorityController.CurrentDoctor);
                 }
             }
             finally
