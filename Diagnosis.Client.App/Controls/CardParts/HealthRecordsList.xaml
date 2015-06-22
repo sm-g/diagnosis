@@ -231,8 +231,7 @@
 
             <ListBox x:Name="records"
                      ItemsSource="{Binding HealthRecords}"
-                     IsSynchronizedWithCurrentItem="False"
-                     SelectedItem="{Binding SelectedHealthRecord}"
+                     VirtualizingStackPanel.IsVirtualizing="False"
                      BorderThickness="0"
                      HorizontalContentAlignment="Stretch"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
