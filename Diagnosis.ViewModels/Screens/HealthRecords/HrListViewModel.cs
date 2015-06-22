@@ -58,7 +58,7 @@ namespace Diagnosis.ViewModels.Screens
         private VisibleRelayCommand<bool> _moveHr;
         private Saver saver;
 
-        public HrListViewModel(IHrsHolder holder, ISession session)
+        public HrListViewModel(IHrsHolder holder, ISession session, HrViewColumn sorting = HrViewColumn.Ord, HrViewColumn grouping = HrViewColumn.Category)
         {
             Contract.Requires(holder != null);
             Contract.Requires(session != null);
@@ -68,21 +68,6 @@ namespace Diagnosis.ViewModels.Screens
             saver = new Saver(session);
 
             HolderVm = new HolderViewModel(holder);
-            Sortings = new List<HrViewColumn>() {
-#if DEBUG
-               HrViewColumn.None,
-#endif
-               HrViewColumn.Ord,
-               HrViewColumn.Category,
-               HrViewColumn.Date,
-               HrViewColumn.DescribedAt,
-               HrViewColumn.CreatedAt,
-            };
-            Groupings = new List<HrViewColumn>() {
-               HrViewColumn.None,
-               HrViewColumn.Category,
-               HrViewColumn.CreatedAt,
-            };
 
             doNotNotifyLastSelectedChanged = new FlagActionWrapper(() =>
             {
@@ -111,8 +96,8 @@ namespace Diagnosis.ViewModels.Screens
             IsDropTargetEnabled = true;
             IsRectSelectEnabled = true;
 
-            Grouping = HrViewColumn.Category;
-            Sorting = HrViewColumn.Ord;
+            Grouping = grouping;
+            Sorting = sorting;
             SetHrExtra(HealthRecords);
             SelectHealthRecord(hrViewer.GetLastSelectedFor(holder));
         }
@@ -182,61 +167,64 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (e.PropertyName == "IsSelected")
                 {
-                    // simulate IsSynchronizedWithCurrentItem for Extended mode
-                    // SelectedHealthRecord points to last IsSelected without unselect prev
-                    // select may be by IsSelected (rect), so need to set SelectedHealthRecord
-                    if (hrvm.IsSelected)
-                    {
-                        if (!selectedOrder.Contains(hrvm))
-                            selectedOrder.Add(hrvm);
-                        else
-                            logger.DebugFormat("selectedOrder contains {0}", hrvm);
-
-                        using (unselectPrev.Join())
-                        {
-                            if (SelectedHealthRecords.Count() > 1)
-                                // dont's notify SelectedChanged to save selection
-                                using (doNotNotifySelectedChanged.Join())
-                                {
-                                    SelectedHealthRecord = hrvm;
-                                }
-                            else
-                                SelectedHealthRecord = hrvm;
-                        }
-                        //logger.DebugFormat("select {0}", hrvm);
-                    }
-                    else if (!inRemoveDup)
-                    {
-                        selectedOrder.Remove(hrvm);
-                        //logger.DebugFormat("unselect {0}", hrvm);
-
-                        // Сняли выделение, фокус остался — enter будет открывать этот элемент, а выделен другой. Это ок.
-                        // Выбранным становится последний.
-
-                        if (SelectedHealthRecord == hrvm)
-                            using (doNotNotifySelectedChanged.Join())
-                            {
-                                SelectedHealthRecord = LastSelected;
-                            }
-                    }
-                    if (doNotNotifyLastSelectedChanged.CanEnter)
-                    {
-                        OnPropertyChanged(() => LastSelected);
-                        //logger.DebugFormat("selected in order\n{0}", string.Join("\n", selectedOrder));
-                    }
+                    OnHrvmIsSelectedChanged(hrvm);
                 }
-
-                if (Sorting.ToSortingProperty() == e.PropertyName ||
-                    Grouping.ToGroupingProperty() == e.PropertyName)
+                else if (Sorting.ToSortingProperty() == e.PropertyName ||
+                         Grouping.ToGroupingProperty() == e.PropertyName)
                 {
                     //logger.DebugFormat("edit {0} in {1}", e.PropertyName, hrvm);
                     SimulateLiveshaping(hrvm);
                 }
-
-                if (e.PropertyName == "IsChecked")
+                else if (e.PropertyName == "IsChecked")
                 {
                     OnPropertyChanged(() => CheckedHrCount);
                 }
+            }
+        }
+
+        private void OnHrvmIsSelectedChanged(ShortHealthRecordViewModel hrvm)
+        {
+            // simulate IsSynchronizedWithCurrentItem for Extended mode
+            // SelectedHealthRecord points to last IsSelected without unselect prev
+            // select may be by IsSelected (rect), so need to set SelectedHealthRecord
+            if (hrvm.IsSelected)
+            {
+                if (!selectedOrder.Contains(hrvm))
+                    selectedOrder.Add(hrvm);
+                else
+                    logger.DebugFormat("selectedOrder contains {0}", hrvm);
+
+                using (unselectPrev.Join())
+                {
+                    if (SelectedHealthRecords.Count() > 1)
+                        // dont's notify SelectedChanged to save selection
+                        using (doNotNotifySelectedChanged.Join())
+                        {
+                            SelectedHealthRecord = hrvm;
+                        }
+                    else
+                        SelectedHealthRecord = hrvm;
+                }
+                //logger.DebugFormat("select {0}", hrvm);
+            }
+            else if (!inRemoveDup)
+            {
+                selectedOrder.Remove(hrvm);
+                //logger.DebugFormat("unselect {0}", hrvm);
+
+                // Сняли выделение, фокус остался — enter будет открывать этот элемент, а выделен другой. Это ок.
+                // Выбранным становится последний.
+
+                if (SelectedHealthRecord == hrvm)
+                    using (doNotNotifySelectedChanged.Join())
+                    {
+                        SelectedHealthRecord = LastSelected;
+                    }
+            }
+            if (doNotNotifyLastSelectedChanged.CanEnter)
+            {
+                OnPropertyChanged(() => LastSelected);
+                //logger.DebugFormat("selected in order\n{0}", string.Join("\n", selectedOrder));
             }
         }
 
@@ -251,9 +239,34 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        public IList<HrViewColumn> Sortings { get; private set; }
+        public IList<HrViewColumn> Sortings
+        {
+            get
+            {
+                return new[]{
+#if DEBUG
+                   HrViewColumn.None,
+#endif
+                   HrViewColumn.Ord,
+                   HrViewColumn.Category,
+                   HrViewColumn.Date,
+                   HrViewColumn.DescribedAt,
+                   HrViewColumn.CreatedAt,
+                };
+            }
+        }
 
-        public IList<HrViewColumn> Groupings { get; private set; }
+        public IList<HrViewColumn> Groupings
+        {
+            get
+            {
+                return new[] {
+                    HrViewColumn.None,
+                    HrViewColumn.Category,
+                    HrViewColumn.CreatedAt,
+                };
+            }
+        }
 
         public HolderViewModel HolderVm { get; private set; }
 
@@ -264,10 +277,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public ShortHealthRecordViewModel LastSelected
         {
-            get
-            {
-                return selectedOrder.LastOrDefault();
-            }
+            get { return selectedOrder.LastOrDefault(); }
         }
 
         public ShortHealthRecordViewModel SelectedHealthRecord
@@ -332,10 +342,7 @@ namespace Diagnosis.ViewModels.Screens
         /// </summary>
         public ShortHealthRecordViewModel SelectedCopy
         {
-            get
-            {
-                return _selectedCopy;
-            }
+            get { return _selectedCopy; }
             set
             {
                 if (_selectedCopy != value)
@@ -522,13 +529,7 @@ namespace Diagnosis.ViewModels.Screens
 
         #endregion Commands
 
-        public int CheckedHrCount
-        {
-            get
-            {
-                return HealthRecords.Where(hr => hr.IsChecked).Count();
-            }
-        }
+        public int CheckedHrCount { get { return HealthRecords.Where(hr => hr.IsChecked).Count(); } }
 
         public bool ShowCanAlso
         {
@@ -540,10 +541,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public bool IsRectSelectEnabled
         {
-            get
-            {
-                return _rectSelect;
-            }
+            get { return _rectSelect; }
             set
             {
                 if (_rectSelect != value)
@@ -556,10 +554,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public bool CanReorder
         {
-            get
-            {
-                return _canReorder;
-            }
+            get { return _canReorder; }
             set
             {
                 if (_canReorder != value)
@@ -575,10 +570,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public bool IsFocused
         {
-            get
-            {
-                return _focused;
-            }
+            get { return _focused; }
             set
             {
                 if (_focused != value)
@@ -593,10 +585,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HrViewColumn Sorting
         {
-            get
-            {
-                return _sort;
-            }
+            get { return _sort; }
             set
             {
                 Contract.Requires(Sortings.Contains(value));
@@ -610,29 +599,16 @@ namespace Diagnosis.ViewModels.Screens
 #endif
                         using (view.DeferRefresh())
                         {
-                            view.SortDescriptions.Clear();
-
-                            // сначала сортируем по группам
-                            AddSortForGrouping(Grouping);
-
-                            // основная сортировка
-                            var sort = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
-                            if (view.SortDescriptions.IndexOf(sort) == -1)
-                                view.SortDescriptions.Add(sort);
-
-                            // сортировка по порядку всегда есть
-                            var ordSd = new SortDescription(HrViewColumn.Ord.ToSortingProperty(), ListSortDirection.Ascending);
-                            if (view.SortDescriptions.IndexOf(ordSd) == -1)
-                                view.SortDescriptions.Add(ordSd);
+                            SortViewBy(value);
                         }
 
                     _sort = value;
 
                     SetHrExtra(HealthRecords);
                     OnPropertyChanged(() => Sorting);
-                    CanReorder = (Sorting == HrViewColumn.Ord
+                    CanReorder = (_sort == HrViewColumn.Ord
 #if DEBUG
- || Sorting == HrViewColumn.None
+ || _sort == HrViewColumn.None
 #endif
 );
                 }
@@ -641,10 +617,7 @@ namespace Diagnosis.ViewModels.Screens
 
         public HrViewColumn Grouping
         {
-            get
-            {
-                return _group;
-            }
+            get { return _group; }
             set
             {
                 Contract.Requires(Groupings.Contains(value));
@@ -653,21 +626,7 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     using (view.DeferRefresh())
                     {
-                        // убрать сортировку по старой группировке, если Sorting не по ней
-                        // TODO заново отсортировать, если порядок сортировки при группировке другой
-                        var oldGroupingSd = new SortDescription(_group.ToSortingProperty(), ListSortDirection.Ascending);
-                        view.SortDescriptions.Remove(oldGroupingSd);
-                        if (Sorting == _group && oldGroupingSd.PropertyName != null)
-                            view.SortDescriptions.Insert(0, oldGroupingSd);
-
-                        view.GroupDescriptions.Clear();
-                        if (value != HrViewColumn.None)
-                        {
-                            AddSortForGrouping(value);
-
-                            var groupingGd = new PropertyGroupDescription(value.ToGroupingProperty());
-                            view.GroupDescriptions.Add(groupingGd);
-                        }
+                        GroupViewBy(value);
                     }
                     _group = value;
 
@@ -675,6 +634,60 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => Grouping);
                 }
             }
+        }
+
+        private void SortViewBy(HrViewColumn value)
+        {
+            view.SortDescriptions.Clear();
+
+            // сначала сортируем по группам
+            AddSortForGrouping(Grouping);
+
+            // основная сортировка
+            var sort = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
+            if (view.SortDescriptions.IndexOf(sort) == -1)
+                view.SortDescriptions.Add(sort);
+
+            // сортировка по порядку всегда есть
+            var ordSd = new SortDescription(HrViewColumn.Ord.ToSortingProperty(), ListSortDirection.Ascending);
+            if (view.SortDescriptions.IndexOf(ordSd) == -1)
+                view.SortDescriptions.Add(ordSd);
+        }
+
+        private void GroupViewBy(HrViewColumn value)
+        {
+            // убрать сортировку по старой группировке, если Sorting не по ней
+            // TODO заново отсортировать, если порядок сортировки при группировке другой
+            var oldGroupingSd = new SortDescription(_group.ToSortingProperty(), ListSortDirection.Ascending);
+            view.SortDescriptions.Remove(oldGroupingSd);
+            if (Sorting == _group && oldGroupingSd.PropertyName != null)
+                view.SortDescriptions.Insert(0, oldGroupingSd);
+
+            view.GroupDescriptions.Clear();
+            if (value != HrViewColumn.None)
+            {
+                AddSortForGrouping(value);
+
+                var groupingGd = new PropertyGroupDescription(value.ToGroupingProperty());
+                view.GroupDescriptions.Add(groupingGd);
+            }
+        }
+
+        /// <summary>
+        /// Добавляет сортировку при группировке (первой).
+        /// </summary>
+        /// <param name="value">Колонка для группировки</param>
+        private void AddSortForGrouping(HrViewColumn value)
+        {
+            Contract.Ensures(value == HrViewColumn.None ||
+                view.SortDescriptions[0].PropertyName == value.ToSortingProperty());
+
+            if (value == HrViewColumn.None)
+                return;
+
+            var groupingSd = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
+            view.SortDescriptions.Remove(groupingSd);
+            view.SortDescriptions.Insert(0, groupingSd);
         }
 
         internal HealthRecord AddHr()
@@ -703,23 +716,6 @@ namespace Diagnosis.ViewModels.Screens
             }
 
             return hr;
-        }
-
-        /// <summary>
-        /// Добавляет сортировку при группировке (первой).
-        /// </summary>
-        /// <param name="value">Колонка для группировки</param>
-        private void AddSortForGrouping(HrViewColumn value)
-        {
-            Contract.Ensures(value == HrViewColumn.None ||
-                view.SortDescriptions[0].PropertyName == value.ToSortingProperty());
-
-            if (value == HrViewColumn.None)
-                return;
-
-            var groupingSd = new SortDescription(value.ToSortingProperty(), ListSortDirection.Ascending);
-            view.SortDescriptions.Remove(groupingSd);
-            view.SortDescriptions.Insert(0, groupingSd);
         }
 
         /// <summary>
@@ -959,10 +955,7 @@ namespace Diagnosis.ViewModels.Screens
             // добавляем выделение - наоборот
             Contract.Invariant(disposed || LastSelected != null || SelectedHealthRecord == null);
 
-            // без повторов
             Contract.Invariant(selectedOrder.IsUnique());
-
-            //Contract.Invariant(disposed || SelectedHealthRecord == null || SelectedHealthRecord.IsSelected);
         }
     }
 }
