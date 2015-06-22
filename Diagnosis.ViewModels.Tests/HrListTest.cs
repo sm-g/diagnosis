@@ -1,4 +1,5 @@
 ﻿using Diagnosis.Common;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.Models.Enums;
 using Diagnosis.ViewModels.Controls.Autocomplete;
@@ -70,7 +71,7 @@ namespace Diagnosis.ViewModels.Tests
         {
             l.SelectHealthRecords(new[] { hr[20], hr[21] });
             l.AddHealthRecordCommand.Execute(null);
-            
+
             Assert.AreEqual(1, l.SelectedHealthRecords.Count());
             Assert.AreEqual(a[2].HealthRecords.Last(), l.SelectedHealthRecord.healthRecord);
         }
@@ -172,7 +173,6 @@ namespace Diagnosis.ViewModels.Tests
             Assert.AreEqual(1, l.SelectedHealthRecords.Count());
         }
 
-
         [TestMethod]
         public void MoveEmptyHrSelection()
         {
@@ -220,6 +220,27 @@ namespace Diagnosis.ViewModels.Tests
 
             // move selection to last in view
             Assert.AreEqual(hr1, l.SelectedHealthRecord.healthRecord);
+        }
+
+        [TestMethod]
+        public void SelectLastSelectedHr()
+        {
+            l.SelectHealthRecord(hr[20]);
+            card.Open(a[1]);
+            card.Open(a[2]);
+
+            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);
+        }
+
+        [TestMethod]
+        public void SelectNothingAsLastSelectedHr()
+        {
+            l.SelectHealthRecord(hr[20]);
+            l.SelectedHealthRecord = null;
+            card.Open(a[1]);
+            card.Open(a[2]);
+
+            Assert.AreEqual(null, l.SelectedHealthRecord);
         }
 
         #endregion Selection
@@ -633,29 +654,8 @@ namespace Diagnosis.ViewModels.Tests
             var vm = l.HealthRecords.Where(x => x.healthRecord == newHr).First();
             Assert.IsTrue(vm.IsDraggable);
         }
+
         #endregion Sorting and Grouping
-
-        [TestMethod]
-        public void SelectLastSelectedHr()
-        {
-            l.SelectHealthRecord(hr[20]);
-            card.Open(a[1]);
-            card.Open(a[2]);
-
-            Assert.AreEqual(hr[20], l.SelectedHealthRecord.healthRecord);        
-        }
-
-
-        [TestMethod]
-        public void SelectNothingAsLastSelectedHr()
-        {
-            l.SelectHealthRecord(hr[20]);
-            l.SelectedHealthRecord = null;
-            card.Open(a[1]);
-            card.Open(a[2]);
-
-            Assert.AreEqual(null, l.SelectedHealthRecord);
-        }
 
         [TestMethod]
         public void DateEditorSavesOpenedState()
@@ -667,6 +667,36 @@ namespace Diagnosis.ViewModels.Tests
             l.MoveHrSelectionCommand.Execute(true);
             Assert.AreEqual(true, card.HrEditor.HealthRecord.DateEditor.IsDateEditorExpanded);
         }
+
+        [TestMethod]
+        public void CanAddHrAfterReopenSession()
+        {
+            Load<Appointment>();
+            Load<HealthRecord>();
+            card.Dispose();
+            card = new CardViewModel(a[5], true);
+
+            var holder = card.Navigator.Current.Holder;
+            using (var t = session.BeginTransaction())
+            {
+                try
+                {
+                    session.Delete(holder);
+                    throw new System.AccessViolationException();
+                }
+                catch (System.Exception e)
+                {
+                    t.Rollback();
+                    session.Close();
+                    NHibernateHelper.ReopenSession(session.SessionFactory);
+                }
+            }
+
+            card.HrList.AddHr();
+
+            Assert.AreEqual(1, card.HrList.HealthRecords.Count);
+        }
+
         private HealthRecord AddHrToCard(CardViewModel card, string comment = null)
         {
             var hr = l.holder.AddHealthRecord(d1);

@@ -2,7 +2,6 @@
 using Diagnosis.Data.Sync;
 using Diagnosis.Models;
 using Diagnosis.Tests;
-using Diagnosis.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NHibernate.Linq;
 using System;
