@@ -13,6 +13,7 @@ using NHibernate.Driver;
 using NHibernate.Event;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Tool.hbm2ddl;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -22,7 +23,9 @@ namespace Diagnosis.Data
 {
     public class NHibernateHelper
     {
+        private const string sqliteInmemoryConstr = "Data Source=:memory:;Version=3;New=True;BinaryGuid=False";
         private static readonly System.Lazy<NHibernateHelper> lazyInstance = new System.Lazy<NHibernateHelper>(() => new NHibernateHelper());
+        private static List<NHibernateHelper> created = new List<NHibernateHelper>();
         private Configuration _cfg;
         private HbmMapping _mapping;
         private ISession _session;
@@ -31,12 +34,12 @@ namespace Diagnosis.Data
         private bool useSavedCfg;
 
         private bool inmem;
-        private const string sqliteInmemoryConstr = "Data Source=:memory:;Version=3;New=True;BinaryGuid=False";
         private Side side;
 
         protected NHibernateHelper()
         {
             useSavedCfg = true;
+            created.Add(this);
         }
 
         /// <summary>
@@ -59,8 +62,6 @@ namespace Diagnosis.Data
         }
 
         public bool ShowSql { get; set; }
-
-        public bool FromTest { get; set; }
 
         public Configuration Configuration
         {
@@ -198,6 +199,15 @@ namespace Diagnosis.Data
                .SetProperty(Environment.ShowSql, showSql ? "true" : "false");
         }
 
+        public static void ReopenSession(ISessionFactory f)
+        {
+            var nhib = created.FirstOrDefault(x => x.SessionFactory == f);
+            if (nhib == null) return;
+
+            var s = nhib.OpenSession();
+            nhib.Send(Event.NewSession, s.AsParams(MessageKeys.Session));
+        }
+
         /// <summary>
         /// Initialize connection, set InMemory if any error occured.
         /// </summary>
@@ -220,7 +230,6 @@ namespace Diagnosis.Data
             if (fail || conn == default(ConnectionInfo))
                 InMemory = true;
 
-
             connection = conn;
             return true;
         }
@@ -237,17 +246,22 @@ namespace Diagnosis.Data
         public ISession OpenSession()
         {
             //ExportSchemaToFile(Configuration, side);
-            var s = SessionFactory.OpenSession();
-            s.FlushMode = FlushMode.Commit;
+
+            if (_session != null && _session.IsOpen)
+            {
+                _session.Close();
+                _session.Dispose();
+            }
+
+            _session = SessionFactory.OpenSession();
+            _session.FlushMode = FlushMode.Commit;
 
             if (inmem)
             {
-                new SchemaExport(Configuration).Execute(false, true, false, s.Connection, null);
-                InMemoryHelper.FillData(Configuration, s);
+                new SchemaExport(Configuration).Execute(false, true, false, _session.Connection, null);
+                InMemoryHelper.FillData(Configuration, _session);
             }
-            if (FromTest) // same session in VMBase
-                _session = s;
-            return s;
+            return _session;
         }
 
         private Configuration LoadConfiguration()

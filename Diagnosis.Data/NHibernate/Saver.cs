@@ -1,12 +1,12 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using EventAggregator;
 using log4net;
 using NHibernate;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using EventAggregator;
 
 namespace Diagnosis.Data
 {
@@ -36,13 +36,9 @@ namespace Diagnosis.Data
                 }
                 catch (System.Exception e)
                 {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#else
+                    OnException(session, t, e);
+
                     return false;
-#endif
                 }
             }
         }
@@ -69,13 +65,9 @@ namespace Diagnosis.Data
                 }
                 catch (System.Exception e)
                 {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#else
+                    OnException(session, t, e);
+
                     return false;
-#endif
                 }
             }
         }
@@ -112,15 +104,22 @@ namespace Diagnosis.Data
                 }
                 catch (System.Exception e)
                 {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#else
+                    OnException(session, t, e);
+
                     return false;
-#endif
                 }
             }
+        }
+
+        private static void OnException(ISession session, ITransaction t, System.Exception e)
+        {
+            t.Rollback();
+            session.Close();
+
+            logger.Error(e);
+
+            NHibernateHelper.ReopenSession(session.SessionFactory);
+            typeof(Saver).Send(Event.ShowMessageOverlay, new object[] { e.Message, typeof(Saver) }.AsParams(MessageKeys.String, MessageKeys.Type));
         }
     }
 }

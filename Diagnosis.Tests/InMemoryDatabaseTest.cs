@@ -23,7 +23,6 @@ namespace Diagnosis.Tests
             Diagnosis.Data.Mappings.MappingHelper.Reset();
             NHibernateHelper.Default.InMemory = true;
             NHibernateHelper.Default.ShowSql = true;
-            NHibernateHelper.Default.FromTest = true;
             Constants.IsClient = true;
 
             session = NHibernateHelper.Default.OpenSession();
