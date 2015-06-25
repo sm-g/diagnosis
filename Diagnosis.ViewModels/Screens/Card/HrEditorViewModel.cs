@@ -253,9 +253,6 @@ namespace Diagnosis.ViewModels.Screens
             }
         }
 
-        /// <summary>
-        /// Создает автокомплит с начальными словами и комментами из редактируемой записи.
-        /// </summary>
         private void CreateAutoComplete()
         {
             if (Autocomplete != null)

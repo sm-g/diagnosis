@@ -42,6 +42,9 @@ namespace Diagnosis.Client.App
 
         protected override void OnExit(ExitEventArgs e)
         {
+            if (inExit)
+                return;
+
             inExit = true;
             this.Send(Event.Shutdown);
             this.Send(Event.SaveLayout);
@@ -51,7 +54,11 @@ namespace Diagnosis.Client.App
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            Startuper.CheckSingleInstance(new Guid(appGuid), App.Current, "Diagnosis");
+            if (!Startuper.CheckSingleInstance(new Guid(appGuid), App.Current, "Diagnosis"))
+            {
+                inExit = true;
+                return;
+            }
 
             // command line args
             for (int i = 0; i != e.Args.Length; ++i)

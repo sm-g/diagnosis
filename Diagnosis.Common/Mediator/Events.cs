@@ -58,14 +58,13 @@ namespace Diagnosis.Common
         EditUom,
         OpenSettings,
         OpenDialog,
-        OpenWindow,
 
         // card logic
         SendToSearch,
         DeleteHolder,
         AddHr,
 
-        // 
+        // crit logic 
         DeleteCrit,
 
         // nhibernate

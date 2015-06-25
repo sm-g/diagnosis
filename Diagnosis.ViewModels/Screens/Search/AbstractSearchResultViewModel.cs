@@ -14,18 +14,16 @@ namespace Diagnosis.ViewModels.Screens
 
     public abstract class AbstractSearchResultViewModel : ViewModelBase
     {
-        private EventMessageHandler handler;
-
         public AbstractSearchResultViewModel()
         {
-            handler = this.Subscribe(Event.EntityDeleted, (e) =>
+            emh.Add(this.Subscribe(Event.EntityDeleted, (e) =>
             {
                 // убираем удаленного холдера из результатов
                 var x = e.GetValue<IEntity>(MessageKeys.Entity);
                 var h = x as IHrsHolder;
                 if (h != null)
                     RemoveDeleted(h);
-            });
+            }));
         }
 
         public ObservableCollection<IResultItem> Patients { get; protected set; }
@@ -55,7 +53,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    handler.Dispose();
                     Patients.OfType<IDisposable>().ForAll(x => x.Dispose());
                     Patients = null;
                     Statistic.Dispose();

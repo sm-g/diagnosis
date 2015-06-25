@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels.Screens
         private static HierViewer<Estimator, CriteriaGroup, Criterion, ICrit> viewer;
         private DialogViewModel _curEditor;
         private bool naviagationExpected;
-        private EventMessageHandlersManager handlers;
 
         public CriteriaViewModel()
         {
@@ -45,19 +44,18 @@ namespace Diagnosis.ViewModels.Screens
             ests.ForEach(x =>
                 Navigator.AddRootItemFor(x));
 
-            handlers = new EventMessageHandlersManager(new EventMessageHandler[] {
-                this.Subscribe(Event.DeleteCrit, (e) =>
-                {
-                    var crit = e.GetValue<ICrit>(MessageKeys.Crit);
-                    DeleteCrit(crit);
-                }),
-                this.Subscribe(Event.EntityDeleted, (e) =>
-                {
-                    var entity = e.GetValue<IEntity>(MessageKeys.Entity);
-                    if (entity is ICrit)
-                        OnCritDeleted(entity as ICrit);
-                }),
-            });
+            emh.Add(this.Subscribe(Event.DeleteCrit, (e) =>
+            {
+                var crit = e.GetValue<ICrit>(MessageKeys.Crit);
+                DeleteCrit(crit);
+            }));
+
+            emh.Add(this.Subscribe(Event.EntityDeleted, (e) =>
+            {
+                var entity = e.GetValue<IEntity>(MessageKeys.Entity);
+                if (entity is ICrit)
+                    OnCritDeleted(entity as ICrit);
+            }));
 
             //var last = ests.LastOrDefault();
             //if (last != null)
@@ -119,7 +117,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
-                    handlers.Dispose();
                     CloseEditor();
                     Navigator.Dispose();
                 }

@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels.Screens
         static HierViewer<Patient, Course, Appointment, IHrsHolder> viewer;
         readonly HrEditorViewModel _hrEditor;
         readonly CardNavigator _navigator;
-        readonly EventMessageHandlersManager handlers;
         HrListViewModel _hrList;
         HeaderViewModel _header;
         bool editorWasOpened;
@@ -71,7 +70,7 @@ namespace Diagnosis.ViewModels.Screens
                 // restore selected?
             };
 
-            handlers = new EventMessageHandlersManager(new EventMessageHandler[] {
+            emh.Add(new EventMessageHandler[] {
                 this.Subscribe(Event.DeleteHolder, (e) =>
                 {
                     var holder = e.GetValue<IHrsHolder>(MessageKeys.Holder);
@@ -315,6 +314,8 @@ namespace Diagnosis.ViewModels.Screens
                 if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListSorting, true, out sort))
                     HrList.Sorting = sort;
 
+                HrList.SelectLastSelectedForHolder();
+
                 HrList.PropertyChanged += HrList_PropertyChanged;
                 HrList.HrsSaved += (s, e) =>
                 {
@@ -493,7 +494,6 @@ namespace Diagnosis.ViewModels.Screens
                     viewer.CloseAll();
 
                     Navigator.Dispose();
-                    handlers.Dispose();
 
                     Session.DoSave(AuthorityController.CurrentDoctor);
                 }

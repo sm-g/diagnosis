@@ -20,14 +20,14 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<WordViewModel> _words;
         private WordViewModel _current;
         private FilterableListHelper<Word, WordViewModel> filterHelper;
-        private EventMessageHandler handler;
 
         public WordsListViewModel()
         {
             Contract.Assume(AuthorityController.CurrentDoctor != null);
 
             CreateFilter();
-            handler = this.Subscribe(Event.NewSession, (e) => CreateFilter());
+            emh.Add(this.Subscribe(Event.NewSession, (e) => CreateFilter()));
+
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
@@ -198,7 +198,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 _filter.Dispose();
                 filterHelper.Dispose();
-                handler.Dispose();
             }
             base.Dispose(disposing);
         }

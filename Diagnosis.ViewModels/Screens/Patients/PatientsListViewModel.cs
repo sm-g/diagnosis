@@ -30,12 +30,12 @@ namespace Diagnosis.ViewModels.Screens
         private bool _isLastUpdatedVis;
         private ListCollectionView view;
         private FilterableListHelper<Patient, PatientViewModel> filterHelper;
-        private EventMessageHandler handler;
 
         public PatientsListViewModel()
         {
             CreateFilter();
-            handler = this.Subscribe(Event.NewSession, (e) => CreateFilter());
+            emh.Add(this.Subscribe(Event.NewSession, (e) => CreateFilter()));
+
             Filter.Filtered += (s, e) =>
             {
                 MakeVms(Filter.Results);
@@ -308,7 +308,6 @@ namespace Diagnosis.ViewModels.Screens
             {
                 _filter.Dispose();
                 filterHelper.Dispose();
-                handler.Dispose();
 
                 SaveDoctorSettings();
             }

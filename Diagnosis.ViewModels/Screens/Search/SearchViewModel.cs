@@ -25,7 +25,6 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<Estimator> _estimators;
         private Estimator _est;
         private OptionsLoader loader;
-        private EventMessageHandlersManager msgManager;
 
         public SearchViewModel()
         {
@@ -44,7 +43,7 @@ namespace Diagnosis.ViewModels.Screens
             Estimators = new ObservableCollection<Estimator>(ests);
             SelectedEstimator = ests.FirstOrDefault();
 
-            msgManager = new EventMessageHandlersManager(
+            emh.Add(
                 this.Subscribe(Event.SendToSearch, (e) =>
                 {
                     object pack = null;
@@ -384,7 +383,6 @@ namespace Diagnosis.ViewModels.Screens
         {
             if (disposing)
             {
-                msgManager.Dispose();
                 QueryEditor.Dispose();
                 if (Result != null)
                     Result.Dispose();

@@ -30,10 +30,6 @@ namespace Diagnosis.ViewModels.Screens
 
             IsIntervalEditorOpened = hr.FromDate != hr.ToDate;
 
-            // для даты-точки нет конца интервала
-            if (hr.FromDate == hr.ToDate)
-                hr.ToDate.Clear();
-
             SetupDateSuggsetions();
         }
 

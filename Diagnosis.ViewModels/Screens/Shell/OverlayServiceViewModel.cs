@@ -8,12 +8,9 @@ namespace Diagnosis.ViewModels.Screens
 {
     public class OverlayServiceViewModel : ViewModelBase
     {
-        private readonly EventMessageHandlersManager emh;
-
         public OverlayServiceViewModel()
         {
             Overlays = new ObservableCollection<OverlayViewModel>();
-            emh = new EventMessageHandlersManager();
 
             emh.Add(this.Subscribe(Event.ShowUndoOverlay, (e) =>
             {
@@ -68,14 +65,5 @@ namespace Diagnosis.ViewModels.Screens
         }
 
         public ObservableCollection<OverlayViewModel> Overlays { get; private set; }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                emh.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }
