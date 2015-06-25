@@ -37,6 +37,10 @@ namespace Diagnosis.ViewModels.Controls
                     OnHrRemoved(item);
                 }
             });
+            typeof(EventDateViewModel).Subscribe(Event.NewSession, (e) =>
+            {
+                ClearDict();
+            });
         }
 
         protected EventDateViewModel(HealthRecord hr)
