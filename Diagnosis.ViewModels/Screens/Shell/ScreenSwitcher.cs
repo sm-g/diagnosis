@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Common.Types;
 using Diagnosis.Models;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,10 @@ namespace Diagnosis.ViewModels.Screens
                 {
                     CurrentView.Dispose();
                 }
+            });
+            this.Subscribe(Event.NewSession, (e) =>
+            {
+                AuthorityController.Default.LogOut();
             });
         }
 

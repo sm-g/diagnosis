@@ -17,11 +17,9 @@ namespace Diagnosis.ViewModels.Screens
         static HierViewer<Patient, Course, Appointment, IHrsHolder> viewer;
         readonly HrEditorViewModel _hrEditor;
         readonly CardNavigator _navigator;
-        readonly Doctor doctor;
         HrListViewModel _hrList;
         HeaderViewModel _header;
         bool editorWasOpened;
-        Saver saver;
         IHrsHolder deletingHolder;
         Action pendingAction;
 
@@ -31,9 +29,8 @@ namespace Diagnosis.ViewModels.Screens
             if (resetHistory || viewer == null)
                 ResetHistory();
 
-            doctor = AuthorityController.CurrentDoctor;
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
 
-            saver = new Saver(Session);
             _navigator = new CardNavigator(viewer);
             _hrEditor = new HrEditorViewModel(Session);
 
@@ -61,9 +58,9 @@ namespace Diagnosis.ViewModels.Screens
             {
                 // сохраняем запись
                 var hr = e.hr as HealthRecord;
-                if (hr.Doctor == doctor)  // добавлять только если врач редактировал свою запись?
-                    doctor.AddWords(hr.Words);
-                saver.Save(hr);
+                if (hr.Doctor == AuthorityController.CurrentDoctor)  // добавлять только если врач редактировал свою запись?
+                    AuthorityController.CurrentDoctor.AddWords(hr.Words);
+                Session.DoSave(hr);
             };
             HrEditor.Closing += (s, e) =>
             {
@@ -164,7 +161,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedRoot.AddCourse(doctor);
+                    viewer.OpenedRoot.AddCourse(AuthorityController.CurrentDoctor);
                 });
             }
         }
@@ -175,7 +172,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    viewer.OpenedMiddle.AddAppointment(doctor);
+                    viewer.OpenedMiddle.AddAppointment(AuthorityController.CurrentDoctor);
                 },
                 () => viewer.OpenedMiddle != null && viewer.OpenedMiddle.End == null);
             }
@@ -309,7 +306,7 @@ namespace Diagnosis.ViewModels.Screens
             if (holder != null)
             {
                 HrList = new HrListViewModel(holder, Session);
-
+                var doctor = AuthorityController.CurrentDoctor;
                 HrViewColumn gr;
                 if (Enum.TryParse<HrViewColumn>(doctor.Settings.HrListGrouping, true, out gr))
                     HrList.Grouping = gr;
@@ -345,7 +342,7 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             var hrs = RemoveEmptyHrs(holder).ToArray();
-            saver.Save(holder);
+            Session.DoSave(holder);
         }
 
         private static IEnumerable<HealthRecord> RemoveEmptyHrs(IHrsHolder holder)
@@ -374,13 +371,15 @@ namespace Diagnosis.ViewModels.Screens
                 var app = holder as Appointment;
                 app.Course.RemoveAppointment(app);
             }
-            saver.Delete(holder);
+            Session.DoDelete(holder);
 
             ExecutePendingActions();
         }
 
         private void ExecutePendingActions()
         {
+            if (pendingAction == null)
+                return;
             pendingAction();
             pendingAction = null;
         }
@@ -463,10 +462,12 @@ namespace Diagnosis.ViewModels.Screens
             }
             else if (e.PropertyName == "Sorting")
             {
+                var doctor = AuthorityController.CurrentDoctor;
                 doctor.Settings.HrListSorting = HrList.Sorting.ToString();
             }
             else if (e.PropertyName == "Grouping")
             {
+                var doctor = AuthorityController.CurrentDoctor;
                 doctor.Settings.HrListGrouping = HrList.Grouping.ToString();
             }
         }
@@ -494,7 +495,7 @@ namespace Diagnosis.ViewModels.Screens
 
                     Navigator.Dispose();
 
-                    saver.Save(doctor);
+                    Session.DoSave(AuthorityController.CurrentDoctor);
                 }
             }
             finally

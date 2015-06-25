@@ -1,5 +1,4 @@
 ﻿using Diagnosis.Common;
-using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
@@ -18,14 +17,14 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<UomViewModel> _uoms;
         private bool _noUoms;
         private UomViewModel _current;
-        private Saver saver;
         private FilterableListHelper<Uom, UomViewModel> filterHelper;
 
         public UomsListViewModel()
         {
-            saver = new Saver(Session);
             SelectedUoms = new ObservableCollection<UomViewModel>();
-            _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
+            CreateFilter();
+            emh.Add(this.Subscribe(Event.NewSession, (e) => CreateFilter()));
+
             Filter.Filtered += (s, e) =>
             {
                 MakeVms(Filter.Results);
@@ -130,6 +129,11 @@ namespace Diagnosis.ViewModels.Screens
                     OnPropertyChanged(() => NoUoms);
                 }
             }
+        }
+
+        private void CreateFilter()
+        {
+            _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
         }
 
         private void MakeVms(ObservableCollection<Uom> results)

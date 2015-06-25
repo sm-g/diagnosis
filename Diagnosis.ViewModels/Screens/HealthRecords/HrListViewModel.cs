@@ -56,7 +56,7 @@ namespace Diagnosis.ViewModels.Screens
         private bool inSetSelected;
         private bool disposed;
         private VisibleRelayCommand<bool> _moveHr;
-        private Saver saver;
+        private EventAggregator.EventMessageHandler handler;
 
         public HrListViewModel(IHrsHolder holder, ISession session, HrViewColumn sorting = HrViewColumn.Ord, HrViewColumn grouping = HrViewColumn.Category)
         {
@@ -64,8 +64,6 @@ namespace Diagnosis.ViewModels.Screens
             Contract.Requires(session != null);
             this.session = session;
             this.holder = holder;
-
-            saver = new Saver(session);
 
             HolderVm = new HolderViewModel(holder);
 
@@ -81,6 +79,12 @@ namespace Diagnosis.ViewModels.Screens
                 // fix new selected item appears in listbox after movement hrs from diff categories in grouped by category
                 // TODO fix when diff createdAt
                 HealthRecords.Except(hrs).ForEach(x => x.IsSelected = false);
+            });
+
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
             });
 
             hrManager = new HealthRecordManager(holder, OnHrVmPropChanged);
@@ -909,6 +913,12 @@ namespace Diagnosis.ViewModels.Screens
             hrViewer = new HrViewer();
         }
 
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
+        }
+
         internal void SaveHrs()
         {
             Contract.Assume(HealthRecords.IsStrongOrdered(x => x.Ord));
@@ -916,7 +926,7 @@ namespace Diagnosis.ViewModels.Screens
             var hrs = HealthRecords
                 .Select(vm => vm.healthRecord)
                 .ToArray();
-            saver.Save(hrs);
+            session.DoSave(hrs);
 
             OnHrsSaved();
         }

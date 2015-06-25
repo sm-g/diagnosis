@@ -60,6 +60,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\libs\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -114,6 +115,10 @@
     <ProjectReference Include="..\Diagnosis.Common\Diagnosis.Common.csproj">
       <Project>{A91AD3B7-CB0F-426C-A539-1CFFC13DF0EE}</Project>
       <Name>Diagnosis.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Diagnosis.Data\Diagnosis.Data.csproj">
+      <Project>{3EC8D3DF-AA44-4CB8-8847-D4B4872E9DAD}</Project>
+      <Name>Diagnosis.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Diagnosis.Models\Diagnosis.Models.csproj">
       <Project>{F1EF016E-80F6-461C-AC4B-E087E42A9F0C}</Project>

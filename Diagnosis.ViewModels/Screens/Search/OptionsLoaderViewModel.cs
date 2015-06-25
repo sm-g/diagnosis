@@ -1,6 +1,7 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data;
 using Diagnosis.ViewModels.Controls;
+using NHibernate;
 using System;
 using System.Linq;
 using System.Windows;
@@ -17,12 +18,21 @@ namespace Diagnosis.ViewModels.Screens
         private OptionsLoader loader;
         private bool useBuffer;
         private VisibleRelayCommand _openBufferCommand;
+        private EventAggregator.EventMessageHandler handler;
+        private ISession session;
 
-        public OptionsLoaderViewModel(QueryEditorViewModel s, OptionsLoader loader, bool useBuffer = false)
+        public OptionsLoaderViewModel(QueryEditorViewModel queryeditor, OptionsLoader loader, ISession session, bool useBuffer = false)
         {
-            this.master = s;
+            this.master = queryeditor;
             this.useBuffer = useBuffer;
             this.loader = loader;
+            this.session = session;
+
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
+            });
         }
 
         public RelayCommand LoadOptionsCommand
@@ -32,7 +42,7 @@ namespace Diagnosis.ViewModels.Screens
                 return new RelayCommand(() =>
                 {
                     string str = GetStringToLoad();
-                    var opt = loader.ReadOptions(str);
+                    var opt = loader.ReadOptions(str, session);
 
                     LoadFailed = opt == null;
                     if (opt != null)
@@ -160,6 +170,11 @@ namespace Diagnosis.ViewModels.Screens
             }
             return Clipboard.ContainsText();
         }
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
+        }
 
         private string GetStringToLoad()
         {
@@ -194,5 +209,21 @@ namespace Diagnosis.ViewModels.Screens
                 Clipboard.SetDataObject(dataObj, true);
             }
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
     }
 }

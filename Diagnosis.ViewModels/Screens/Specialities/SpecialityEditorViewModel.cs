@@ -190,7 +190,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             (spec as IEditableObject).EndEdit();
 
-            new Saver(Session).Save(spec);
+            Session.DoSave(spec);
         }
 
         protected override void OnCancel()

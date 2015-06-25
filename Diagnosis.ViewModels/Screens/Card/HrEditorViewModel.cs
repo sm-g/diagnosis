@@ -22,15 +22,21 @@ namespace Diagnosis.ViewModels.Screens
         private IHrEditorAutocomplete _autocomplete;
         private HealthRecordViewModel _hr;
         private ISession session;
-        private Doctor doctor;
         private bool _focused;
         private IEnumerable<HrCategory> _categories;
+        private EventMessageHandler handler;
 
         public HrEditorViewModel(ISession session)
         {
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
+
             this.session = session;
 
-            doctor = AuthorityController.CurrentDoctor;
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
+            });
         }
 
         /// <summary>
@@ -47,6 +53,7 @@ namespace Diagnosis.ViewModels.Screens
         /// Редактор закрывается по команде. Запись может быть null.
         /// </summary>
         public event EventHandler<HealthRecordEventArgs> Closing;
+
 
         #region HealthRecord
 
@@ -257,7 +264,7 @@ namespace Diagnosis.ViewModels.Screens
             var sugMaker = new SuggestionsMaker(session, AuthorityController.CurrentDoctor)
             {
                 ShowChildrenFirst = true,
-                AddQueryToSuggestions = doctor.Settings.AddQueryToSuggestions,
+                AddQueryToSuggestions = AuthorityController.CurrentDoctor.Settings.AddQueryToSuggestions,
             };
 
             Autocomplete = new HrEditorAutocomplete(sugMaker, initials);
@@ -299,7 +306,7 @@ namespace Diagnosis.ViewModels.Screens
                 return;
 
             // ensure hr is not transient
-            new Saver(session).Save(hr);
+            session.DoSave(hr);
 
             FinishCurrentHr();
 
@@ -362,6 +369,8 @@ namespace Diagnosis.ViewModels.Screens
             {
                 if (disposing)
                 {
+                    handler.Dispose();
+
                     Unload();
                     if (_autocomplete != null)
                         _autocomplete.Dispose();
@@ -397,9 +406,14 @@ namespace Diagnosis.ViewModels.Screens
                 OnUnloaded(hr);
 
                 // сохраняем настройки редактора
-                doctor.Settings.AddQueryToSuggestions = addQuery;
-                new Saver(session).Save(doctor);
+                AuthorityController.CurrentDoctor.Settings.AddQueryToSuggestions = addQuery;
+                session.DoSave(AuthorityController.CurrentDoctor);
             }
+        }
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
         }
 
         private void hr_PropertyChanged(object sender, PropertyChangedEventArgs e)

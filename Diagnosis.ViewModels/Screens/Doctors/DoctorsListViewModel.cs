@@ -15,12 +15,10 @@ namespace Diagnosis.ViewModels.Screens
     {
         private Doctor _current;
         private ObservableCollection<Doctor> _doctors;
-        private Saver saver;
         private bool CanDelete;
 
         public DoctorsListViewModel()
         {
-            saver = new Saver(Session);
 
             Title = "Врачи";
             var docs = EntityQuery<Doctor>.All(Session)()
@@ -102,7 +100,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 return new RelayCommand(() =>
                 {
-                    if (saver.Delete(SelectedDoctor))
+                    if (Session.DoDelete(SelectedDoctor))
                         Doctors.Remove(SelectedDoctor);
                 }, () => CanDelete);
             }

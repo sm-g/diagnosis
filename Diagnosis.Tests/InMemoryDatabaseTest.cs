@@ -7,12 +7,14 @@ using System;
 using System.Linq;
 using NHibernate.Linq;
 using System.Collections.Generic;
+using NHibernate;
 
 namespace Diagnosis.Tests
 {
     [TestClass]
     public abstract class InMemoryDatabaseTest : DbTest
     {
+        private EventAggregator.EventMessageHandler handler;
         protected AuthorityController AuthorityController { get; private set; }
 
         [TestInitialize]
@@ -21,20 +23,29 @@ namespace Diagnosis.Tests
             Diagnosis.Data.Mappings.MappingHelper.Reset();
             NHibernateHelper.Default.InMemory = true;
             NHibernateHelper.Default.ShowSql = true;
-            NHibernateHelper.Default.FromTest = true;
             Constants.IsClient = true;
 
             session = NHibernateHelper.Default.OpenSession();
 
+
             Load<Doctor>();
             AuthorityController = AuthorityController.Default;
             AuthorityController.TryLogIn(d1);
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                if (session.SessionFactory == s.SessionFactory)
+                {
+                    session = s;
+                }
+            });
         }
 
         [TestCleanup]
         public void InMemoryDatabaseTestCleanup()
         {
             session.Dispose();
+            handler.Dispose();
             AuthorityController.LogOut();
         }
 
@@ -48,7 +59,7 @@ namespace Diagnosis.Tests
 
             var doctor = doc ?? AuthorityController.CurrentDoctor;
             doctor.AddWords(toSave.ToEnumerable());
-            new Saver(session).Save(toSave);
+            session.DoSave(toSave);
             return toSave;
         }
 

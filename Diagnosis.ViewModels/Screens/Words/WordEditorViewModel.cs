@@ -55,7 +55,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             foreach (var crit in word.Crits)
             {
-                var l = OptionsLoader.FromFormat(crit.OptionsFormat, Session);
+                var l = OptionsLoader.FromFormat(crit.OptionsFormat);
                 crit.Options = l.ReplaceWord(crit.Options, oldTitle, word.Title);
             }
 
@@ -64,7 +64,7 @@ namespace Diagnosis.ViewModels.Screens
             // если такое слово уже было, делааем доступным врачу
             var toSave = WordQuery.ByTitle(Session)(word.Title) ?? word;
             AuthorityController.CurrentDoctor.AddWords(toSave.ToEnumerable());
-            new Saver(Session).Save(toSave);
+            Session.DoSave(toSave);
             this.Send(Event.EntitySaved, toSave.AsParams(MessageKeys.Entity));
         }
 

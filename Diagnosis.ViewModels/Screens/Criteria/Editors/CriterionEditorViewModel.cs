@@ -16,7 +16,7 @@ namespace Diagnosis.ViewModels.Screens
         public CriterionEditorViewModel(Criterion cr)
         {
             this.criterion = cr;
-            loader = new JsonOptionsLoader(Session);
+            loader = new JsonOptionsLoader();
 
             QueryEditor = new QueryEditorViewModel(Session);
 
@@ -24,7 +24,7 @@ namespace Diagnosis.ViewModels.Screens
             tester = new ExistanceTester<Criterion>(cr, Criterion, Session);
             tester.Test();
 
-            var opt = loader.ReadOptions(criterion.Options);
+            var opt = loader.ReadOptions(criterion.Options, Session);
             QueryEditor.SetOptions(opt);
 
             (criterion as IEditableObject).BeginEdit();
@@ -57,9 +57,8 @@ namespace Diagnosis.ViewModels.Screens
             if (AuthorityController.CurrentDoctor != null)
                 AuthorityController.CurrentDoctor.AddWords(words);
 
-            var s = new Saver(Session);
-            s.Save(words);
-            s.Save(criterion);
+            Session.DoSave(words);
+            Session.DoSave(criterion);
         }
 
         protected override void OnCancel()

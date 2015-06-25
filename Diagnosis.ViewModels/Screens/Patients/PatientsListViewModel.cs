@@ -28,17 +28,14 @@ namespace Diagnosis.ViewModels.Screens
         private bool _ageVis;
         private bool _isMaleVis;
         private bool _isLastUpdatedVis;
-        private Saver saver;
         private ListCollectionView view;
-        private Doctor doctor;
         private FilterableListHelper<Patient, PatientViewModel> filterHelper;
 
         public PatientsListViewModel()
         {
-            saver = new Saver(Session);
-            doctor = AuthorityController.CurrentDoctor;
+            CreateFilter();
+            emh.Add(this.Subscribe(Event.NewSession, (e) => CreateFilter()));
 
-            _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
             Filter.Filtered += (s, e) =>
             {
                 MakeVms(Filter.Results);
@@ -217,7 +214,7 @@ namespace Diagnosis.ViewModels.Screens
                         .Where(x => x.patient.IsEmpty())
                         .Select(x => x.patient)
                         .ToArray();
-                    saver.Delete(toDel);
+                    Session.DoDelete(toDel);
 
                     // убираем удаленных из списка
                     Filter.Filter();
@@ -317,6 +314,12 @@ namespace Diagnosis.ViewModels.Screens
             base.Dispose(disposing);
         }
 
+        private void CreateFilter()
+        {
+            _filter = new FilterViewModel<Patient>(PatientQuery.StartingWith(Session));
+        }
+
+
         private void MakeVms(IEnumerable<Patient> results)
         {
             var vms = results.Select(w => Patients
@@ -328,6 +331,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SetupColumnsVisibility()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             PatientsViewSortingColumn visCols;
             if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListVisibleColumns, true, out visCols))
             {
@@ -345,6 +350,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SetupSorting()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             PatientsViewSortingColumn sort;
             if (Enum.TryParse<PatientsViewSortingColumn>(doctor.Settings.PatientsListSorting, true, out sort))
                 Sorting = sort;
@@ -360,6 +367,8 @@ namespace Diagnosis.ViewModels.Screens
 
         private void SaveDoctorSettings()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             if (view.SortDescriptions.Count > 0)
             {
                 var sort = view.SortDescriptions.FirstOrDefault();
@@ -378,7 +387,7 @@ namespace Diagnosis.ViewModels.Screens
 
             doctor.Settings.PatientsListVisibleColumns = visCols.ToString();
 
-            new Saver(Session).Save(doctor);
+            Session.DoSave(doctor);
         }
     }
 }

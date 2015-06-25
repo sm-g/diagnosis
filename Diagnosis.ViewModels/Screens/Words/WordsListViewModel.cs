@@ -2,7 +2,6 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using System.Collections.Generic;
@@ -20,19 +19,19 @@ namespace Diagnosis.ViewModels.Screens
         private FilterViewModel<Word> _filter;
         private ObservableCollection<WordViewModel> _words;
         private WordViewModel _current;
-        private Saver saver;
-        private Doctor doctor;
         private FilterableListHelper<Word, WordViewModel> filterHelper;
 
         public WordsListViewModel()
         {
-            saver = new Saver(Session);
-            doctor = AuthorityController.CurrentDoctor;
+            Contract.Assume(AuthorityController.CurrentDoctor != null);
 
-            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
+            CreateFilter();
+            emh.Add(this.Subscribe(Event.NewSession, (e) => CreateFilter()));
+
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
+                var doctor = AuthorityController.CurrentDoctor;
                 MakeVms(Filter.Results.Where(x => doctor.Words.Contains(x)));
             };
 
@@ -136,7 +135,7 @@ namespace Diagnosis.ViewModels.Screens
                         .ToArray();
 
                     toDel.ForAll(x => x.OnDelete());
-                    saver.Delete(toDel);
+                    Session.DoDelete(toDel);
 
                     // убираем удаленные из списка
                     Filter.Filter();
@@ -161,7 +160,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return doctor.Words.Count() == 0;
+                return AuthorityController.CurrentDoctor != null && AuthorityController.CurrentDoctor.Words.Count() == 0;
             }
         }
 
@@ -201,6 +200,11 @@ namespace Diagnosis.ViewModels.Screens
                 filterHelper.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void CreateFilter()
+        {
+            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
         }
 
         private void MakeVms(IEnumerable<Word> results)

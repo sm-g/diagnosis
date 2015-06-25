@@ -19,14 +19,12 @@ namespace Diagnosis.ViewModels.Controls
         private AsyncObservableCollection<DiagnosisViewModel> _chapters;
         private IcdDisease _selected;
         private PopupSearchViewModel<IcdDisease> _diagnosisSearch;
-        private Doctor doctor;
         private bool inFiltered;
         private bool _icdTopLevelOnly;
 
         public IcdSelectorViewModel(IcdDisease initial = null, string query = null)
         {
-            doctor = AuthorityController.CurrentDoctor;
-
+            var doctor = AuthorityController.CurrentDoctor;
             _icdTopLevelOnly = doctor != null ? doctor.Settings.IcdTopLevelOnly : false;
 
             _chapters = new AsyncObservableCollection<DiagnosisViewModel>();
@@ -148,8 +146,12 @@ namespace Diagnosis.ViewModels.Controls
 
         protected override void OnOk()
         {
+            var doctor = AuthorityController.CurrentDoctor;
+            if (doctor == null)
+                return;
+
             doctor.Settings.IcdTopLevelOnly = IcdTopLevelOnly;
-            new Saver(Session).Save(doctor);
+            Session.DoSave(doctor);
         }
 
         /// <summary>
@@ -158,6 +160,8 @@ namespace Diagnosis.ViewModels.Controls
         /// <param name="results"></param>
         private void MakeVms(ObservableCollection<IcdDisease> results)
         {
+            var doctor = AuthorityController.CurrentDoctor;
+
             Func<IcdDisease, bool> diseaseClause = d => true;
             if (IcdTopLevelOnly)
             {

@@ -1,14 +1,19 @@
-﻿using Diagnosis.Data;
-using System.Linq;
+﻿using Diagnosis.Common;
+using Diagnosis.Data;
+using Diagnosis.Models;
+using EventAggregator;
 using NHibernate;
 using NHibernate.Linq;
-using Diagnosis.Models;
+using System.Linq;
 
 namespace Diagnosis.ViewModels
 {
     public class SessionVMBase : ViewModelBase
     {
-        static NHibernateHelper nhib;
+        private static NHibernateHelper nhib;
+        private ISession _session;
+        private EventMessageHandler handler;
+
         static SessionVMBase()
         {
             if (IsInDesignMode)
@@ -24,14 +29,12 @@ namespace Diagnosis.ViewModels
                 var doc = Nhib.GetSession().Query<Doctor>().FirstOrDefault();
                 AuthorityController.TryLogIn(doc);
             }
-        }
-
-        protected ISession Session
-        {
-            get
+            _session = Nhib.GetSession();
+            handler = this.Subscribe(Event.NewSession, (e) =>
             {
-                return Nhib.GetSession();
-            }
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
+            });
         }
 
         public static NHibernateHelper Nhib
@@ -47,15 +50,27 @@ namespace Diagnosis.ViewModels
             }
         }
 
+        protected ISession Session
+        {
+            get
+            {
+                return _session;
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                //if (Session != null)
-                //    Session.Dispose();
+                handler.Dispose();
             }
-
             base.Dispose(disposing);
+        }
+
+        private void ReplaceSession(ISession s)
+        {
+            if (_session.SessionFactory == s.SessionFactory)
+                _session = s;
         }
     }
 }

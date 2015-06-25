@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Models;
+using EventAggregator;
 using log4net;
 using NHibernate;
 using System.Collections.Generic;
@@ -9,20 +10,11 @@ using System.Linq;
 
 namespace Diagnosis.Data
 {
-    public class Saver
+    public static class Saver
     {
         private static readonly ILog logger = LogManager.GetLogger(typeof(Saver));
 
-        private Patient savingPatient;
-        private ISession session;
-
-        public Saver(ISession session)
-        {
-            this.session = session;
-        }
-
-
-        public bool Delete(params IEntity[] entities)
+        public static bool DoDelete(this ISession session, params IEntity[] entities)
         {
             Contract.Requires(entities != null);
 
@@ -44,18 +36,14 @@ namespace Diagnosis.Data
                 }
                 catch (System.Exception e)
                 {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#else
+                    OnException(session, t, e);
+
                     return false;
-#endif
                 }
             }
         }
 
-        public bool Save(params IEntity[] entities)
+        public static bool DoSave(this ISession session, params IEntity[] entities)
         {
             Contract.Requires(entities != null);
 
@@ -77,13 +65,9 @@ namespace Diagnosis.Data
                 }
                 catch (System.Exception e)
                 {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#else
+                    OnException(session, t, e);
+
                     return false;
-#endif
                 }
             }
         }
@@ -91,7 +75,7 @@ namespace Diagnosis.Data
         /// <summary>
         /// Будут сохранены только те, которых нет среди удаляемых.
         /// </summary>
-        public bool DeleteAndSave(IEnumerable<IEntity> toDelete, IEnumerable<IEntity> toSave)
+        public static bool DeleteAndSave(this ISession session, IEnumerable<IEntity> toDelete, IEnumerable<IEntity> toSave)
         {
             Contract.Requires(toDelete != null);
             Contract.Requires(toSave != null);
@@ -120,15 +104,22 @@ namespace Diagnosis.Data
                 }
                 catch (System.Exception e)
                 {
-                    t.Rollback();
-                    logger.Error(e);
-#if DEBUG
-                    throw;
-#else
+                    OnException(session, t, e);
+
                     return false;
-#endif
                 }
             }
+        }
+
+        private static void OnException(ISession session, ITransaction t, System.Exception e)
+        {
+            t.Rollback();
+            session.Close();
+
+            logger.Error(e);
+
+            NHibernateHelper.ReopenSession(session.SessionFactory);
+            typeof(Saver).Send(Event.ShowMessageOverlay, new object[] { e.Message, typeof(Saver) }.AsParams(MessageKeys.String, MessageKeys.Type));
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Diagnosis.ViewModels.Controls
         private bool inFilling;
         private bool _withConf;
         private ReentrantFlag inMakingOptions = new ReentrantFlag();
+        private EventMessageHandler handler;
 
         /// <summary>
         ///
@@ -72,6 +73,11 @@ namespace Diagnosis.ViewModels.Controls
                         break;
                 }
             };
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
+            });
 
             if (options != null)
             {
@@ -79,7 +85,6 @@ namespace Diagnosis.ViewModels.Controls
                 FillFromOptions(options);
             }
         }
-
         public ObservableCollection<MenuItem> MinAnyMenuItems { get; private set; }
 
         public ObservableCollection<MenuItem> GroupOperatorMenuItems { get; private set; }
@@ -452,6 +457,8 @@ namespace Diagnosis.ViewModels.Controls
         {
             if (disposing)
             {
+                handler.Dispose();
+
                 Children.CollectionChanged -= Children_CollectionChanged;
                 Children.ForEach(x => x.Dispose());
                 this.Remove();
@@ -646,6 +653,11 @@ namespace Diagnosis.ViewModels.Controls
                     OnPropertyChanged(() => AnyPopupOpen);
                     break;
             }
+        }
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
         }
 
         [ContractInvariantMethod]

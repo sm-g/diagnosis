@@ -38,7 +38,7 @@ namespace Diagnosis.Common
 
         public readonly static string Name = "name";
         public readonly static string Value = "value";
-
+        public readonly static string Session = "session";
     }
 
     public enum Event
@@ -84,6 +84,7 @@ namespace Diagnosis.Common
         // app
         PushToSettings,
         Shutdown,
+        NewSession,
         SaveLayout,
     }
 

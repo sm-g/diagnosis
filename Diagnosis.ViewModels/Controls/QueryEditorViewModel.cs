@@ -13,19 +13,20 @@ namespace Diagnosis.ViewModels.Controls
 {
     public class QueryEditorViewModel : ViewModelBase
     {
-        private ISession Session;
+        private ISession session;
         private Action onQbEnter;
         private VisibleRelayCommand _send;
+        private EventAggregator.EventMessageHandler handler;
 
         public QueryEditorViewModel(ISession session, Action onQbEnter = null)
         {
             Contract.Requires(session != null);
 
-            this.Session = session;
+            this.session = session;
             this.onQbEnter = onQbEnter ?? (Action)(() => { });
 
-            var loader = new JsonOptionsLoader(Session);
-            Loader = new OptionsLoaderViewModel(this, loader);
+            var loader = new JsonOptionsLoader();
+            Loader = new OptionsLoaderViewModel(this, loader, session);
             var hist = new History<SearchOptions>();
             History = new HistoryViewModel<SearchOptions>(hist);
             QueryBlocks = new ObservableCollection<QueryBlockViewModel>();
@@ -42,10 +43,16 @@ namespace Diagnosis.ViewModels.Controls
                 }
             };
 
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                ReplaceSession(s);
+            });
             AuthorityController.LoggedIn += (s, e) =>
             {
                 SetupQueryBlocks();
             };
+
             AuthorityController.LoggedOut += (s, e) =>
             {
                 QueryBlocks.ForAll(x => x.Dispose());
@@ -98,6 +105,28 @@ namespace Diagnosis.ViewModels.Controls
             SetRootOptions(opt);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                if (disposing)
+                {
+                    handler.Dispose();
+                    QueryBlocks.Clear();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
+        }
+
+        private void ReplaceSession(ISession s)
+        {
+            if (this.session.SessionFactory == s.SessionFactory)
+                this.session = s;
+        }
+
         private void SetupQueryBlocks()
         {
             if (AuthorityController.CurrentDoctor != null)
@@ -112,7 +141,7 @@ namespace Diagnosis.ViewModels.Controls
 
             QueryBlocks.Clear();
 
-            var qb = new QueryBlockViewModel(Session, onQbEnter, options);
+            var qb = new QueryBlockViewModel(session, onQbEnter, options);
             qb.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "AllEmpty")
@@ -123,21 +152,6 @@ namespace Diagnosis.ViewModels.Controls
             QueryBlocks.Add(qb);
 
             return qb;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (disposing)
-                {
-                    QueryBlocks.Clear();
-                }
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
         }
     }
 }

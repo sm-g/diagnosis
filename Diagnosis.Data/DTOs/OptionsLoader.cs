@@ -15,25 +15,19 @@ namespace Diagnosis.Data
     public abstract class OptionsLoader
     {
         public const string JsonFormat = "json";
-        private ISession session;
 
         static OptionsLoader()
         {
             ModelDtosMapper.Map();
         }
 
-        public OptionsLoader(ISession session)
-        {
-            this.session = session;
-        }
-
         public abstract string Format { get; }
 
-        public static OptionsLoader FromFormat(string format, ISession session)
+        public static OptionsLoader FromFormat(string format)
         {
             if (format == JsonFormat)
             {
-                return new JsonOptionsLoader(session);
+                return new JsonOptionsLoader();
             }
             throw new ArgumentOutOfRangeException();
         }
@@ -43,12 +37,12 @@ namespace Diagnosis.Data
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public SearchOptions ReadOptions(string str)
+        public SearchOptions ReadOptions(string str, ISession session)
         {
             try
             {
                 var dto = ReadOptionsInner(str);
-                var opt = LoadFromDTO(dto);
+                var opt = LoadFromDTO(dto, session);
                 opt.SetIsRoot();
                 return opt;
             }
@@ -93,7 +87,7 @@ namespace Diagnosis.Data
         /// <summary>
         /// Делает опции с реальными сущностями.
         /// </summary>
-        protected SearchOptions LoadFromDTO(SearchOptionsDTO dto)
+        protected SearchOptions LoadFromDTO(SearchOptionsDTO dto, ISession session)
         {
             Contract.Requires(dto != null);
             Contract.Ensures(dto.GetAllChildrenCount() == Contract.Result<SearchOptions>().GetAllChildrenCount());
@@ -135,8 +129,8 @@ namespace Diagnosis.Data
             // measures
             bool mWordsMissed;
             bool uomsMissed;
-            var mWords = LoadMeasureWords(dto, out mWordsMissed);
-            var uoms = LoadUoms(dto, out uomsMissed);
+            var mWords = LoadMeasureWords(dto, session, out mWordsMissed);
+            var uoms = LoadUoms(dto, session, out uomsMissed);
 
             bool mopNotParsed;
             var mAll = SelectMeasures(dto.MeasuresAll, mWords, uoms, out mopNotParsed);
@@ -152,7 +146,7 @@ namespace Diagnosis.Data
             // childs
             dto.Children.ForAll(x =>
             {
-                var child = this.LoadFromDTO(x);
+                var child = this.LoadFromDTO(x, session);
                 result.Children.Add(child);
             });
 
@@ -174,7 +168,7 @@ namespace Diagnosis.Data
             return result;
         }
 
-        private List<Uom> LoadUoms(SearchOptionsDTO dto, out bool uomsMissed)
+        private List<Uom> LoadUoms(SearchOptionsDTO dto, ISession session, out bool uomsMissed)
         {
             var uomSpecs = dto.MeasuresAll
                         .Union(dto.MeasuresAny)
@@ -191,7 +185,7 @@ namespace Diagnosis.Data
             return uoms;
         }
 
-        private IEnumerable<Word> LoadMeasureWords(SearchOptionsDTO dto, out bool mWordsMissed)
+        private IEnumerable<Word> LoadMeasureWords(SearchOptionsDTO dto, ISession session, out bool mWordsMissed)
         {
             var mWordTitles = (from w in dto.MeasuresAll
                                             .Union(dto.MeasuresAny)
@@ -252,11 +246,6 @@ namespace Diagnosis.Data
 
     public class JsonOptionsLoader : OptionsLoader
     {
-        public JsonOptionsLoader(ISession session)
-            : base(session)
-        {
-        }
-
         public override string Format
         {
             get { return JsonFormat; }

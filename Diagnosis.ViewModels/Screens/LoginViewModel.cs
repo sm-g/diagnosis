@@ -1,5 +1,6 @@
 ﻿using Diagnosis.Common;
 using Diagnosis.Data.Queries;
+using Diagnosis.Data;
 using Diagnosis.Models;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
@@ -135,7 +136,7 @@ namespace Diagnosis.ViewModels.Screens
                     {
                         // первый запуск
                         AuthorityController.ChangePassword(user, Passwords.Password);
-                        new Diagnosis.Data.Saver(Session).Save(user.Passport);
+                        Session.DoSave(user.Passport);
                     }
                     if (AuthorityController.TryLogIn(user, Passwords.Password))
                     {
@@ -144,7 +145,7 @@ namespace Diagnosis.ViewModels.Screens
                             var doctors = Users.OfType<Doctor>();
                             doctors.ForAll(x => x.Passport.Remember = false);
                             user.Passport.Remember = IsRemembered;
-                            new Diagnosis.Data.Saver(Session).Save(doctors.ToArray());
+Session.DoSave(doctors.ToArray());
                         }
                         LoggedIn = true;
                     }

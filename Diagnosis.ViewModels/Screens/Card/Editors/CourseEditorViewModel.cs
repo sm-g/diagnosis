@@ -99,7 +99,7 @@ namespace Diagnosis.ViewModels.Screens
                 (app as IEditableObject).EndEdit();
             (course as IEditableObject).EndEdit();
 
-            new Saver(Session).Save(course); // cascade apps
+            Session.DoSave(course); // cascade apps
         }
 
         protected override void OnCancel()

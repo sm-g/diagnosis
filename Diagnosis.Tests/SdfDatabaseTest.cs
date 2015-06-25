@@ -8,6 +8,7 @@ using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using System;
 using System.IO;
+using EventAggregator;
 
 namespace Diagnosis.Tests
 {
@@ -24,6 +25,7 @@ namespace Diagnosis.Tests
         protected static ISessionFactory sFactory;
         protected static Configuration sCfg;
         protected static Configuration clCfg;
+        private EventMessageHandler handler;
 
         static SdfDatabaseTest()
         {
@@ -63,6 +65,18 @@ namespace Diagnosis.Tests
             clSession.FlushMode = FlushMode.Commit;
 
             session = clSession;
+
+            handler = this.Subscribe(Event.NewSession, (e) =>
+            {
+                var s = e.GetValue<ISession>(MessageKeys.Session);
+                if (clSession.SessionFactory == s.SessionFactory)
+                {
+                    clSession = s;
+                    session = s;
+                }
+                else if (sSession.SessionFactory == s.SessionFactory)
+                { sSession = s; }
+            });
         }
 
         [TestCleanup]
@@ -74,6 +88,8 @@ namespace Diagnosis.Tests
                 clSession.Dispose();
             File.Delete(clientSdf);
             File.Delete(serverSdf);
+
+            handler.Dispose();
         }
         static void ClearCache(ISessionFactory factory)
         {

@@ -74,7 +74,7 @@ namespace Diagnosis.Data.Sync
             // сохраняем обновленных детей
             // потом удаляем замененные
             // может быть так, что однобленные дети тут же будут удалены
-            new Saver(session).DeleteAndSave(replacedAll, updatedAll);
+            session.DeleteAndSave(replacedAll, updatedAll);
 
             OnReplaced(new ListEventArgs<IEntity>(replacedAll));
 
