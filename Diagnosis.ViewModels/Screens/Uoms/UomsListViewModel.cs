@@ -19,11 +19,13 @@ namespace Diagnosis.ViewModels.Screens
         private bool _noUoms;
         private UomViewModel _current;
         private FilterableListHelper<Uom, UomViewModel> filterHelper;
+        private EventMessageHandler handler;
 
         public UomsListViewModel()
         {
             SelectedUoms = new ObservableCollection<UomViewModel>();
-            _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
+            CreateFilter();
+            handler = this.Subscribe(Event.NewSession, (e) => CreateFilter());
             Filter.Filtered += (s, e) =>
             {
                 MakeVms(Filter.Results);
@@ -129,6 +131,11 @@ namespace Diagnosis.ViewModels.Screens
                 }
             }
         }
+        private void CreateFilter()
+        {
+            _filter = new FilterViewModel<Uom>(UomQuery.Contains(Session));
+        }
+
 
         private void MakeVms(ObservableCollection<Uom> results)
         {
@@ -145,6 +152,7 @@ namespace Diagnosis.ViewModels.Screens
             {
                 _filter.Dispose();
                 filterHelper.Dispose();
+                handler.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -2,7 +2,6 @@
 using Diagnosis.Data;
 using Diagnosis.Data.Queries;
 using Diagnosis.Models;
-using Diagnosis.ViewModels.Controls.Autocomplete;
 using Diagnosis.ViewModels.Controls;
 using EventAggregator;
 using System.Collections.Generic;
@@ -21,12 +20,14 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<WordViewModel> _words;
         private WordViewModel _current;
         private FilterableListHelper<Word, WordViewModel> filterHelper;
+        private EventMessageHandler handler;
 
         public WordsListViewModel()
         {
             Contract.Assume(AuthorityController.CurrentDoctor != null);
 
-            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
+            CreateFilter();
+            handler = this.Subscribe(Event.NewSession, (e) => CreateFilter());
             Filter.Filtered += (s, e) =>
             {
                 // показываем только слова, доступные врачу
@@ -159,7 +160,7 @@ namespace Diagnosis.ViewModels.Screens
         {
             get
             {
-                return AuthorityController.CurrentDoctor.Words.Count() == 0;
+                return AuthorityController.CurrentDoctor != null && AuthorityController.CurrentDoctor.Words.Count() == 0;
             }
         }
 
@@ -197,8 +198,14 @@ namespace Diagnosis.ViewModels.Screens
             {
                 _filter.Dispose();
                 filterHelper.Dispose();
+                handler.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void CreateFilter()
+        {
+            _filter = new FilterViewModel<Word>(WordQuery.StartingWith(Session));
         }
 
         private void MakeVms(IEnumerable<Word> results)
