@@ -17,7 +17,6 @@ namespace Diagnosis.ViewModels.Screens
         private ObservableCollection<Doctor> _doctors;
         private Saver saver;
         private bool CanDelete;
-        private EventMessageHandlersManager emhManager;
 
         public DoctorsListViewModel()
         {
@@ -31,15 +30,14 @@ namespace Diagnosis.ViewModels.Screens
 
             Doctors.SyncWith(docs);
 
-            emhManager = new EventMessageHandlersManager(new[] {
-                this.Subscribe(Event.EntitySaved, (e) =>
+            emh.Add(this.Subscribe(Event.EntitySaved, (e) =>
                 {
                     // выбираем нового доктора или изменившегося
-                    var doc= e.GetValue<IEntity>(MessageKeys.Entity) as Doctor;
-                    if (doc != null) 
+                    var doc = e.GetValue<IEntity>(MessageKeys.Entity) as Doctor;
+                    if (doc != null)
                         SelectDoctor(doc);
-                })
-            });
+                }
+            ));
         }
 
         public ObservableCollection<Doctor> Doctors
@@ -108,15 +106,6 @@ namespace Diagnosis.ViewModels.Screens
                         Doctors.Remove(SelectedDoctor);
                 }, () => CanDelete);
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                emhManager.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         private void SelectDoctor(Doctor doc)

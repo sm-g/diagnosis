@@ -18,10 +18,9 @@ namespace Diagnosis.ViewModels
     public abstract class ViewModelBase : DisposableBase, INotifyPropertyChanged, IDataErrorInfo
     {
         protected readonly static TaskFactory uiTaskFactory;
+        protected readonly EventMessageHandlersManager emh = new EventMessageHandlersManager();
         private static bool? _isInDesignMode;
         private static AuthorityController _ac;
-
-        protected AuthorityController AuthorityController { get { return _ac; } }
 
         static ViewModelBase()
         {
@@ -49,6 +48,21 @@ namespace Diagnosis.ViewModels
             }
             _ac = AuthorityController.Default;
         }
+
+        public static bool IsInDesignMode
+        {
+            get
+            {
+                if (!_isInDesignMode.HasValue)
+                {
+                    _isInDesignMode = (bool)DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue;
+                }
+
+                return _isInDesignMode.GetValueOrDefault();
+            }
+        }
+
+        protected AuthorityController AuthorityController { get { return _ac; } }
 
         #region INotifyPropertyChanged Members
 
@@ -120,28 +134,13 @@ namespace Diagnosis.ViewModels
 
         #endregion IDataErrorInfo
 
-        public static bool IsInDesignMode
+        protected override void Dispose(bool disposing)
         {
-            get
+            if (disposing)
             {
-                if (!_isInDesignMode.HasValue)
-                {
-                    _isInDesignMode = (bool)DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue;
-                }
-
-                return _isInDesignMode.GetValueOrDefault();
+                emh.Dispose();
             }
-        }
-    }
-
-    public class VmBaseEventArgs : EventArgs
-    {
-        public readonly ViewModelBase vm;
-
-        [DebuggerStepThrough]
-        public VmBaseEventArgs(ViewModelBase vm)
-        {
-            this.vm = vm;
+            base.Dispose(disposing);
         }
     }
 }
