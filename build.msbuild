@@ -19,39 +19,30 @@
     <Configuration>Release</Configuration>
     <DirSource>$([System.IO.Path]::GetFullPath($(MSBuildProjectDirectory)))</DirSource>
     <SolutionFilePath>$(DirSource)\Diagnosis.sln</SolutionFilePath>
-    
+
     <VersionInfoPath>$(DirSource)\VersionInfo.cs</VersionInfoPath>
 
     <DirMainOutput>$(DirSource)\$(Configuration)</DirMainOutput>    
+
   </PropertyGroup>
 
-  <PropertyGroup>
-    <BuildSolutionDependsOn>
-      UpdateVersion
-    </BuildSolutionDependsOn>
-
-    <UpdateVersionDependsOn>
-    </UpdateVersionDependsOn>
-
-    <CleanupAfterBuildDependsOn>
-      BuildSolution
-    </CleanupAfterBuildDependsOn>
-
-    <BuildTestsDependsOn>
-    </BuildTestsDependsOn>
-
-    <BuildSetupDependsOn>
-    </BuildSetupDependsOn>
-    
-    <RunTestsDependsOn>
-      BuildTests
-    </RunTestsDependsOn>
-
-    <ZipSetupDependsOn>
-      BuildSetup
-    </ZipSetupDependsOn>
-  </PropertyGroup>
-
+  <ItemGroup>
+    <TestProjects Include="$(DirSource)\Diagnosis.Common.Tests\*.csproj">
+      <DirAppOutput>$(DirSource)\Diagnosis.Common.Tests\bin\$(Configuration)</DirAppOutput>      
+    </TestProjects>
+    <TestProjects Include="$(DirSource)\Diagnosis.Data.Tests\*.csproj" >
+      <DirAppOutput>$(DirSource)\Diagnosis.Data.Tests\bin\$(Configuration)</DirAppOutput>
+      <DoCopySqlCe>1</DoCopySqlCe>
+    </TestProjects>
+    <TestProjects Include="$(DirSource)\Diagnosis.Models.Tests\*.csproj" >
+      <DirAppOutput>$(DirSource)\Diagnosis.Models.Tests\bin\$(Configuration)</DirAppOutput>
+    </TestProjects>
+    <TestProjects Include="$(DirSource)\Diagnosis.ViewModels.Tests\*.csproj">
+      <DirAppOutput>$(DirSource)\Diagnosis.ViewModels.Tests\bin\$(Configuration)</DirAppOutput>
+      <DoCopySqlCe>1</DoCopySqlCe>
+    </TestProjects>
+  </ItemGroup>
+  
   <!-- "Autostart" -->
   <Target Name="Start">
     <CallTarget Condition="$(App) == 'client'" Targets="SetUpForClient" />
@@ -68,6 +59,7 @@
   <Target Name="SetUpForClient">
     <PropertyGroup>
       <DirAppOutput>$(DirSource)\Diagnosis.Client.App\bin\$(Configuration)</DirAppOutput>
+      <DirAppBinOutput>$(DirAppOutput)\bin</DirAppBinOutput>
       <AppWithVersionName>diagnosis.client.$(VersionInfoString)</AppWithVersionName>
       <AppProject>$(DirSource)\Diagnosis.Client.App\Diagnosis.Client.App.csproj</AppProject>
 
@@ -81,13 +73,11 @@
       <IssFileName>setup-client.iss</IssFileName>
       <SetupExeFileNameStart>setup-client</SetupExeFileNameStart>
 
-      <!-- copy Help -->
-      <PostBuild>echo d | xcopy "$(DirSource)\Diagnosis.Client.App\Resources\Help" "$(DirAppOutput)\Help" /d /y</PostBuild>
+      <XcopyHelp>echo d | xcopy "$(DirSource)\Diagnosis.Client.App\Resources\Help" "$(DirAppOutput)\Help" /d /y</XcopyHelp>
+      <XcopySqlCe>xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppBinOutput)"</XcopySqlCe>
+      <XcopySqliteInterop>xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppBinOutput)" /i /d /y</XcopySqliteInterop>
 
-      <!-- copy sql server ce and sqlite.dll -->
-      <CommonPostBuild>
-        xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\bin" &amp; xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppOutput)\bin" /i /d /y
-      </CommonPostBuild>
+      <PostBuild>$(XcopySqlCe) &amp; $(XcopySqliteInterop) &amp; $(XcopyHelp)</PostBuild>
     </PropertyGroup>
   </Target>
 
@@ -107,12 +97,10 @@
       <IssFileName>setup-server.iss</IssFileName>
       <SetupExeFileNameStart>setup-server</SetupExeFileNameStart>
 
-      <PostBuild/>
+      <XcopySqlCe>xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppBinOutput)"</XcopySqlCe>
+      <XcopySqliteInterop>xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppBinOutput)" /i /d /y</XcopySqliteInterop>
 
-      <!-- copy sql server ce and sqlite.dll -->
-      <CommonPostBuild>
-        xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(DirAppOutput)\bin" &amp; xcopy "$(DirSource)\libs\SQLite.Interop.dll" "$(DirAppOutput)\bin" /i /d /y
-      </CommonPostBuild>
+      <PostBuild>$(XcopySqlCe) &amp; $(XcopySqliteInterop)</PostBuild>
     </PropertyGroup>
   </Target>
 
@@ -125,15 +113,15 @@
   </Target>
 
   <!-- build porjects -->
-  <Target Name="BuildSolution" DependsOnTargets="$(BuildSolutionDependsOn)">
+  <Target Name="BuildSolution" DependsOnTargets="UpdateVersion">
     <MSBuild Projects="$(AppProject)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
       <Output ItemName="BuildOutput" TaskParameter="TargetOutputs" />
     </MSBuild>
-    <Exec Command="$(CommonPostBuild)" />
+    
     <Exec Condition="$(PostBuild) != ''" Command="$(PostBuild)" />
   </Target>
 
-  <Target Name="CleanupAfterBuild" DependsOnTargets="$(CleanupAfterBuildDependsOn)">
+  <Target Name="CleanupAfterBuild" DependsOnTargets="BuildSolution">
     <!-- Delete code analysis files -->
     <CreateItem Include="$(DirAppOutput)\**\*CodeAnalysisLog.xml">
       <Output TaskParameter="Include" ItemName="CodeAnalysisFiles" />
@@ -145,13 +133,18 @@
     <Delete Files="%(CodeAnalysisFiles.FullPath)" ContinueOnError="false" />
   </Target>
 
-  <Target Name="BuildTests" DependsOnTargets="$(BuildTestsDependsOn)">
-    <ItemGroup>      
-      <TestProject Include="$(DirSource)\**\*.Tests.csproj"></TestProject>
-    </ItemGroup>
-    <MSBuild Projects="$(TestProject)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
-      <Output ItemName="BuildOutput" TaskParameter="TargetOutputs" />
+  <Target Name="BuildTests" Inputs="%(TestProjects.Identity)" Outputs="%(TestProjects.Identity)\Ignore_this">
+    <PropertyGroup>
+      <XcopySqlCe>xcopy /s /y "$(DirSource)\packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "%(TestProjects.DirAppOutput)"</XcopySqlCe>
+      <XcopySqliteInterop>xcopy "$(DirSource)\libs\SQLite.Interop.dll" "%(TestProjects.DirAppOutput)" /i /d /y</XcopySqliteInterop>
+    </PropertyGroup>
+    
+    <MSBuild Projects="@(TestProjects)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
+      <Output ItemName="BuildTestsOutput" TaskParameter="TargetOutputs" />
     </MSBuild>
+    
+    <Exec Command="$(XcopySqliteInterop)" />
+    <Exec Condition="'%(TestProjects.DoCopySqlCe)' == '1'" Command="$(XcopySqlCe)" />
   </Target>
 
   <!-- copy files to last-release folder -->
@@ -163,55 +156,55 @@
       </ReleaseFiles>
     </ItemGroup>
     <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirLast)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true" />
-  </Target>
+    </Target>
 
-  <Target Name="UpdateVersion" DependsOnTargets="$(UpdateVersionDependsOn)">
-    <Message Text="Version: $(VersionInfoString)" />
+    <Target Name="UpdateVersion" >
+      <Message Text="Version: $(VersionInfoString)" />
 
-    <AssemblyInfo CodeLanguage="CS"
-        OutputFile="$(VersionInfoPath)"
-        AssemblyVersion="$(Major).$(Minor).$(Patch)"
-        AssemblyFileVersion="$(Major).$(Minor).$(Patch)"
-        AssemblyInformationalVersion="$(VersionInfoString)" />
-  </Target>
+      <AssemblyInfo CodeLanguage="CS"
+          OutputFile="$(VersionInfoPath)"
+          AssemblyVersion="$(Major).$(Minor).$(Patch)"
+          AssemblyFileVersion="$(Major).$(Minor).$(Patch)"
+          AssemblyInformationalVersion="$(VersionInfoString)" />
+    </Target>
 
-  <!-- build inno setup porject -->
-  <Target Name="BuildInnoSetup" DependsOnTargets="$(BuildSetupDependsOn)">
-    <InnoSetup ScriptFile="$(DirSource)\Setup\$(IssFileName)" Quiet="True" />
-  </Target>
+    <!-- build inno setup porject -->
+    <Target Name="BuildInnoSetup">
+      <InnoSetup ScriptFile="$(DirSource)\Setup\$(IssFileName)" Quiet="True" />
+    </Target>
 
-  <Target Name="RunTests" DependsOnTargets="$(RunTestsDependsOn)">
-    <PropertyGroup>
-      <MsTest>$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe</MsTest>
-    </PropertyGroup>
-    <Exec Command="&quot;$(MsTest)&quot; Diagnosis.Common.Tests\bin\Debug\Diagnosis.Common.Tests.dll  Diagnosis.Models.Tests\bin\Debug\Diagnosis.Models.Tests.dll  Diagnosis.Data.Tests\bin\Debug\Diagnosis.Data.Tests.dll Diagnosis.ViewModels.Tests\bin\Debug\Diagnosis.ViewModels.Tests.dll /logger:trx" />
-  </Target>    
+    <Target Name="RunTests" DependsOnTargets="BuildTests">
+      <PropertyGroup>
+        <MsTest>$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe</MsTest>
+      </PropertyGroup>
+      <Exec Command="&quot;$(MsTest)&quot; Diagnosis.Common.Tests\bin\$(Configuration)\Diagnosis.Common.Tests.dll  Diagnosis.Models.Tests\bin\$(Configuration)\Diagnosis.Models.Tests.dll  Diagnosis.Data.Tests\bin\$(Configuration)\Diagnosis.Data.Tests.dll Diagnosis.ViewModels.Tests\bin\$(Configuration)\Diagnosis.ViewModels.Tests.dll /logger:trx" />
+    </Target>    
 
-  <!-- obsolete setup -->
+    <!-- obsolete setup -->
 
-  <!-- build setup porject -->
-  <Target Name="BuildSetup" DependsOnTargets="$(BuildSetupDependsOn)">
-    <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(SolutionFilePath)&quot; /project &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /rebuild &quot;$(Configuration)|x86&quot;" />
-  </Target>
+    <!-- build setup porject -->
+    <Target Name="BuildSetup" >
+      <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(SolutionFilePath)&quot; /project &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /rebuild &quot;$(Configuration)|x86&quot;" />
+    </Target>
 
-  <!-- zip setup project installer with correct filename -->
-  <Target Name="ZipSetup" DependsOnTargets="$(ZipSetupDependsOn)">
-    <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
-    <Exec Command="
-    findstr /v PostBuildEvent &quot;$(DirSetup)\$(SetupProject).vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
-    set /p var=&lt;&quot;$(DirSetup)\temp.txt&quot;
-    set var=%var:&quot;=%
-    set var=%var: =%
-    set var=%var:.=-%
-    for /f &quot;tokens=1,2 delims=:&quot; %%i in (&quot;%var%&quot;) do @echo %%j &gt;&quot;$(DirSetup)\temp.txt&quot;
-    set /p version=&lt;&quot;$(DirSetup)\temp.txt&quot;
-    del &quot;$(DirSetup)\temp.txt&quot;
-    rem msi filename must be in vdproj for setup.exe working
-    rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
-    rename &quot;$(DirSetup)\$(Configuration)\setup.exe&quot; &quot;$(SetupExeFileNameStart)-%version%.exe&quot;" />
-    <ItemGroup>
-      <SetupFiles Include="$(DirSetupOutput)\**\*.*" />
-    </ItemGroup>
-    <MSBuild.Community.Tasks.Zip Files="@(SetupFiles)" ZipFileName="$(ZipSetupPath)" WorkingDirectory="$(DirSetupOutput)" />
-  </Target>
-</Project>
+    <!-- zip setup project installer with correct filename -->
+    <Target Name="ZipSetup" DependsOnTargets="BuildSetup">
+      <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
+      <Exec Command="
+          findstr /v PostBuildEvent &quot;$(DirSetup)\$(SetupProject).vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
+          set /p var=&lt;&quot;$(DirSetup)\temp.txt&quot;
+          set var=%var:&quot;=%
+          set var=%var: =%
+          set var=%var:.=-%
+          for /f &quot;tokens=1,2 delims=:&quot; %%i in (&quot;%var%&quot;) do @echo %%j &gt;&quot;$(DirSetup)\temp.txt&quot;
+          set /p version=&lt;&quot;$(DirSetup)\temp.txt&quot;
+          del &quot;$(DirSetup)\temp.txt&quot;
+          rem msi filename must be in vdproj for setup.exe working
+          rem rename &quot;$(DirSetup)\$(Configuration)\Setup.msi&quot; &quot;$(MsiFileName)&quot;
+          rename &quot;$(DirSetup)\$(Configuration)\setup.exe&quot; &quot;$(SetupExeFileNameStart)-%version%.exe&quot;" />
+      <ItemGroup>
+        <SetupFiles Include="$(DirSetupOutput)\**\*.*" />
+      </ItemGroup>
+      <MSBuild.Community.Tasks.Zip Files="@(SetupFiles)" ZipFileName="$(ZipSetupPath)" WorkingDirectory="$(DirSetupOutput)" />
+    </Target>
+  </Project>
