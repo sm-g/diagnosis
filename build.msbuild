@@ -19,9 +19,10 @@
     <Configuration>Release</Configuration>
     <DirSource>$([System.IO.Path]::GetFullPath($(MSBuildProjectDirectory)))</DirSource>
     <SolutionFilePath>$(DirSource)\Diagnosis.sln</SolutionFilePath>
+    
     <VersionInfoPath>$(DirSource)\VersionInfo.cs</VersionInfoPath>
 
-    <DirMainOutput>$(DirSource)\$(Configuration)</DirMainOutput>
+    <DirMainOutput>$(DirSource)\$(Configuration)</DirMainOutput>    
   </PropertyGroup>
 
   <PropertyGroup>
@@ -36,34 +37,35 @@
       BuildSolution
     </CleanupAfterBuildDependsOn>
 
-    <UnitTestDependsOn>
-      BuildSolution
-    </UnitTestDependsOn>
+    <BuildTestsDependsOn>
+    </BuildTestsDependsOn>
 
     <BuildSetupDependsOn>
     </BuildSetupDependsOn>
+    
+    <RunTestsDependsOn>
+      BuildTests
+    </RunTestsDependsOn>
 
     <ZipSetupDependsOn>
       BuildSetup
     </ZipSetupDependsOn>
   </PropertyGroup>
 
-  <Target Name="BuildFull" DependsOnTargets="$(BuildFullDependsOn)">
-  </Target>
-
   <!-- "Autostart" -->
   <Target Name="Start">
-    <CallTarget Condition="$(App) == 'client'" Targets="SetupClient" />
-    <CallTarget Condition="$(App) == 'server'" Targets="SetupServer" />
+    <CallTarget Condition="$(App) == 'client'" Targets="SetUpForClient" />
+    <CallTarget Condition="$(App) == 'server'" Targets="SetUpForServer" />
+    <!-- <CallTarget Condition="$(App) == 'tests'" Targets="" /> -->
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="Clean" />
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="BuildSolution" />
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="CleanupAfterBuild" />
     <CallTarget Condition="$(BuildRelease) == '1'" Targets="CopyRelease" />
-    <!-- <CallTarget Condition="$(RunTests) == '1'" Targets="Test" /> -->
+    <CallTarget Condition="$(RunTests) == '1'" Targets="RunTests" />
     <CallTarget Condition="$(BuildAndZipSetup) == '1'" Targets="BuildInnoSetup" />
   </Target>
 
-  <Target Name="SetupClient">
+  <Target Name="SetUpForClient">
     <PropertyGroup>
       <DirAppOutput>$(DirSource)\Diagnosis.Client.App\bin\$(Configuration)</DirAppOutput>
       <AppWithVersionName>diagnosis.client.$(VersionInfoString)</AppWithVersionName>
@@ -89,7 +91,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="SetupServer">
+  <Target Name="SetUpForServer">
     <PropertyGroup>
       <DirAppOutput>$(DirSource)\Diagnosis.Server.App\bin\$(Configuration)</DirAppOutput>
       <AppWithVersionName>diagnosis.server.$(VersionInfoString)</AppWithVersionName>
@@ -105,7 +107,7 @@
       <IssFileName>setup-server.iss</IssFileName>
       <SetupExeFileNameStart>setup-server</SetupExeFileNameStart>
 
-      <PostBuild></PostBuild>
+      <PostBuild/>
 
       <!-- copy sql server ce and sqlite.dll -->
       <CommonPostBuild>
@@ -143,6 +145,15 @@
     <Delete Files="%(CodeAnalysisFiles.FullPath)" ContinueOnError="false" />
   </Target>
 
+  <Target Name="BuildTests" DependsOnTargets="$(BuildTestsDependsOn)">
+    <ItemGroup>      
+      <TestProject Include="$(DirSource)\**\*.Tests.csproj"></TestProject>
+    </ItemGroup>
+    <MSBuild Projects="$(TestProject)" ContinueOnError="false"  Properties="Configuration=$(Configuration);BuildInParallel=True;PostBuildEvent=">
+      <Output ItemName="BuildOutput" TaskParameter="TargetOutputs" />
+    </MSBuild>
+  </Target>
+
   <!-- copy files to last-release folder -->
   <Target Name="CopyRelease">
     <ItemGroup>
@@ -154,9 +165,7 @@
     <Copy SourceFiles="@(ReleaseFiles)" DestinationFiles="@(ReleaseFiles->'$(DirLast)\%(RecursiveDir)%(Filename)%(Extension)')"  SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="UpdateVersion"
-      DependsOnTargets="$(UpdateVersionDependsOn)">
-
+  <Target Name="UpdateVersion" DependsOnTargets="$(UpdateVersionDependsOn)">
     <Message Text="Version: $(VersionInfoString)" />
 
     <AssemblyInfo CodeLanguage="CS"
@@ -167,24 +176,26 @@
   </Target>
 
   <!-- build inno setup porject -->
-  <Target Name="BuildInnoSetup"
-  DependsOnTargets="$(BuildSetupDependsOn)">
-
-    <InnoSetup ScriptFile="$(DirSource)\Setup\$(IssFileName)"
-    Quiet="True" />
-    <!--   OutputFileName="MySetup.exe"
-  OutputPath="C:\SetupDir" -->
+  <Target Name="BuildInnoSetup" DependsOnTargets="$(BuildSetupDependsOn)">
+    <InnoSetup ScriptFile="$(DirSource)\Setup\$(IssFileName)" Quiet="True" />
   </Target>
 
+  <Target Name="RunTests" DependsOnTargets="$(RunTestsDependsOn)">
+    <PropertyGroup>
+      <MsTest>$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe</MsTest>
+    </PropertyGroup>
+    <Exec Command="&quot;$(MsTest)&quot; Diagnosis.Common.Tests\bin\Debug\Diagnosis.Common.Tests.dll  Diagnosis.Models.Tests\bin\Debug\Diagnosis.Models.Tests.dll  Diagnosis.Data.Tests\bin\Debug\Diagnosis.Data.Tests.dll Diagnosis.ViewModels.Tests\bin\Debug\Diagnosis.ViewModels.Tests.dll /logger:trx" />
+  </Target>    
+
+  <!-- obsolete setup -->
+
   <!-- build setup porject -->
-  <Target Name="BuildSetup"
-      DependsOnTargets="$(BuildSetupDependsOn)">
+  <Target Name="BuildSetup" DependsOnTargets="$(BuildSetupDependsOn)">
     <Exec Command="&quot;$(ProgramFiles)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com&quot; &quot;$(SolutionFilePath)&quot; /project &quot;$(DirSetup)\$(SetupProject).vdproj&quot; /rebuild &quot;$(Configuration)|x86&quot;" />
   </Target>
 
   <!-- zip setup project installer with correct filename -->
-  <Target Name="ZipSetup"
-  DependsOnTargets="$(ZipSetupDependsOn)">
+  <Target Name="ZipSetup" DependsOnTargets="$(ZipSetupDependsOn)">
     <!-- http://stackoverflow.com/questions/3359974/how-to-include-version-number-in-vs-setup-project-output-filename/9891044#9891044 -->
     <Exec Command="
     findstr /v PostBuildEvent &quot;$(DirSetup)\$(SetupProject).vdproj&quot; | findstr ProductVersion &gt; &quot;$(DirSetup)\temp.txt&quot;
