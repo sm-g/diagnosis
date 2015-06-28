@@ -13,15 +13,20 @@ namespace Diagnosis.ViewModels.Screens
 
         public ServerMainWindowViewModel(bool demoMode = false)
         {
+            var prefix = demoMode ? "Демо :: " : "";
+            Title = prefix + "Diagnosis on server";
+
+            Subscribe();
+        }
+
+        private void Subscribe()
+        {
             this.Subscribe(Event.EditUom, (e) =>
             {
                 var uom = e.GetValue<Uom>(MessageKeys.Uom);
                 IDialogViewModel vm = new UomEditorViewModel(uom);
                 this.Send(Event.OpenDialog, vm.AsParams(MessageKeys.Dialog));
             });
-
-            var prefix = demoMode ? "Демо :: " : "";
-            Title = prefix + "Diagnosis on server";
         }
 
         public string Title
